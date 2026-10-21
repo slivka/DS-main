@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { JournalVatAccountingFields } from "../../src/components/ds/accounting/journal-vat-accounting-fields";
 import { JournalEditorContext } from "../../src/components/ds/accounting/journal-editor-context";
@@ -38,6 +38,8 @@ interface DemoProps {
   inbound?: boolean;
   code?: VatCodeOption | null;
   canEdit?: boolean;
+  readOnly?: boolean;
+  onEditor?: (editor: ReturnType<typeof useJournalEditorState>) => void;
   onChange?: (line: JournalLine) => void;
 }
 function Demo({
@@ -45,6 +47,8 @@ function Demo({
   inbound = true,
   code = CODE,
   canEdit = true,
+  readOnly,
+  onEditor,
   onChange,
 }: DemoProps) {
   const [line, setLine] = React.useState(LINE);
@@ -57,6 +61,7 @@ function Demo({
       withoutAccounts,
       vat: {
         enabled: true,
+        readOnly,
         codes: code ? [code] : [],
         rowDetails: { canEdit: () => canEdit, disabledReason: "Zaúčtovaný doklad" },
       },
@@ -70,6 +75,7 @@ function Demo({
     null,
   );
   const context = { editor, keyboard: useJournalKeyboard(editor) };
+  React.useEffect(() => onEditor?.(editor), [editor, onEditor]);
   return (
     <TooltipProvider>
       <JournalEditorContext.Provider value={context}>
@@ -136,6 +142,20 @@ describe("účetní pole detailu DPH", () => {
     const view = render(<Demo code={{ ...CODE, direction: "out" }} inbound={false} />);
     expect(view.queryByRole("radiogroup")).toBeNull();
     expect(view.getByRole("checkbox").getAttribute("aria-checked")).toBe("true");
+  });
+  it("zaúčtování má přednost před povolením APP a nic nezapisuje", () => {
+    const change = mock();
+    const view = render(<Demo readOnly canEdit onChange={change} />);
+    expect(view.getByRole("checkbox").hasAttribute("disabled")).toBe(true);
+    expect(view.getByRole("textbox", { name: "Poměr %" }).hasAttribute("disabled")).toBe(true);
+    expect(change).not.toHaveBeenCalled();
+  });
+  it("změna kódu na neznámý zachová obě hodnoty a 60 %", () => {
+    const change = mock();
+    let changeCode: (() => void) | undefined;
+    render(<Demo onChange={change} onEditor={(editor) => { changeCode = () => editor.changeVatCode(LINE, "other"); }} />);
+    act(() => changeCode?.());
+    expect(change.mock.calls.at(-1)?.[0]).toMatchObject({ vatCodeId: "other", vatDeduction: "partial", vatDeductionShare: 60, khLimitExcluded: true });
   });
 });
 
