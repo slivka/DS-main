@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileText, ListChecks, Rows3 } from "lucide-react";
 import {
   Button,
@@ -31,11 +31,13 @@ export function FileImportShowcase() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [rejected, setRejected] = useState<RejectedFile[]>([]);
   const [result, setResult] = useState("");
+  const sequence = useRef(0);
+  const [sourceUrl, setSourceUrl] = useState<string>();
   const addFiles = (incoming: File[]) => {
     setFiles((current) => [
       ...current,
-      ...incoming.map((file, index) => ({
-        id: `${current.length + index}-${file.name}`,
+      ...incoming.map((file) => ({
+        id: `${sequence.current++}-${file.name}`,
         file,
         severity: "ok" as const,
         message: "Ukázkový soubor připraven",
@@ -53,6 +55,12 @@ export function FileImportShowcase() {
     launch();
   };
   const currentFile = files[0]?.file;
+  useEffect(() => {
+    if (!currentFile) { setSourceUrl(undefined); return; }
+    const url = URL.createObjectURL(currentFile);
+    setSourceUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [currentFile]);
   const title = IMPORT_GROUPS.flatMap((group) => group.items).find(
     (item) => item.id === active,
   )?.title;
@@ -62,6 +70,8 @@ export function FileImportShowcase() {
         name: currentFile.name,
         type: currentFile.type || "application/octet-stream",
         size: currentFile.size,
+        url: sourceUrl,
+        previewUrl: sourceUrl,
         uploadedAt: "2026-10-21T20:30:00Z",
       }
     : null;
@@ -101,7 +111,7 @@ export function FileImportShowcase() {
         size="xl"
         description="Ukázkový import s fiktivními výpisy."
         submitLabel={step === 1 ? "Pokračovat" : `Importovat ${checked.length} výpisů`}
-        submitDisabled={step === 1 ? !files.length : !checked.length}
+        submitDisabled={!files.length || (step === 2 && !checked.length)}
         onSubmit={() => {
           if (step === 1) {
             setStep(2);

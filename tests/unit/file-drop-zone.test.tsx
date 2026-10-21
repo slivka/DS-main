@@ -111,6 +111,9 @@ describe("PaneDropOverlay", () => {
     const target = view.getByText("Cíl");
     fireEvent.dragEnter(target, { dataTransfer: transfer([file()]) });
     expect(view.getAllByRole("status").length).toBe(1);
+    fireEvent.dragOver(target, { dataTransfer: transfer([file()]) });
+    expect(view.getAllByRole("status").length).toBe(1);
+    expect(view.getByRole("status").textContent).toBe("Vnitřní");
     fireEvent.drop(target, { dataTransfer: transfer([file()]) });
     expect(inner).toBe(1);
     expect(outer).toBe(0);
@@ -128,5 +131,17 @@ describe("PaneDropOverlay", () => {
     fireEvent.drop(view.getByText("Cíl"), { dataTransfer: transfer([file()]) });
     expect(outer).toBe(1);
     expect(inner).toBe(0);
+  });
+  it("přetažení sdílí odmítnutí typu, velikosti i počtu s výběrem", () => {
+    let accepted: File[] = [];
+    let reasons: string[][] = [];
+    const view = render(<FileDropZone accept={[".xml"]} maxSizeBytes={10} maxFiles={1}
+      onFiles={(files) => { accepted = files; }}
+      onReject={(files) => { reasons = files.map((entry) => entry.reasons); }} />);
+    fireEvent.drop(view.getByRole("group"), {
+      dataTransfer: transfer([file("bad.pdf", 11), file("a.xml"), file("b.xml")]),
+    });
+    expect(accepted.map((item) => item.name)).toEqual(["a.xml"]);
+    expect(reasons).toEqual([["type", "size"], ["count"]]);
   });
 });

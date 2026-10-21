@@ -35,9 +35,11 @@ export const CheckList = forwardRef<HTMLDivElement, CheckListProps>(function Che
   const t = texts.fileImport;
   const counts = summarizeChecks(items);
   const number = new Intl.NumberFormat(texts.intlLocale);
+  const countLabel = (count: number, forms: readonly [string, string, string]) =>
+    `${number.format(count)} ${forms[count === 1 ? 0 : count >= 2 && count <= 4 ? 1 : 2]}`;
   const summary = t.summary
-    .replace("{errors}", number.format(counts.errors))
-    .replace("{warnings}", number.format(counts.warnings));
+    .replace("{errors}", countLabel(counts.errors, t.errorForms))
+    .replace("{warnings}", countLabel(counts.warnings, t.warningForms));
   const ordered = [...items].sort((a, b) => ORDER[a.severity] - ORDER[b.severity]);
   return (
     <div ref={ref} {...props} className={cn("min-w-0 space-y-2", className)} data-slot="check-list">
