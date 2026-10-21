@@ -73,9 +73,17 @@ export interface JournalLinesVat {
   /** Účetní pole detailu (2.121.0); withoutAccounts je skryje, hodnoty se nemažou. */
   rowDetails?: {
     /** Oprávnění APP pro pole konkrétního řádku; výchozí true. */
-    canEdit?: (line: JournalLine, field: "vatDeduction" | "vatDeductionShare" | "khLimitExcluded") => boolean;
+    canEdit?: (
+      line: JournalLine,
+      field: "vatDeduction" | "vatDeductionShare" | "khLimitExcluded",
+    ) => boolean;
     /** Vysvětlení zamčení od APP, např. zaúčtovaný doklad. */
-    disabledReason?: string | ((line: JournalLine, field: "vatDeduction" | "vatDeductionShare" | "khLimitExcluded") => string | undefined);
+    disabledReason?:
+      | string
+      | ((
+          line: JournalLine,
+          field: "vatDeduction" | "vatDeductionShare" | "khLimitExcluded",
+        ) => string | undefined);
   };
 }
 /** Výchozí hodnoty nového řádku. */

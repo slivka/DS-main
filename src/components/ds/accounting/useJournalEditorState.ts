@@ -327,7 +327,11 @@ export function useJournalEditorState(
       return column === "amount" && Boolean(rounding?.onChange) && rounding?.readOnly !== true;
     if (VAT_COLUMNS.has(dataColumn)) {
       if (!vatOn || vatReadOnly || column === "vatRate") return false;
-      if (dataColumn === "vatDeduction" || dataColumn === "vatDeductionShare" || dataColumn === "khLimitExcluded") {
+      if (
+        dataColumn === "vatDeduction" ||
+        dataColumn === "vatDeductionShare" ||
+        dataColumn === "khLimitExcluded"
+      ) {
         if (props.withoutAccounts) return false;
         return vat?.rowDetails?.canEdit?.(line, dataColumn) !== false;
       }

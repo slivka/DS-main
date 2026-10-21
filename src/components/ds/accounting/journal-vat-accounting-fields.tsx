@@ -19,7 +19,11 @@ interface AccountingFieldsProps {
 function LockedField({ children, reason }: { children: ReactElement; reason?: string }) {
   return (
     <DisabledReasonTooltip content={reason} blocked={Boolean(reason)}>
-      <div tabIndex={reason ? 0 : undefined} aria-label={reason} className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      <div
+        tabIndex={reason ? 0 : undefined}
+        aria-label={reason}
+        className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         {children}
       </div>
     </DisabledReasonTooltip>
@@ -44,7 +48,13 @@ export function JournalVatAccountingFields({ line, inbound, code }: AccountingFi
   return (
     <>
       {inbound ? (
-        <DetailField label={t.vatDeduction} width="flex-none w-max" labelFeedback warning={warnings.vatCodeId} error={errors.vatDeduction}>
+        <DetailField
+          label={t.vatDeduction}
+          width="flex-none w-max"
+          labelFeedback
+          warning={warnings.vatCodeId}
+          error={errors.vatDeduction}
+        >
           <LockedField reason={deductionReason}>
             <SegmentedField<VatDeduction>
               ariaLabel={t.vatDeduction}
@@ -65,7 +75,13 @@ export function JournalVatAccountingFields({ line, inbound, code }: AccountingFi
         </DetailField>
       ) : null}
       {inbound && line.vatDeduction === "partial" ? (
-        <DetailField fieldKey={`${line.id}:vatDeductionShare`} label={t.deductionShare} width="flex-none w-24" numeric error={errors.vatDeductionShare}>
+        <DetailField
+          fieldKey={`${line.id}:vatDeductionShare`}
+          label={t.deductionShare}
+          width="flex-none w-24"
+          numeric
+          error={errors.vatDeductionShare}
+        >
           <LockedField reason={shareReason}>
             <DecimalInput
               aria-label={t.deductionShare}
@@ -73,7 +89,10 @@ export function JournalVatAccountingFields({ line, inbound, code }: AccountingFi
               decimals={0}
               disabled={Boolean(shareReason)}
               onChange={(value) => {
-                if (!shareReason) editor.patch(line.id, { vatDeductionShare: value === "" ? undefined : Number(value) });
+                if (!shareReason)
+                  editor.patch(line.id, {
+                    vatDeductionShare: value === "" ? undefined : Number(value),
+                  });
               }}
             />
           </LockedField>

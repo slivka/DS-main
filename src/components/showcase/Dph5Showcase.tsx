@@ -184,8 +184,16 @@ export function Dph5Showcase() {
             id="czk"
             title="FP v CZK – KH, bez nároku, mimo DPH a zaokrouhlení"
             initial={[
-              { ...line("c1", "Služby", 8264.46, "p21", "in"), vatDeduction: "partial", vatDeductionShare: 60 },
-              { ...line("c2", "Občerstvení", 1000, "p21", "in"), vatDeduction: "none", khLimitExcluded: true },
+              {
+                ...line("c1", "Služby", 8264.46, "p21", "in"),
+                vatDeduction: "partial",
+                vatDeductionShare: 60,
+              },
+              {
+                ...line("c2", "Občerstvení", 1000, "p21", "in"),
+                vatDeduction: "none",
+                khLimitExcluded: true,
+              },
               line("c3", "Poplatek", 150, "mimo-in", "in"),
             ]}
             mainAccount="321001"
@@ -196,10 +204,25 @@ export function Dph5Showcase() {
           <Example
             id="locked-detail"
             title="Zaúčtovaný doklad – údaje DPH se zachovanými hodnotami"
-            initial={[{ ...line("locked1", "Služby", 1000, "p21", "in"), vatDeduction: "partial", vatDeductionShare: 60, khLimitExcluded: true }]}
+            initial={[
+              {
+                ...line("locked1", "Služby", 1000, "p21", "in"),
+                vatDeduction: "partial",
+                vatDeductionShare: 60,
+                khLimitExcluded: true,
+              },
+            ]}
             mainAccount="321001"
             mainSide="D"
-            vat={{ enabled: true, codes: CODES_IN, readOnly: true, rowDetails: { canEdit: () => false, disabledReason: "Zaúčtovaný doklad nelze upravovat" } }}
+            vat={{
+              enabled: true,
+              codes: CODES_IN,
+              readOnly: true,
+              rowDetails: {
+                canEdit: () => false,
+                disabledReason: "Zaúčtovaný doklad nelze upravovat",
+              },
+            }}
           />
           <Example
             id="eur"

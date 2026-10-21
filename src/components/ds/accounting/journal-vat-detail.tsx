@@ -104,4 +104,3 @@ export function VatDetail({ line, shown }: { line: JournalLine; shown: Set<Colum
     </>
   );
 }
-
