@@ -1,5 +1,7 @@
 ## DS 2.125.0 (nevydáno)
 
+- [ ] Panel 6C: DocumentForm.panelToggle, veřejné akce/hook/vykreslovač navázaného panelu, DataGrid.onRowOpen a RecordSidePanel.onSizeCommit.
+- [ ] Testy chování, ukázky, katalog bez ztrát a check:full --harness; nevydávat.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.124.0 – Rozdělení navázaných záložek

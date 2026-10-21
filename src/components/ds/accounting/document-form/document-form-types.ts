@@ -351,6 +351,8 @@ export interface DocumentVatRateField {
 
 export interface DocumentFormProps {
   title: string;
+  /** Ovládání panelu v záhlaví okna mezi nabídkou a zavřením. */
+  panelToggle?: ReactNode;
   /** Další stavové štítky bezprostředně za stavem dokladu. */
   titleBadges?: ReactNode;
   /** Doplňkové ovládání vlevo v liště, například RecordPanelTriggers. */
