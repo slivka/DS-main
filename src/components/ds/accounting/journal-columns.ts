@@ -60,6 +60,7 @@ export function journalColumnLabels(
     grossAmount: t.grossAmount,
     vatDeduction: t.vatDeduction,
     vatDeductionShare: t.deductionShare,
+    khLimitExcluded: t.khLimitExcluded,
     pdpSubjectCode: t.pdpSubject,
   };
 }

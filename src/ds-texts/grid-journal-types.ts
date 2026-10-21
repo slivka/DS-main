@@ -179,6 +179,11 @@ export interface JournalEditorTexts {
   deductionNone: string;
   deductionPartial: string;
   deductionShare: string;
+  /** Bublina neplného nároku; {share} je formátované procento. */
+  deductionPartialHint: string;
+  deductionNoneHint: string;
+  khLimitExcluded: string;
+  vatDetailLocked: string;
   pdpSubject: string;
   vatBaseHome: string;
   vatHome: string;

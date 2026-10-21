@@ -1,5 +1,7 @@
 ## DS 2.121.0 (nevydáno)
 
+- [ ] Rozbalení řádku: nárok a ikona, vyloučení KH s oprávněním; zachování dat pro FV/FP i ZFV/ZFP.
+- [ ] Texty CS/SK, ukázky, komponentové testy, katalog, check:quick a check:full.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.120.0 – Zálohy
