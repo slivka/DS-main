@@ -155,7 +155,7 @@ export type JournalRow = {
   vat_code_id?: string | null;
   vat_manual?: boolean;
   vat_amount_foreign?: number | null;
-  vat_deduction?: VatDeduction;
+  vat_deduction?: VatDeduction | null;
   vat_deduction_share?: number | null;
   kh_limit_excluded?: boolean;
   pdp_subject_code?: string | null;
@@ -269,9 +269,6 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
   if (options.vat) {
     vatColumns.vat_code_id = emptyToNull(line.vatCodeId);
     // 2.109.0: klient vat_manual ani ruční daň neposílá – pevnou daň zakládá jen systém.
-    vatColumns.vat_deduction = line.vatDeduction ?? "full";
-    if (line.vatDeduction === "partial" && line.vatDeductionShare === undefined)
-      vatColumns.vat_deduction_share = line.vatDeductionShare ?? null;
     vatColumns.pdp_subject_code = emptyToNull(line.pdpSubjectCode);
   }
   const counter =
