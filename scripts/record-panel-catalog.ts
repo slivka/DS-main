@@ -203,10 +203,16 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
       document.props.push({ name: "actionBarContent", type: "ReactNode" });
     if (!document.props.some((item) => item.name === "panelToggle"))
       document.props.push({ name: "panelToggle", type: "ReactNode" });
-    const guidance = " panelToggle předává ovladač do PageHeader mezi nabídku a zavření; společné pro faktury i zálohové listy.";
-    if (!document.usage?.includes("panelToggle")) document.usage = (document.usage ?? "") + guidance;
+    const guidance =
+      " panelToggle předává ovladač do PageHeader mezi nabídku a zavření; společné pro faktury i zálohové listy.";
+    if (!document.usage?.includes("panelToggle"))
+      document.usage = (document.usage ?? "") + guidance;
     document.examples ??= [];
-    if (!document.examples.some((item) => item.label === "Panel 6C")) document.examples.push({ label: "Panel 6C", code: '<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />' });
+    if (!document.examples.some((item) => item.label === "Panel 6C"))
+      document.examples.push({
+        label: "Panel 6C",
+        code: "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />",
+      });
     touched.push(document);
   }
   const grid = components.find((item) => item.name === "DataGrid");
@@ -218,9 +224,16 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
       grid.props.push({ name: "panelToggle", type: "ReactNode" });
     if (!grid.props.some((item) => item.name === "onRowOpen"))
       grid.props.push({ name: "onRowOpen", type: "(row: Row) => void" });
-    if (!grid.usage?.includes("onRowOpen")) grid.usage = (grid.usage ?? "") + " onRowOpen má při dvojkliku/Enter přednost před editací i v režimu výběru; canEditRow/editDisabledReason jej neblokují. onEditRow nadále řídí tužku.";
+    if (!grid.usage?.includes("onRowOpen"))
+      grid.usage =
+        (grid.usage ?? "") +
+        " onRowOpen má při dvojkliku/Enter přednost před editací i v režimu výběru; canEditRow/editDisabledReason jej neblokují. onEditRow nadále řídí tužku.";
     grid.examples ??= [];
-    if (!grid.examples.some((item) => item.label === "Otevření jen pro čtení")) grid.examples.push({ label: "Otevření jen pro čtení", code: '<DataGrid {...gridProps} canEditRow={() => false} onRowClick={selectRow} onRowOpen={openRecord} />' });
+    if (!grid.examples.some((item) => item.label === "Otevření jen pro čtení"))
+      grid.examples.push({
+        label: "Otevření jen pro čtení",
+        code: "<DataGrid {...gridProps} canEditRow={() => false} onRowClick={selectRow} onRowOpen={openRecord} />",
+      });
     const rule =
       'Sloupec type="record-indicators" přijímá indicators s libovolnými id a count(row); klik volá onIndicatorClick bez výběru řádku, Excel rozvine samostatné číselné počty.';
     if (!grid.usage?.includes("record-indicators")) grid.usage = `${grid.usage ?? ""} ${rule}`;

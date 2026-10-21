@@ -10,9 +10,13 @@ import {
 } from "./linked-panel";
 import type { OpenLinkedTabResult } from "./linked-tabs";
 
-export type LinkedPanelActions = Pick<PaneTabsApi,
-  "openLinkedPanel" | "focusLinkedPanel" | "setLinkedPanelSection" |
-  "updateLinkedPanelRecord" | "closeLinkedPanel"
+export type LinkedPanelActions = Pick<
+  PaneTabsApi,
+  | "openLinkedPanel"
+  | "focusLinkedPanel"
+  | "setLinkedPanelSection"
+  | "updateLinkedPanelRecord"
+  | "closeLinkedPanel"
 >;
 
 export interface LinkedPanelActionsOptions {
@@ -28,7 +32,8 @@ export interface LinkedPanelActionsOptions {
 
 /** Všechny změny procházejí stávajícím commit/ochranou zavírání poskytovatele. */
 export function createLinkedPanelActions(options: LinkedPanelActionsOptions): LinkedPanelActions {
-  const { stateRef, commit, closeTab, panelLabel, isDirty, confirmReplace, accept, focusPane } = options;
+  const { stateRef, commit, closeTab, panelLabel, isDirty, confirmReplace, accept, focusPane } =
+    options;
   const focusLinkedPanel = (sourceTabId: string) => {
     const found = findLinkedPanel(stateRef.current, sourceTabId);
     if (!found) return;
@@ -39,10 +44,23 @@ export function createLinkedPanelActions(options: LinkedPanelActionsOptions): Li
     openLinkedPanel: ({ sourceTabId, recordKey, recordTitle, section, blockedReason }) => {
       if (blockedReason || !findTab(stateRef.current, sourceTabId)) return;
       const attempt = (confirmed: boolean) => {
-        const current = updateLinkedPanelRecordInState(stateRef.current, sourceTabId, recordKey, recordTitle);
-        const result = openLinkedPanelInState(current, sourceTabId, {
-          label: panelLabel, activeSection: section, confirmed,
-        }, Date.now(), isDirty);
+        const current = updateLinkedPanelRecordInState(
+          stateRef.current,
+          sourceTabId,
+          recordKey,
+          recordTitle,
+        );
+        const result = openLinkedPanelInState(
+          current,
+          sourceTabId,
+          {
+            label: panelLabel,
+            activeSection: section,
+            confirmed,
+          },
+          Date.now(),
+          isDirty,
+        );
         if (result.outcome === "needsConfirm") {
           confirmReplace(() => attempt(true));
           return;
@@ -60,7 +78,12 @@ export function createLinkedPanelActions(options: LinkedPanelActionsOptions): Li
       if (next !== stateRef.current) commit(next);
     },
     updateLinkedPanelRecord: (sourceTabId, recordKey, recordTitle) => {
-      const next = updateLinkedPanelRecordInState(stateRef.current, sourceTabId, recordKey, recordTitle);
+      const next = updateLinkedPanelRecordInState(
+        stateRef.current,
+        sourceTabId,
+        recordKey,
+        recordTitle,
+      );
       if (next !== stateRef.current) commit(next);
     },
     closeLinkedPanel: (sourceTabId) => {

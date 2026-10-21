@@ -396,12 +396,13 @@ export function PaneTabsProvider({
       closeTab,
       panelLabel: dsTexts.recordPanel.panel,
       isDirty: isTabDirty,
-      confirmReplace: (proceed) => confirm({
-        title: p.linkedReplaceTitle,
-        description: p.linkedReplaceDescription,
-        confirmLabel: p.linkedReplaceConfirm,
-        onConfirm: proceed,
-      }),
+      confirmReplace: (proceed) =>
+        confirm({
+          title: p.linkedReplaceTitle,
+          description: p.linkedReplaceDescription,
+          confirmLabel: p.linkedReplaceConfirm,
+          onConfirm: proceed,
+        }),
       accept: (result) => {
         if (result.evictedTabId) clearTabState(result.evictedTabId);
         result.closedTabIds?.forEach(clearTabState);

@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import { useState } from "react";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
-import { PaneTabsProvider, usePaneTabs, useLinkedPanel } from "../../src/components/ds/panes/pane-context";
+import {
+  PaneTabsProvider,
+  usePaneTabs,
+  useLinkedPanel,
+} from "../../src/components/ds/panes/pane-context";
 import { PaneLayout } from "../../src/components/ds/panes/pane-layout";
 import { createPaneTabsState, openTabInState } from "../../src/components/ds/panes/pane-state";
 import { findLinkedPanel } from "../../src/components/ds/panes/linked-panel";
@@ -15,9 +19,15 @@ import type { DocumentFormProps } from "../../src/components/ds/accounting/docum
 
 afterEach(cleanup);
 type Api = NonNullable<ReturnType<typeof usePaneTabs>>;
-function mount(kind: "list" | "record" = "list", renderer?: React.ComponentProps<typeof PaneLayout>["renderLinkedPanel"]) {
+function mount(
+  kind: "list" | "record" = "list",
+  renderer?: React.ComponentProps<typeof PaneLayout>["renderLinkedPanel"],
+) {
   const initial = openTabInState(createPaneTabsState(1), {
-    route: "/records", kind, title: "Doklady", recordKey: kind === "record" ? "A" : undefined,
+    route: "/records",
+    kind,
+    title: "Doklady",
+    recordKey: kind === "record" ? "A" : undefined,
   }).state;
   const sourceId = initial.panes[0].tabs[0].id;
   const capture: { api?: Api; handle?: ReturnType<typeof useLinkedPanel> } = {};
@@ -29,14 +39,26 @@ function mount(kind: "list" | "record" = "list", renderer?: React.ComponentProps
   }
   function Host() {
     const [state, setState] = useState(initial);
-    return <TooltipProvider><PaneTabsProvider state={state} onChange={setState} shortcuts={false}>
-      <Capture />
-      {renderer ? <PaneLayout renderTab={() => "Běžná záložka"} renderLinkedPanel={renderer} /> : null}
-    </PaneTabsProvider></TooltipProvider>;
+    return (
+      <TooltipProvider>
+        <PaneTabsProvider state={state} onChange={setState} shortcuts={false}>
+          <Capture />
+          {renderer ? (
+            <PaneLayout renderTab={() => "Běžná záložka"} renderLinkedPanel={renderer} />
+          ) : null}
+        </PaneTabsProvider>
+      </TooltipProvider>
+    );
   }
   const ui = render(<Host />);
-  const api = () => { if (!capture.api) throw new Error("Provider missing"); return capture.api; };
-  const handle = () => { if (!capture.handle) throw new Error("Hook missing"); return capture.handle; };
+  const api = () => {
+    if (!capture.api) throw new Error("Provider missing");
+    return capture.api;
+  };
+  const handle = () => {
+    if (!capture.handle) throw new Error("Hook missing");
+    return capture.handle;
+  };
   return { ui, sourceId, api, handle, panel: () => findLinkedPanel(api().state, sourceId)?.tab };
 }
 
@@ -57,14 +79,25 @@ describe("veřejný navázaný panel 6C", () => {
     act(() => handle().focus());
     expect(api().state.active).toBe(api().state.panes[1].id);
     act(() => handle().open({ recordKey: "A", recordTitle: "Doklad A", section: "history" }));
-    expect(api().state.panes.flatMap((pane) => pane.tabs).filter((entry) => entry.linked?.kind === "panel")).toHaveLength(1);
+    expect(
+      api()
+        .state.panes.flatMap((pane) => pane.tabs)
+        .filter((entry) => entry.linked?.kind === "panel"),
+    ).toHaveLength(1);
     act(() => api().closeLinkedPanel(sourceId));
     expect(handle().state).toBe("closed");
   });
   it("blockedReason zabrání otevření i změně výběru", () => {
     const { api, handle, sourceId } = mount();
     const before = api().state;
-    act(() => handle().open({ recordKey: "A", recordTitle: "A", section: "source", blockedReason: "Rozepsaná poznámka" }));
+    act(() =>
+      handle().open({
+        recordKey: "A",
+        recordTitle: "A",
+        section: "source",
+        blockedReason: "Rozepsaná poznámka",
+      }),
+    );
     expect(api().state).toBe(before);
     expect(findLinkedPanel(api().state, sourceId)).toBeNull();
   });
@@ -93,8 +126,11 @@ describe("veřejný navázaný panel 6C", () => {
     expect(panel()?.title).toBe("Doklad B – Panel");
   });
   it("PaneLayout předá klíč/sekci registru a callback zapamatuje sekci", () => {
-    const renderer = mock((key: string, section: string, setSection: (value: string) => void) =>
-      <button onClick={() => setSection("notes")}>{key}/{section}</button>);
+    const renderer = mock((key: string, section: string, setSection: (value: string) => void) => (
+      <button onClick={() => setSection("notes")}>
+        {key}/{section}
+      </button>
+    ));
     const { ui, handle, panel } = mount("list", renderer);
     act(() => handle().open({ recordKey: "A", recordTitle: "A", section: "history" }));
     fireEvent.click(ui.getByRole("button", { name: "A/history" }));
@@ -105,8 +141,19 @@ describe("veřejný navázaný panel 6C", () => {
 
 describe("onSizeCommit", () => {
   it("během tažení jen change, puštění právě jednou commit poslední omezené šířky", () => {
-    const change = mock(); const commit = mock();
-    const ui = render(<PanelResize host={{ current: null }} size={400} defaultSize={384} min={320} max={900} onSizeChange={change} onSizeCommit={commit} />);
+    const change = mock();
+    const commit = mock();
+    const ui = render(
+      <PanelResize
+        host={{ current: null }}
+        size={400}
+        defaultSize={384}
+        min={320}
+        max={900}
+        onSizeChange={change}
+        onSizeCommit={commit}
+      />,
+    );
     const bar = ui.getByRole("separator");
     fireEvent.pointerDown(bar, { clientX: 800, pointerId: 1 });
     fireEvent.pointerMove(bar, { clientX: 700, pointerId: 1 });
@@ -119,8 +166,19 @@ describe("onSizeCommit", () => {
     expect(commit).toHaveBeenCalledWith(900);
   });
   it("klávesa i dvojklik jeden commit, nesouvisející klávesa žádný", () => {
-    const change = mock(); const commit = mock();
-    const ui = render(<PanelResize host={{ current: null }} size={400} defaultSize={384} min={320} max={900} onSizeChange={change} onSizeCommit={commit} />);
+    const change = mock();
+    const commit = mock();
+    const ui = render(
+      <PanelResize
+        host={{ current: null }}
+        size={400}
+        defaultSize={384}
+        min={320}
+        max={900}
+        onSizeChange={change}
+        onSizeCommit={commit}
+      />,
+    );
     const bar = ui.getByRole("separator");
     fireEvent.keyDown(bar, { key: "ArrowLeft" });
     expect(commit).toHaveBeenCalledTimes(1);
@@ -135,8 +193,24 @@ describe("onSizeCommit", () => {
 
 it("DocumentForm předaný ovladač panelu volá APP", () => {
   const toggle = mock();
-  const props = { status: "draft", panelToggle: <button onClick={toggle}>Panel</button> } as DocumentFormProps;
-  const ui = render(<TooltipProvider><DocumentFormTop props={props} title="Doklad" moreActions={[]} issues={[]} notices={null} vatRelevant={false} onVatRelevantChange={() => {}} t={{ ...DS_TEXTS_CS.documentForm, ...DEFAULT_DOCUMENT_FORM_TEXTS }} /></TooltipProvider>);
+  const props = {
+    status: "draft",
+    panelToggle: <button onClick={toggle}>Panel</button>,
+  } as DocumentFormProps;
+  const ui = render(
+    <TooltipProvider>
+      <DocumentFormTop
+        props={props}
+        title="Doklad"
+        moreActions={[]}
+        issues={[]}
+        notices={null}
+        vatRelevant={false}
+        onVatRelevantChange={() => {}}
+        t={{ ...DS_TEXTS_CS.documentForm, ...DEFAULT_DOCUMENT_FORM_TEXTS }}
+      />
+    </TooltipProvider>,
+  );
   fireEvent.click(ui.getByRole("button", { name: "Panel" }));
   expect(toggle).toHaveBeenCalledTimes(1);
 });

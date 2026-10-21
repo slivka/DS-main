@@ -157,7 +157,12 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             data-virtual-row=""
             tabIndex={props.onRowOpen && (!selectMode || props.openInSelectMode) ? 0 : undefined}
             onKeyDown={(event) => {
-              if (event.key !== "Enter" || event.defaultPrevented || event.target !== event.currentTarget) return;
+              if (
+                event.key !== "Enter" ||
+                event.defaultPrevented ||
+                event.target !== event.currentTarget
+              )
+                return;
               if (props.onRowOpen && (!selectMode || props.openInSelectMode)) {
                 event.preventDefault();
                 props.onRowOpen(row);
@@ -166,7 +171,8 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             onDoubleClick={
               (!selectMode || props.openInSelectMode) && props.onRowOpen
                 ? (event) => {
-                    if (isInteractiveTarget(event.target as HTMLElement, event.currentTarget)) return;
+                    if (isInteractiveTarget(event.target as HTMLElement, event.currentTarget))
+                      return;
                     props.onRowOpen?.(row);
                   }
                 : undefined

@@ -132,7 +132,11 @@ function useAppZoomScale() {
 
 export interface PaneLayoutProps {
   /** Volitelný registr celého panelu. Bez něj se i druh panel vykreslí přes renderTab. */
-  renderLinkedPanel?: (recordKey: string, section: string, setSection: (section: string) => void) => ReactNode;
+  renderLinkedPanel?: (
+    recordKey: string,
+    section: string,
+    setSection: (section: string) => void,
+  ) => ReactNode;
   /** Obsah aktivní záložky. Záložky na pozadí se nevykreslují – stav držte přes useTabDraft. */
   renderTab: (tab: PaneTab, pane: PaneApi) => ReactNode;
   /** Ikona záložky podle jejího `icon` nebo route. */
@@ -612,7 +616,9 @@ function PaneColumn({
               <PaneScrollContext.Provider value={scrollElement}>
                 <div key={`${tab.id}:${tab.historyIndex}:${paneKey(tab)}`} className="contents">
                   {tab.linked?.kind === "panel" && tab.recordKey && renderLinkedPanel
-                    ? renderLinkedPanel(tab.recordKey, tab.linked.activeSection ?? "", (section) => api.setLinkedPanelSection(tab.id, section))
+                    ? renderLinkedPanel(tab.recordKey, tab.linked.activeSection ?? "", (section) =>
+                        api.setLinkedPanelSection(tab.id, section),
+                      )
                     : renderTab(tab, tabApi)}
                 </div>
               </PaneScrollContext.Provider>

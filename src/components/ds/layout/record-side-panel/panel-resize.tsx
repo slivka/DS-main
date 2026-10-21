@@ -28,7 +28,14 @@ export interface PanelResizeProps {
   onSizeCommit?: (size: number) => void;
 }
 /** Myš, dotyk a klávesnice používají stejné meze. */
-export function PanelResize({ size, defaultSize, min, max, onSizeChange, onSizeCommit }: PanelResizeProps) {
+export function PanelResize({
+  size,
+  defaultSize,
+  min,
+  max,
+  onSizeChange,
+  onSizeCommit,
+}: PanelResizeProps) {
   const drag = useRef<{ x: number; size: number } | null>(null);
   const latest = useRef(size);
   const t = useDsTexts().recordPanel;

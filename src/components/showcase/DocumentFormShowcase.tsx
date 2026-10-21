@@ -125,78 +125,91 @@ export function DocumentFormShowcase() {
         title="Pokladna – výdaj kurýrovi bez partnera"
         description="Protistrana je jen text; ručně zadané IČO a DIČ zůstávají editovatelné a chybné české IČO se jen zvýrazní."
       >
-        <RecordSidePanel open={panelOpen} onOpenChange={setPanelOpen} activeTab={panelTab} onActiveTabChange={setPanelTab} tabs={panelContent.tabs}>
-        <DocumentForm
-          title="Pokladní doklad – výdaj"
-          panelToggle={<PanelToggleButton open={panelOpen} onToggle={() => setPanelOpen(!panelOpen)} indicator tooltip="Panel · Přílohy 2 · Poznámky 1" />}
-          identity={{
-            variant: "cashBank",
-            book: formatCodeName("PO", "Pokladna"),
-            period: "2026",
-            account: { side: "DAL", label: formatCodeName("211.001", "Pokladna CZK") },
-            number: courier.number,
-          }}
-          currencies={CURRENCIES}
-          directionBadge="out"
-          value={{ ...courier, vatRelevant: courierVatRelevant }}
-          onChange={(next) => {
-            setCourier(next);
-            setCourierVatRelevant(next.vatRelevant !== false);
-          }}
-          lines={courierLines}
-          {...common}
-          onLinesChange={setCourierLines}
-          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")}
-          documentType="PO"
-          isNew
-          mainSide="D"
-          mainAccountLocked
-          status="draft"
-          settings={{ onOpen: () => setSettingsOpen(true) }}
-          error={
-            lineValidationError
-              ? { message: lineValidationError, onClose: () => setLineValidationError(undefined) }
-              : formError
-                ? {
-                    message: "Doplňte účet a částku na řádku dokladu.",
-                    onClose: () => setFormError(false),
-                  }
-                : undefined
-          }
-          linesEditorProps={{
-            initialEmptyLine: true,
-            showQuantityColumns: documentSettings.showQuantityColumns,
-            storageKey: "showcase-doc-new-po",
-            onValidationChange: (_count, errors) =>
-              setLineValidationError(
-                errors[0] ? `Řádek ${errors[0].line}: ${errors[0].message}` : undefined,
-              ),
-          }}
-          accountingDateLink={{
-            locked: cashDateLocked,
-            onToggle: (locked) => {
-              setCashDateLocked(locked);
-              if (locked)
-                setCourier((current) => ({ ...current, accountingDate: current.issueDate }));
-            },
-          }}
-          vat={{
-            visible: true,
-            dateLink: { locked: true, onToggle: () => {} },
-            dateLockReadOnly: true,
-          }}
-          handedOverBySuggest={{
-            enabled: handedSuggestions,
-            onEnabledChange: setHandedSuggestions,
-            load: suggestNames,
-          }}
-          descriptionSuggest={{
-            enabled: descriptionSuggestions,
-            onEnabledChange: setDescriptionSuggestions,
-            load: suggestDescriptions,
-          }}
-          onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)}
-        />
+        <RecordSidePanel
+          open={panelOpen}
+          onOpenChange={setPanelOpen}
+          activeTab={panelTab}
+          onActiveTabChange={setPanelTab}
+          tabs={panelContent.tabs}
+        >
+          <DocumentForm
+            title="Pokladní doklad – výdaj"
+            panelToggle={
+              <PanelToggleButton
+                open={panelOpen}
+                onToggle={() => setPanelOpen(!panelOpen)}
+                indicator
+                tooltip="Panel · Přílohy 2 · Poznámky 1"
+              />
+            }
+            identity={{
+              variant: "cashBank",
+              book: formatCodeName("PO", "Pokladna"),
+              period: "2026",
+              account: { side: "DAL", label: formatCodeName("211.001", "Pokladna CZK") },
+              number: courier.number,
+            }}
+            currencies={CURRENCIES}
+            directionBadge="out"
+            value={{ ...courier, vatRelevant: courierVatRelevant }}
+            onChange={(next) => {
+              setCourier(next);
+              setCourierVatRelevant(next.vatRelevant !== false);
+            }}
+            lines={courierLines}
+            {...common}
+            onLinesChange={setCourierLines}
+            books={MOCK_BOOKS.filter((b) => b.id === "b-pd")}
+            documentType="PO"
+            isNew
+            mainSide="D"
+            mainAccountLocked
+            status="draft"
+            settings={{ onOpen: () => setSettingsOpen(true) }}
+            error={
+              lineValidationError
+                ? { message: lineValidationError, onClose: () => setLineValidationError(undefined) }
+                : formError
+                  ? {
+                      message: "Doplňte účet a částku na řádku dokladu.",
+                      onClose: () => setFormError(false),
+                    }
+                  : undefined
+            }
+            linesEditorProps={{
+              initialEmptyLine: true,
+              showQuantityColumns: documentSettings.showQuantityColumns,
+              storageKey: "showcase-doc-new-po",
+              onValidationChange: (_count, errors) =>
+                setLineValidationError(
+                  errors[0] ? `Řádek ${errors[0].line}: ${errors[0].message}` : undefined,
+                ),
+            }}
+            accountingDateLink={{
+              locked: cashDateLocked,
+              onToggle: (locked) => {
+                setCashDateLocked(locked);
+                if (locked)
+                  setCourier((current) => ({ ...current, accountingDate: current.issueDate }));
+              },
+            }}
+            vat={{
+              visible: true,
+              dateLink: { locked: true, onToggle: () => {} },
+              dateLockReadOnly: true,
+            }}
+            handedOverBySuggest={{
+              enabled: handedSuggestions,
+              onEnabledChange: setHandedSuggestions,
+              load: suggestNames,
+            }}
+            descriptionSuggest={{
+              enabled: descriptionSuggestions,
+              onEnabledChange: setDescriptionSuggestions,
+              load: suggestDescriptions,
+            }}
+            onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)}
+          />
         </RecordSidePanel>
         <DocumentSettingsDialog
           open={settingsOpen}
@@ -218,7 +231,13 @@ export function DocumentFormShowcase() {
       >
         <DocumentForm
           title="Pokladní doklad – příjem"
-          panelToggle={<PanelToggleButton open={panelOpen} onToggle={() => setPanelOpen(!panelOpen)} tooltip="Panel" />}
+          panelToggle={
+            <PanelToggleButton
+              open={panelOpen}
+              onToggle={() => setPanelOpen(!panelOpen)}
+              tooltip="Panel"
+            />
+          }
           identity={{
             variant: "cashBank",
             book: formatCodeName("PO", "Pokladna"),

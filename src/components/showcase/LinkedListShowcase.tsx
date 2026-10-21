@@ -84,7 +84,17 @@ function LinkedListContent() {
             >
               <DataGrid
                 rows={DOCUMENTS}
-                panelToggle={<PanelToggleButton open={open} state={linkedPanel.state === "elsewhere" ? "elsewhere" : open ? "open" : "closed"} onToggle={() => setOpen(!open)} onFocusElsewhere={linkedPanel.focus} tooltip="Panel" />}
+                panelToggle={
+                  <PanelToggleButton
+                    open={open}
+                    state={
+                      linkedPanel.state === "elsewhere" ? "elsewhere" : open ? "open" : "closed"
+                    }
+                    onToggle={() => setOpen(!open)}
+                    onFocusElsewhere={linkedPanel.focus}
+                    tooltip="Panel"
+                  />
+                }
                 canEditRow={() => false}
                 onRowOpen={(row) => openLinked(section, row)}
                 rowKey={(row) => row.id}
@@ -132,11 +142,17 @@ function LinkedListContent() {
               </Button>
             </div>
             {tab.linked?.kind === "panel" ? (
-              <RecordSidePanel open onOpenChange={() => panes?.closeLinkedPanel("list-source")}
+              <RecordSidePanel
+                open
+                onOpenChange={() => panes?.closeLinkedPanel("list-source")}
                 activeTab={tab.linked.activeSection ?? "history"}
                 onActiveTabChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}
-                tabs={content.tabs} header={tab.title} />
-            ) : content.tabs.find((entry) => entry.id === tab.linked?.section)?.content}
+                tabs={content.tabs}
+                header={tab.title}
+              />
+            ) : (
+              content.tabs.find((entry) => entry.id === tab.linked?.section)?.content
+            )}
           </section>
         ))}
       </div>
