@@ -230,35 +230,41 @@ export function DocumentFormShowcase() {
         title="Pokladna – příjem s propojeným partnerem"
         description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČO a DIČ."
       >
-        <RecordSidePanel open={incomePanelOpen} onOpenChange={setIncomePanelOpen} activeTab={panelTab} onActiveTabChange={setPanelTab} tabs={panelContent.tabs}>
-        <DocumentForm
-          title="Pokladní doklad – příjem"
-          panelToggle={
-            <PanelToggleButton
-              open={incomePanelOpen}
-              onToggle={() => setIncomePanelOpen(!incomePanelOpen)}
-              tooltip="Panel"
-            />
-          }
-          identity={{
-            variant: "cashBank",
-            book: formatCodeName("PO", "Pokladna"),
-            period: "2026",
-            account: { side: "MD", label: formatCodeName("211.001", "Pokladna CZK") },
-            number: cashIn.number,
-          }}
-          currencies={CURRENCIES}
-          directionBadge="in"
-          value={cashIn}
-          onChange={setCashIn}
-          lines={[]}
-          {...common}
-          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")}
-          documentType="PO"
-          mainSide="MD"
-          mainAccountLocked
-          status="filed"
-        />
+        <RecordSidePanel
+          open={incomePanelOpen}
+          onOpenChange={setIncomePanelOpen}
+          activeTab={panelTab}
+          onActiveTabChange={setPanelTab}
+          tabs={panelContent.tabs}
+        >
+          <DocumentForm
+            title="Pokladní doklad – příjem"
+            panelToggle={
+              <PanelToggleButton
+                open={incomePanelOpen}
+                onToggle={() => setIncomePanelOpen(!incomePanelOpen)}
+                tooltip="Panel"
+              />
+            }
+            identity={{
+              variant: "cashBank",
+              book: formatCodeName("PO", "Pokladna"),
+              period: "2026",
+              account: { side: "MD", label: formatCodeName("211.001", "Pokladna CZK") },
+              number: cashIn.number,
+            }}
+            currencies={CURRENCIES}
+            directionBadge="in"
+            value={cashIn}
+            onChange={setCashIn}
+            lines={[]}
+            {...common}
+            books={MOCK_BOOKS.filter((b) => b.id === "b-pd")}
+            documentType="PO"
+            mainSide="MD"
+            mainAccountLocked
+            status="filed"
+          />
         </RecordSidePanel>
       </ShowcaseSection>
       <ShowcaseSection

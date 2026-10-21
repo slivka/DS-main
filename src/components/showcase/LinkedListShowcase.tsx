@@ -143,11 +143,22 @@ function LinkedListContent() {
               </Button>
             </div>
             {tab.linked?.kind === "panel" ? (
-              <Tabs value={tab.linked.activeSection ?? "history"} onValueChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}>
+              <Tabs
+                value={tab.linked.activeSection ?? "history"}
+                onValueChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}
+              >
                 <TabsList>
-                  {content.tabs.map(({ id, label, icon: Icon }) => <TabsTrigger key={id} value={id} aria-label={label} title={label}><Icon className="size-4" aria-hidden="true" /></TabsTrigger>)}
+                  {content.tabs.map(({ id, label, icon: Icon }) => (
+                    <TabsTrigger key={id} value={id} aria-label={label} title={label}>
+                      <Icon className="size-4" aria-hidden="true" />
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
-                {content.tabs.map(({ id, content: body }) => <TabsContent key={id} value={id}>{body}</TabsContent>)}
+                {content.tabs.map(({ id, content: body }) => (
+                  <TabsContent key={id} value={id}>
+                    {body}
+                  </TabsContent>
+                ))}
               </Tabs>
             ) : (
               content.tabs.find((entry) => entry.id === tab.linked?.section)?.content
