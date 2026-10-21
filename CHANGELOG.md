@@ -3,6 +3,7 @@
 ## 2.126.0 (nevydáno)
 
 - FileDropZone: přetažení obsluhuje skupina, výběr samostatné nativní tlačítko s jednou zastávkou Tab a popisem limitů. Children včetně FileChipBar jsou mimo tlačítko; odebrání a více/méně zůstávají samostatně dostupné. Regresní komponentový test i Chromium s kontrolou axe nested-interactive.
+- Ověření oddělení tlačítka: check:full --harness OK, 1 160/1 160 unit ve 126 souborech; Chromium file-import 1/1 včetně skutečného Tab a Enter/mezerníku, axe nested-interactive 0 nálezů. Katalog 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání; automatické sestavení OK. Plná E2E sada/FF/WebKit neběžely; bez vydání.
 - Poslední opravy: zakázaná split šipka neotevírá nabídku ani klávesnicí a ukazuje důvod. useFileDrop maže interní tažení při drop i window dragend v capture fázi; interní drop sám zůstává ignorován. SelectableGroupList používá seznam s fokusovatelnými checkboxy (aria-disabled + aria-describedby), detail tlačítkem aria-pressed; FileDropZone má role button s jedinou zastávkou Tab.
 - Závěrečné ověření posledního kola: check:full --harness OK, 1 159/1 159 testů ve 126 souborech, Chromium file-import 1/1, katalog obnovený bez ztrát (0 odebrání); automatické sestavení OK. Nevydáno.
 
