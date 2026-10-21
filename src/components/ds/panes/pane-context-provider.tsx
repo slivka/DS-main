@@ -1,8 +1,4 @@
-/**
- * Poskytovatel stavu a akcí panelových záložek.
- * Vlastní: přechody stavu, potvrzení změn, zkratky a obnovu rozložení.
- * Nesmí: vykreslovat lištu záložek ani obsah panelů.
- */
+/** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
