@@ -1,8 +1,4 @@
-/**
- * Poskytovatel stavu a akcí panelových záložek.
- * Vlastní: přechody stavu, potvrzení změn, zkratky a obnovu rozložení.
- * Nesmí: vykreslovat lištu záložek ani obsah panelů.
- */
+/** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
@@ -41,16 +37,13 @@ import {
   type ClosedTabRecord,
   type OpenRecordModifiers,
   type PaneLayoutCount,
-  type PaneTab,
   type PaneTabsState,
 } from "./pane-state";
 import {
   clearTabState,
-  dirtyTabIds,
   getTabDraft,
   isTabDirty,
   registerLiveTabs,
-  setTabDirty,
   setTabDraft,
   useTabDirtyVersion,
 } from "./pane-tab-store";
@@ -62,6 +55,7 @@ import {
   returnLinkedTabInState,
   setLinkedTabPinnedInState,
   syncLinkedTabsInState,
+  setLinkedSourceSelectionInState,
 } from "./linked-tabs";
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
@@ -356,19 +350,18 @@ export function PaneTabsProvider({
   };
   const getRecordNav = (tabId: string) =>
     recordNavigation(tabId, () => stateRef.current, recordNavs.current, commit, t.recordNavDirty);
-  const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section) => {
+  const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section, record) => {
     const attempt = (confirmed: boolean) => {
       const result = openLinkedTabInState(
         stateRef.current,
         sourceTabId,
         section,
-        { confirmed },
+        { confirmed, record },
         Date.now(),
         isTabDirty,
       );
       if (result.outcome === "rejected") {
-        // Zdroj není záznam – žádný toast o limitu záložek, ten by mátl.
-        toast.warning(p.linkedOnlyRecord);
+        // Bez konkrétního záznamu se nic neotevře ani nehlásí limit.
         return;
       }
       if (result.outcome === "needsConfirm") {
@@ -433,6 +426,14 @@ export function PaneTabsProvider({
       };
     },
     getRecordNav,
+    setLinkedSourceSelection: useCallback(
+      (sourceTabId, record) => {
+        const current = stateRef.current;
+        const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
+        if (next !== current) commit(next);
+      },
+      [commit],
+    ),
     openLinkedTab,
     setLinkedPinned: (tabId, pinned) =>
       commit(setLinkedTabPinnedInState(stateRef.current, tabId, pinned)),

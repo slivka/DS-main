@@ -9,6 +9,8 @@ export interface LinkedRecordTexts {
   removeTitle: string;
   removeDescription: (name: string) => string;
   removeBlocked: string;
+  unlinkReason: string;
+  unlinkReasonPlaceholder: string;
   count: (count: number) => string;
   of: string;
   remaining: string;

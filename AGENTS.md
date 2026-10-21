@@ -33,7 +33,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
-- Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
+- Keep grid/editor texts in domain modules, re-exported through the existing text entry. Why: stable imports and bounded files.
 - RecordSidePanel owns layout; file selection and useFileDrop share validation. Why: no consumer fetching or duplicate validation.
 
 ## Vydání knihovny
@@ -42,7 +42,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Use `bun run check:catalog` (`--refresh` to refresh); record removals in `.lovable/catalog-removals.json` and CHANGELOG counts only from its output. Why: code/references agree without hardcoded commits.
 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: avoid boundary overflow.
-- Exclude every preview-only path from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
+- Exclude preview-only paths from source_manifest per .dsignore. Why: only distributable source belongs there.
 
 - Form action overflow rules live in src/components/ds/AGENTS.md. Why: shared measurement.
 - Journal overflow disables right-sticky actions in shared CSS. Why: no covered controls in invoices or advance lists.
@@ -61,5 +61,5 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.
 
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
-- Linked tabs follow source tabs; linked-tabs owns follow/pin/orphan rules, pane-state carries types.
-- Templates/advances reuse grids/dialogs; deductions use afterVatRecap. Why: APP owns data/writes.
+- Linked-tabs owns record/list-selection follow, pin and orphan rules; useLinkedSelection bridges useFollowSelection to the provider; pane-state carries types. Why: shared navigation.
+- Templates/advances reuse grids/dialogs and afterVatRecap. Why: APP owns data/writes.

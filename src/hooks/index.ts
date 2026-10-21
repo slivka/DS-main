@@ -1,5 +1,6 @@
 export * from "./use-mobile";
 export * from "./use-follow-selection";
+export * from "./use-linked-selection";
 export * from "./use-file-drop";
 export * from "./useDebouncedValue";
 export * from "./use-dialog-back-close";

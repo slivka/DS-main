@@ -2,6 +2,7 @@
 import type { TemplateTexts } from "./template-texts";
 /** Slovenské popisky vzorů. */
 export const TEMPLATES_SK: TemplateTexts = {
+  menu: "Ponuka",
   newDocument: "Nový",
   blank: "Prázdny doklad",
   fromTemplate: "Zo vzoru",

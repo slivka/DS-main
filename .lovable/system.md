@@ -1,5 +1,12 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Navázaná okna a potvrzení vazeb
+
+- Navázané okno ze seznamu sleduje jednotlivý výběr gridu. Použijte `useLinkedSelection(rows, { sourceTabId, toRecord })`, který sdílí `useFollowSelection`; APP mapuje id, titulek, route a params. Ikony `record-indicators` mohou přes stávající `onIndicatorClick(row, section)` volat `openLinkedTab(sourceTabId, { id, label }, toRecord(row))`; zdrojem zůstává seznam, nikoli nově otevřený doklad.
+- Stejné `openLinkedTab` připojte k `RecordSidePanel.onOpenInAdjacentPane`. Špendlík zamkne záznam; po zavření zdroje zůstane poslední záznam připnutý. Prázdný/vícenásobný výběr nepřepisuje poslední obsah, další jednotlivý výběr jej obnoví. Obsah sekce dodává APP.
+- `LinkedRecordsPanel` výchozím stavem potvrzuje odebrání jako dosud. Potřebuje-li aplikace důvod, předejte `unlinkReason` a `onUnlink(entry, reason)`; nevytvářejte druhé potvrzení v callbacku. Vlastní dialog APP vyžaduje `confirmUnlink={false}`. Esc zruší jediné potvrzení bez dotazu na rozpracovaný důvod.
+- Dvojice pokladních akcí používá dvě instance `DocumentNewMenu` s `label`, `icon` a `onPrimary`: hlavní klik je prázdný doklad, šipka nabídka. Bez `onPrimary` zůstává původní nabídka Nový. Vzory a zápisy dodává APP.
+
 ## Rozbalení řádku DPH (2.121.0)
 
 - `JournalLine.vatDeduction`, `vatDeductionShare` a `khLimitExcluded` jsou řízená data APP; změny přebírejte přes stávající `JournalLinesEditor.onChange`. Limit KH DS nepočítá.

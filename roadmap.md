@@ -1,6 +1,12 @@
 ## DS 2.122.0 (nevydáno)
 
+- [x] Jediné potvrzení odebrání s důvodem nebo vlastní potvrzení APP; kompatibilní výchozí chování.
+- [x] Navázané sekce ze seznamu sledují vybraný řádek; připnutí a osiření.
+- [x] Dvojice split-button Příjem / Výdaj, překlady, ukázky a testy.
+- [x] check:full, katalog bez ztrát a dokumentace; nevydávat.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+- Kontroly: check:full --harness 1083/1083 ve 114 souborech; lint 0/344, formát a peněžní audit OK, katalog 465/1088 bez ztrát; automatické sestavení OK. Chromium proklik sledování/připnutí/osiření, pokladna, důvod a Esc bez pageerror; E2E sada neběžela. Nevydáno.
 
 ## DS 2.121.0 – Řádek dokladu – nárok a limit KH
 

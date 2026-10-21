@@ -12,6 +12,7 @@ import {
   insertTabInState,
   type OpenTabResult,
   type PaneTab,
+  type LinkedSourceRecord,
   type PaneTabsState,
 } from "./pane-state";
 
@@ -31,6 +32,38 @@ export function linkedTabTitle(sectionLabel: string, recordTitle: string): strin
 /** Titulek záznamu zdrojové záložky (titulek, jinak klíč záznamu). */
 function sourceRecordTitle(source: PaneTab): string {
   return source.title ?? source.recordKey ?? source.route;
+}
+
+/** Záznam zdroje; seznam poskytuje samostatný výběr. */
+function sourceRecord(source: PaneTab): LinkedSourceRecord | undefined {
+  if (source.kind === "list") return source.linkedSelection;
+  if (source.kind !== "record") return undefined;
+  return {
+    route: source.route,
+    params: source.params,
+    recordKey: source.recordKey ?? source.route,
+    title: sourceRecordTitle(source),
+  };
+}
+
+/** Aktualizuje výběr seznamu a nepřipnuté navázané záložky; prázdný výběr ponechá poslední obsah. */
+export function setLinkedSourceSelectionInState(
+  state: PaneTabsState,
+  sourceTabId: string,
+  record: LinkedSourceRecord | null,
+): PaneTabsState {
+  const source = findTab(state, sourceTabId);
+  if (!source || source.tab.kind !== "list") return state;
+  if (JSON.stringify(source.tab.linkedSelection ?? null) === JSON.stringify(record)) return state;
+  return syncLinkedTabsInState({
+    ...state,
+    panes: state.panes.map((pane) => ({
+      ...pane,
+      tabs: pane.tabs.map((tab) =>
+        tab.id === sourceTabId ? { ...tab, linkedSelection: record ?? undefined } : tab,
+      ),
+    })),
+  });
 }
 
 /** Navázaná záložka stejné sekce a zdroje, pokud existuje. */
@@ -63,12 +96,14 @@ export function openLinkedTabInState(
   state: PaneTabsState,
   sourceTabId: string,
   section: LinkedSection,
-  options: { confirmed?: boolean } = {},
+  options: { confirmed?: boolean; record?: LinkedSourceRecord } = {},
   now = Date.now(),
   isDirty: (tabId: string) => boolean = () => false,
 ): OpenLinkedTabResult {
+  if (options.record) state = setLinkedSourceSelectionInState(state, sourceTabId, options.record);
   const source = findTab(state, sourceTabId);
-  if (!source || source.tab.kind !== "record") return { state, outcome: "rejected" };
+  const record = source ? sourceRecord(source.tab) : undefined;
+  if (!source || !record) return { state, outcome: "rejected" };
   const existing = findLinkedTab(state, sourceTabId, section.id);
   if (existing)
     return {
@@ -80,11 +115,11 @@ export function openLinkedTabInState(
   const tab: PaneTab = {
     ...createTab(
       {
-        route: source.tab.route,
-        params: source.tab.params,
+        route: record.route,
+        params: record.params,
         kind: "linked",
-        recordKey: source.tab.recordKey,
-        title: linkedTabTitle(section.label, sourceRecordTitle(source.tab)),
+        recordKey: record.recordKey,
+        title: linkedTabTitle(section.label, record.title),
         shortTitle: section.label,
         icon: source.tab.icon,
         openerTabId: sourceTabId,
@@ -149,20 +184,23 @@ export function syncLinkedTabsInState(state: PaneTabsState): PaneTabsState {
         return { ...tab, linked: { ...linked, pinned: true } };
       }
       if (linked.pinned) return tab;
-      const title = linkedTabTitle(linked.sectionLabel, sourceRecordTitle(source.tab));
+      const record = sourceRecord(source.tab);
+      if (!record) return tab;
+      const title = linkedTabTitle(linked.sectionLabel, record.title);
       if (
-        tab.route === source.tab.route &&
-        tab.recordKey === source.tab.recordKey &&
-        tab.title === title
+        tab.route === record.route &&
+        tab.recordKey === record.recordKey &&
+        tab.title === title &&
+        JSON.stringify(tab.params) === JSON.stringify(record.params)
       )
         return tab;
       changed = true;
       paneChanged = true;
       return {
         ...tab,
-        route: source.tab.route,
-        params: source.tab.params,
-        recordKey: source.tab.recordKey,
+        route: record.route,
+        params: record.params,
+        recordKey: record.recordKey,
         title,
       };
     });

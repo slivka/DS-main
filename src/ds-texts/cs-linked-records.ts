@@ -9,6 +9,8 @@ export const LINKED_RECORDS_CS: LinkedRecordTexts = {
   removeTitle: "Odebrat vazbu?",
   removeDescription: (name) => `Odebrat vazbu na „${name}“?`,
   removeBlocked: "Vazbu nelze odebrat.",
+  unlinkReason: "Důvod odebrání",
+  unlinkReasonPlaceholder: "Uveďte důvod odebrání vazby",
   count: (n) =>
     `${n.toLocaleString("cs-CZ")} ${n === 1 ? "vazba" : n >= 2 && n <= 4 ? "vazby" : "vazeb"}`,
   of: "z",

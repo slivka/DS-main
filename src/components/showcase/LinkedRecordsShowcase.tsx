@@ -62,6 +62,7 @@ export function LinkedRecordsDemo({
             })),
           );
         }}
+        unlinkReason={{ required: true }}
         onLink={
           readOnly
             ? undefined

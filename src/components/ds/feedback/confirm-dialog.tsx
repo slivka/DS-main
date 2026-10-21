@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { useDsTexts } from "../../../ds-texts";
 import {
   AlertDialog,
@@ -11,6 +11,9 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 
+import { Input } from "../../ui/input";
+import { Field, FieldGrid } from "../layout/RecordDialog";
+
 type ConfirmOptions = {
   title: ReactNode;
   description?: ReactNode;
@@ -19,7 +22,8 @@ type ConfirmOptions = {
   destructive?: boolean;
   /** Informačná hláška – zobrazí sa jen tlačítko na zatvorene. */
   info?: boolean;
-  onConfirm?: () => void;
+  reason?: { label: string; required?: boolean; placeholder?: string };
+  onConfirm?: (reason: string) => void;
 };
 
 /**
@@ -33,11 +37,17 @@ export function useConfirmDialog() {
   const dsTexts = useDsTexts();
   const [opts, setOpts] = useState<ConfirmOptions | null>(null);
 
-  const confirm = (o: ConfirmOptions) => setOpts(o);
+  const [reason, setReason] = useState("");
+  const reasonId = useId();
+  const valid = !opts?.reason?.required || Boolean(reason.trim());
+  const confirm = (o: ConfirmOptions) => {
+    setReason("");
+    setOpts(o);
+  };
 
   const confirmCurrent = () => {
-    if (!opts) return;
-    opts.onConfirm?.();
+    if (!opts || !valid) return;
+    opts.onConfirm?.(reason.trim());
     setOpts(null);
   };
 
@@ -60,6 +70,19 @@ export function useConfirmDialog() {
             <AlertDialogDescription>{opts.description}</AlertDialogDescription>
           ) : null}
         </AlertDialogHeader>
+        {opts?.reason ? (
+          <FieldGrid cols={12}>
+            <Field span={12} label={opts.reason.label} htmlFor={reasonId}>
+              <Input
+                id={reasonId}
+                value={reason}
+                required={opts.reason.required}
+                placeholder={opts.reason.placeholder}
+                onChange={(event) => setReason(event.target.value)}
+              />
+            </Field>
+          </FieldGrid>
+        ) : null}
         <AlertDialogFooter>
           {opts?.info ? (
             <AlertDialogAction onClick={confirmCurrent}>
@@ -69,6 +92,7 @@ export function useConfirmDialog() {
             <>
               <AlertDialogCancel>{opts?.cancelLabel ?? dsTexts.common.cancel}</AlertDialogCancel>
               <AlertDialogAction
+                disabled={!valid}
                 className={
                   opts?.destructive
                     ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"

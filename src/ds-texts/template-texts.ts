@@ -1,5 +1,6 @@
 /** Texty vzorů · vlastní veřejné klíče · nesmí obsahovat data dokladů. */
 export interface TemplateTexts {
+  /** Šipka split-button. */ menu: string;
   /** Nový doklad. */ newDocument: string;
   /** Prázdný doklad. */ blank: string;
   /** Nabídka vzorů. */ fromTemplate: string;

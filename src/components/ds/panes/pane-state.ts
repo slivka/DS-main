@@ -8,6 +8,14 @@ export type PaneLayoutCount = 1 | 2 | 3;
 /** 'record' = konkrétní záznam (jen jednou), 'list' = seznam (vícekrát), 'linked' = navázaná záložka panelu záznamu. */
 export type TabKind = "list" | "record" | "linked";
 
+/** Vybraný záznam seznamu; data mapuje aplikace. */
+export interface LinkedSourceRecord {
+  recordKey: string;
+  title: string;
+  route: string;
+  params?: Record<string, unknown>;
+}
+
 /** Navázaná záložka (kind 'linked') – sleduje záznam zdrojové záložky, ne pozici panelu. */
 export type LinkedTabInfo = {
   /** Zdrojová záložka se záznamem. */
@@ -52,6 +60,8 @@ export type PaneTab = {
   isNew?: boolean;
   /** Navázaná záložka panelu záznamu (kind 'linked'); pravidla řeší linked-tabs.ts. */
   linked?: LinkedTabInfo;
+  /** Aktuální jednotlivý výběr seznamu, nikoli změna jeho navigace. */
+  linkedSelection?: LinkedSourceRecord;
 };
 
 export type TabPane = {
