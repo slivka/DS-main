@@ -23,6 +23,7 @@ import { ACCEPT, DOCUMENTS, LIMIT } from "./record-panel-data";
 import { useRecordPanelContent, type DemoPermission } from "./record-panel-content";
 import { PURCHASE_INVOICE_HEADER } from "./document-form-showcase-data";
 import { MOCK_ACCOUNTS, MOCK_PARTNERS } from "../../lib/mock/accounting";
+import { LinkedListShowcase } from "./LinkedListShowcase";
 
 type DemoRow = (typeof DOCUMENTS)[number];
 const columns: DataGridColumn<DemoRow>[] = [
@@ -256,6 +257,7 @@ export function RecordPanelShowcase() {
           />
         </RecordSidePanel>
       </section>
+      <LinkedListShowcase />
       <RecordDialog
         open={dialog}
         onOpenChange={setDialog}
