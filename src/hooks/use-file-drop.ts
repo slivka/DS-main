@@ -55,6 +55,8 @@ export function validateFiles(
   }
   return { files: accepted, rejected };
 }
+/** Příznak interního tažení v dokumentu (řádky gridu, záložky, obrázek stránky). */
+let internalDrag = false;
 /** Přijímá více souborů; vnořené dragenter/dragleave nepřerušují zvýraznění. */
 export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDropOptions) {
   const latest = useRef(options);
@@ -64,18 +66,31 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
     const node = ref.current;
     if (!node) return;
     let depth = 0;
+    const markInternal = () => {
+      internalDrag = true;
+    };
+    const clearInternal = () => {
+      internalDrag = false;
+    };
     const owns = (event: DragEvent) => {
       const target = event.target;
       return target instanceof Element
         ? target.closest('[data-file-drop-enabled="true"]') === node
         : true;
     };
+    /** Cíl leží v tomto uzlu a žádný hlubší cíl souborů (povolený ani zakázaný) ho nepřebírá. */
+    const innermost = (event: DragEvent) => {
+      const target = event.target;
+      return target instanceof Element ? target.closest("[data-file-drop-enabled]") === node : true;
+    };
     node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
     const containsFiles = (event: DragEvent) =>
       Array.from(event.dataTransfer?.types ?? []).includes("Files");
+    /** Jen soubory z OS; interní tažení v dokumentu (Chrome hlásí i obrázek jako Files) ignoruje. */
+    const externalFiles = (event: DragEvent) => !internalDrag && containsFiles(event);
     const enter = (event: DragEvent) => {
       node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
-      if (!containsFiles(event) || !owns(event)) return;
+      if (!externalFiles(event) || !owns(event)) return;
       event.preventDefault();
       depth += 1;
       if (!latest.current.disabled) setDragging(true);
@@ -86,19 +101,23 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
     };
     const over = (event: DragEvent) => {
       node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
-      if (!containsFiles(event)) return;
+      if (!externalFiles(event)) return;
       const owner = owns(event);
-      if (owner) event.preventDefault();
+      // I zakázaný cíl puštění spolkne, aby prohlížeč soubor neotevřel mimo aplikaci.
+      if (owner || innermost(event)) event.preventDefault();
       setDragging(owner && !latest.current.disabled);
     };
     const drop = (event: DragEvent) => {
       node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
-      if (!containsFiles(event) || !owns(event)) return;
+      if (!externalFiles(event)) return;
+      const owner = owns(event);
+      if (!owner && !innermost(event)) return;
       event.preventDefault();
-      event.stopPropagation();
       depth = 0;
       setDragging(false);
-      if (latest.current.disabled) return;
+      // Zakázaný cíl: bez akce a bez zastavení bublání – povolený předek si drop převezme sám.
+      if (!owner || latest.current.disabled) return;
+      event.stopPropagation();
       const { accept, maxSize, maxFiles, onFiles } = latest.current;
       const result = validateFiles(
         Array.from(event.dataTransfer?.files ?? []),
@@ -108,11 +127,15 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
       );
       onFiles(result.files, result.rejected);
     };
+    document.addEventListener("dragstart", markInternal);
+    document.addEventListener("dragend", clearInternal);
     node.addEventListener("dragenter", enter);
     node.addEventListener("dragleave", leave);
     node.addEventListener("dragover", over);
     node.addEventListener("drop", drop);
     return () => {
+      document.removeEventListener("dragstart", markInternal);
+      document.removeEventListener("dragend", clearInternal);
       node.removeAttribute("data-file-drop-enabled");
       node.removeEventListener("dragenter", enter);
       node.removeEventListener("dragleave", leave);

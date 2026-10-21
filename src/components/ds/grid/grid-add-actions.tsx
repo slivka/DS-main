@@ -4,11 +4,19 @@
  * Nesmí: znát doménu (příjem/výdaj) ani barvit akce podle směru.
  */
 import * as React from "react";
+import type { ReactNode } from "react";
 import { ChevronDown, Plus, type LucideIcon } from "lucide-react";
 import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
@@ -29,6 +37,12 @@ export interface GridAddAction {
   disabled?: boolean;
   /** Důvod zakázání v tooltipu. */
   disabledReason?: string;
+  /**
+   * Obsah nabídky split tlačítka (položky DropdownMenu, např. DocumentNewMenuItems).
+   * Přítomnost zapíná split režim: hlavní klik provede onClick, šipka otevře nabídku.
+   * Ve sloučené nabídce „+ ▾“ se akce vykreslí jako podnabídka.
+   */
+  menu?: ReactNode;
 }
 
 /** Vlastnosti primárních akcí lišty. */
@@ -45,6 +59,7 @@ export interface GridAddActionsProps {
 export function GridAddActions({ actions }: GridAddActionsProps) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
   const texts = useDsTexts().grid;
+  const splitMenuText = useDsTexts().templates.menu;
   const addMenuLabel = texts.addMenu ?? DS_TEXTS_CS.grid.addMenu;
   const labelMode = React.useContext(GridAddLabelContext);
   const primaryActionRef = React.useRef<HTMLButtonElement>(null);
@@ -107,6 +122,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             // Ve sloučeném stavu zůstává tlačítko v DOM skryté kvůli zkratce N a měření.
             className={cn(
               "grid-toolbar-control grid-toolbar-primary shrink-0",
+              action.menu && "rounded-r-none",
               blocked && "cursor-not-allowed",
               merged && "hidden",
             )}
@@ -139,23 +155,47 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             )}
           </Button>
         );
-        if (blocked)
-          return (
-            <React.Fragment key={action.label}>
-              <DisabledReasonTooltip content={tip} blocked>
-                {button}
-              </DisabledReasonTooltip>
-              <span id={reasonId} className="sr-only">
-                {action.disabledReason}
-              </span>
-            </React.Fragment>
-          );
-        return (
+        const main = blocked ? (
+          <React.Fragment key={action.label}>
+            <DisabledReasonTooltip content={tip} blocked>
+              {button}
+            </DisabledReasonTooltip>
+            <span id={reasonId} className="sr-only">
+              {action.disabledReason}
+            </span>
+          </React.Fragment>
+        ) : (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>{button}</TooltipTrigger>
             <TooltipContent>{tip}</TooltipContent>
           </Tooltip>
         );
+        // Split režim: hlavní klik provede akci, šipka otevře dodanou nabídku.
+        if (action.menu)
+          return (
+            <DropdownMenu key={action.label}>
+              <div className="inline-flex shrink-0">
+                {main}
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={blocked ? undefined : action.disabled}
+                    aria-disabled={blocked || undefined}
+                    aria-label={`${action.label} – ${splitMenuText}`}
+                    className={cn(
+                      "grid-toolbar-control grid-toolbar-primary shrink-0 rounded-l-none border-l border-primary-foreground/30 px-2",
+                      merged && "hidden",
+                    )}
+                  >
+                    <ChevronDown aria-hidden className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+              </div>
+              <DropdownMenuContent align="start">{action.menu}</DropdownMenuContent>
+            </DropdownMenu>
+          );
+        return main;
       })}
       {multiple ? (
         <DropdownMenu>
@@ -183,6 +223,17 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
           <DropdownMenuContent align="start">
             {list.map((action) => {
               const Icon = action.icon ?? Plus;
+              // Split akce se ve sloučené nabídce vykreslí jako podnabídka.
+              if (action.menu && !action.disabled)
+                return (
+                  <DropdownMenuSub key={action.label}>
+                    <DropdownMenuSubTrigger>
+                      <Icon aria-hidden className="size-[1.1em]" />
+                      {action.shortLabel ?? action.label}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>{action.menu}</DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                );
               return (
                 <DisabledReasonMenuItem
                   key={action.label}

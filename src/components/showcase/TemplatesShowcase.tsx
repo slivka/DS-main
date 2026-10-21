@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { DataGrid } from "../ds/grid/DataGrid";
-import { DocumentNewMenu } from "../ds/templates/document-new-menu";
+import { DocumentNewMenu, DocumentNewMenuItems } from "../ds/templates/document-new-menu";
 import { DuplicationDialog } from "../ds/templates/duplication-dialog";
 import { DuplicationPreview } from "../ds/templates/duplication-preview";
 import { TemplateManager, TemplateManagerDialog } from "../ds/templates/template-manager";
@@ -59,14 +59,57 @@ export function TemplatesShowcase() {
               { id: "name", label: t.name, value: (row) => row.name },
               { id: "description", label: t.description, value: (row) => row.description },
             ]}
-            toolbarLeft={
-              <DocumentNewMenu
-                templates={templates}
-                onBlank={() => setMessage(t.blank)}
-                onTemplate={(_id, mode) => show(mode)}
-                onManage={() => setManagerOpen(true)}
-              />
-            }
+            addAction={{
+              label: t.newDocument,
+              onClick: () => setMessage(t.blank),
+              menu: (
+                <DocumentNewMenuItems
+                  templates={templates}
+                  onBlank={() => setMessage(t.blank)}
+                  onTemplate={(_id, mode) => show(mode)}
+                  onManage={() => setManagerOpen(true)}
+                />
+              ),
+            }}
+          />
+          <DataGrid
+            storageKey="template-cash-list"
+            rows={[{ id: "p1", name: "PO 2026/0031", description: "Příjem hotovosti" }]}
+            rowKey={(row) => row.id}
+            columns={[
+              { id: "name", label: t.name, value: (row) => row.name },
+              { id: "description", label: t.description, value: (row) => row.description },
+            ]}
+            addAction={[
+              {
+                label: "Příjem",
+                shortLabel: "Příjem",
+                icon: ArrowDownLeft,
+                onClick: () => setMessage("Prázdný příjem"),
+                menu: (
+                  <DocumentNewMenuItems
+                    templates={templates}
+                    onBlank={() => setMessage("Prázdný příjem")}
+                    onTemplate={(_id, mode) => show(mode)}
+                    onManage={() => setManagerOpen(true)}
+                  />
+                ),
+              },
+              {
+                label: "Výdaj",
+                shortLabel: "Výdaj",
+                icon: ArrowUpRight,
+                onClick: () => setMessage("Prázdný výdaj"),
+                menu: (
+                  <DocumentNewMenuItems
+                    templates={templates}
+                    onBlank={() => setMessage("Prázdný výdaj")}
+                    onTemplate={(_id, mode) => show(mode)}
+                    onManage={() => setManagerOpen(true)}
+                  />
+                ),
+              },
+            ]}
           />
           <div className="flex flex-wrap gap-2">
             <DocumentNewMenu

@@ -93,6 +93,8 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
           type="button"
           variant={size === "sm" ? "outline" : "default"}
           disabled={disabled}
+          // Jediná zastávka Tab je samotná zóna (Enter/mezerník otevře výběr).
+          tabIndex={-1}
           onClick={() => input.current?.click()}
         >
           {label}

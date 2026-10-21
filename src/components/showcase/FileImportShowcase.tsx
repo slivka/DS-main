@@ -31,6 +31,9 @@ export function FileImportShowcase() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [rejected, setRejected] = useState<RejectedFile[]>([]);
   const [result, setResult] = useState("");
+  // Po hydrataci stránky přepne na "true" – spolehlivý signál pro testy.
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const sequence = useRef(0);
   const [sourceUrl, setSourceUrl] = useState<string>();
   const addFiles = (incoming: File[]) => {
@@ -79,7 +82,12 @@ export function FileImportShowcase() {
       }
     : null;
   return (
-    <div data-slot="file-import-showcase" className="space-y-4">
+    <div
+      data-slot="file-import-showcase"
+      data-testid="file-import-showcase"
+      data-ready={ready ? "true" : "false"}
+      className="space-y-4"
+    >
       <PageHeader
         title="Import souborů"
         actions={<Button onClick={launch}>Importovat výpisy</Button>}
