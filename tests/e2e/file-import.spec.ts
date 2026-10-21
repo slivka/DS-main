@@ -18,9 +18,9 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   await dialog.getByRole("button", { name: "Pokračovat" }).click();
 
   // Krok 2: seskupený výběr – výchozí zaškrtnutí dvou platných výpisů.
-  const first = dialog.getByRole("option", { name: "Výpis 2026/10" });
-  const second = dialog.getByRole("option", { name: "Výpis 2026/11" });
-  const broken = dialog.getByRole("option", { name: "Výpis 2026/04" });
+  const first = dialog.getByRole("option", { name: /Výpis 2026\/10/ });
+  const second = dialog.getByRole("option", { name: /Výpis 2026\/11/ });
+  const broken = dialog.getByRole("option", { name: /Výpis 2026\/04/ });
   await expect(first).toHaveAttribute("aria-checked", "true");
   await expect(second).toHaveAttribute("aria-checked", "true");
   await expect(broken).toHaveAttribute("aria-checked", "false");
