@@ -18,7 +18,9 @@ for (const currencyCode of [undefined, "EUR"]) {
     const cells = screen
       .getAllByRole("cell")
       .map((cell) => cell.textContent?.replace(/\s+/g, " ").trim());
-    expect(cells).toContain(currencyCode ? "−12 540,50EUR" : "−12 540,50");
-    expect(cells).toContain(currencyCode ? "−2 633,51EUR" : "−2 633,51");
+    expect(cells).toContain(currencyCode ? "−12 540,50EUR" : "-12 541");
+    expect(cells).toContain(currencyCode ? "−2 633,51EUR" : "-2 634");
+    expect(cells).toContain("-12 540,50");
+    expect(cells).toContain("-2 633,51");
   });
 }
