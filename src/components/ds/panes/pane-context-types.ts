@@ -61,6 +61,16 @@ export interface OpenLinkedPanelOptions {
   recordTitle: string;
   section: string;
   blockedReason?: string;
+  /** Cesta záznamu pro fallback renderTab; bez ní se při změně klíče parametry nepřenášejí. */
+  route?: string;
+  /** Parametry záznamu (jen spolu s route). */
+  params?: Record<string, unknown>;
+}
+
+/** Umístění záznamu hlášeného APP. */
+export interface LinkedPanelRecordLocation {
+  route: string;
+  params?: Record<string, unknown>;
 }
 
 /** Zkrácené ovládání panelu konkrétní zdrojové záložky. */
@@ -144,7 +154,12 @@ export type PaneTabsApi = {
   /** Zapamatuje sekci panelové záložky podle jejího tabId (ne sourceTabId). */
   setLinkedPanelSection: (tabId: string, section: string) => void;
   /** Hlásí aktuální výběr APP; připnutý panel zůstává na svém záznamu. */
-  updateLinkedPanelRecord: (sourceTabId: string, recordKey: string, recordTitle: string) => void;
+  updateLinkedPanelRecord: (
+    sourceTabId: string,
+    recordKey: string,
+    recordTitle: string,
+    location?: LinkedPanelRecordLocation,
+  ) => void;
   /** Zavře panel zdroje přes stejnou ochranu neuložených změn jako closeTab. */
   closeLinkedPanel: (sourceTabId: string) => void;
   /** Ohlásí jednotlivý zpožděný výběr seznamu. */

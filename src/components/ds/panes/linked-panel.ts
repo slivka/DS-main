@@ -63,7 +63,8 @@ export function openLinkedPanelInState(
 ): OpenLinkedTabResult {
   if (options.record) state = setLinkedSourceSelectionInState(state, sourceTabId, options.record);
   const source = findTab(state, sourceTabId);
-  const record = source ? sourceRecord(source.tab) : undefined;
+  const override = source?.tab.kind === "record" ? options.record : undefined;
+  const record = override ?? (source ? sourceRecord(source.tab) : undefined);
   if (!source || !record) return { state, outcome: "rejected" };
   const existing = findLinkedPanel(state, sourceTabId);
   if (existing)
@@ -94,6 +95,7 @@ export function openLinkedPanelInState(
       pinned: false,
       kind: "panel",
       activeSection: options.activeSection,
+      ...(override ? { record: override } : {}),
     },
   };
   return placeLinkedTab(state, source, tab, options.confirmed, isDirty);
@@ -123,31 +125,60 @@ export function setLinkedPanelSectionInState(
   };
 }
 
-/** APP hlásí aktuální záznam; seznam sdílí linkedSelection, připnutý panel se nemění. */
+/** Záznam hlášený APP; route/params bez hodnoty se při změně klíče nepřenášejí ze starého výběru. */
+export interface LinkedPanelRecordInput {
+  recordKey: string;
+  title: string;
+  route?: string;
+  params?: Record<string, unknown>;
+}
+
+function resolveRecord(
+  input: LinkedPanelRecordInput,
+  previous: LinkedSourceRecord | undefined,
+  fallbackRoute: string,
+): LinkedSourceRecord {
+  const same = previous?.recordKey === input.recordKey;
+  const route = input.route ?? previous?.route ?? fallbackRoute;
+  const params = input.route !== undefined ? input.params : same ? previous?.params : undefined;
+  return {
+    recordKey: input.recordKey,
+    title: input.title,
+    route,
+    ...(params ? { params } : {}),
+  };
+}
+
+/**
+ * APP hlásí aktuální záznam. Seznam sdílí linkedSelection; u záložky záznamu se zdroj
+ * nemění, záznam se uloží jen do jeho navázaného panelu. Připnutý panel se nemění.
+ */
 export function updateLinkedPanelRecordInState(
   state: PaneTabsState,
   sourceTabId: string,
-  recordKey: string,
-  recordTitle: string,
+  input: LinkedPanelRecordInput,
 ): PaneTabsState {
   const source = findTab(state, sourceTabId)?.tab;
   if (!source) return state;
-  if (source.kind === "list") {
-    return setLinkedSourceSelectionInState(state, sourceTabId, {
-      route: source.linkedSelection?.route ?? source.route,
-      params: source.linkedSelection?.params,
-      recordKey,
-      title: recordTitle,
-    });
-  }
+  if (source.kind === "list")
+    return setLinkedSourceSelectionInState(
+      state,
+      sourceTabId,
+      resolveRecord(input, source.linkedSelection, source.route),
+    );
   if (source.kind !== "record") return state;
-  if (source.recordKey === recordKey && source.title === recordTitle) return state;
+  const panel = findLinkedPanel(state, sourceTabId);
+  if (!panel || panel.tab.linked?.pinned) return state;
+  const info = panel.tab.linked;
+  if (!info) return state;
+  const record = resolveRecord(input, info.record ?? sourceRecord(source), source.route);
+  if (JSON.stringify(info.record ?? null) === JSON.stringify(record)) return state;
   return syncLinkedTabsInState({
     ...state,
     panes: state.panes.map((pane) => ({
       ...pane,
       tabs: pane.tabs.map((tab) =>
-        tab.id === sourceTabId ? { ...tab, recordKey, title: recordTitle } : tab,
+        tab.id === panel.tab.id ? { ...tab, linked: { ...info, record } } : tab,
       ),
     })),
   });
