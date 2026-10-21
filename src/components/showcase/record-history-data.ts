@@ -1,8 +1,11 @@
 /** Ukázková historie dokladu · vlastní zmapované události demo · nesmí jít do aplikací. */
 import type { HistoryEvent } from "../ds";
 
+/** Pevné „teď“ ukázky – hydratace serveru a klienta musí vykreslit stejný text. */
+export const DEMO_NOW = new Date("2026-10-20T12:00:00");
+
 const at = (daysAgo: number, time: string) => {
-  const day = new Date(Date.now() - daysAgo * 86_400_000).toISOString().slice(0, 10);
+  const day = new Date(DEMO_NOW.getTime() - daysAgo * 86_400_000).toISOString().slice(0, 10);
   return new Date(`${day}T${time}:00`).toISOString();
 };
 

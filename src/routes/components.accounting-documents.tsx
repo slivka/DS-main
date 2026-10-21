@@ -3,7 +3,6 @@ import { DocumentFormSecondaryShowcase } from "@/components/showcase/DocumentFor
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { AccountingFormsNav } from "@/components/showcase/AccountingFormsNav";
 import { TemplatesShowcase } from "@/components/showcase/TemplatesShowcase";
-import { AdvancesShowcase } from "@/components/showcase/AdvancesShowcase";
 
 export const Route = createFileRoute("/components/accounting-documents")({
   head: () => ({
@@ -40,7 +39,6 @@ function AccountingDocumentsPage() {
       ]}
     >
       <AccountingFormsNav />
-      <AdvancesShowcase />
       <TemplatesShowcase />
       <DocumentFormSecondaryShowcase />
     </ShowcaseLayout>

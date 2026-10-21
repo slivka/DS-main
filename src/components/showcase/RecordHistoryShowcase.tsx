@@ -7,7 +7,7 @@ import {
   type HistoryKind,
   type HistoryMode,
 } from "../ds";
-import { DEMO_HISTORY } from "./record-history-data";
+import { DEMO_HISTORY, DEMO_NOW } from "./record-history-data";
 
 /** Historie se stavem řízeným ukázkou. */
 export function HistoryDemo({
@@ -27,6 +27,7 @@ export function HistoryDemo({
       filter={filter}
       onFilterChange={setFilter}
       loading={loading}
+      now={DEMO_NOW}
     />
   );
 }

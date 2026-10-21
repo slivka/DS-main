@@ -11,6 +11,12 @@
 - Kontroly: check:full --harness prošel; 1058/1058 unit ve 112 souborech (33 nových ve čtyřech souborech), lint 0 chyb / 344 stávajících varování, nové soubory samostatně 0/0, formát a peněžní audit OK. Katalog proti vydané 2.119.0: 459 → 465 komponent, 1000 → 1082 props, 0 odebrání. Automatická kontrola typů s noImplicitReturns a sestavení hlásí build OK; ručně nespouštěny.
 - Průběžný check:quick --harness prošel; poslední běh kvůli snapshotu nenašel změněné soubory, cílené unit/lint a plná kontrola je ověřily. Chromium proklik přiřazení, překročení částky, důvodu DD nebude, opravného DD a filtrů bez pageerror; úzká plocha 640 px při 200 %. E2E specy neběžely. Verze zůstává 2.119.0, nevydáno.
 
+### Opravné kolo po E2E Chromium
+
+- Hydratace: ukázková historie (`record-history-data`) a oznámení horní lišty (`ShowcaseLayout`) počítala data z `Date.now()` při vykreslení, takže server a klient vykreslily jiný text. Ukázky mají pevná data a historie dostává pevné „teď“ přes prop `now`; komponenty si aktuální datum berou jen z props APP.
+- Ukázky záloh se přesunuly ze stránky Další doklady na vlastní stránku katalogu Zálohy (`/components/accounting-advances`); stránka dokladů se znovu hydratuje do limitu testů a zmizela druhá lišta zoomu. Test edit-document-thirteen se vrátil na původní tvar bez obejití `.first()`.
+- Zasažené specy v Chromiu: record-panel, document-field-ids a edit-document-thirteen – 17/17 prošlo.
+
 ## 2.119.0 – Duplikace a vzory
 
 ### Druhé opravné kolo po aktualizaci APP

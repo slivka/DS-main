@@ -287,7 +287,7 @@ test("přetékající grid nezakrývá ND prvního řádku a skutečný klik př
   const editor = grid.locator("..");
   await editor.evaluate((node) => (node.style.width = "200px"));
   await expect(grid).toHaveAttribute("data-overflow", "true");
-  await editor.locator(".zoom-value").first().focus();
+  await editor.locator(".zoom-value").focus();
   await page.keyboard.press("Enter");
   await expect
     .poll(() => grid.evaluate((node) => getComputedStyle(node).getPropertyValue("--grid-zoom")))
@@ -328,12 +328,11 @@ test("ND zachovává rozměry vydání 2.99.0", async ({ page }, info) => {
     await expect(nd).toHaveAttribute("aria-pressed", String(expected.pressed));
     // Lišta je vlastníkem zoomu; kolečko na třídě zoom-grid nemusí mít posluchač.
     const editor = nd.locator("xpath=ancestor::div[contains(@class,'@container')][1]");
-    const reset = editor.locator(".zoom-value").first();
+    const reset = editor.locator(".zoom-value");
     await reset.click();
     const direction = expected.grid < 1 ? "Zmenšit tabulku" : "Zvětšit tabulku";
     for (let step = 0; step < Math.round(Math.abs(expected.grid - 1) * 10); step += 1)
-      // 2.120.0: kontejner obsahuje i grid odečtených záloh – první lišta patří řádkům dokladu.
-      await editor.getByRole("button", { name: direction, exact: true }).first().click();
+      await editor.getByRole("button", { name: direction, exact: true }).click();
     await expect
       .poll(() =>
         nd.evaluate((n) => {
