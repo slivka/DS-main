@@ -121,6 +121,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             // Ve sloučeném stavu zůstává tlačítko v DOM skryté kvůli zkratce N a měření.
             className={cn(
               "grid-toolbar-control grid-toolbar-primary shrink-0",
+              action.menu && "rounded-r-none",
               blocked && "cursor-not-allowed",
               merged && "hidden",
             )}
