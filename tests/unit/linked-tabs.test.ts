@@ -254,42 +254,48 @@ describe("navázané záložky", () => {
   });
 });
 
-
 describe("navázané okno ze seznamu", () => {
   const first = { route: "/faktura", recordKey: "FV1", title: "FV1", params: { id: "FV1" } };
   const second = { route: "/faktura", recordKey: "FV2", title: "FV2", params: { id: "FV2" } };
   function setup() {
     const state = withList(createPaneTabsState(1), "/seznam", "Faktury");
     const sourceId = state.panes[0].tabs[0].id;
-    return { sourceId, state: openLinkedTabInState(state, sourceId, SECTION, {record: first}).state };
+    return {
+      sourceId,
+      state: openLinkedTabInState(state, sourceId, SECTION, { record: first }).state,
+    };
   }
   test("vznik ze seznamu zachová navigaci seznamu a použije záznam", () => {
-    const {state, sourceId} = setup();
+    const { state, sourceId } = setup();
     expect(state.panes[0].tabs[0].route).toBe("/seznam");
     expect(state.panes[0].tabs[0].kind).toBe("list");
     expect(findLinkedTab(state, sourceId, "history")?.tab.recordKey).toBe("FV1");
   });
   test("přepnutí výběru přepne navázanou sekci", () => {
-    const {state, sourceId} = setup();
+    const { state, sourceId } = setup();
     const next = setLinkedSourceSelectionInState(state, sourceId, second);
     expect(findLinkedTab(next, sourceId, "history")?.tab.recordKey).toBe("FV2");
-    expect(findLinkedTab(next, sourceId, "history")?.tab.params).toEqual({id: "FV2"});
+    expect(findLinkedTab(next, sourceId, "history")?.tab.params).toEqual({ id: "FV2" });
   });
   test("špendlík zamkne výběr", () => {
-    const {state, sourceId} = setup();
+    const { state, sourceId } = setup();
     const tab = findLinkedTab(state, sourceId, "history")?.tab;
     if (!tab) throw new Error("Missing linked tab");
-    const next = setLinkedSourceSelectionInState(setLinkedTabPinnedInState(state, tab.id, true), sourceId, second);
+    const next = setLinkedSourceSelectionInState(
+      setLinkedTabPinnedInState(state, tab.id, true),
+      sourceId,
+      second,
+    );
     expect(findLinkedTab(next, sourceId, "history")?.tab.recordKey).toBe("FV1");
   });
   test("zavření seznamu připne poslední záznam", () => {
-    const {state, sourceId} = setup();
+    const { state, sourceId } = setup();
     const next = syncLinkedTabsInState(closeTabInState(state, sourceId));
     expect(next.panes[1].tabs[0].linked?.pinned).toBe(true);
     expect(next.panes[1].tabs[0].recordKey).toBe("FV1");
   });
   test("prázdný výběr ponechá poslední záznam, nový výběr znovu sleduje", () => {
-    const {state, sourceId} = setup();
+    const { state, sourceId } = setup();
     const empty = setLinkedSourceSelectionInState(state, sourceId, null);
     expect(findLinkedTab(empty, sourceId, "history")?.tab.recordKey).toBe("FV1");
     const next = setLinkedSourceSelectionInState(empty, sourceId, second);

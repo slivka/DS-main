@@ -30,8 +30,8 @@ const definitions = [
     name: "LinkedRecordsPanel",
     file: "src/components/ds/data-display/linked-records-panel.tsx",
     usage:
-      "Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a seznam/tok, souhrn vypořádání a akce aplikace.",
-    code: "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />",
+      "Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a seznam/tok, souhrn vypořádání a akce aplikace. unlinkReason + onUnlink zobrazí jediné potvrzení s důvodem; confirmUnlink=false přenechá potvrzení APP.",
+    code: "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} onLink={saveLink} linkDialog={linkConfig} />",
     avoid: "Nepředávejte surová doménová data; DS nesmí načítat ani určovat oprávnění aplikace.",
   },
   {

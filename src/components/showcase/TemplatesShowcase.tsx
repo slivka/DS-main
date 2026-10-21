@@ -69,14 +69,24 @@ export function TemplatesShowcase() {
             }
           />
           <div className="flex flex-wrap gap-2">
-            <DocumentNewMenu label="Příjem" icon={<ArrowDownLeft aria-hidden="true" className="size-4" />}
-              templates={templates} onBlank={() => setMessage("Prázdný příjem")}
+            <DocumentNewMenu
+              label="Příjem"
+              icon={<ArrowDownLeft aria-hidden="true" className="size-4" />}
+              templates={templates}
+              onBlank={() => setMessage("Prázdný příjem")}
               onPrimary={() => setMessage("Prázdný příjem")}
-              onTemplate={(_id, mode) => show(mode)} onManage={() => setManagerOpen(true)} />
-            <DocumentNewMenu label="Výdaj" icon={<ArrowUpRight aria-hidden="true" className="size-4" />}
-              templates={templates} onBlank={() => setMessage("Prázdný výdaj")}
+              onTemplate={(_id, mode) => show(mode)}
+              onManage={() => setManagerOpen(true)}
+            />
+            <DocumentNewMenu
+              label="Výdaj"
+              icon={<ArrowUpRight aria-hidden="true" className="size-4" />}
+              templates={templates}
+              onBlank={() => setMessage("Prázdný výdaj")}
               onPrimary={() => setMessage("Prázdný výdaj")}
-              onTemplate={(_id, mode) => show(mode)} onManage={() => setManagerOpen(true)} />
+              onTemplate={(_id, mode) => show(mode)}
+              onManage={() => setManagerOpen(true)}
+            />
             <Button onClick={() => show("single")}>{t.single}</Button>
             <Button onClick={() => show("series")}>{t.createSeries}</Button>
             <DocumentNewMenu

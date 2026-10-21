@@ -31,7 +31,18 @@ export interface DocumentNewMenuProps extends Omit<
 /** Nabídka nového dokladu; faktura a ZL používají stejný kontrakt. */
 export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProps>(
   function DocumentNewMenu(
-    { templates, onBlank, onTemplate, onManage, label, icon, onPrimary, className, children, ...props },
+    {
+      templates,
+      onBlank,
+      onTemplate,
+      onManage,
+      label,
+      icon,
+      onPrimary,
+      className,
+      children,
+      ...props
+    },
     ref,
   ) {
     const t = useDsTexts().templates;
@@ -39,18 +50,39 @@ export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProp
       <DropdownMenu>
         <div className="inline-flex shrink-0">
           {onPrimary ? (
-            <Button {...props} ref={ref} type="button" size="sm"
+            <Button
+              {...props}
+              ref={ref}
+              type="button"
+              size="sm"
               className={cn("grid-toolbar-control grid-toolbar-primary rounded-r-none", className)}
-              onClick={onPrimary}>
-              {icon}{label ?? children ?? t.newDocument}
+              onClick={onPrimary}
+            >
+              {icon}
+              {label ?? children ?? t.newDocument}
             </Button>
           ) : null}
           <DropdownMenuTrigger asChild>
-            <Button {...props} ref={onPrimary ? undefined : ref} type="button" size="sm"
+            <Button
+              {...props}
+              ref={onPrimary ? undefined : ref}
+              type="button"
+              size="sm"
               aria-label={onPrimary ? `${label ?? t.newDocument} – ${t.menu}` : props["aria-label"]}
-              className={cn("grid-toolbar-control grid-toolbar-primary shrink-0",
-                onPrimary && "rounded-l-none border-l border-primary-foreground/30 px-2", className)}>
-              {onPrimary ? <ChevronDown aria-hidden="true" className="size-4" /> : <>{icon}{label ?? children ?? t.newDocument}</>}
+              className={cn(
+                "grid-toolbar-control grid-toolbar-primary shrink-0",
+                onPrimary && "rounded-l-none border-l border-primary-foreground/30 px-2",
+                className,
+              )}
+            >
+              {onPrimary ? (
+                <ChevronDown aria-hidden="true" className="size-4" />
+              ) : (
+                <>
+                  {icon}
+                  {label ?? children ?? t.newDocument}
+                </>
+              )}
             </Button>
           </DropdownMenuTrigger>
         </div>

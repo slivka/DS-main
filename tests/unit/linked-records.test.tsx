@@ -21,7 +21,15 @@ const item: LinkedRecordItem = {
 };
 const open = mock();
 const remove = mock();
-function Panel({ blocked = false, reason = false, confirmUnlink = true }: { blocked?: boolean; reason?: boolean; confirmUnlink?: boolean }) {
+function Panel({
+  blocked = false,
+  reason = false,
+  confirmUnlink = true,
+}: {
+  blocked?: boolean;
+  reason?: boolean;
+  confirmUnlink?: boolean;
+}) {
   const [mode, setMode] = useState<LinkedRecordsMode>("list");
   const [collapsed, setCollapsed] = useState<string[]>([]);
   return (
@@ -118,30 +126,52 @@ describe("Propojené záznamy", () => {
     fireEvent.click(screen.getByRole("button", { name: "Odebrat" }));
     expect(screen.getAllByRole("alertdialog")).toHaveLength(1);
     const dialog = screen.getByRole("alertdialog");
-    expect(within(dialog).getByRole("button", { name: "Odebrat" }).hasAttribute("disabled")).toBe(true);
-    fireEvent.change(screen.getByRole("textbox", { name: "Důvod odebrání" }), { target: { value: "  " } });
+    expect(within(dialog).getByRole("button", { name: "Odebrat" }).hasAttribute("disabled")).toBe(
+      true,
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Důvod odebrání" }), {
+      target: { value: "  " },
+    });
     fireEvent.click(within(dialog).getByRole("button", { name: "Odebrat" }));
     expect(remove).not.toHaveBeenCalled();
-    fireEvent.change(screen.getByRole("textbox", { name: "Důvod odebrání" }), { target: { value: "Chybné přiřazení" } });
+    fireEvent.change(screen.getByRole("textbox", { name: "Důvod odebrání" }), {
+      target: { value: "Chybné přiřazení" },
+    });
     fireEvent.keyDown(dialog, { key: "Escape" });
     await act(async () => {});
     expect(screen.queryByRole("alertdialog")).toBeNull();
     expect(remove).not.toHaveBeenCalled();
   });
   it("vlastní potvrzení aplikace neotevře žádný DS dialog", () => {
-    remove.mockClear(); render(<Panel confirmUnlink={false} />);
+    remove.mockClear();
+    render(<Panel confirmUnlink={false} />);
     fireEvent.click(screen.getByRole("button", { name: "Odebrat" }));
     expect(remove).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("alertdialog")).toBeNull();
   });
   it("onUnlink dostane oříznutý důvod právě jednou", () => {
     const unlink = mock();
-    render(<TooltipProvider><LinkedRecordsPanel groups={[{id: "g", label: "Vazby", items: [item]}]}
-      mode="list" onModeChange={() => {}} collapsedGroups={[]} onCollapsedGroupsChange={() => {}}
-      onOpen={open} onUnlink={unlink} unlinkReason={{}} /></TooltipProvider>);
-    fireEvent.click(screen.getByRole("button", {name: "Odebrat"}));
-    fireEvent.change(screen.getByRole("textbox", {name: "Důvod odebrání"}), {target: {value: " Oprava "}});
-    fireEvent.click(within(screen.getByRole("alertdialog")).getByRole("button", {name: "Odebrat"}));
+    render(
+      <TooltipProvider>
+        <LinkedRecordsPanel
+          groups={[{ id: "g", label: "Vazby", items: [item] }]}
+          mode="list"
+          onModeChange={() => {}}
+          collapsedGroups={[]}
+          onCollapsedGroupsChange={() => {}}
+          onOpen={open}
+          onUnlink={unlink}
+          unlinkReason={{}}
+        />
+      </TooltipProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Odebrat" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Důvod odebrání" }), {
+      target: { value: " Oprava " },
+    });
+    fireEvent.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", { name: "Odebrat" }),
+    );
     expect(unlink).toHaveBeenCalledTimes(1);
     expect(unlink).toHaveBeenCalledWith(item, "Oprava");
   });

@@ -73,9 +73,13 @@ export function useConfirmDialog() {
         {opts?.reason ? (
           <FieldGrid cols={12}>
             <Field span={12} label={opts.reason.label} htmlFor={reasonId}>
-              <Input id={reasonId} value={reason} required={opts.reason.required}
+              <Input
+                id={reasonId}
+                value={reason}
+                required={opts.reason.required}
                 placeholder={opts.reason.placeholder}
-                onChange={(event) => setReason(event.target.value)} />
+                onChange={(event) => setReason(event.target.value)}
+              />
             </Field>
           </FieldGrid>
         ) : null}

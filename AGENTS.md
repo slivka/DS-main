@@ -61,5 +61,5 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.
 
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
-- Linked tabs follow source tabs; linked-tabs owns follow/pin/orphan rules, pane-state carries types.
-- Templates/advances reuse grids/dialogs; deductions use afterVatRecap. Why: APP owns data/writes.
+- Linked-tabs owns record/list-selection follow, pin and orphan rules; useLinkedSelection bridges useFollowSelection to the provider; pane-state carries types. Why: shared navigation.
+- Templates/advances reuse grids/dialogs and afterVatRecap. Why: APP owns data/writes.

@@ -38,20 +38,32 @@ function sourceRecordTitle(source: PaneTab): string {
 function sourceRecord(source: PaneTab): LinkedSourceRecord | undefined {
   if (source.kind === "list") return source.linkedSelection;
   if (source.kind !== "record") return undefined;
-  return { route: source.route, params: source.params, recordKey: source.recordKey ?? source.route, title: sourceRecordTitle(source) };
+  return {
+    route: source.route,
+    params: source.params,
+    recordKey: source.recordKey ?? source.route,
+    title: sourceRecordTitle(source),
+  };
 }
 
 /** Aktualizuje výběr seznamu a nepřipnuté navázané záložky; prázdný výběr ponechá poslední obsah. */
 export function setLinkedSourceSelectionInState(
-  state: PaneTabsState, sourceTabId: string, record: LinkedSourceRecord | null,
+  state: PaneTabsState,
+  sourceTabId: string,
+  record: LinkedSourceRecord | null,
 ): PaneTabsState {
   const source = findTab(state, sourceTabId);
   if (!source || source.tab.kind !== "list") return state;
   if (JSON.stringify(source.tab.linkedSelection ?? null) === JSON.stringify(record)) return state;
-  return syncLinkedTabsInState({ ...state, panes: state.panes.map((pane) => ({
-    ...pane, tabs: pane.tabs.map((tab) => tab.id === sourceTabId
-      ? { ...tab, linkedSelection: record ?? undefined } : tab),
-  })) });
+  return syncLinkedTabsInState({
+    ...state,
+    panes: state.panes.map((pane) => ({
+      ...pane,
+      tabs: pane.tabs.map((tab) =>
+        tab.id === sourceTabId ? { ...tab, linkedSelection: record ?? undefined } : tab,
+      ),
+    })),
+  });
 }
 
 /** Navázaná záložka stejné sekce a zdroje, pokud existuje. */

@@ -368,8 +368,7 @@ export function PaneTabsProvider({
         isTabDirty,
       );
       if (result.outcome === "rejected") {
-        // Zdroj není záznam – žádný toast o limitu záložek, ten by mátl.
-        return;
+        // Bez konkrétního záznamu se nic neotevře ani nehlásí limit.
         return;
       }
       if (result.outcome === "needsConfirm") {
@@ -434,11 +433,14 @@ export function PaneTabsProvider({
       };
     },
     getRecordNav,
-    setLinkedSourceSelection: useCallback((sourceTabId, record) => {
-      const current = stateRef.current;
-      const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
-      if (next !== current) commit(next);
-    }, [commit]),
+    setLinkedSourceSelection: useCallback(
+      (sourceTabId, record) => {
+        const current = stateRef.current;
+        const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
+        if (next !== current) commit(next);
+      },
+      [commit],
+    ),
     openLinkedTab,
     setLinkedPinned: (tabId, pinned) =>
       commit(setLinkedTabPinnedInState(stateRef.current, tabId, pinned)),

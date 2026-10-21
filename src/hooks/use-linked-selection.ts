@@ -19,7 +19,10 @@ export function useLinkedSelection<Row>(
 ) {
   const follow = useFollowSelection(rows, { delay });
   const selected = follow.kind === "single" ? follow.record : undefined;
-  const record = useMemo(() => selected === undefined ? null : toRecord(selected), [selected, toRecord]);
+  const record = useMemo(
+    () => (selected === undefined ? null : toRecord(selected)),
+    [selected, toRecord],
+  );
   const update = usePaneTabs()?.setLinkedSourceSelection;
   useEffect(() => {
     // Synchronizace výběru gridu s externím stavem panelových záložek.

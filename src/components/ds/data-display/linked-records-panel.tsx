@@ -74,7 +74,8 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
     ).sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
     const remove = (item: LinkedRecordItem) => {
       if (!item.removable || (!onRemove && !onUnlink)) return;
-      const perform = (reason: string) => void (onUnlink ? onUnlink(item, reason) : onRemove?.(item));
+      const perform = (reason: string) =>
+        void (onUnlink ? onUnlink(item, reason) : onRemove?.(item));
       if (!confirmUnlink) {
         perform("");
         return;
@@ -84,11 +85,13 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
         description: texts.removeDescription(item.number),
         confirmLabel: texts.remove,
         destructive: true,
-        reason: unlinkReason ? {
-          label: unlinkReason.label ?? texts.unlinkReason,
-          required: unlinkReason.required ?? true,
-          placeholder: unlinkReason.placeholder ?? texts.unlinkReasonPlaceholder,
-        } : undefined,
+        reason: unlinkReason
+          ? {
+              label: unlinkReason.label ?? texts.unlinkReason,
+              required: unlinkReason.required ?? true,
+              placeholder: unlinkReason.placeholder ?? texts.unlinkReasonPlaceholder,
+            }
+          : undefined,
         onConfirm: perform,
       });
     };
