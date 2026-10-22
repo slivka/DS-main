@@ -9,9 +9,11 @@ import { FieldToggleButton } from "../../form/field-toggle-button";
 import { useDsTexts } from "../../../../ds-texts";
 import { Input } from "../../../ui/input";
 import { DecimalInput } from "../../form/decimal-input";
+import { FieldValue } from "../../form/field-value";
 import { RateField } from "../../form/rate-field";
 import { SectionHeading } from "../../layout/section-heading";
 import { cn } from "../../../../lib/utils";
+import { formatCurrency } from "../../../../lib/format";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
@@ -44,6 +46,8 @@ export interface DocumentAmountSectionProps {
   readOnly: boolean;
   currencyControl: ReactNode;
   field: FieldRenderer;
+  /** Obecný důvod uzamčení pole (2.128.0); pole se vykreslí jen pro čtení se zámkem. */
+  lockReason?: (key: DocumentHeaderField) => string | undefined;
 }
 
 /** Vykreslí poslední sekci částky dokladu. */
