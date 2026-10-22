@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { gridFontSize } from "./grid-zoom";
+import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
+import { useGridLayoutChange } from "./use-grid-layout-change";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /** 0 = zobrazit vše (výchozí hodnota). */
@@ -29,17 +31,20 @@ export function useGridPagination<T>(
   const [pageSize, setPageSizeState] = useState(defaultPageSize);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    const raw = localStorage.getItem(`page-size:${storageKey}`);
-    const parsed = Number(raw);
-    if (raw !== null && PAGE_SIZE_OPTIONS.includes(parsed)) setPageSizeState(parsed);
+  const applyStored = useCallback(() => {
+    const saved = getGridLayout(storageKey).pageSize;
+    if (saved !== undefined && PAGE_SIZE_OPTIONS.includes(saved)) setPageSizeState(saved);
   }, [storageKey]);
+  useEffect(() => {
+    applyStored();
+  }, [applyStored]);
+  useGridLayoutChange(storageKey, applyStored);
 
   const setPageSize = useCallback(
     (next: number) => {
       setPageSizeState(next);
       setPage(1);
-      localStorage.setItem(`page-size:${storageKey}`, String(next));
+      updateGridLayout(storageKey, { pageSize: next });
     },
     [storageKey],
   );
