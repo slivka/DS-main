@@ -26,7 +26,6 @@ import { PURCHASE_INVOICE_HEADER } from "./document-form-showcase-data";
 import { MOCK_ACCOUNTS, MOCK_PARTNERS } from "../../lib/mock/accounting";
 import { LinkedListShowcase } from "./LinkedListShowcase";
 import { AdjacentPanelExample } from "./AdjacentPanelExample";
-
 type DemoRow = (typeof DOCUMENTS)[number];
 const columns: DataGridColumn<DemoRow>[] = [
   { id: "number", label: "Doklad", value: (row) => row.number },
@@ -52,7 +51,6 @@ export function RecordPanelShowcase() {
   const [zoom, setZoom] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [adjacent, setAdjacent] = useState(false);
-
   const [sourceUrl, setSourceUrl] = useState("");
   const [value, setValue] = useState(PURCHASE_INVOICE_HEADER);
   const [selected, setSelected] = useState<DemoRow[]>([]);
