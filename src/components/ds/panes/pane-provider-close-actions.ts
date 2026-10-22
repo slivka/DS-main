@@ -1,0 +1,132 @@
+/** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { toast } from "sonner";
+import { type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
+import { PaneTabsContext } from "./pane-context-hooks";
+import { PaneUnsavedController, type PendingUnsaved } from "./pane-unsaved-controller";
+import {
+  DEFAULT_PANE_TABS_TEXTS,
+  type OpenTabOptions,
+  type PaneTabsApi,
+  type PaneTabsTexts,
+  type RecordNavItem,
+} from "./pane-context-types";
+import {
+  activateTabInState,
+  applyLayoutInState,
+  applyMaxLayout,
+  closePaneInState,
+  closeTabInState,
+  duplicateTabInState,
+  findRecordTab,
+  findTab,
+  moveTabInState,
+  openFromHistoryInState,
+  openRecordInState,
+  openTabInState,
+  otherTabIds,
+  pushClosedTab,
+  reopenClosedTabInState,
+  resolveOpenMode,
+  resolveTargetPaneIndex,
+  serializeLayout,
+  setLayoutWithLimitInState,
+  setTabTitleInState,
+  stepTabHistory,
+  MAX_TABS_PER_PANE,
+  type ClosedTabRecord,
+  type OpenRecordModifiers,
+  type PaneLayoutCount,
+  type PaneTabsState,
+} from "./pane-state";
+import {
+  clearTabState,
+  getTabDraft,
+  isTabDirty,
+  registerLiveTabs,
+  setTabDraft,
+  useTabDirtyVersion,
+} from "./pane-tab-store";
+import { recordNavigation } from "./pane-record-navigation";
+import { createLinkedPanelActions } from "./pane-linked-panel-actions";
+import { usePaneProviderEffects } from "./use-pane-provider-effects";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
+import {
+  openLinkedTabInState,
+  returnLinkedTabInState,
+  setLinkedTabPinnedInState,
+  syncLinkedTabsInState,
+  setLinkedSourceSelectionInState,
+} from "./linked-tabs";
+import type { PaneProviderActionContext } from "./pane-provider-action-context";
+/** Zavření i historie sdílejí ochranu neuložených změn. */
+export function createPaneCloseActions(context: PaneProviderActionContext) {
+const { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts, setPending, setMaximized, setClosedStack, maximized, confirm, titleOf, flash, rememberClosed, onNotice } = context;
+  const guardDiscard = (
+    tabIds: string[],
+    intent: string,
+    action: () => void,
+    actionType: UnsavedChangesAction = "navigate",
+  ) => {
+    const dirty = tabIds.filter(isTabDirty);
+    if (!dirty.length) {
+      action();
+      return;
+    }
+    setPending({ tabIds: dirty, intent, action: actionType, proceed: action });
+  };
+  const closeTab = (tabId: string) =>
+    guardDiscard(
+      [tabId],
+      p.intentCloseTab,
+      () => {
+        rememberClosed([tabId], stateRef.current);
+        commit(closeTabInState(stateRef.current, tabId));
+        clearTabState(tabId);
+      },
+      "close",
+    );
+  const closeOtherTabs = (tabId: string) => {
+    const ids = otherTabIds(stateRef.current, tabId);
+    guardDiscard(
+      ids,
+      p.intentCloseTab,
+      () => {
+        let next = stateRef.current;
+        rememberClosed(ids, next);
+        ids.forEach((id) => {
+          next = closeTabInState(next, id);
+          clearTabState(id);
+        });
+        commit(activateTabInState(next, tabId));
+      },
+      "close",
+    );
+  };
+  const closePane = (paneId: string) => {
+    const pane = stateRef.current.panes.find((item) => item.id === paneId);
+    if (!pane) return;
+    guardDiscard(
+      pane.tabs.map((tab) => tab.id),
+      p.intentClosePane,
+      () => {
+        const before = stateRef.current;
+        const current = before.panes.find((item) => item.id === paneId);
+        if (!current) return;
+        const ids = current.tabs.map((tab) => tab.id);
+        rememberClosed(ids, before);
+        setMaximized(null);
+        commit(closePaneInState(before, paneId));
+        ids.forEach(clearTabState);
+      },
+      "close",
+    );
+  };
+  const step = (tabId: string, delta: number) =>
+    guardDiscard([tabId], p.intentHistory, () => {
+      const next = stepTabHistory(stateRef.current, tabId, delta);
+      if (next !== stateRef.current) clearTabState(tabId);
+      commit(next);
+    });
+return { guardDiscard, closeTab, closeOtherTabs, closePane, step };
+}
