@@ -94,10 +94,7 @@ test("ColumnPicker formát, výběr, klávesnice, tmavý vzhled a zoom", async (
   const columnsButton = demo.getByRole("button", { name: "Sloupce", exact: true });
   if (!(await columnsButton.isVisible())) {
     await demo.locator(".grid-toolbar-overflow-menu").click();
-    await page
-      .getByRole("dialog")
-      .getByRole("button", { name: "Sloupce", exact: true })
-      .click();
+    await page.getByRole("dialog").getByRole("button", { name: "Sloupce", exact: true }).click();
   } else {
     await columnsButton.click();
   }
