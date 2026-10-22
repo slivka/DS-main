@@ -21,15 +21,17 @@ async function checkDivider(page: Page, zoom: number) {
     expect(shadow, `${part} @ ${zoom}`).toContain("inset");
     expect(shadow).toMatch(/1px 0px 0px/);
     // Pixel na levé hraně buňky se liší od pixelu uvnitř buňky (čára je vidět).
-    const shot = await cell.screenshot();
-    const { PNG } = await import("pngjs").catch(() => ({ PNG: null }));
-    if (!PNG) continue;
-    const img = PNG.sync.read(shot);
-    const y = Math.floor(img.height / 2);
-    const px = (x: number) => img.data.slice((y * img.width + x) * 4, (y * img.width + x) * 4 + 3);
-    const edge = px(0);
-    const inner = px(Math.min(4, img.width - 1));
-    const diff = Math.abs(edge[0] - inner[0]) + Math.abs(edge[1] - inner[1]) + Math.abs(edge[2] - inner[2]);
+    const shot = (await cell.screenshot()).toString("base64");
+    const diff = await page.evaluate(async (b64) => {
+      const img = await createImageBitmap(await (await fetch(`data:image/png;base64,${b64}`)).blob());
+      const c = new OffscreenCanvas(img.width, img.height);
+      const g = c.getContext("2d")!;
+      g.drawImage(img, 0, 0);
+      const y = Math.floor(img.height / 2);
+      const e = g.getImageData(0, y, 1, 1).data;
+      const i = g.getImageData(Math.min(4, img.width - 1), y, 1, 1).data;
+      return Math.abs(e[0] - i[0]) + Math.abs(e[1] - i[1]) + Math.abs(e[2] - i[2]);
+    }, shot);
     expect(diff, `${part} @ ${zoom}`).toBeGreaterThan(3);
   }
 }
