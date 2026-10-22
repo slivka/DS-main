@@ -26,6 +26,8 @@ export interface BankMovementAccountProps {
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   /** Varování polí z projekce pruhu (žlutě). */
   fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
+  /** Obecný důvod uzamčení pole (2.128.0); pole se vykreslí jen pro čtení se zámkem. */
+  lockReason?: (key: DocumentHeaderField) => string | undefined;
 }
 
 /** Český účet nebo IBAN bez mazání druhého režimu. */
@@ -37,10 +39,13 @@ export function BankMovementAccount({
   disabled,
   fieldErrors,
   fieldWarnings,
+  lockReason,
 }: BankMovementAccountProps) {
   const ds = useDsTexts();
   const t = ds.documentEdit;
   const iban = value.bankAccountKind === "iban";
+  const accountLocked = lockReason?.(iban ? "bankIban" : "bankAccount");
+  const codeLocked = lockReason?.(iban ? "bankSwift" : "bankCode");
   const invalidIban =
     iban && value.bankIban && !isValidIban(value.bankIban)
       ? ds.documentForm.invalidIban
