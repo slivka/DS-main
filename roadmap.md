@@ -1,4 +1,5 @@
 ## DS 2.128.0 (nevydáno)
+- [x] Opravy po CI: jedinečné id panelu filtrů gridu (useId v GridFrame), čekání Chromium na CI 20 s, úklid localStorage v setup testů; E2E Chromium 39/39, seed 3475711926 bez selhání, check:full OK.
 - [x] Izolace unit testů: odstraněna globální náhrada bubliny, globální úklid v setup, kontrola test-isolation; `--randomize` (seed 1714420083 + 2 náhodné) 1 190/1 190.
 - [x] Panel záznamu: skupiny záložek, vzhled tablistu, rostoucí pole poznámek
 
