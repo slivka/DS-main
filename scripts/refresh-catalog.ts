@@ -86,6 +86,7 @@ export function refreshCatalog() {
     component.usage =
       "Vícenásobný výběr hodnot aplikace. Hledání přímo v poli; šipky mění aktivní položku, Enter/mezerník přepíná zaškrtnutí bez zavření. Tab prochází Vybrat vše a Vymazat; Escape zavře a vrátí fokus na pole.";
     component.examples = [
+      { label: "Použití společného stavu", code: `<${component.name} {...props} />` },
       {
         label: "Výběr firem klávesnicí",
         code:
@@ -95,6 +96,8 @@ export function refreshCatalog() {
       },
     ];
     component.antipatterns = [
+      "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+      "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.",
       "Nevkládejte obyčejná tlačítka místo CommandItem; Tab uvnitř vícenásobné nabídky ji nesmí zavřít ani vybrat položku.",
     ];
   }

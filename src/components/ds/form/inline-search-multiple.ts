@@ -1,5 +1,14 @@
 /** Vícenásobné hledání · vlastní průchod fokusu a potvrzení · nemění jednotlivé výběry. */
 import type { KeyboardEvent } from "react";
+/** Předá zkratku uložení mimo cmdk, které jinak každý Enter potvrzuje. */
+export function forwardSaveKey(event: KeyboardEvent<HTMLInputElement>, target: HTMLElement | null) {
+  event.stopPropagation();
+  const unhandled = target?.dispatchEvent(new window.KeyboardEvent("keydown", {
+    key: event.key, code: event.code, ctrlKey: event.ctrlKey, metaKey: event.metaKey,
+    shiftKey: event.shiftKey, altKey: event.altKey, bubbles: true, cancelable: true,
+  }));
+  if (unhandled === false) event.preventDefault();
+}
 /** Klávesnice akcí v nabídce; jednotlivé výběry tuto cestu nepoužívají. */
 export function multipleContentKey(
   event: KeyboardEvent,

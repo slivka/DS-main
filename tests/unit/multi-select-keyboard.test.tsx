@@ -95,4 +95,14 @@ for (const chips of [false, true]) {
     await waitFor(() => expect(view.queryByRole("listbox")).toBeNull());
     expect(document.activeElement).toBe(view.getByRole("combobox"));
   });
+  test(`${chips ? "ChipMultiSelect" : "MultiSelect"}: odchod fokusu mimo nabídku ji zavře`, async () => {
+    const view = render(<Fixture chips={chips} />);
+    fireEvent.click(view.getByRole("combobox"));
+    const input = view.container.querySelector<HTMLInputElement>("[cmdk-input]");
+    if (!input) throw new Error("Chybí hledání");
+    fireEvent.keyDown(input, { key: "Tab" });
+    fireEvent.blur(view.getByRole("button", { name: "Vybrat vše" }), { relatedTarget: view.getByRole("button", { name: "After" }) });
+    await waitFor(() => expect(view.queryByRole("listbox")).toBeNull());
+    expect(view.getByRole("status").textContent).toBe("");
+  });
 }

@@ -9,6 +9,7 @@ import {
   toggleMultipleActive,
   triggerName,
   multipleContentKey,
+  forwardSaveKey,
 } from "./inline-search-multiple";
 
 interface SearchContextValue {
@@ -260,20 +261,7 @@ export const InlineSearchInput = React.forwardRef<
         ) {
           // cmdk každý Enter potvrzuje a blokuje. Zkratku předáme z pole mimo jeho strom,
           // aby ji formulář dostal bez potvrzení právě zvýrazněné položky.
-          event.stopPropagation();
-          const unhandled = context.target?.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: event.key,
-              code: event.code,
-              ctrlKey: event.ctrlKey,
-              metaKey: event.metaKey,
-              shiftKey: event.shiftKey,
-              altKey: event.altKey,
-              bubbles: true,
-              cancelable: true,
-            }),
-          );
-          if (unhandled === false) event.preventDefault();
+          forwardSaveKey(event, context.target);
           return;
         }
         if (event.nativeEvent.isComposing) {

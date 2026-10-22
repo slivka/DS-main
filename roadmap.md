@@ -1,6 +1,6 @@
 ## DS 2.128.0 (nevydáno)
 
-- [ ] MultiSelect / ChipMultiSelect: šipky, Enter/mezerník, Tab akcí, Escape; unit a Chromium filtr firmy, check:full a katalog bez ztrát.
+- [x] MultiSelect / ChipMultiSelect: šipky, Enter/mezerník, Tab akcí, Escape; unit a Chromium filtr firmy; závěrečná kontrola níže.
 - [x] DocumentForm.fieldLockedReasons: obecný zámek pole jen pro čtení (FieldValue + důvod), hlavička i částka.
 - [x] BankStatementForm.menuActions: položky nabídky „…“ za stávajícími, disabledReason.
 - [x] Ukázky (BA s převzatými poli, výpis s „Import výpisu…“), testy, katalog bez ztrát, check:full.
