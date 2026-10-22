@@ -138,7 +138,7 @@ describe("DocumentForm fieldLockedReasons", () => {
       for (const [label, text, reason] of [
         ["Účet protistrany", "DE89370400440532013000", specific ? "IBAN z banky" : "Účet z banky"],
         ["SWIFT", "COBADEFFXXX", specific ? "SWIFT z banky" : "Banka z výpisu"],
-        ["Platební reference", "INV-123", REASON],
+        ["Reference", "INV-123", REASON],
       ]) {
         const field = view.getByRole("group", { name: label });
         expect(field.textContent).toContain(text);
@@ -207,7 +207,7 @@ describe("DocumentForm fieldLockedReasons", () => {
         ]}
       />,
     );
-    fireEvent.click(view.getByRole("button", { name: "Datum pohybu: Ověřte datum banky" }));
+    fireEvent.click(view.getByRole("button", { name: /Datum pohybu.*Ověřte datum banky/ }));
     expect(document.activeElement).toBe(view.getByRole("button", { name: REASON }));
   });
 });
