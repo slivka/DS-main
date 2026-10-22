@@ -1,5 +1,7 @@
 ## DS 2.134.0 (nevydáno)
 
+- [ ] Zpevnit Chromium testy oddělovače Akce (stabilní rozměry, ořez snímku) a bubliny evidence záloh (hover, fokusovatelnost); každý ověřit 20× bez změny komponent a zapsat výsledky do CHANGELOGu.
+
 ## DS 2.133.0
 
 - [x] Opravy kontroly Clauda S1–S4 / N5–N13: QR, domácí měna, kompatibilita, izolace rozměrů, překlady, náhled a dlouhé texty; seed 2051416494 a úplná kontrola (1 358/1 358 ve 140 souborech), cíleně 72/72, Chromium 1/1, katalog bez ztrát katalogových komponent/props. Nevydáno.
