@@ -5,7 +5,18 @@
 - JournalLinesEditor: nový nepovinný prop `deductions` (typy `JournalDeductions`, `JournalDeductionRow`, `JournalDeductionRecapRow`, `JournalDeductionTotalByCode`). Odečty záloh (vybraná i ruční) se vykreslují jako řádky gridu Řádky pod položkami, oddělené čarou; popis, kód DPH, záporný základ/DPH a účet, stav/platba/daňový doklad jen v rozbalení a bublině; upravit jde jen základ ručního odečtu (`onAmountChange`); odebrání s potvrzením a důvodem (`onRemove`, `confirmRemove`, `removeReason`). Split akce „Odečet zálohy ▾“ (Vybrat zálohu… / Ruční odečet…, `onAdd(kind)`, `addDisabledReason`), tři součty Položky celkem · Odečteno záloh · K úhradě (`totals`) a řádky odečtů a součty podle kódu v rekapitulaci DPH (`recap`). Všechna data dodává APP; platí pro FV, FP i PO přes DocumentForm.linesEditorProps.
 - `AdvanceDeductionsSection` je @deprecated od 2.129.0 (odstraní se ve 3.0.0). Migrace: místo sekce v `afterVatRecap` předejte `deductions={{ rows, onAdd, onRemove, totals, recap }}`.
 - RecordDialog: nový `submitDisabledReason` – zakázané Uložit/Pokračovat zůstane zaměřitelné s bublinou důvodu. Zakázaná primární tlačítka mají čitelný text (kontrast AA).
-- Ověření: unit `journal-deductions.test.tsx` 9/9, E2E Chromium `advance-deduction-rows.spec.ts` 2/2. Nevydáno, release Claude.
+- Opravy po kontrole (v rámci nevydané 2.129.0, mění jen nový nevydaný kontrakt):
+  - S `deductions` se lišta Součet · Zaokrouhlení · K úhradě · Rozdíl (JournalDifferenceBar) nezobrazuje; jediné „K úhradě“ je v součtech od APP. `totals` má nový tvar `JournalDeductionTotals { itemsGross, deductionsGross, rounding?, payable }` (zaokrouhlení předává APP, zobrazí se při nenulové hodnotě).
+  - Řádek mřížky „Součet položek“ stojí nad oddělovací čarou, odečty ve vlastním tbody pod ním (bez tfoot); hodnoty součtu položek beze změny.
+  - Rekapitulace: `JournalDeductionRecapRow.vatCode` (povinné) ve sloupci Kód, popis jen v bublině a pro čtečky; součtový řádek „Celkem po odečtu záloh {kód}“ pouze z dat APP.
+  - `total` je povinné u řádku, řádku rekapitulace i součtu za kód – DS nic nesčítá. Cizí měna: `homeBase` / `homeVat` / `homeTotal` u všech tří typů; řádek gridu ukáže `homeBase` ve sloupci částky v měně firmy, rekapitulace základ a DPH v měně firmy.
+  - Split „Odečet zálohy“ je `role="group"`, započten v přetečení lišty (`data-toolbar-overflow-item`); v úrovni 3 se sbalí do jednoho tlačítka „…“ se stejnou nabídkou. Lišta editoru nově měří i pravou část (hledání, sloupce, zoom) a „+“ editoru zůstává viditelné i v úrovni 3.
+  - Po odebrání odečtu přejde fokus na odebrání dalšího řádku, jinak na split „Odečet zálohy“.
+  - Ukázka FV/FP/PO bez výpočtů DPH (`*0.21`): hotové částky od APP, součty v celých haléřích, cizí měna s částkami v měně firmy.
+  - Texty: `totalByCode` nahrazen `totalAfterDeductions`, nový `itemsSum` (CS/SK).
+  - Odečty v tisku a exportu: editor řádků vlastní tisk ani export nemá (tisk dokladu skládá APP) – zapsáno v roadmapě jako otevřené.
+  - RecordDialog má přesně 500 řádků (limit nepřekročen); rozdělení footeru a obsahu je zapsáno do roadmapy 2.130.0.
+- Ověření: check:full --harness 1 205/1 205 testů ve 131 souborech, lint/formát/audit částek OK, katalog 475 → 475 komponent / 1 130 → 1 130 props, 0 odebrání. Unit `journal-deductions.test.tsx` 15/15 (bez druhého K úhradě, Součet položek beze změny, cizí měna, potvrzení s důvodem v DS, klávesnice split tlačítka, total z dat APP). Chromium `advance-deduction-rows.spec.ts` 2/2 (pořadí, fokus po odebrání, sbalení do „…“ při 420 px se zvětšenou tabulkou), `grid-toolbar-232` a `journal-control-height` bez regrese. Nevydáno, release Claude.
 
 ## 2.128.0
 
