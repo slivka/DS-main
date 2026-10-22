@@ -36,6 +36,9 @@ afterEach(() => {
   document.body.removeAttribute("data-scroll-locked");
   document.body.removeAttribute("aria-hidden");
   document.documentElement.removeAttribute("style");
+  // Úložiště sdílí celý běh; zbytky (zoom, panely, preference) by ovlivnily další soubor.
+  window.localStorage.clear();
+  window.sessionStorage.clear();
   const active = document.activeElement as HTMLElement | null;
   if (active && active !== document.body) active.blur?.();
 });

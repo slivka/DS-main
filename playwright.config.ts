@@ -27,7 +27,13 @@ export default defineConfig({
     timeout: 120_000,
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    // Těžké ukázkové stránky (Editor dokladů) se na dev serveru hydratují ~10 s;
+    // na CI runneru dél, proto mají všechny prohlížeče na CI delší čekání 20 s.
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      ...(ci ? { expect: { timeout: 20_000 } } : {}),
+    },
     // Firefox a WebKit hydratují ukázky na dev serveru CI pomaleji (měřeno lokálně 5–8 s,
     // na runneru přes 10 s); delší čekání jen na CI, lokálně platí 10 s (20. 10. 2026).
     {
