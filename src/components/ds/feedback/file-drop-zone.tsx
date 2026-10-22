@@ -39,6 +39,7 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
   const host = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const hintId = useId();
+  const headingId = useId();
   const t = useDsTexts().fileImport;
   const receive = (files: File[], rejected: RejectedFile[]) => {
     if (files.length) onFiles(files);
@@ -57,9 +58,9 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
       <div
         ref={host}
         role="group"
-        aria-label={t.drop}
+        aria-label={size === "sm" ? t.drop : undefined}
+        aria-labelledby={size === "md" ? headingId : undefined}
         aria-disabled={disabled}
-        aria-describedby={hint ? hintId : undefined}
         data-dragging={dragging || undefined}
         onKeyDown={onKeyDown}
         className={cn(
@@ -71,13 +72,20 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
           disabled && "text-muted-foreground",
         )}
       >
+        {size === "md" ? (
+          <>
+            <Upload aria-hidden="true" className="size-8 text-muted-foreground" />
+            <span id={headingId} className="text-sm font-semibold">
+              {t.drop}
+            </span>
+          </>
+        ) : null}
         {children}
         <Button
           type="button"
           variant="ghost"
           disabled={disabled}
-          role="button"
-          aria-label={t.drop}
+          aria-label={label}
           aria-describedby={hint ? hintId : undefined}
           tabIndex={disabled ? -1 : 0}
           className={cn(
@@ -86,12 +94,6 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
           )}
           onClick={() => input.current?.click()}
         >
-          {size === "md" ? (
-            <>
-              <Upload aria-hidden="true" className="size-8 text-muted-foreground" />
-              <span className="text-sm font-semibold">{t.drop}</span>
-            </>
-          ) : null}
           <span className={buttonVariants({ variant: size === "sm" ? "outline" : "default" })}>
             {label}
           </span>

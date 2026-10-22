@@ -20,7 +20,10 @@ it("FileChipBar uvnitř zóny zachová vlastní zastávky akcí bez vnoření do
       </FileDropZone>
     </TooltipProvider>,
   );
-  const selectors = view.getAllByRole("button", { name: "Přetáhněte soubory sem" });
+  const selectors = [
+    view.getByRole("button", { name: "Vybrat soubory…" }),
+    view.getByRole("button", { name: "Přidat soubory…" }),
+  ];
   expect(selectors).toHaveLength(2);
   for (const selector of selectors) {
     expect(selector.tabIndex).toBe(0);

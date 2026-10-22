@@ -2,7 +2,11 @@
 
 ## 2.127.0 (nevydáno)
 
-- Zatím bez změn.
+- Vnitřní refaktoring: podokna rozdělena na stavový provider, akce otevření/zavření a sestavení API; rozložení na registraci, geometrii, sloupec a vnitřní skládání. DataGrid odděluje jeden model, nástroje a tělo; typy dokladu hodnoty, props a texty. Původní veřejné vstupy i chování zachovány, faktury i zálohové listy sdílejí stejný kontrakt.
+- FileDropZone: přístupný název tlačítka odpovídá viditelnému popisku (včetně chooseLabel), bez nadbytečného role; skupina neopakuje název ani hint tlačítka. Ve velikosti md jsou children pod ikonou a nadpisem, mimo tlačítko.
+- useFileDrop zachytává dragstart na window v capture fázi, i když vnitřní prvek zastaví bublání. Regresní test zachovává ignorování interního dropu a následující externí dávku.
+
+- Ověření 2.127.0: check:quick --harness průběžně; cíleně 74/74 testů v file-drop-zone, file-chip-bar, data-grid-behavior, linked-panel, pane-tabs-217, pane-embedded-253, pane-unsaved-286. check:full --harness OK: 1 162/1 162 testů ve 126 souborech, lint 0 chyb / 345 varování, peněžní audit i formát OK. Automatické typy/sestavení build OK. Katalog proti vydané 2.126.0 (04ab5ba): 475 → 475 komponent / 1 131 → 1 164 props, 0 odebrání; 33 obnovovaných props již existovalo v kódu, nejde o nové API. Chromium file-import 1/1 včetně axe nested-interactive a label-content-name-mismatch bez nálezů; import vizuálně 1280/360 px bez pageerror. Plná E2E sada/FF/WebKit neběžely. Všechny rozdělené soubory do 300 řádků; veřejné vstupy zachovány, package/meta 2.126.0, nevydáno.
 
 ## 2.126.0
 

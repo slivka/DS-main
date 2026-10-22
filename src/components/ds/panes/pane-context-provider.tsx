@@ -1,63 +1,31 @@
 /** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
+import { useDsTexts } from "../../../ds-texts";
 import { PaneTabsContext } from "./pane-context-hooks";
 import { PaneUnsavedController, type PendingUnsaved } from "./pane-unsaved-controller";
 import {
   DEFAULT_PANE_TABS_TEXTS,
-  type OpenTabOptions,
   type PaneTabsApi,
   type PaneTabsTexts,
   type RecordNavItem,
 } from "./pane-context-types";
 import {
-  activateTabInState,
-  applyLayoutInState,
   applyMaxLayout,
-  closePaneInState,
-  closeTabInState,
-  duplicateTabInState,
-  findRecordTab,
   findTab,
-  moveTabInState,
-  openFromHistoryInState,
-  openRecordInState,
-  openTabInState,
-  otherTabIds,
   pushClosedTab,
-  reopenClosedTabInState,
-  resolveOpenMode,
-  resolveTargetPaneIndex,
-  serializeLayout,
-  setLayoutWithLimitInState,
-  setTabTitleInState,
-  stepTabHistory,
-  MAX_TABS_PER_PANE,
   type ClosedTabRecord,
-  type OpenRecordModifiers,
   type PaneLayoutCount,
   type PaneTabsState,
 } from "./pane-state";
-import {
-  clearTabState,
-  getTabDraft,
-  isTabDirty,
-  registerLiveTabs,
-  setTabDraft,
-  useTabDirtyVersion,
-} from "./pane-tab-store";
-import { recordNavigation } from "./pane-record-navigation";
-import { createLinkedPanelActions } from "./pane-linked-panel-actions";
+import { registerLiveTabs, useTabDirtyVersion } from "./pane-tab-store";
+
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
-import {
-  openLinkedTabInState,
-  returnLinkedTabInState,
-  setLinkedTabPinnedInState,
-  syncLinkedTabsInState,
-  setLinkedSourceSelectionInState,
-} from "./linked-tabs";
+import { syncLinkedTabsInState, setLinkedSourceSelectionInState } from "./linked-tabs";
+import { createPaneOpenActions } from "./pane-provider-open-actions";
+import { createPaneCloseActions } from "./pane-provider-close-actions";
+import { createPaneProviderApi } from "./pane-provider-api";
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
   onChange: (state: PaneTabsState) => void;
@@ -138,139 +106,6 @@ export function PaneTabsProvider({
     [onChange],
   );
   const titleOf = (tabId: string) => findTab(stateRef.current, tabId)?.tab.title ?? t.untitled;
-  const doOpen = (
-    route: string,
-    params: Record<string, unknown> | undefined,
-    options: OpenTabOptions,
-  ) => {
-    const current = stateRef.current;
-    const mode = resolveOpenMode(current, options.target ?? "replace");
-    const replacedId =
-      mode === "replace"
-        ? current.panes[resolveTargetPaneIndex(current, "replace")].activeTab
-        : null;
-    const result = openTabInState(current, { route, params, ...options }, isTabDirty);
-    if (result.outcome === "rejected") {
-      toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
-      return;
-    }
-    if (result.evictedTabId) {
-      toast.info(
-        t.limitEvicted
-          .replace("{title}", titleOf(result.evictedTabId))
-          .replace("{max}", String(MAX_TABS_PER_PANE)),
-      );
-      clearTabState(result.evictedTabId);
-    }
-    const clearedTabId = result.tabId ?? replacedId;
-    if (result.outcome === "replaced" && clearedTabId) clearTabState(clearedTabId);
-    result.closedTabIds?.forEach(clearTabState);
-    if (options.target === "adjacentPane") setMaximized(null);
-    commit(result.state);
-  };
-  const openTab: PaneTabsApi["openTab"] = (route, params, options = {}) => {
-    const current = stateRef.current;
-    const target = options.target ?? "replace";
-    if (
-      target === "replace" &&
-      !findRecordTab(current, { route, params, ...options }) &&
-      resolveOpenMode(current, target) === "replace"
-    ) {
-      const tabId = current.panes[resolveTargetPaneIndex(current, target)]?.activeTab;
-      if (tabId && isTabDirty(tabId)) {
-        const targetTitle = options.title ?? route;
-        // Rozepsanou záložku nikdy nenahradíme: nová záložka v témže panelu bez dialogu.
-        const trial = openTabInState(
-          current,
-          { route, params, ...options, target: "newTab" },
-          isTabDirty,
-        );
-        if (trial.outcome !== "rejected") {
-          doOpen(route, params, { ...options, target: "newTab" });
-          (onNotice ?? toast.info)(p.openedInNewTab(targetTitle, titleOf(tabId)));
-          return;
-        }
-        // Limit záložek: dialog; akce se vždy vztahuje k dotčené záložce, ne k aktivnímu panelu.
-        setPending({
-          tabIds: [tabId],
-          intent: p.intentReplace(targetTitle),
-          proceed: () => {
-            commit(activateTabInState(stateRef.current, tabId));
-            doOpen(route, params, { ...options, target: "replace" });
-          },
-          onOpenInNewTab: options.onOpenInNewTab,
-        });
-        return;
-      }
-    }
-    doOpen(route, params, options);
-  };
-  const guardDiscard = (
-    tabIds: string[],
-    intent: string,
-    action: () => void,
-    actionType: UnsavedChangesAction = "navigate",
-  ) => {
-    const dirty = tabIds.filter(isTabDirty);
-    if (!dirty.length) {
-      action();
-      return;
-    }
-    setPending({ tabIds: dirty, intent, action: actionType, proceed: action });
-  };
-  const closeTab = (tabId: string) =>
-    guardDiscard(
-      [tabId],
-      p.intentCloseTab,
-      () => {
-        rememberClosed([tabId], stateRef.current);
-        commit(closeTabInState(stateRef.current, tabId));
-        clearTabState(tabId);
-      },
-      "close",
-    );
-  const closeOtherTabs = (tabId: string) => {
-    const ids = otherTabIds(stateRef.current, tabId);
-    guardDiscard(
-      ids,
-      p.intentCloseTab,
-      () => {
-        let next = stateRef.current;
-        rememberClosed(ids, next);
-        ids.forEach((id) => {
-          next = closeTabInState(next, id);
-          clearTabState(id);
-        });
-        commit(activateTabInState(next, tabId));
-      },
-      "close",
-    );
-  };
-  const closePane = (paneId: string) => {
-    const pane = stateRef.current.panes.find((item) => item.id === paneId);
-    if (!pane) return;
-    guardDiscard(
-      pane.tabs.map((tab) => tab.id),
-      p.intentClosePane,
-      () => {
-        const before = stateRef.current;
-        const current = before.panes.find((item) => item.id === paneId);
-        if (!current) return;
-        const ids = current.tabs.map((tab) => tab.id);
-        rememberClosed(ids, before);
-        setMaximized(null);
-        commit(closePaneInState(before, paneId));
-        ids.forEach(clearTabState);
-      },
-      "close",
-    );
-  };
-  const step = (tabId: string, delta: number) =>
-    guardDiscard([tabId], p.intentHistory, () => {
-      const next = stepTabHistory(stateRef.current, tabId, delta);
-      if (next !== stateRef.current) clearTabState(tabId);
-      commit(next);
-    });
   const lastMax = useRef<PaneLayoutCount | null>(null);
   const reportMaxLayout = (maxLayout: PaneLayoutCount) => {
     if (lastMax.current === maxLayout) return;
@@ -280,241 +115,45 @@ export function PaneTabsProvider({
     toast.info(notice === "narrowed" ? t.narrowed : t.restored);
     commit(next);
   };
-  const openRecord: PaneTabsApi["openRecord"] = (route, params, options = {}) => {
-    const current = stateRef.current;
-    const raw = (options.modifiers ?? {}) as Record<string, boolean | undefined>;
-    const modifiers: OpenRecordModifiers = {
-      mod: !!(raw.mod || raw.metaKey || raw.ctrlKey),
-      shift: !!raw.shift || !!raw.shiftKey,
-    };
-    const fromPane = options.fromTabId
-      ? findTab(current, options.fromTabId)?.pane.id
-      : current.active;
-    const result = openRecordInState(
-      current,
-      {
-        route,
-        params,
-        recordKey: options.recordKey,
-        title: options.title,
-        shortTitle: options.shortTitle,
-        icon: options.icon,
-        kind: "record",
-      },
-      { fromTabId: options.fromTabId, isNew: options.isNew, modifiers, maximized },
-      isTabDirty,
-    );
-    if (result.outcome === "rejected") {
-      toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
-      return;
-    }
-    if (result.evictedTabId) {
-      toast.info(
-        t.limitEvicted
-          .replace("{title}", titleOf(result.evictedTabId))
-          .replace("{max}", String(MAX_TABS_PER_PANE)),
-      );
-      clearTabState(result.evictedTabId);
-    }
-    if (result.outcome === "replaced" && result.tabId) clearTabState(result.tabId);
-    result.closedTabIds?.forEach(clearTabState);
-    if (result.cancelMaximize) setMaximized(null);
-    commit(result.state);
-    if (result.paneId && result.paneId !== fromPane) {
-      flash(result.paneId);
-      if (maximized !== null) {
-        const index = result.state.panes.findIndex((pane) => pane.id === result.paneId);
-        if (index >= 0 && index !== maximized) setMaximized(index);
-      }
-    }
-  };
-  const openFromHistory = (tabId: string, index: number) => {
-    const result = openFromHistoryInState(stateRef.current, tabId, index, isTabDirty);
-    if (result.outcome === "rejected") return;
-    if (result.evictedTabId) clearTabState(result.evictedTabId);
-    result.closedTabIds?.forEach(clearTabState);
-    commit(result.state);
-  };
-  const reopenClosedTab = () => {
-    const stack = closedRef.current;
-    const record = stack[stack.length - 1];
-    if (!record) return;
-    const result = reopenClosedTabInState(stateRef.current, record, isTabDirty);
-    if (result.outcome === "rejected") {
-      toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
-      return;
-    }
-    closedRef.current = stack.slice(0, -1);
-    setClosedStack(closedRef.current);
-    if (result.evictedTabId) clearTabState(result.evictedTabId);
-    commit(result.state);
-  };
-  const getRecordNav = (tabId: string) =>
-    recordNavigation(tabId, () => stateRef.current, recordNavs.current, commit, t.recordNavDirty);
-  const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section, record) => {
-    const attempt = (confirmed: boolean) => {
-      const result = openLinkedTabInState(
-        stateRef.current,
-        sourceTabId,
-        section,
-        { confirmed, record },
-        Date.now(),
-        isTabDirty,
-      );
-      if (result.outcome === "rejected") {
-        // Bez konkrétního záznamu se nic neotevře ani nehlásí limit.
-        return;
-      }
-      if (result.outcome === "needsConfirm") {
-        // Odmítnutí nic nemění – obsah zůstane ve vysouvacím panelu.
-        confirm({
-          title: p.linkedReplaceTitle,
-          description: p.linkedReplaceDescription,
-          confirmLabel: p.linkedReplaceConfirm,
-          onConfirm: () => attempt(true),
-        });
-        return;
-      }
-      // Zpracování výsledku jako doOpen: vytlačené a zavřené záložky uklidit.
-      if (result.evictedTabId) {
-        toast.info(
-          t.limitEvicted
-            .replace("{title}", titleOf(result.evictedTabId))
-            .replace("{max}", String(MAX_TABS_PER_PANE)),
-        );
-        clearTabState(result.evictedTabId);
-      }
-      result.closedTabIds?.forEach(clearTabState);
-      commit(result.state);
-    };
-    attempt(false);
-  };
-  const api: PaneTabsApi = {
-    ...createLinkedPanelActions({
-      stateRef,
-      commit,
-      closeTab,
-      panelLabel: dsTexts.recordPanel.panel,
-      isDirty: isTabDirty,
-      confirmReplace: (proceed) =>
-        confirm({
-          title: p.linkedReplaceTitle,
-          description: p.linkedReplaceDescription,
-          confirmLabel: p.linkedReplaceConfirm,
-          onConfirm: proceed,
-        }),
-      accept: (result) => {
-        if (result.evictedTabId) clearTabState(result.evictedTabId);
-        result.closedTabIds?.forEach(clearTabState);
-        commit(result.state);
-      },
-      focusPane: (index) => {
-        if (maximized !== null) setMaximized(index);
-      },
-    }),
-    state,
-    openRecord,
-    openFromHistory,
-    goToHistory: (tabId, index) => {
-      const found = findTab(stateRef.current, tabId);
-      if (found) step(tabId, index - found.tab.historyIndex);
+  const setLinkedSourceSelection = useCallback<PaneTabsApi["setLinkedSourceSelection"]>(
+    (sourceTabId, record) => {
+      const current = stateRef.current;
+      const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
+      if (next !== current) commit(next);
     },
-    reopenClosedTab,
-    closedTabCount: closedStack.length,
+    [commit],
+  );
+  const context = {
+    stateRef,
+    closedRef,
+    recordNavs,
+    lastMax,
+    commit,
+    t,
+    p,
+    dsTexts,
+    setPending,
+    setMaximized,
+    setClosedStack,
     maximized,
-    maximizePane: (index) => {
-      if (stateRef.current.panes.length > 1 && stateRef.current.panes[index]) {
-        setMaximized(index);
-        commit({ ...stateRef.current, active: stateRef.current.panes[index].id });
-      }
-    },
-    restoreLayout: () => setMaximized(null),
-    toggleMaximize: (index) => {
-      if (maximized !== null) setMaximized(null);
-      else apiRef.current.maximizePane(index);
-    },
+    confirm,
+    titleOf,
+    flash,
+    rememberClosed,
+    onNotice,
+  };
+  const close = createPaneCloseActions(context);
+  const open = createPaneOpenActions(context);
+  const api = createPaneProviderApi(context, open, close, {
+    state,
+    closedTabCount: closedStack.length,
     flashPaneId,
     attentionTabIds: pending?.tabIds ?? [],
-    guardUnsaved: (action, actionType = "navigate") =>
-      guardDiscard(
-        stateRef.current.panes.flatMap((pane) => pane.tabs.map((tab) => tab.id)),
-        p.intentLogout,
-        action,
-        actionType,
-      ),
-    registerRecordNav: (tabId, getItems) => {
-      recordNavs.current.set(tabId, getItems);
-      return () => {
-        if (recordNavs.current.get(tabId) === getItems) recordNavs.current.delete(tabId);
-      };
-    },
-    getRecordNav,
-    setLinkedSourceSelection: useCallback(
-      (sourceTabId, record) => {
-        const current = stateRef.current;
-        const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
-        if (next !== current) commit(next);
-      },
-      [commit],
-    ),
-    openLinkedTab,
-    setLinkedPinned: (tabId, pinned) =>
-      commit(setLinkedTabPinnedInState(stateRef.current, tabId, pinned)),
-    returnLinkedTab: (tabId) => commit(returnLinkedTabInState(stateRef.current, tabId)),
-    serializeLayout: () =>
-      serializeLayout(stateRef.current, (tabId) => ({
-        state: getTabDraft(tabId, "grid"),
-      })),
-    applyLayout: (snapshot, options) => {
-      const result = applyLayoutInState(stateRef.current, snapshot, options, isTabDirty);
-      result.closedTabIds.forEach(clearTabState);
-      result.gridStates.forEach(({ tabId, grid }) => {
-        const stored = grid as { state?: unknown; preferences?: unknown } | undefined;
-        if (stored && ("state" in stored || "preferences" in stored)) {
-          if (stored.state !== undefined) setTabDraft(tabId, stored.state, "grid");
-        } else setTabDraft(tabId, grid, "grid");
-      });
-      setMaximized(null);
-      lastMax.current = null;
-      commit(result.state);
-      return result.skipped;
-    },
-    openTab,
-    closeTab,
-    closeOtherTabs,
-    moveTab: (tabId, toPaneId, index) =>
-      commit(moveTabInState(stateRef.current, tabId, toPaneId, index)),
-    activateTab: (tabId) => commit(activateTabInState(stateRef.current, tabId)),
-    activatePane: (paneId) => {
-      if (stateRef.current.active !== paneId) commit({ ...stateRef.current, active: paneId });
-    },
-    duplicateTab: (tabId) => commit(duplicateTabInState(stateRef.current, tabId).state),
-    setLayout: (layout) => {
-      lastMax.current = null;
-      setMaximized(null);
-      const before = stateRef.current;
-      const result = setLayoutWithLimitInState(before, layout, isTabDirty);
-      if (result.closedTabIds.length) {
-        rememberClosed(result.closedTabIds, before);
-        result.closedTabIds.forEach(clearTabState);
-        toast.info(
-          t.limitClosed
-            .replace("{count}", String(result.closedTabIds.length))
-            .replace("{max}", String(MAX_TABS_PER_PANE)),
-        );
-      }
-      commit(result.state);
-    },
-    closePane,
-    back: (tabId) => step(tabId, -1),
-    forward: (tabId) => step(tabId, 1),
-    setTabTitle: (tabId, title, shortTitle) =>
-      commit(setTabTitleInState(stateRef.current, tabId, title, shortTitle)),
-    setWidths: (widths) => commit({ ...stateRef.current, widths }),
-    isTabDirty,
-    requestNewTab: () => onNewTabRequest?.(),
+    setLinkedSourceSelection,
     reportMaxLayout,
-  };
+    requestNewTab: () => onNewTabRequest?.(),
+    toggleMaximize: (index) => apiRef.current.maximizePane(index),
+  });
   const apiRef = useRef(api);
   apiRef.current = api;
   usePaneProviderEffects({

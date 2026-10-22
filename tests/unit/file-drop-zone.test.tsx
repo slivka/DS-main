@@ -52,11 +52,13 @@ describe("FileDropZone", () => {
     const view = render(
       <FileDropZone accept={[]} maxSizeBytes={10} hint="Limit 10 B" onFiles={() => {}} />,
     );
-    expect(
-      view.getByRole("button", { name: "Přetáhněte soubory sem" }).getAttribute("tabindex"),
-    ).toBe("0");
+    expect(view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex")).toBe(
+      "0",
+    );
     expect(view.getAllByRole("button")).toHaveLength(1);
     expect(view.getByRole("group").getAttribute("tabindex")).toBeNull();
+    expect(view.getByRole("group").getAttribute("aria-describedby")).toBeNull();
+    expect(view.getByRole("button").getAttribute("role")).toBeNull();
     const description = view.getByRole("button").getAttribute("aria-describedby");
     expect(description ? document.getElementById(description)?.textContent : null).toBe(
       "Limit 10 B",
@@ -68,7 +70,7 @@ describe("FileDropZone", () => {
     const view = render(<FileDropZone accept={[]} maxSizeBytes={10} onFiles={() => received++} />);
     const input = view.container.querySelector("input");
     input?.addEventListener("click", () => clicks++);
-    const zone = view.getByRole("button", { name: "Přetáhněte soubory sem" });
+    const zone = view.getByRole("button", { name: "Vybrat soubory…" });
     // Nativní tlačítko aktivuje Enter/mezerník klikem prohlížeče; ověřuje také E2E.
     fireEvent.click(zone);
     fireEvent.click(zone);
@@ -80,6 +82,24 @@ describe("FileDropZone", () => {
     fireEvent.drop(zone, { dataTransfer: transfer([file()]) });
     expect(received).toBe(0);
     expect(clicks).toBe(2);
+  });
+  it("vlastní název výběru zpřístupní bez opakování skupiny a zachová akce children", () => {
+    const view = render(
+      <FileDropZone
+        accept={[]}
+        maxSizeBytes={10}
+        chooseLabel="Vybrat XML"
+        hint="Limit 10 B"
+        onFiles={() => {}}
+      >
+        <button type="button">Odebrat soubor</button>
+      </FileDropZone>,
+    );
+    const choose = view.getByRole("button", { name: "Vybrat XML" });
+    expect(choose.tabIndex).toBe(0);
+    expect(choose.getAttribute("role")).toBeNull();
+    expect(view.getByRole("group").getAttribute("aria-describedby")).toBeNull();
+    expect(view.getByRole("button", { name: "Odebrat soubor" }).closest("button")).not.toBe(choose);
   });
 });
 describe("PaneDropOverlay", () => {
@@ -95,6 +115,23 @@ describe("PaneDropOverlay", () => {
     fireEvent.dragStart(source);
     source.remove();
     const target = view.getByText("Cíl");
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(0);
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(1);
+  });
+  it("dragstart zachytí i při zastaveném bublání v dokumentu", () => {
+    let drops = 0;
+    const view = render(
+      <PaneDropOverlay label="Import" onFiles={() => drops++}>
+        <p>Cíl</p>
+      </PaneDropOverlay>,
+    );
+    const target = view.getByText("Cíl");
+    target.addEventListener("dragstart", (event) => event.stopPropagation());
+    fireEvent.dragStart(target);
+    fireEvent.dragEnter(target, { dataTransfer: transfer([file()]) });
+    expect(view.queryByRole("status")).toBeNull();
     fireEvent.drop(target, { dataTransfer: transfer([file()]) });
     expect(drops).toBe(0);
     fireEvent.drop(target, { dataTransfer: transfer([file()]) });
@@ -229,7 +266,7 @@ describe("PaneDropOverlay", () => {
         }}
       />,
     );
-    fireEvent.drop(view.getByRole("button", { name: "Přetáhněte soubory sem" }), {
+    fireEvent.drop(view.getByRole("button", { name: "Vybrat soubory…" }), {
       dataTransfer: transfer([file("bad.pdf", 11), file("a.xml"), file("b.xml")]),
     });
     expect(accepted.map((item) => item.name)).toEqual(["a.xml"]);

@@ -1,7 +1,11 @@
 ## DS 2.127.0 (nevydáno)
 
-- [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
-- [ ] FileDropZone: přístupný název obsahuje viditelný text „Vybrat soubory…“ (WCAG 2.5.3), neopakovat aria-label skupiny a tlačítka.
+- [x] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
+- [x] FileDropZone: přístupný název obsahuje viditelný text „Vybrat soubory…“ (WCAG 2.5.3), neopakovat aria-label skupiny a tlačítka.
+- [x] useFileDrop: interní dragstart zachytit na window v capture fázi.
+- [x] Průběžný check:quick, závěrečný check:full, katalog bez ztrát a Chromium importu.
+
+- Ověření 2.127.0: check:quick --harness průběžně; cíleně 74/74 testů v file-drop-zone, file-chip-bar, data-grid-behavior, linked-panel, pane-tabs-217, pane-embedded-253, pane-unsaved-286. check:full --harness OK: 1 162/1 162 testů ve 126 souborech, lint 0 chyb / 345 varování, peněžní audit i formát OK. Automatické typy/sestavení build OK. Katalog proti vydané 2.126.0 (04ab5ba): 475 → 475 komponent / 1 131 → 1 164 props, 0 odebrání; 33 obnovovaných props již existovalo v kódu, nejde o nové API. Chromium file-import 1/1 včetně axe nested-interactive a label-content-name-mismatch bez nálezů; import vizuálně 1280/360 px bez pageerror. Plná E2E sada/FF/WebKit neběžely. Všechny rozdělené soubory do 300 řádků; veřejné vstupy zachovány, package/meta 2.126.0, nevydáno.
 
 ## DS 2.126.0
 
@@ -11,7 +15,7 @@
 - Ověření posledního kola: check:full --harness OK, 1 159/1 159 testů ve 126 souborech; Chromium file-import 1/1, obnovený katalog bez ztrát (0 odebrání), automatické sestavení OK. Nevydáno; samostatný plán rozdělení velkých souborů se v tomto kole neprovádí.
 - [x] Opravné kolo: zakázaný cíl drop spolkne, interní tažení (dragstart) překryv neukáže, split tlačítko v addAction gridu (zkratka N, sloučení do „+ ▾“), sémantický seznam/checkboxy v SelectableGroupList, jedna zastávka Tab ve FileDropZone, E2E spec importu.
 - [x] Import souborů I2: FileDropZone, FileChipBar, PaneDropOverlay, CheckList, SelectableGroupList; CS/SK, ukázka importu a přetažení nad gridem, testy, katalog a check:full.
-- [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
+- [x] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types) — dokončeno v 2.127.0.
 - [x] AdvanceCorrectionDialog: nepovinná měna částek currencyCode, zachovaný výchozí formát.
 - Ověření I2: check:full --harness OK, 1 149/1 149 testů ve 125 souborech; katalog 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání. Chromium import XML → detail kontroly → dokončení, také 360 px bez pageerror/přetečení. Automatické typy/sestavení OK. Plná E2E sada/FF/WebKit neběžely. Bez vydání; rozdělení velkých souborů je samostatný plán mimo I2, nikoli součást tohoto kola.
 
@@ -25,7 +29,7 @@
 
 ## Další kolo 2.126.0 (plán)
 
-- [ ] Rozdělit soubory nad limitem 300 řádků (kontrola Clauda 2.125.0): `panes/pane-context-provider.tsx` (540), `panes/pane-layout.tsx` (652), `grid/DataGrid.tsx` (504), `accounting/document-form/document-form-types.ts` (515). Bez změny chování.
+- [x] Dokončeno v 2.127.0: rozdělit soubory nad limitem 300 řádků (kontrola Clauda 2.125.0): `panes/pane-context-provider.tsx` (540), `panes/pane-layout.tsx` (652), `grid/DataGrid.tsx` (504), `accounting/document-form/document-form-types.ts` (515). Bez změny chování.
 
 ## DS 2.124.0 – Rozdělení navázaných záložek
 

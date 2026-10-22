@@ -36,6 +36,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Keep grid/editor texts in domain modules, re-exported through the existing text entry. Why: stable imports and bounded files.
 - Panels share layout/resize/tools; file surfaces share useFileDrop/validateFiles and innermost enabled drop ownership. Why: consistent limits, keyboard and no duplicate drops. Internal drag is cleared on window capture drop/dragend; selection lists use semantic lists with focusable checkboxes, not mixed listbox children.
 - FileDropZone owns drag events on a group; its selection button contains only static content and children remain siblings. Why: chip actions stay independently accessible without nested controls.
+- Keep pane providers, pane layout, grid model/toolbar/body and document value/props/text contracts in focused internal modules; preserve their public entry re-exports. Why: maintenance stays bounded without changing consumer imports or behavior.
 
 ## Vydání knihovny
 
