@@ -197,7 +197,11 @@ export function RecordPanelShowcase() {
           </RecordSidePanel>
         </div>
       </div>
-      {adjacent ? <AdjacentPanelExample>{content.tabs.find(item => item.id === tab)?.content}</AdjacentPanelExample> : null}
+      {adjacent ? (
+        <AdjacentPanelExample>
+          {content.tabs.find((item) => item.id === tab)?.content}
+        </AdjacentPanelExample>
+      ) : null}
       <section data-testid="grid-panel-example">
         <PageHeader title="Doklady" />
         <RecordSidePanel
