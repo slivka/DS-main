@@ -1,5 +1,7 @@
 ## DS 2.134.0 (nevydáno)
 
+- [ ] Úložiště gridů: izolace hydratace/zápisů při změně účtu, clearGridPrefsCache(scope), reset s propagací chyby a oznámením gridům, flush s timeoutem; unit a check:full --harness.
+
 - [x] Zpevnit Chromium testy oddělovače Akce (stabilní rozměry, computed inset stín místo pixelového snímku) a bubliny evidence záloh (Tab/hover, tabindex, role tooltip); každý 20/20, navíc běžný grid 20/20, celkem 60/60 bez retries. Výsledky v CHANGELOGu; komponenty beze změny, nevydáno.
 
 ## DS 2.133.0
