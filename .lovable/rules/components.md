@@ -313,7 +313,7 @@ import { AdvanceReasonDialog } from "@/design-system/{slug}";
 import { AdvanceRegisterGrid } from "@/design-system/{slug}";
 ```
 
-Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočítá lhůty ani historické zůstatky.
+Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočítá lhůty ani historické zůstatky. Bez viditelného nadpisového pruhu; title Evidence záloh zůstává přístupným názvem tabulky a názvem exportu.
 
 **Props:**
 
