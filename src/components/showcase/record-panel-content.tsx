@@ -87,7 +87,7 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
       label: "Zdroj",
       icon: FileText,
       content: (
-        <div className="flex min-h-0 flex-col gap-2">
+        <div className="flex min-h-0 flex-1 flex-col gap-2">
           <div className="w-40">
             <OptionSelect
               value={scenario}

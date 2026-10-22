@@ -71,6 +71,8 @@ export interface RecordActionError {
 }
 
 export interface RecordActionBarProps {
+  /** Ovladač panelu vždy poslední za nabídkou, také při zkrácení ostatních akcí. */
+  panelToggle?: ReactNode;
   /** Volitelný obsah vlevo, například přepínač ovlivňující formulář. */
   leftContent?: ReactNode;
   saveAction?: RecordSaveAction;
@@ -176,6 +178,7 @@ function CompactActionButton({
 
 /** Přilepený pruh akcí karty záznamu s jednotnou oblastí pro chybu a upozornění. */
 export function RecordActionBar({
+  panelToggle,
   leftContent,
   saveAction,
   primaryAction,
@@ -203,9 +206,15 @@ export function RecordActionBar({
   const closeText = closeErrorLabel ?? dsTexts.recordAction.closeError;
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
   const { barRef, leftRef, measureRef, level } = useRecordActionWidth(
-    [saveText, primaryAction?.label, moreText, Boolean(saveAction), moreActions.length, busy].join(
-      "|",
-    ),
+    [
+      saveText,
+      primaryAction?.label,
+      moreText,
+      Boolean(saveAction),
+      moreActions.length,
+      busy,
+      Boolean(panelToggle),
+    ].join("|"),
   );
   const compact = level > 0;
 
@@ -337,6 +346,11 @@ export function RecordActionBar({
               </DropdownMenuContent>
             </DropdownMenu>
           ) : null}
+          {panelToggle ? (
+            <span data-slot="record-action-panel" className="inline-flex shrink-0 items-center">
+              {panelToggle}
+            </span>
+          ) : null}
         </div>
         <div
           ref={measureRef}
@@ -382,6 +396,9 @@ export function RecordActionBar({
                     <MoreHorizontal />
                   </span>
                 </Button>
+              ) : null}
+              {panelToggle ? (
+                <span className="h-[var(--control-h)] w-[var(--control-h)] shrink-0" />
               ) : null}
             </div>
           ))}

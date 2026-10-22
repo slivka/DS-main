@@ -14,7 +14,7 @@ const definitions = [
     name: "PanelToggleButton",
     file: "src/components/ds/layout/panel-toggle-button.tsx",
     usage:
-      "Tlačítko panelu v PageHeader.panelToggle a DataGrid.panelToggle za Obnovit. Stav elsewhere zaměří sousední okno přes onFocusElsewhere; tooltip a indikátor dodává APP.",
+      "Tlačítko panelu ve formuláři přes DocumentForm.panelToggle / RecordActionBar.panelToggle úplně vpravo za nabídkou akcí, nikoli v záhlaví. DataGrid.panelToggle zůstává za Obnovit. Stav elsewhere zaměří sousední okno přes onFocusElsewhere; tooltip a indikátor dodává APP.",
     code: "<PanelToggleButton open={open} onToggle={() => setOpen(!open)} indicator={hasActivity} tooltip={panelSummary} state={panelState} onFocusElsewhere={focusPanel} />",
     avoid:
       "Nevytvářejte druhý místní panel při state=elsewhere a nedoplňujte počty ani oprávnění v DS.",
@@ -32,7 +32,7 @@ const definitions = [
     name: "SourcePreview",
     file: "src/components/ds/feedback/source-preview.tsx",
     usage:
-      "Záložka Zdroj panelu záznamu: PDF v iframe, obrázek v img, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy.",
+      "Záložka Zdroj panelu záznamu: vyplní zbývající výšku pod nástroji v hostiteli s určenou výškou, PDF.js v iframe vykreslí stránky podle šířky a přepočítá je při tažení; svisle roluje jen náhled. Obrázek contain přes celou plochu, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy. PDF.js a jeho worker se načítají jen v klientském efektu.",
     code: "<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />",
     avoid:
       "Nevracejte náhled zdroje do AttachmentList (source je deprecated) a negenerujte adresy v DS – dodává je APP.",
@@ -204,16 +204,50 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     if (!document.props.some((item) => item.name === "panelToggle"))
       document.props.push({ name: "panelToggle", type: "ReactNode" });
     const guidance =
-      " panelToggle předává ovladač do PageHeader mezi nabídku a zavření; společné pro faktury i zálohové listy.";
+      " panelToggle předává ovladač do RecordActionBar úplně vpravo za nabídku akcí ve všech šířkách, nikdy do záhlaví; společné pro faktury i zálohové listy.";
+    document.usage = document.usage?.replace(
+      " panelToggle předává ovladač do PageHeader mezi nabídku a zavření; společné pro faktury i zálohové listy.",
+      guidance,
+    );
     if (!document.usage?.includes("panelToggle"))
       document.usage = (document.usage ?? "") + guidance;
     document.examples ??= [];
-    if (!document.examples.some((item) => item.label === "Ovladač panelu v záhlaví"))
+    // Historický katalogový klíč zachováme, jeho obsah už učí nové umístění.
+    const oldExample = document.examples.find((item) => item.label === "Ovladač panelu v záhlaví");
+    if (oldExample)
+      oldExample.code =
+        "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />";
+    else
       document.examples.push({
         label: "Ovladač panelu v záhlaví",
         code: "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />",
       });
+    if (!document.examples.some((item) => item.label === "Ovladač panelu za akcemi"))
+      document.examples.push({
+        label: "Ovladač panelu za akcemi",
+        code: "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />",
+      });
     touched.push(document);
+  }
+  const actionBar = components.find((item) => item.name === "RecordActionBar");
+  if (actionBar) {
+    actionBar.props ??= [];
+    if (!actionBar.props.some((item) => item.name === "panelToggle"))
+      actionBar.props.push({ name: "panelToggle", type: "ReactNode" });
+    const rule =
+      " panelToggle je poslední za nabídkou, nikdy se neslučuje do nabídky ani nezmizí při zkrácení akcí.";
+    if (!actionBar.usage?.includes("panelToggle")) actionBar.usage = (actionBar.usage ?? "") + rule;
+    actionBar.examples ??= [];
+    if (!actionBar.examples.some((item) => item.label === "Panel za nabídkou"))
+      actionBar.examples.push({
+        label: "Panel za nabídkou",
+        code: "<RecordActionBar saveAction={save} moreActions={actions} panelToggle={<PanelToggleButton open={open} onToggle={toggle} tooltip={summary} />} />",
+      });
+    actionBar.antipatterns ??= [];
+    const avoid =
+      "Ve formuláři nevkládejte ovladač panelu do PageHeader; použijte RecordActionBar.panelToggle.";
+    if (!actionBar.antipatterns.includes(avoid)) actionBar.antipatterns.push(avoid);
+    touched.push(actionBar);
   }
   const grid = components.find((item) => item.name === "DataGrid");
   if (grid) {

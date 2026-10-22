@@ -11,3 +11,4 @@ stack_packages:
     - '@tanstack/react-router'
     - lucide-react
     - tailwindcss
+    - pdfjs-dist

@@ -9,6 +9,7 @@ import { useFileDrop, validateFiles, type RejectedFile } from "../../../hooks/us
 import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
 import { PanelToolButton } from "../layout/record-panel-tools";
 import type { RecordAttachment } from "./attachment-types";
+import { SourcePdfPreview } from "./source-pdf-frame";
 /** Odkaz na záznam, ze kterého zdroj pochází. */
 export interface SourceInheritedFrom {
   /** Popisek zdrojového záznamu. */
@@ -70,6 +71,7 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   const t = useDsTexts();
   const dropHost = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const viewport = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
   const [rejected, setRejected] = useState<RejectedFile[]>([]);
   const reported = useRef(false);
@@ -96,7 +98,7 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   });
   if (!source) {
     return (
-      <div ref={ref} {...props} className={cn("flex min-h-40 flex-col gap-2", className)}>
+      <div ref={ref} {...props} className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}>
         <div
           ref={dropHost}
           className={cn(
@@ -136,7 +138,12 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   const readOnly = Boolean(inheritedFrom);
   const replaceBlock = !canReplace ? (replaceDisabledReason ?? t.attachments.denied) : undefined;
   return (
-    <div ref={ref} {...props} className={cn("flex min-h-0 flex-col gap-2", className)}>
+    <div
+      ref={ref}
+      {...props}
+      data-slot="source-preview"
+      className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}
+    >
       <RecordPanelToolbar
         start={
           <span className="min-w-0 truncate text-sm font-medium" title={source.name}>
@@ -183,19 +190,18 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
           {t.sourcePreview.expired}
         </p>
       ) : null}
-      <div className="flex min-h-0 flex-1 flex-col rounded-md border border-border bg-muted/30">
+      <div
+        ref={viewport}
+        data-slot="source-preview-viewport"
+        className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-border bg-muted/30"
+      >
         {kind === "pdf" && url ? (
-          <iframe
-            src={url}
-            title={source.name}
-            className="min-h-0 flex-1 rounded-md"
-            onError={expire}
-          />
+          <SourcePdfPreview url={url} title={source.name} onError={expire} />
         ) : kind === "image" && url ? (
           <img
             src={url}
             alt={source.name}
-            className="min-h-0 flex-1 object-contain"
+            className="absolute inset-0 h-full w-full object-contain"
             onError={expire}
           />
         ) : (

@@ -25,7 +25,7 @@ import { useRecordPanelContent, type DemoPermission } from "./record-panel-conte
 import { PURCHASE_INVOICE_HEADER } from "./document-form-showcase-data";
 import { MOCK_ACCOUNTS, MOCK_PARTNERS } from "../../lib/mock/accounting";
 import { LinkedListShowcase } from "./LinkedListShowcase";
-
+import { AdjacentPanelExample } from "./AdjacentPanelExample";
 type DemoRow = (typeof DOCUMENTS)[number];
 const columns: DataGridColumn<DemoRow>[] = [
   { id: "number", label: "Doklad", value: (row) => row.number },
@@ -80,9 +80,7 @@ export function RecordPanelShowcase() {
     // PDF ukázky je v paměti, URL se při odpojení vždy uvolní.
     const pdf = new jsPDF();
     pdf.setTextColor(18, 48, 74);
-    pdf.setFontSize(20);
     pdf.text("FAKTURA 2026/0142", 20, 25);
-    pdf.setFontSize(12);
     pdf.text("Kancelarske potreby", 20, 50);
     pdf.text("Celkem: 12 100,00", 20, 65);
     const url = URL.createObjectURL(pdf.output("blob"));
@@ -105,17 +103,7 @@ export function RecordPanelShowcase() {
   );
   return (
     <div data-testid="record-panel-showcase" data-ready={Boolean(sourceUrl)} className="space-y-6">
-      <PageHeader
-        title="Panel záznamu"
-        panelToggle={
-          <PanelToggleButton
-            open={open}
-            indicator
-            tooltip="Panel · Přílohy 2 · Poznámky 2"
-            onToggle={() => setOpen(!open)}
-          />
-        }
-      />
+      <PageHeader title="Panel záznamu" />
       <div className="flex flex-wrap items-center gap-3">
         <div className="w-48">
           <OptionSelect
@@ -143,6 +131,7 @@ export function RecordPanelShowcase() {
       <div className={narrow ? "max-w-[35rem]" : ""} data-testid="document-panel-example">
         <div className={zoom ? "record-panel-demo-zoom" : ""}>
           <RecordSidePanel
+            className="h-[40rem]"
             open={open}
             onOpenChange={setOpen}
             activeTab={tab}
@@ -157,6 +146,14 @@ export function RecordPanelShowcase() {
           >
             <div ref={form} className="min-w-0 p-3" data-testid="document-panel-form">
               <DocumentForm
+                panelToggle={
+                  <PanelToggleButton
+                    open={open}
+                    indicator
+                    tooltip="Panel · Přílohy 2 · Poznámky 2"
+                    onToggle={() => setOpen(!open)}
+                  />
+                }
                 title="Přijatá faktura"
                 documentType="FP"
                 status={status === "read" ? "filed" : status}
@@ -197,17 +194,16 @@ export function RecordPanelShowcase() {
         </div>
       </div>
       {adjacent ? (
-        <section className="border-l border-border p-3" data-testid="adjacent-panel-example">
-          <PageHeader title="FP 2026/0142 – panel" />
-          <p className="pb-2 text-xs text-muted-foreground">
-            Navázané okno s celým panelem – sekce si okno pamatuje, zdroj hlásí stav „panel jinde“.
-          </p>
+        <AdjacentPanelExample>
           {content.tabs.find((item) => item.id === tab)?.content}
-        </section>
+        </AdjacentPanelExample>
       ) : null}
       <section data-testid="grid-panel-example">
         <PageHeader title="Doklady" />
         <RecordSidePanel
+          className="h-[40rem]"
+          size={size}
+          onSizeChange={setSize}
           open={gridOpen}
           onOpenChange={setGridOpen}
           activeTab={gridTab}

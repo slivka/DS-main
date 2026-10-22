@@ -81,7 +81,6 @@ export function DocumentFormTop({
     <>
       <PageHeader
         title={title}
-        panelToggle={p.panelToggle}
         titleBadge={
           <span
             data-slot="document-title-badges"
@@ -93,6 +92,7 @@ export function DocumentFormTop({
         }
       />
       <RecordActionBar
+        panelToggle={p.panelToggle}
         leftContent={
           <>
             {p.actionBarContent}

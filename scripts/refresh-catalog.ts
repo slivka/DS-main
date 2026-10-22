@@ -23,6 +23,7 @@ interface CatalogComponent {
   antipatterns?: string[];
 }
 interface Catalog {
+  meta?: { stack_dependencies?: Record<string, string> };
   components: CatalogComponent[];
 }
 
@@ -30,6 +31,13 @@ interface Catalog {
 export function refreshCatalog() {
   const path = ".lovable/design-system.json";
   const catalog = JSON.parse(readFileSync(path, "utf8")) as Catalog;
+  const packages = JSON.parse(readFileSync("package.json", "utf8")) as {
+    dependencies: Record<string, string>;
+  };
+  if (catalog.meta && packages.dependencies["pdfjs-dist"]) {
+    catalog.meta.stack_dependencies ??= {};
+    catalog.meta.stack_dependencies["pdfjs-dist"] = packages.dependencies["pdfjs-dist"];
+  }
   const status = catalog.components.find((component) => component.name === "DocumentStatusBadge");
   const approved = status?.props?.find((prop) => prop.name === "approvedLabel");
   if (!approved) throw new Error("Chybí DocumentStatusBadge.approvedLabel v katalogu.");
