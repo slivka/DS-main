@@ -2,7 +2,9 @@
 
 ## 2.128.0 (nevydáno)
 
-- Zatím bez změn.
+- DocumentForm.fieldLockedReasons: obecný důvod uzamčení pole mimo editableFields – pole se vykreslí jen pro čtení přes FieldValue se zámkem a důvodem v bublině (aria-label). Platí pro částku, měnu, data, protiúčet (číslo účtu, IBAN, SWIFT, kód banky) a VS/KS/SS; texty dodává aplikace. Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason, sumLocked) zůstávají funkční.
+- BankStatementForm.menuActions: veřejný slot položek nabídky „…“ v hlavičce výpisu, připojený za stávající položky; disabledReason u položky.
+- Ukázky: bankovní pohyb s převzatými poli („Převzato z banky“) a výpis s položkou „Import výpisu…“.
 
 ## 2.127.0
 
