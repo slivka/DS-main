@@ -7,20 +7,13 @@
  */
 
 import { Table, TableBody } from "../../ui/table";
-
 import { cn } from "../../../lib/utils";
-
 import { GridPagination } from "./grid-pagination";
-
 import { GridBody, GridErrorRow } from "./grid-states";
-
 import { GridZoomContext, ZoomGrid } from "./grid-zoom";
-
 import { GridTitleBar } from "./grid-title";
-
 import { DataGridColGroup, DataGridHead } from "./DataGridHead";
 import { DataGridRows, DataGridSidePanel, DataGridSummary, DataGridTotals } from "./DataGridBody";
-
 import type { DataGridProps } from "./data-grid-types";
 
 export type { DataGridColumn, DataGridFilterChip, DataGridProps } from "./data-grid-types";
@@ -29,7 +22,6 @@ export {
   DEFAULT_PINNED_COLUMNS,
   isPinnedColumn,
 } from "./grid-column-presets";
-
 import { useDataGridModel } from "./use-data-grid-model";
 import { DataGridToolbar } from "./data-grid-toolbar";
 /** Sdílený grid skládá jediný model, nástroje a tělo. */

@@ -1,7 +1,6 @@
 /** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 
 import { toast } from "sonner";
-
 import { type OpenTabOptions, type PaneTabsApi } from "./pane-context-types";
 import {
   activateTabInState,
@@ -18,7 +17,6 @@ import {
 } from "./pane-state";
 import { clearTabState, isTabDirty } from "./pane-tab-store";
 import { recordNavigation } from "./pane-record-navigation";
-
 import { openLinkedTabInState } from "./linked-tabs";
 import type { PaneProviderActionContext } from "./pane-provider-action-context";
 /** Otevírání a obnova používají původní přechody a úklid. */

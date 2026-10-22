@@ -1,9 +1,7 @@
 /** Sloupec panelu · vlastní vnitřní kompozici · nesmí měnit veřejný kontrakt. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-
 import { cn } from "../../../lib/utils";
-
 import {
   buildTabMenuActions,
   PaneApiContext,
@@ -16,7 +14,6 @@ import {
 import { PaneTabBar } from "./pane-tab-bar";
 import { paneKey, type TabPane } from "./pane-state";
 import { useTabScrollRestore } from "./pane-tab-store";
-
 import type { PaneLayoutTexts } from "./pane-layout-utils";
 import type { PaneLayoutProps } from "./pane-layout-types";
 import { PANE_FOCUS_EXCLUDED, shouldFocusPaneScroll } from "./pane-layout-utils";

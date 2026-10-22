@@ -75,7 +75,9 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
         {size === "md" ? (
           <>
             <Upload aria-hidden="true" className="size-8 text-muted-foreground" />
-            <span id={headingId} className="text-sm font-semibold">{t.drop}</span>
+            <span id={headingId} className="text-sm font-semibold">
+              {t.drop}
+            </span>
           </>
         ) : null}
         {children}

@@ -1,7 +1,6 @@
 /** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 
 import { type UnsavedChangesAction } from "../../../ds-texts";
-
 import {
   activateTabInState,
   closePaneInState,
@@ -10,7 +9,6 @@ import {
   stepTabHistory,
 } from "./pane-state";
 import { clearTabState, isTabDirty } from "./pane-tab-store";
-
 import type { PaneProviderActionContext } from "./pane-provider-action-context";
 /** Zavření i historie sdílejí ochranu neuložených změn. */
 export function createPaneCloseActions(context: PaneProviderActionContext) {

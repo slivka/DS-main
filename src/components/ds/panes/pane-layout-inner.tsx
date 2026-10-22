@@ -10,16 +10,13 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-
 import { Button } from "../../ui/button";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { APP_ZOOM_EVENT, getAppZoom } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
 import { type PaneTabsApi } from "./pane-context";
-
 import { evenWidths, findTab, type PaneTab } from "./pane-state";
-
 import type { PaneLayoutProps } from "./pane-layout-types";
 import { DEFAULT_PANE_TEXTS, maxPaneLayout, requiredPaneWidth } from "./pane-layout-utils";
 import { PaneColumn } from "./pane-column";

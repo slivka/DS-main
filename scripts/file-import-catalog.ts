@@ -6,7 +6,7 @@ const definitions = [
   [
     "FileDropZone",
     "feedback/file-drop-zone",
-    "Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Přetažení obsluhuje role group; vnitřní tlačítko výběru má jedinou zastávku Tab s popisem limitů a pouze statický obsah. Akce children jsou mimo tlačítko a mají vlastní zastávky.",
+    "Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Přetažení obsluhuje role group; vnitřní tlačítko výběru má jedinou zastávku Tab s popisem limitů a pouze statický obsah. Akce children jsou mimo tlačítko a mají vlastní zastávky. Název tlačítka odpovídá viditelnému chooseLabel; skupina má samostatný nadpis a hint popisuje jen tlačítko. Ve velikosti md následují children pod ikonou a nadpisem.",
     '<FileDropZone accept={[".xml", "application/pdf"]} maxFiles={remainingSlots} maxSizeBytes={limit} onFiles={addFiles} onReject={showRejected} hint={limitsLabel}>{overview}</FileDropZone>',
   ],
   [

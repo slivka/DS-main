@@ -6,16 +6,12 @@
  * `pinnedColumnIds` / `compactColumnIds` (výchozí sady v grid-column-presets.ts).
  */
 import { useMemo, useRef, useState } from "react";
-
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
-
 import { usePageLayoutVariant } from "../layout/page-layout";
 import { useGridPagination } from "./grid-pagination";
 import { useGridSort, useSortedRows } from "./grid-sort";
-
 import { gridPrintParams } from "./grid-print";
 import { useGridZoom, useWheelZoom } from "./grid-zoom";
-
 import { useResolvedGridTexts } from "./grid-texts";
 import { gridPeriodLabel } from "./grid-period";
 import { requiredGridWidthAt100, useAutoGridZoom } from "./grid-auto-zoom";
@@ -23,13 +19,11 @@ import { useGridVirtual } from "./grid-virtual";
 import { DEFAULT_COMPACT_COLUMNS, DEFAULT_PINNED_COLUMNS } from "./grid-column-presets";
 import { useDataGridColumns } from "./useDataGridColumns";
 import { useDataGridGroups } from "./useDataGridGroups";
-
 import { useRowActions } from "./useRowActions";
 import { useDataGridSelection } from "./useDataGridSelection";
 import { useColumnDrag } from "./useColumnDrag";
 import { useDataGridFilters } from "./useDataGridFilters";
 import { type DataGridLayout } from "./DataGridHead";
-
 import { buildExportData, totalCells as computeTotalCells } from "./data-grid-model";
 import type { DataGridProps } from "./data-grid-types";
 

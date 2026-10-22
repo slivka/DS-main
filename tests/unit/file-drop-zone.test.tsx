@@ -52,9 +52,9 @@ describe("FileDropZone", () => {
     const view = render(
       <FileDropZone accept={[]} maxSizeBytes={10} hint="Limit 10 B" onFiles={() => {}} />,
     );
-    expect(
-      view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex"),
-    ).toBe("0");
+    expect(view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex")).toBe(
+      "0",
+    );
     expect(view.getAllByRole("button")).toHaveLength(1);
     expect(view.getByRole("group").getAttribute("tabindex")).toBeNull();
     expect(view.getByRole("group").getAttribute("aria-describedby")).toBeNull();
@@ -97,6 +97,23 @@ describe("PaneDropOverlay", () => {
     fireEvent.dragStart(source);
     source.remove();
     const target = view.getByText("Cíl");
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(0);
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(1);
+  });
+  it("dragstart zachytí i při zastaveném bublání v dokumentu", () => {
+    let drops = 0;
+    const view = render(
+      <PaneDropOverlay label="Import" onFiles={() => drops++}>
+        <p>Cíl</p>
+      </PaneDropOverlay>,
+    );
+    const target = view.getByText("Cíl");
+    target.addEventListener("dragstart", (event) => event.stopPropagation());
+    fireEvent.dragStart(target);
+    fireEvent.dragEnter(target, { dataTransfer: transfer([file()]) });
+    expect(view.queryByRole("status")).toBeNull();
     fireEvent.drop(target, { dataTransfer: transfer([file()]) });
     expect(drops).toBe(0);
     fireEvent.drop(target, { dataTransfer: transfer([file()]) });

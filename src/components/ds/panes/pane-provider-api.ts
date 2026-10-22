@@ -1,7 +1,6 @@
 /** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 
 import { toast } from "sonner";
-
 import { type PaneTabsApi } from "./pane-context-types";
 import {
   activateTabInState,
@@ -15,9 +14,7 @@ import {
   MAX_TABS_PER_PANE,
 } from "./pane-state";
 import { clearTabState, getTabDraft, isTabDirty, setTabDraft } from "./pane-tab-store";
-
 import { createLinkedPanelActions } from "./pane-linked-panel-actions";
-
 import { returnLinkedTabInState, setLinkedTabPinnedInState } from "./linked-tabs";
 import type { PaneProviderActionContext } from "./pane-provider-action-context";
 import type { createPaneOpenActions } from "./pane-provider-open-actions";
