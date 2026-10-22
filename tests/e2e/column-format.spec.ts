@@ -81,6 +81,8 @@ test("ColumnPicker formát, výběr, klávesnice, tmavý vzhled a zoom", async (
   await page.getByRole("button", { name: "Zrušit formát všech sloupců" }).click();
   await expect(page.getByRole("button", { name: "Zrušit formát všech sloupců" })).toHaveCount(0);
   await page.keyboard.press("Escape");
+  await expect(page.locator('[data-slot="column-format-editor"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Formát sloupce Zbývá", exact: true }).focus();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("button", { name: "Formát sloupce Zbývá", exact: true })).toHaveCount(
     0,
