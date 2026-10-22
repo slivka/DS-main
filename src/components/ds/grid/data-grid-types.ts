@@ -3,6 +3,7 @@
  * Vlastní: veřejné typy sloupce, štítku filtru a props DataGrid (společné props z GridBaseProps).
  * Nesmí: obsahovat chování.
  */
+import type { GridColumnStyle } from "../../../lib/column-tones";
 import type { ReactNode } from "react";
 
 import type { ExcelColumnType } from "../../../lib/excel-export";
@@ -68,6 +69,10 @@ export type DataGridColumn<Row> = {
   section?: string | undefined;
   /** Sloupec pobočky: „auto" skryje pri jednej pobočke, „always" zobrazí vždy. */
   branchVisibility?: "auto" | "always" | undefined;
+  /** Výchozí formát, přednost má uložený formát uživatele. */
+  defaultStyle?: GridColumnStyle;
+  /** Povolení formátování (výchozí true, systémové sloupce vždy false). */
+  styleable?: boolean;
   className?: string | undefined;
   /** Vlastný filter v záhlaví sloupce (nahrádza automatický autofilter). */
   filter?: ReactNode | undefined;

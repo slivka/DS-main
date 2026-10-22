@@ -9,6 +9,11 @@ import ts from "typescript";
 
 /** Jediný seznam výjimek; výraz omezuje výjimku na konkrétní nepeněžní výpočet. */
 const exceptions = [
+  {
+    file: "src/lib/column-tones.ts",
+    expression: /^Math\.round\(v\*255\)$/,
+    reason: "Zaokrouhlení sRGB kanálu na bajt ARGB, nikoli peněžní částka.",
+  },
   { file: "src/lib/app-zoom.ts", reason: "Krok a formát zoomu aplikace, nikoli částka." },
   {
     file: "src/lib/mock/accounting.ts",

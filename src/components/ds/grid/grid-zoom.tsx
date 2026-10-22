@@ -7,6 +7,8 @@ import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { usePageLayoutVariant } from "../layout/page-layout";
 import { usePane } from "../panes/pane-context";
+import { columnFormatCss, type ColumnFormatPosition } from "./column-format-css";
+import type { GridColumnStyle } from "../../../lib/column-tones";
 import { useTabDraft } from "../panes/pane-tab-store";
 
 const MIN = 0.6;
@@ -216,6 +218,7 @@ export function ZoomGrid({
   density,
   scrollRef,
   loading,
+  columnFormat,
   children,
 }: {
   zoom: number;
@@ -246,6 +249,12 @@ export function ZoomGrid({
   scrollRef?: React.RefObject<HTMLDivElement | null>;
   /** Probíhá načítání dat – zobrazí indikátor průběhu nad tabulkou. */
   loading?: boolean;
+  /** Formáty sloupců v konečném pořadí, sdílené pro všechny tabulky. */
+  columnFormat?: {
+    columns: readonly ColumnFormatPosition[];
+    styles: Record<string, GridColumnStyle>;
+    offset?: number;
+  };
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -482,6 +491,11 @@ export function ZoomGrid({
       }
     >
       {hideCss && <style>{hideCss}</style>}
+      {columnFormat ? (
+        <style>
+          {columnFormatCss(gridId, columnFormat.columns, columnFormat.styles, columnFormat.offset)}
+        </style>
+      ) : null}
       <GridProgress show={loading} />
       {children}
     </div>

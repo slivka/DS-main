@@ -74,3 +74,4 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Multi-selection uses cmdk items and the opt-in inline-search multiple focus contract; single-selection Tab remains non-confirming. Why: portaled search and actions share one keyboard owner.
 
 - DocumentForm composes an input resolver, base model, feedback model and view; preview scenarios remain separate excluded modules. Why: preserve the public contract while keeping source units bounded.
+- Column formats use sanitized GridLayout.styles, shared columnFormatCss in ZoomGrid and light ARGB through the Excel palette module; contrast tests read CSS tokens explicitly. Why: UI, views, exports and print share one format contract without domain logic.

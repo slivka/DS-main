@@ -91,6 +91,11 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
           <ZoomGrid
             zoom={zoom}
             setZoom={setZoom}
+            columnFormat={{
+              columns: layout.shown,
+              styles: layout.cols.styles,
+              offset: layout.selectMode ? 1 : 0,
+            }}
             density={density}
             height={resolvedHeight}
             scrollRef={virtual.scrollRef}

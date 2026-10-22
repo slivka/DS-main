@@ -85,6 +85,7 @@ function TreeCell<Row extends TreeGridRow>({
       : treeCellText(column, row);
   return (
     <TableCell
+      data-negative={numericShown !== null && numericShown < 0 ? "true" : undefined}
       className={cn(
         "whitespace-nowrap",
         treeAlignClass(column),
@@ -142,6 +143,7 @@ export function TreeGridRows<Row extends TreeGridRow>(props: TreeGridRowsProps<R
           <TableRow
             key={row.id}
             data-row-id={row.id}
+            data-column-group={canExpand ? "true" : undefined}
             data-highlighted={isHighlighted || undefined}
             aria-selected={isHighlighted}
             onClick={() => props.onRowClick(row)}

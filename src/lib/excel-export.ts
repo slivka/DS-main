@@ -1,3 +1,4 @@
+import { isColumnTone, type GridColumnStyle } from "./column-tones";
 import type { Alignment, Workbook } from "exceljs";
 import JSZip from "jszip";
 import { excelDateFormat, formatUserDate, formatUserDateTime } from "./date-time-preferences";
@@ -15,6 +16,8 @@ export type ExcelColumnType =
   | "year";
 
 export interface ExcelColumnMeta {
+  /** Uložený vizuální formát dat a součtů. */
+  style?: GridColumnStyle;
   type: ExcelColumnType;
   align?: "left" | "right" | "center";
   numFmt?: string;
@@ -99,6 +102,9 @@ const NAVY_TRUST = {
   muted: "FF71717A",
   border: "FFC4CBD4",
 } as const;
+
+export { COLUMN_TONE_ARGB } from "./excel-column-palette";
+import { COLUMN_TONE_ARGB } from "./excel-column-palette";
 
 let excelJsPromise: Promise<typeof import("exceljs")> | null = null;
 function loadExcelJs() {
@@ -411,7 +417,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       const horizontal = columnMeta.align as Alignment["horizontal"];
       target.font = {
         name: "Arial",
-        bold: isHeader || isTableTotal,
+        bold: isHeader || isTableTotal || columnMeta.style?.bold === true,
         ...(isHeader ? { color: { argb: NAVY_TRUST.headerForeground } } : {}),
       };
       target.alignment = {
@@ -425,6 +431,14 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
         target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.header } };
       if (isTableTotal)
         target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
+      if (!isHeader && isColumnTone(columnMeta.style?.tone)) {
+        const tone = columnMeta.style.tone;
+        const colors = COLUMN_TONE_ARGB[tone];
+        target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: colors.fill } };
+        if (tone.endsWith("strong")) {
+          target.font = { ...target.font, color: { argb: colors.font } };
+        }
+      }
       target.border = {
         top: { style: "thin", color: { argb: NAVY_TRUST.border } },
         bottom: { style: "thin", color: { argb: NAVY_TRUST.border } },
@@ -432,7 +446,9 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
         right: { style: "thin", color: { argb: NAVY_TRUST.border } },
       };
       if (["number", "integer", "percent", "year"].includes(columnMeta.type)) {
-        target.numFmt = numberFormat(columnMeta);
+        target.numFmt = columnMeta.style?.tone?.endsWith("strong")
+          ? numberFormat(columnMeta).replace("[Red]", "")
+          : numberFormat(columnMeta);
       } else if (columnMeta.type === "date" || columnMeta.type === "datetime") {
         target.numFmt = excelDateFormat(undefined, columnMeta.type === "datetime");
       }

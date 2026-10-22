@@ -108,6 +108,8 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
       effectiveColumns.map((column) => ({
         id: column.id,
         label: column.label,
+        defaultStyle: column.defaultStyle,
+        styleable: column.styleable,
         ...(column.id === hierarchyColumnId || column.locked ? { locked: true } : {}),
         ...(column.hiddenByDefault ? { defaultVisible: false } : {}),
         ...(column.transient ? { transient: true } : {}),
@@ -127,14 +129,26 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
       visible.map((c) => ({
         label: typeof c.label === "string" ? c.label : c.id,
         width: cols.widths[c.id] ?? c.width,
+        bold: cols.styles[c.id]?.bold,
+        sample: rows.slice(0, 100).map((row) => String(c.value?.(row) ?? "")),
       })),
       { select: selectMode, actions: hasRowActions },
     );
-  }, [byColumnId, cols.columns, cols.visible, cols.widths, selectMode, hasRowActions]);
+  }, [
+    byColumnId,
+    cols.columns,
+    cols.visible,
+    cols.widths,
+    cols.styles,
+    rows,
+    selectMode,
+    hasRowActions,
+  ]);
   useAutoGridZoom(blockRef, autoZoom, requiredWidthAt100, setAutoZoom, zoom, [
     cols.visible,
     cols.order,
     cols.widths,
+    cols.styles,
     selectMode,
     hasRowActions,
   ]);
@@ -219,8 +233,8 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
   const hasTotals = shown.some((column) => column.numeric && column.total !== "none");
   const nodeTotal = (column: TreeGridColumn<Row>, row: Row) =>
     column.numeric && column.total !== "none" ? (totals.get(row.id)?.get(column.id) ?? null) : null;
-  const exportData = (onlyExpanded = false) =>
-    buildTreeExport({
+  const exportData = (onlyExpanded = false) => {
+    const data = buildTreeExport({
       tree,
       shown,
       hierarchyColumnId,
@@ -229,6 +243,12 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
       nodeTotal,
       onlyExpanded,
     });
+    data.columnMeta = data.columnMeta?.map((meta, index) => ({
+      ...meta,
+      style: cols.styles[shown[index]?.id ?? ""],
+    }));
+    return data;
+  };
   const printConfig = props.printContext
     ? {
         context: props.printContext,
@@ -315,7 +335,19 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
         columnPicker={{
           columns: cols.columns
             .filter((c) => !c.transient)
-            .map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) })),
+            .map((c) => ({
+              id: c.id,
+              label: c.label,
+              styleable: c.styleable,
+              ...(c.locked ? { locked: true } : {}),
+            })),
+          styles: cols.styles,
+          onColumnStyleChange: cols.setColumnStyle,
+          onClearColumnStyles: cols.clearColumnStyles,
+          onSaveDefault: cols.saveDefault,
+          onClearDefault: cols.clearDefault,
+          hasCustomDefault: cols.hasCustomDefault,
+          views: cols.views,
           visible: cols.columnVisible,
           onToggle: cols.toggle,
           onReorder: cols.reorder,
@@ -374,6 +406,7 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
         }
       />
       <ZoomGrid
+        columnFormat={{ columns: shown, styles: cols.styles, offset: selectMode ? 1 : 0 }}
         zoom={zoom}
         setZoom={setZoom}
         density={density}

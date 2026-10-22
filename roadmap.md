@@ -1,7 +1,9 @@
 ## DS 2.132.0 (nevydáno)
 
 - [x] Kolo 1: jedno úložiště rozložení gridů (GridLayout, store od APP, debounce/flush, přechod starých klíčů, scope), hooky gridu na novém API, ukázka s přepínačem úložiště, unit testy
-- [ ] Kolo 2: formát sloupce (GridLayout.styles) – po kontrole
+- [x] Kolo 2: tokenová paleta a kontrast, styly v pohledech/výchozím, editor ve Sloupcích, sdílené vykreslení, Excel/tisk, ukázka a testy, check:full (nevydávat)
+- Ověření kola 2: check:full --harness 1 286/1 286 ve 137 souborech; katalog 476 → 477 / 1 146 → 1 191 props, 0 odebrání; Chromium column-format 1/1. Plná E2E sada mimo toto kolo. Release Claude.
+- [ ] Následující údržba: ColumnPicker (477 ř.), grid-columns (502 ř.), grid-zoom (542 ř.), excel-export a report-pdf nad 500 ř. – stávající orchestrátory drží řízení tabulky/výstupu; nové části formátu jsou oddělené. Nejde o blokaci kola 2.
 
 ## DS 2.131.0
 

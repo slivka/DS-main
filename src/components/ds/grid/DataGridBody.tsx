@@ -231,6 +231,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
               return (
                 <TableCell
                   key={c.id}
+                  data-negative={c.numeric && Number(c.value?.(row)) < 0 ? "true" : undefined}
                   data-pin-right={c.pinRight || undefined}
                   className={`${cellAlign(c)} [&:has([data-slot=badge])]:text-left ${
                     pinned.has(c.id) ? (c.align === "left" ? "text-left" : "text-center") : ""

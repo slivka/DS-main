@@ -92,6 +92,8 @@ export * from "./lib/code-format";
 export * from "./lib/tokens";
 export * from "./lib/lovable-error-reporting";
 export * from "./lib/grid-prefs";
+export * from "./lib/column-tones";
+export * from "./components/ds/grid/column-format-editor";
 export * from "./lib/period";
 export * from "./lib/form-errors";
 export * from "./lib/form-issues";

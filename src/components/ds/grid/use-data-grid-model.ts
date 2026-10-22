@@ -24,7 +24,7 @@ import { useDataGridSelection } from "./useDataGridSelection";
 import { useColumnDrag } from "./useColumnDrag";
 import { useDataGridFilters } from "./useDataGridFilters";
 import { type DataGridLayout } from "./DataGridHead";
-import { buildExportData, totalCells as computeTotalCells } from "./data-grid-model";
+import { cellText, buildExportData, totalCells as computeTotalCells } from "./data-grid-model";
 import type { DataGridProps } from "./data-grid-types";
 
 /** Odvodí sdílený model gridu bez změny řízení jeho stavu. */
@@ -134,14 +134,17 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
       visible.map((c) => ({
         label: typeof c.label === "string" ? c.label : c.id,
         width: cols.widths[c.id] ?? c.width,
+        bold: cols.styles[c.id]?.bold,
+        sample: rows.slice(0, 100).map((row) => cellText(c.value?.(row))),
       })),
       { select: selectMode, actions: hasRowActions },
     );
-  }, [byId, cols.columns, cols.visible, cols.widths, selectMode, hasRowActions]);
+  }, [byId, cols.columns, cols.visible, cols.widths, cols.styles, rows, selectMode, hasRowActions]);
   useAutoGridZoom(blockRef, autoZoom, requiredWidthAt100, setAutoZoom, zoom, [
     cols.visible,
     cols.order,
     cols.widths,
+    cols.styles,
     selectMode,
     hasRowActions,
   ]);
@@ -160,13 +163,16 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
     searching: Boolean(filter.search),
   });
   const { grouping, displayItems } = groups;
-  const exportData = (forPrint = false) =>
-    buildExportData(
+  const exportData = (forPrint = false) => {
+    const data = buildExportData(
       shown,
       groups.exportItems(forPrint),
       grouping.active ? grouping.groups.length : null,
       forPrint,
+      cols.styles,
     );
+    return data;
+  };
 
   // Virtualizace jen bez stránkování; v režimu auto ji hook sám vypne.
   const virtual = useGridVirtual(displayItems.length, {

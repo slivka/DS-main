@@ -6,6 +6,7 @@
  */
 import { useMemo } from "react";
 
+import { isStyleableColumn } from "./use-column-styles";
 import { useGridColumns } from "./grid-columns";
 import {
   createGridBookColumn,
@@ -45,6 +46,9 @@ export function useDataGridColumns<Row>(
     () =>
       effectiveColumns.map((c) => ({
         id: c.id,
+        defaultStyle: c.defaultStyle,
+        styleable: isStyleableColumn(c),
+        type: c.type,
         label: c.label,
         // Sloupec akcí se nesmí dát skrýt; sloupec pobočky řídí přepínač poboček.
         locked:

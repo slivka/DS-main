@@ -5,11 +5,13 @@
  */
 import * as React from "react";
 
+import { gridTextWidthAt100 } from "../grid/grid-text-measure";
 import { APP_ZOOM_EVENT } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
 import { useGridColumns, type GridColumn } from "../grid/grid-columns";
 import { useGridZoom } from "../grid/grid-zoom";
 import {
+  JOURNAL_COLUMN_WIDTHS,
   journalColumnWidthsRem,
   normalizeJournalAccountVisibility,
   resolveJournalZoomLayout,
@@ -115,12 +117,23 @@ export function useJournalLayout(input: JournalLayoutInput) {
   const widthsRem = React.useMemo(
     () =>
       Object.fromEntries(
-        Object.entries(columns.widths).map(([id, width]) => [
-          id,
-          typeof width === "number" ? width / 16 : undefined,
-        ]),
+        columns.columns.map((column) => {
+          const width = columns.widths[column.id];
+          const bold = columns.styles[column.id]?.bold;
+          return [
+            column.id,
+            typeof width === "number"
+              ? width / 16
+              : bold
+                ? Math.max(
+                    JOURNAL_COLUMN_WIDTHS[column.id],
+                    (gridTextWidthAt100(column.label, true) + 24) / 16,
+                  )
+                : undefined,
+          ];
+        }),
       ),
-    [columns.widths],
+    [columns.widths, columns.columns, columns.styles],
   );
   const availableWidthPx16 = containerWidth / 16;
   const appZoomFactor = rootRemPx / 16;
@@ -172,7 +185,14 @@ export function useJournalLayout(input: JournalLayoutInput) {
     .sort((a, b) => (a.id === "actions" ? 1 : b.id === "actions" ? -1 : 0));
   const colWidthsRem = journalColumnWidthsRem({
     columnIds: visibleColumns.map((column) => column.id),
-    savedWidths: columns.widths,
+    savedWidths: {
+      ...Object.fromEntries(
+        Object.entries(widthsRem).flatMap(([id, width]) =>
+          typeof width === "number" ? [[id, width * 16]] : [],
+        ),
+      ),
+      ...columns.widths,
+    },
     compactAccountIds,
     layout: columnLayout,
     zoom,
