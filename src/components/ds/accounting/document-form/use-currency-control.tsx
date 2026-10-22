@@ -2,6 +2,7 @@
 import { useId } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { OptionSelect } from "../../form/option-select";
+import { FieldValue } from "../../form/field-value";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
@@ -15,6 +16,8 @@ interface Args {
   readOnly: boolean;
   identityVariant: string;
   currencyDisabledReason?: string;
+  /** Obecný důvod uzamčení měny (2.128.0); má přednost a kreslí FieldValue se zámkem. */
+  lockedReason?: string;
   currencyOptions: { value: string; label: string; selectedLabel?: string }[];
   currenciesPresent: boolean;
   t: DocumentFormTexts;
