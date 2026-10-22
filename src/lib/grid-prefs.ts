@@ -13,6 +13,7 @@ import {
   sweepLegacyGridKeys,
 } from "./grid-prefs-migration";
 import type { GridColumnStyle } from "./column-tones";
+import { GridPrefsSaveQueue } from "./grid-prefs-saves";
 
 export { isGridPrefKey };
 
@@ -61,14 +62,14 @@ export const GRID_LAYOUT_CHANGE = "grid-layout-change";
 
 const MIRROR_PREFIX = "gridLayout:";
 const DEFAULT_SCOPE = "local";
-const SAVE_DEBOUNCE_MS = 600;
 
 let currentStore: GridPrefsStore | null = null;
 let currentScope = DEFAULT_SCOPE;
 const memory = new Map<string, GridLayout>();
 /** Klíče, které kdy byly načtené – pro rozeslání změny po přepnutí scope/store. */
 const knownKeys = new Set<string>();
-const pendingSaves = new Map<string, ReturnType<typeof setTimeout>>();
+const saves = new GridPrefsSaveQueue();
+let generation = 0;
 const erroredKeys = new Set<string>();
 
 const hasWindow = () => typeof window !== "undefined";
@@ -143,39 +144,29 @@ export function updateGridLayout(key: string, patch: Partial<GridLayout>) {
 }
 
 function scheduleSave(key: string) {
-  if (!currentStore || !hasWindow()) return;
-  ensureFlushListeners();
-  const existing = pendingSaves.get(key);
-  if (existing) clearTimeout(existing);
-  pendingSaves.set(
-    key,
-    setTimeout(() => void saveNow(key), SAVE_DEBOUNCE_MS),
-  );
-}
-
-async function saveNow(key: string) {
-  const timer = pendingSaves.get(key);
-  if (timer) clearTimeout(timer);
-  pendingSaves.delete(key);
   const store = currentStore;
   const layout = memory.get(key);
-  if (!store || !layout) return;
-  try {
-    await store.save(key, layout);
-    erroredKeys.delete(key);
-  } catch (error) {
-    // Hodnota zůstává v paměti i zrcadle; další změna klíče zkusí znovu.
-    if (!erroredKeys.has(key)) {
-      erroredKeys.add(key);
-      store.onError?.(error, key);
+  const started = generation;
+  if (!store || !layout || !hasWindow()) return;
+  ensureFlushListeners();
+  saves.schedule(key, async () => {
+    if (started !== generation) return;
+    try {
+      await store.save(key, layout);
+      if (started === generation) erroredKeys.delete(key);
+    } catch (error) {
+      // Starý zápis nesmí měnit chyby nově přihlášeného účtu.
+      if (started === generation && !erroredKeys.has(key)) {
+        erroredKeys.add(key);
+        store.onError?.(error, key);
+      }
     }
-  }
+  });
 }
 
-/** Uloží všechny čekající změny do store hned. */
-export function flushGridPrefs(): Promise<void> {
-  const keys = [...pendingSaves.keys()];
-  return Promise.all(keys.map((key) => saveNow(key))).then(() => undefined);
+/** Uloží čekající změny; timeout pouze ukončí čekání, zrcadlo zůstává zachované. */
+export function flushGridPrefs(options: { timeoutMs?: number } = {}): Promise<void> {
+  return saves.flush(options.timeoutMs);
 }
 
 let flushListeners = false;
@@ -196,12 +187,12 @@ export function configureGridPrefsStore(
   store: GridPrefsStore | null,
   options: { scope?: string } = {},
 ) {
+  generation += 1;
+  saves.cancel();
   currentStore = store;
   currentScope = options.scope ?? DEFAULT_SCOPE;
   memory.clear();
   erroredKeys.clear();
-  for (const timer of pendingSaves.values()) clearTimeout(timer);
-  pendingSaves.clear();
   ensureFlushListeners();
 }
 
@@ -212,6 +203,8 @@ export function configureGridPrefsStore(
  */
 export async function hydrateGridPrefs(): Promise<void> {
   if (!hasWindow()) return;
+  const started = generation;
+  const store = currentStore;
   const prefix = `${MIRROR_PREFIX}${currentScope}:`;
   for (let i = 0; i < window.localStorage.length; i += 1) {
     const storageKey = window.localStorage.key(i);
@@ -225,13 +218,15 @@ export async function hydrateGridPrefs(): Promise<void> {
     }
   }
   const storeKeys = new Set<string>();
-  if (currentStore) {
+  if (store) {
     let all: Record<string, GridLayout> = {};
     try {
-      all = await currentStore.loadAll();
+      all = await store.loadAll();
     } catch (error) {
-      currentStore.onError?.(error, "*");
+      if (started !== generation) return;
+      store.onError?.(error, "*");
     }
+    if (started !== generation) return;
     for (const [key, layout] of Object.entries(all)) {
       storeKeys.add(key);
       const changed = JSON.stringify(memory.get(key) ?? null) !== JSON.stringify(layout);
@@ -262,12 +257,14 @@ export async function hydrateGridPrefs(): Promise<void> {
 }
 
 /** Zapomene uložená nastavení gridů: paměť, zrcadlo (všech scope) i store. */
-export function resetGridPrefs() {
-  memory.clear();
+export async function resetGridPrefs(): Promise<void> {
+  const store = currentStore;
+  const keysToNotify = [...knownKeys];
   knownKeys.clear();
+  generation += 1;
+  saves.cancel();
+  memory.clear();
   erroredKeys.clear();
-  for (const timer of pendingSaves.values()) clearTimeout(timer);
-  pendingSaves.clear();
   if (hasWindow()) {
     const keys: string[] = [];
     for (let i = 0; i < window.localStorage.length; i += 1) {
@@ -276,14 +273,21 @@ export function resetGridPrefs() {
     }
     for (const key of keys) window.localStorage.removeItem(key);
   }
-  void currentStore?.removeAll();
+  // Otevřené gridy při oznámení synchronně přečtou již prázdné rozložení.
+  for (const key of keysToNotify) dispatchChange(key);
+  await store?.removeAll();
 }
 
-/** Smaže jen paměť a zrcadlo aktuálního scope (např. při odhlášení). */
-export function clearGridPrefsCache() {
-  memory.clear();
+/** Smaže zrcadlo daného scope; jeho paměť/čekající práci, je-li právě aktivní. */
+export function clearGridPrefsCache(scope = currentScope) {
+  if (scope === currentScope) {
+    generation += 1;
+    saves.cancel();
+    memory.clear();
+    erroredKeys.clear();
+  }
   if (!hasWindow()) return;
-  const prefix = `${MIRROR_PREFIX}${currentScope}:`;
+  const prefix = `${MIRROR_PREFIX}${scope}:`;
   const keys: string[] = [];
   for (let i = 0; i < window.localStorage.length; i += 1) {
     const key = window.localStorage.key(i);

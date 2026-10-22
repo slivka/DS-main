@@ -75,6 +75,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - DocumentForm composes an input resolver, base model, feedback model and view; preview scenarios remain separate excluded modules. Why: preserve the public contract while keeping source units bounded.
 - Column formats use sanitized GridLayout.styles, shared columnFormatCss in ZoomGrid and light ARGB through the Excel palette module; contrast tests read CSS tokens explicitly. Why: UI, views, exports and print share one format contract without domain logic.
+- Grid preferences guard hydration with a configuration generation and capture the originating store/layout in a focused save queue; scope changes discard pending work while active writes finish in the old store. Why: account switches cannot move private layouts into another user's scope.
 
 - Invoice printing composes section modules over createPrintDocument/Roboto and PrintPreviewDialog; APP supplies every monetary total and resolved logo; shared invoice-options owns defaults, including the explicitly required home-currency fallback. Why: one PDF system without a second accounting engine.
 

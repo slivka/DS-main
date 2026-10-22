@@ -1,5 +1,11 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Úložiště rozložení gridů
+
+- Store dodává APP; `configureGridPrefsStore(store, { scope: userId })` oddělí účty a zruší čekající debounce. Rozběhnuté zápisy dokončí původní store; zastaralá hydratace nesmí zapisovat do nového scope.
+- Při odhlášení lze `await flushGridPrefs({ timeoutMs: 1500 })`; limit ukončí pouze čekání, nevyřízené změny zůstávají v zrcadle. `clearGridPrefsCache(odchazejiciUserId)` odstraní jen jeho zrcadlo i po přepnutí na local; bez parametru vyčistí aktivní scope a zneplatní jeho načítání/zápisy.
+- `await resetGridPrefs()` ihned vyčistí lokální nastavení a oznámí změnu otevřeným gridům; čeká na `store.removeAll()` a jeho chybu propaguje. APP musí odmítnutí zachytit a oznámit uživateli, nikoli reset volat bez obsluhy Promise.
+
 ## Tisk vydané faktury
 
 - `buildInvoicePdf(InvoicePrintData, opts)` pouze vykreslí hotový výstup APP (document_print_data); daně, zálohy, součty a domácí měnu dodává APP. Volitelné base_total/vat_total/vat_total_text/vat_home doplní APP, DS je neodvozuje z položek.
