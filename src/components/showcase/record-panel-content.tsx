@@ -130,6 +130,43 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
       ),
     },
     {
+      id: "notes",
+      label: "Poznámky",
+      icon: MessageSquare,
+      count: notes.length,
+      content: (
+        <RecordNotes
+          notes={notes}
+          canAdd
+          canPin
+          onAdd={(body) =>
+            setNotes((items) => [
+              ...items,
+              {
+                id: `note-${Date.now()}`,
+                body,
+                author: "Petr Slivka",
+                createdAt: new Date().toISOString(),
+              },
+            ])
+          }
+          onUpdate={(id, body) =>
+            setNotes((items) =>
+              items.map((item) =>
+                item.id === id ? { ...item, body, editedAt: new Date().toISOString() } : item,
+              ),
+            )
+          }
+          onRemove={(id) => setNotes((items) => items.filter((item) => item.id !== id))}
+          onPin={(id, pinned) =>
+            setNotes((items) =>
+              items.map((item) => ({ ...item, pinned: item.id === id && pinned })),
+            )
+          }
+        />
+      ),
+    },
+    {
       id: "attachments",
       label: "Přílohy",
       icon: Paperclip,
@@ -180,53 +217,16 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
       ),
     },
     {
-      id: "notes",
-      label: "Poznámky",
-      icon: MessageSquare,
-      count: notes.length,
-      content: (
-        <RecordNotes
-          notes={notes}
-          canAdd
-          canPin
-          onAdd={(body) =>
-            setNotes((items) => [
-              ...items,
-              {
-                id: `note-${Date.now()}`,
-                body,
-                author: "Petr Slivka",
-                createdAt: new Date().toISOString(),
-              },
-            ])
-          }
-          onUpdate={(id, body) =>
-            setNotes((items) =>
-              items.map((item) =>
-                item.id === id ? { ...item, body, editedAt: new Date().toISOString() } : item,
-              ),
-            )
-          }
-          onRemove={(id) => setNotes((items) => items.filter((item) => item.id !== id))}
-          onPin={(id, pinned) =>
-            setNotes((items) =>
-              items.map((item) => ({ ...item, pinned: item.id === id && pinned })),
-            )
-          }
-        />
-      ),
+      id: "linked",
+      label: "Propojené",
+      icon: Link,
+      content: <LinkedRecordsDemo readOnly={status === "read"} />,
     },
     {
       id: "history",
       label: "Historie",
       icon: History,
       content: <HistoryDemo />,
-    },
-    {
-      id: "linked",
-      label: "Propojené",
-      icon: Link,
-      content: <LinkedRecordsDemo readOnly={status === "read"} />,
     },
   ];
   return {

@@ -17,14 +17,15 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
+import { Tabs, TabsContent } from "../../ui/tabs";
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
-import { fmtAmount } from "../../../lib/format";
 import { PanelResize, panelSizeBounds, clampPanelSize } from "./record-side-panel/panel-resize";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
+import { PanelTabs } from "./record-side-panel/panel-tabs";
+export { recordPanelTabGroup } from "./record-side-panel/panel-tabs";
 import { useRecordPanelFocus } from "./record-side-panel/use-record-panel-focus";
 /** Záložka obecného panelu. */
 export interface RecordSidePanelTab {
@@ -36,6 +37,8 @@ export interface RecordSidePanelTab {
   icon: LucideIcon;
   /** Počet záznamů. */
   count?: number;
+  /** Skupina: záznam (Zdroj, Poznámky, Přílohy) nebo vazby (Propojené, Historie); výchozí podle id. */
+  group?: "record" | "related";
   /** Obsah záložky. */
   content: ReactNode;
 }
@@ -268,31 +271,3 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
     );
   },
 );
-
-/** Ikonová navigace bez zalamování a se skutečným přístupným názvem. */
-function PanelTabs({ tabs }: { tabs: readonly RecordSidePanelTab[] }) {
-  return (
-    <TabsList className="h-[var(--control-h)] min-w-0 flex-1 justify-start gap-1 overflow-x-auto rounded-none bg-muted p-1">
-      {tabs.map(({ id, label, icon: Icon, count }) => {
-        const name = count && count > 0 ? `${label}: ${fmtAmount(count, 0)}` : label;
-        return (
-          <Tooltip key={id}>
-            <TooltipTrigger asChild>
-              <TabsTrigger
-                value={id}
-                aria-label={name}
-                className="h-full shrink-0 gap-1 whitespace-nowrap px-2"
-              >
-                <Icon className="size-4 shrink-0" aria-hidden="true" />
-                {count && count > 0 ? (
-                  <span className="text-xs tabular-nums">{fmtAmount(count, 0)}</span>
-                ) : null}
-              </TabsTrigger>
-            </TooltipTrigger>
-            <TooltipContent>{name}</TooltipContent>
-          </Tooltip>
-        );
-      })}
-    </TabsList>
-  );
-}
