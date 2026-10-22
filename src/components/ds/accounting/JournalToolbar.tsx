@@ -73,12 +73,20 @@ function ToolbarRight() {
               : undefined;
           return {
             id: column.id,
+            styleable: column.styleable,
             label: column.label,
             locked: column.locked,
             disableToggleReason,
             pinned: column.id === "actions" ? ("end" as const) : undefined,
           };
         })}
+        styles={columns.styles}
+        onColumnStyleChange={columns.setColumnStyle}
+        onClearColumnStyles={columns.clearColumnStyles}
+        onSaveDefault={columns.saveDefault}
+        onClearDefault={columns.clearDefault}
+        hasCustomDefault={columns.hasCustomDefault}
+        views={columns.views}
         visible={columns.columnVisible}
         onToggle={columns.toggle}
         onReset={columns.reset}

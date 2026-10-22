@@ -4,6 +4,7 @@
  * hodnot autofiltru, součtový řádek a data pro export a tisk.
  * Nesmí: používat React ani stav – vstup → výstup, testovatelné samostatně.
  */
+import type { GridColumnStyle } from "../../../lib/column-tones";
 import type { ReactNode } from "react";
 
 import { fmtAmount } from "../../../lib/format";
@@ -156,6 +157,7 @@ export function buildExportData<Row>(
   items: GroupedItem<Row>[],
   groupLevels: number | null,
   forPrint: boolean,
+  styles: Record<string, GridColumnStyle> = {},
 ): GridExportData {
   shown = shown.flatMap((column) =>
     column.type === "record-indicators"
@@ -207,6 +209,7 @@ export function buildExportData<Row>(
       const total = column.total ?? (column.numeric ? "sum" : "none");
       return {
         type,
+        style: styles[column.id],
         align: column.align ?? (column.numeric ? "right" : "left"),
         total: total === "sum" || total === "count" ? total : "none",
       };

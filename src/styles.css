@@ -5,6 +5,46 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-col-tone-gray-soft: var(--col-tone-gray-soft);
+  --color-col-tone-gray-soft-fg: var(--col-tone-gray-soft-fg);
+  --color-col-tone-gray-strong: var(--col-tone-gray-strong);
+  --color-col-tone-gray-strong-fg: var(--col-tone-gray-strong-fg);
+  --color-col-tone-gray-mark: var(--col-tone-gray-mark);
+  --color-col-tone-blue-soft: var(--col-tone-blue-soft);
+  --color-col-tone-blue-soft-fg: var(--col-tone-blue-soft-fg);
+  --color-col-tone-blue-strong: var(--col-tone-blue-strong);
+  --color-col-tone-blue-strong-fg: var(--col-tone-blue-strong-fg);
+  --color-col-tone-blue-mark: var(--col-tone-blue-mark);
+  --color-col-tone-teal-soft: var(--col-tone-teal-soft);
+  --color-col-tone-teal-soft-fg: var(--col-tone-teal-soft-fg);
+  --color-col-tone-teal-strong: var(--col-tone-teal-strong);
+  --color-col-tone-teal-strong-fg: var(--col-tone-teal-strong-fg);
+  --color-col-tone-teal-mark: var(--col-tone-teal-mark);
+  --color-col-tone-olive-soft: var(--col-tone-olive-soft);
+  --color-col-tone-olive-soft-fg: var(--col-tone-olive-soft-fg);
+  --color-col-tone-olive-strong: var(--col-tone-olive-strong);
+  --color-col-tone-olive-strong-fg: var(--col-tone-olive-strong-fg);
+  --color-col-tone-olive-mark: var(--col-tone-olive-mark);
+  --color-col-tone-yellow-soft: var(--col-tone-yellow-soft);
+  --color-col-tone-yellow-soft-fg: var(--col-tone-yellow-soft-fg);
+  --color-col-tone-yellow-strong: var(--col-tone-yellow-strong);
+  --color-col-tone-yellow-strong-fg: var(--col-tone-yellow-strong-fg);
+  --color-col-tone-yellow-mark: var(--col-tone-yellow-mark);
+  --color-col-tone-orange-soft: var(--col-tone-orange-soft);
+  --color-col-tone-orange-soft-fg: var(--col-tone-orange-soft-fg);
+  --color-col-tone-orange-strong: var(--col-tone-orange-strong);
+  --color-col-tone-orange-strong-fg: var(--col-tone-orange-strong-fg);
+  --color-col-tone-orange-mark: var(--col-tone-orange-mark);
+  --color-col-tone-pink-soft: var(--col-tone-pink-soft);
+  --color-col-tone-pink-soft-fg: var(--col-tone-pink-soft-fg);
+  --color-col-tone-pink-strong: var(--col-tone-pink-strong);
+  --color-col-tone-pink-strong-fg: var(--col-tone-pink-strong-fg);
+  --color-col-tone-pink-mark: var(--col-tone-pink-mark);
+  --color-col-tone-purple-soft: var(--col-tone-purple-soft);
+  --color-col-tone-purple-soft-fg: var(--col-tone-purple-soft-fg);
+  --color-col-tone-purple-strong: var(--col-tone-purple-strong);
+  --color-col-tone-purple-strong-fg: var(--col-tone-purple-strong-fg);
+  --color-col-tone-purple-mark: var(--col-tone-purple-mark);
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -95,6 +135,51 @@
 }
 
 :root {
+  /* Pevná paleta formátu sloupců: kontrast kontroluje col-tones. */
+  --col-tone-gray-soft: oklch(0.965 0.008 250);
+  --col-tone-gray-soft-fg: oklch(0.32 0.008 250);
+  --col-tone-gray-strong: oklch(0.44 0.008 250);
+  --col-tone-gray-strong-fg: oklch(0.99 0.002 250);
+  --col-tone-gray-mark: oklch(0.55 0.008 250);
+  --col-tone-blue-soft: oklch(0.965 0.022 250);
+  --col-tone-blue-soft-fg: oklch(0.32 0.065 250);
+  --col-tone-blue-strong: oklch(0.44 0.12 250);
+  --col-tone-blue-strong-fg: oklch(0.99 0.002 250);
+  --col-tone-blue-mark: oklch(0.55 0.12 250);
+  --col-tone-teal-soft: oklch(0.965 0.022 200);
+  --col-tone-teal-soft-fg: oklch(0.32 0.065 200);
+  --col-tone-teal-strong: oklch(0.44 0.085 200);
+  --col-tone-teal-strong-fg: oklch(0.99 0.002 200);
+  --col-tone-teal-mark: oklch(0.55 0.085 200);
+  --col-tone-olive-soft: oklch(0.965 0.022 115);
+  --col-tone-olive-soft-fg: oklch(0.32 0.065 115);
+  --col-tone-olive-strong: oklch(0.44 0.075 115);
+  --col-tone-olive-strong-fg: oklch(0.99 0.002 115);
+  --col-tone-olive-mark: oklch(0.55 0.075 115);
+  --col-tone-yellow-soft: oklch(0.965 0.022 95);
+  --col-tone-yellow-soft-fg: oklch(0.32 0.065 95);
+  --col-tone-yellow-strong: oklch(0.44 0.09 95);
+  --col-tone-yellow-strong-fg: oklch(0.99 0.002 95);
+  --col-tone-yellow-mark: oklch(0.55 0.09 95);
+  --col-tone-orange-soft: oklch(0.965 0.022 55);
+  --col-tone-orange-soft-fg: oklch(0.32 0.065 55);
+  --col-tone-orange-strong: oklch(0.44 0.12 55);
+  --col-tone-orange-strong-fg: oklch(0.99 0.002 55);
+  --col-tone-orange-mark: oklch(0.55 0.12 55);
+  --col-tone-pink-soft: oklch(0.965 0.022 350);
+  --col-tone-pink-soft-fg: oklch(0.32 0.065 350);
+  --col-tone-pink-strong: oklch(0.44 0.12 350);
+  --col-tone-pink-strong-fg: oklch(0.99 0.002 350);
+  --col-tone-pink-mark: oklch(0.55 0.12 350);
+  --col-tone-purple-soft: oklch(0.965 0.022 305);
+  --col-tone-purple-soft-fg: oklch(0.32 0.065 305);
+  --col-tone-purple-strong: oklch(0.44 0.12 305);
+  --col-tone-purple-strong-fg: oklch(0.99 0.002 305);
+  --col-tone-purple-mark: oklch(0.55 0.12 305);
+  --col-format-strip: 2px;
+  --col-format-dot: 0.5em;
+  --col-format-swatch: 2em;
+  --col-format-gap: 0.3em;
   --record-panel-width: 24rem;
   --note-input-min: calc(2lh + 1rem + 2px);
   --note-input-max: min(calc(12lh + 1rem + 2px), 50vh);
@@ -224,6 +309,51 @@ body {
 }
 
 .dark {
+  /* Pevná paleta formátu sloupců: kontrast kontroluje col-tones. */
+  --col-tone-gray-soft: oklch(0.255 0.008 250);
+  --col-tone-gray-soft-fg: oklch(0.93 0.008 250);
+  --col-tone-gray-strong: oklch(0.78 0.008 250);
+  --col-tone-gray-strong-fg: oklch(0.19 0.008 250);
+  --col-tone-gray-mark: oklch(0.75 0.008 250);
+  --col-tone-blue-soft: oklch(0.255 0.035 250);
+  --col-tone-blue-soft-fg: oklch(0.93 0.035 250);
+  --col-tone-blue-strong: oklch(0.78 0.12 250);
+  --col-tone-blue-strong-fg: oklch(0.19 0.03 250);
+  --col-tone-blue-mark: oklch(0.75 0.12 250);
+  --col-tone-teal-soft: oklch(0.255 0.035 200);
+  --col-tone-teal-soft-fg: oklch(0.93 0.035 200);
+  --col-tone-teal-strong: oklch(0.78 0.085 200);
+  --col-tone-teal-strong-fg: oklch(0.19 0.03 200);
+  --col-tone-teal-mark: oklch(0.75 0.085 200);
+  --col-tone-olive-soft: oklch(0.255 0.035 115);
+  --col-tone-olive-soft-fg: oklch(0.93 0.035 115);
+  --col-tone-olive-strong: oklch(0.78 0.075 115);
+  --col-tone-olive-strong-fg: oklch(0.19 0.03 115);
+  --col-tone-olive-mark: oklch(0.75 0.075 115);
+  --col-tone-yellow-soft: oklch(0.255 0.035 95);
+  --col-tone-yellow-soft-fg: oklch(0.93 0.035 95);
+  --col-tone-yellow-strong: oklch(0.78 0.09 95);
+  --col-tone-yellow-strong-fg: oklch(0.19 0.03 95);
+  --col-tone-yellow-mark: oklch(0.75 0.09 95);
+  --col-tone-orange-soft: oklch(0.255 0.035 55);
+  --col-tone-orange-soft-fg: oklch(0.93 0.035 55);
+  --col-tone-orange-strong: oklch(0.78 0.12 55);
+  --col-tone-orange-strong-fg: oklch(0.19 0.03 55);
+  --col-tone-orange-mark: oklch(0.75 0.12 55);
+  --col-tone-pink-soft: oklch(0.255 0.035 350);
+  --col-tone-pink-soft-fg: oklch(0.93 0.035 350);
+  --col-tone-pink-strong: oklch(0.78 0.12 350);
+  --col-tone-pink-strong-fg: oklch(0.19 0.03 350);
+  --col-tone-pink-mark: oklch(0.75 0.12 350);
+  --col-tone-purple-soft: oklch(0.255 0.035 305);
+  --col-tone-purple-soft-fg: oklch(0.93 0.035 305);
+  --col-tone-purple-strong: oklch(0.78 0.12 305);
+  --col-tone-purple-strong-fg: oklch(0.19 0.03 305);
+  --col-tone-purple-mark: oklch(0.75 0.12 305);
+  --col-format-strip: 2px;
+  --col-format-dot: 0.5em;
+  --col-format-swatch: 2em;
+  --col-format-gap: 0.3em;
   /* Tmavý námořnický režim – tmavá modrá (#0f172a) se světle modrými akcenty. */
   --surface-page: oklch(0.165 0.02 250);
   --background: var(--surface-page);
@@ -2750,4 +2880,26 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .zoom-grid[data-overflow-right="true"] tfoot,
 .zoom-grid.journal-lines-grid[data-overflow="true"] {
   --grid-actions-shadow: 0 0 0 0 transparent;
+}
+
+/* Formát v seznamu Sloupce: vzorky mají vlastní vodorovný posuv, nezalamují se. */
+.column-tone-swatch {
+  flex: 0 0 var(--col-format-swatch);
+  width: var(--col-format-swatch);
+  height: var(--col-format-swatch);
+  padding: 0;
+  font-size: inherit;
+  background: var(--col-swatch-bg, var(--card));
+  color: var(--col-swatch-fg, var(--foreground));
+}
+.column-tone-swatch[aria-pressed="true"] {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+.column-tone-dot {
+  display: inline-block;
+  width: var(--col-format-dot);
+  height: var(--col-format-dot);
+  border-radius: var(--radius);
+  background: var(--col-swatch-mark);
 }

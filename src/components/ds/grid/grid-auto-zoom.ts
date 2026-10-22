@@ -1,3 +1,4 @@
+import { gridTextWidthAt100 } from "./grid-text-measure";
 import { useCallback, useLayoutEffect, useRef } from "react";
 import { APP_ZOOM_EVENT } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
@@ -36,15 +37,27 @@ export function headerWidthAt100(label: string) {
 
 /**
  * Potřebná šířka tabulky v px při 100 % – součet šířek sloupců (ruční / výchozí),
- * u sloupců bez šířky jejich minimum podle záhlaví; nikdy podle obsahu buněk.
+ * U běžného řezu minimum záhlaví, u tučného i skutečná metrika vzorku hodnot.
  */
 export function requiredGridWidthAt100(
-  columns: readonly { label: string; width?: number | undefined }[],
+  columns: readonly {
+    label: string;
+    width?: number | undefined;
+    bold?: boolean;
+    sample?: readonly string[];
+  }[],
   options: { select?: boolean; actions?: boolean } = {},
 ) {
   let total = 0;
-  for (const column of columns)
-    total += column.width && column.width > 1 ? column.width : headerWidthAt100(column.label);
+  for (const column of columns) {
+    const measured = column.bold
+      ? Math.max(
+          headerWidthAt100(column.label),
+          ...(column.sample ?? []).map((text) => gridTextWidthAt100(text, true) + 24),
+        )
+      : headerWidthAt100(column.label);
+    total += column.width && column.width > 1 ? column.width : measured;
+  }
   if (options.select) total += AUTO_GRID_SELECT_WIDTH;
   if (options.actions) total += AUTO_GRID_ACTIONS_WIDTH;
   return total;

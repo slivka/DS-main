@@ -12,6 +12,7 @@ import {
   readLegacyLayout,
   sweepLegacyGridKeys,
 } from "./grid-prefs-migration";
+import type { GridColumnStyle } from "./column-tones";
 
 export { isGridPrefKey };
 
@@ -21,6 +22,7 @@ export type GridLayoutColumnView = {
   name: string;
   visible: Record<string, boolean>;
   order?: string[];
+  styles?: Record<string, GridColumnStyle>;
 };
 
 /** Rozložení jednoho gridu (verze 1). `styles` použije kolo 2 (formát sloupce). */
@@ -36,11 +38,12 @@ export type GridLayout = {
     visible?: Record<string, boolean>;
     order?: string[];
     widths?: Record<string, number>;
+    styles?: Record<string, GridColumnStyle>;
   };
   sort?: { key: string | null; dir: "asc" | "desc" };
   grouping?: { enabled: boolean; groups: { id: string; granularity: string }[] };
   pageSize?: number;
-  styles?: Record<string, unknown>;
+  styles?: Record<string, GridColumnStyle>;
 };
 
 /** Serverové úložiště rozložení gridů – dodává aplikace, DS samo na server nesahá. */

@@ -4,6 +4,7 @@
  * (společné props z GridBaseProps).
  * Nesmí: obsahovat chování.
  */
+import type { GridColumnStyle } from "../../../lib/column-tones";
 import type { ReactNode } from "react";
 
 import type { ExcelColumnType } from "../../../lib/excel-export";
@@ -35,6 +36,10 @@ export type TreeGridColumn<Row extends TreeGridRow> = {
   locked?: boolean;
   fitContent?: boolean;
   transient?: boolean;
+  /** Výchozí formát. */
+  defaultStyle?: GridColumnStyle;
+  /** Povolení formátu. */
+  styleable?: boolean;
 };
 
 /** Úroveň rozbajení – `depth` = počet rozbajených úrovní (0 = jen kořeny). */

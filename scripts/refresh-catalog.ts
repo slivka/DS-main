@@ -9,6 +9,7 @@ import { enrichFileImportCatalog } from "./file-import-catalog";
 
 import { enrichDocumentLocks } from "./document-lock-catalog";
 import { enrichPaymentScheduleCatalog } from "./payment-schedule-catalog";
+import { enrichColumnFormatCatalog } from "./column-format-catalog";
 
 interface CatalogProp {
   name: string;
@@ -173,6 +174,7 @@ export function refreshCatalog() {
   const templateComponents = enrichTemplateCatalog(catalog.components);
   const advanceComponents = enrichAdvanceCatalog(catalog.components);
   const fileImportComponents = enrichFileImportCatalog(catalog.components);
+  const columnFormatComponents = enrichColumnFormatCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -230,6 +232,7 @@ export function refreshCatalog() {
       ...templateComponents,
       ...advanceComponents,
       ...fileImportComponents,
+      ...columnFormatComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";

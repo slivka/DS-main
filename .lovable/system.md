@@ -625,6 +625,8 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 ## Historie záznamu (2.114.0)
 
+- Formát sloupců nastavujte jen v ColumnPicker: bold a tone z pevné palety, nikdy volná barva ani nabídka záhlaví. useGridColumns.styles/setColumnStyle/clearColumnStyles používají GridLayout.styles včetně pohledů a výchozího. defaultStyle dodává APP; styleable=false, Akce, výběr, record-indicators a transient nelze formátovat. ZoomGrid dostává columnFormat v konečném pořadí. Skupiny bez barvy, záhlaví jen proužek; chyba/varování má přednost před průsvitným výběrem a hoverem. Odznaky/odkazy zachovávají své barvy; strong záporné číslo používá text tónu. Export přebírá formát, tisk převádí strong na soft.
+
 - Historii zobrazuj přes `RecordHistoryTimeline`; `HistoryPanel` je zastaralý.
 - Historie zobrazuje jen zmapované hodnoty: aplikace převede auditní záznamy na `HistoryEvent` s přeloženými popisky polí a zformátovanými hodnotami (částky s mezerami tisíců, datum, kód a název přes `formatCodeName`). Nikdy nepředávej surová data (id, klíče sloupců, JSON, ISO hodnoty polí).
 - Režim a filtr typů řídí aplikace přes props; komponenta nic nenačítá.

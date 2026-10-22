@@ -131,6 +131,7 @@ function JournalGrid() {
   const dragIds = displayedLines.filter((line) => !isPinnedLine(line)).map((line) => line.id);
   return (
     <ZoomGrid
+      columnFormat={{ columns: layout.visibleColumns, styles: layout.columns.styles }}
       zoom={layout.zoom}
       setZoom={layout.setZoom}
       density={layout.density}

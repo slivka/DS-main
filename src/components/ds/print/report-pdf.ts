@@ -1,3 +1,5 @@
+import { COLUMN_TONE_ARGB } from "../../../lib/excel-export";
+import { isColumnTone, type GridColumnStyle, type ColumnTone } from "../../../lib/column-tones";
 import type { jsPDF as JsPdf } from "jspdf";
 import { loadPdfFonts } from "../grid/grid-export";
 
@@ -21,6 +23,8 @@ export interface PrintContext {
   printedAt: Date;
 }
 export type PrintColumn = {
+  /** Vizuální formát sloupce; sytý tón se tiskne jako světlý. */
+  style?: GridColumnStyle;
   key: string;
   label: string;
   align?: "left" | "center" | "right";
@@ -310,6 +314,20 @@ export async function buildReportPdf({
               column?.align ?? (column?.format === "amount" ? "right" : "left");
             return;
           }
+          const columnStyle = section.columns[hook.column.index]?.style;
+          const rowStyle = section.rowStyles?.[hook.row.index];
+          if (!rowStyle?.bold && isColumnTone(columnStyle?.tone)) {
+            const soft = columnStyle.tone.replace(/-strong$/, "-soft") as ColumnTone;
+            const colors = COLUMN_TONE_ARGB[soft];
+            const rgb = (argb: string): [number, number, number] => [
+              parseInt(argb.slice(2, 4), 16),
+              parseInt(argb.slice(4, 6), 16),
+              parseInt(argb.slice(6, 8), 16),
+            ];
+            hook.cell.styles.fillColor = rgb(colors.fill);
+            hook.cell.styles.textColor = rgb(colors.font);
+          }
+          if (hook.section === "body" && columnStyle?.bold) hook.cell.styles.fontStyle = "bold";
           if (hook.section !== "body") return;
           const style = section.rowStyles?.[hook.row.index];
           if (!style) return;

@@ -344,6 +344,24 @@ export interface DsTexts {
     timeoutDetail: string;
   };
   columnPicker: {
+    demoTitle: string;
+    demoDocument: string;
+    demoPartner: string;
+    demoTotal: string;
+    demoRemaining: string;
+    demoError: string;
+    formatColumn: (name: string) => string;
+    bold: string;
+    backgroundSoft: string;
+    backgroundStrong: string;
+    noColor: string;
+    soft: string;
+    strong: string;
+    clearFormats: string;
+    toneNames: Record<
+      "gray" | "blue" | "teal" | "olive" | "yellow" | "orange" | "pink" | "purple",
+      string
+    >;
     clearCustom: string;
     clearCustomTitle: string;
     default: string;

@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useId, useState, type CSSProperties } from "react";
 import { useDsTexts } from "../../../ds-texts";
-import { Check, GripVertical, RotateCcw, SlidersHorizontal, Trash2 } from "lucide-react";
+import {
+  Check,
+  GripVertical,
+  RotateCcw,
+  SlidersHorizontal,
+  Trash2,
+  Paintbrush,
+} from "lucide-react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { gridFontSize } from "./grid-zoom";
 import type { ColumnViewsApi } from "./grid-columns";
+import { ColumnFormatEditor } from "./column-format-editor";
+import type { GridColumnStyle } from "../../../lib/column-tones";
+import { isStyleableColumn } from "./use-column-styles";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type PickerColumn<Id extends string = string> = {
@@ -19,29 +29,16 @@ export type PickerColumn<Id extends string = string> = {
   pinned?: boolean | "start" | "end";
   /** Sekce, do které sloupec patří (oddělovač v seznamu). */
   section?: string;
+  /** Povolení formátu. */
+  styleable?: boolean;
+  /** Systémový typ. */
+  type?: string;
+  /** Dočasný sloupec. */
+  transient?: boolean;
 };
 
-/**
- * Výběr zobrazených sloupců – seznam se zaškrtávacími poli
- * a volitelně pojmenované pohledy (uložené sestavy sloupců).
- * Velikost obsahu se řídí zoomem gridu (em jednotky odvozené od fontSize).
- */
-export function ColumnPicker<Id extends string>({
-  columns,
-  visible,
-  onToggle,
-  onReset,
-  onReorder,
-  zoom = 1,
-  title = "Sloupce",
-  views,
-  onSaveDefault,
-  onClearDefault,
-  hasCustomDefault = false,
-  hiddenSections = [],
-  onToggleSection,
-  texts: textOverrides,
-}: {
+/** Veřejné props okna Sloupce. */
+export interface ColumnPickerProps<Id extends string = string> {
   columns: PickerColumn<Id>[];
   visible: Record<Id, boolean>;
   onToggle: (id: Id) => void;
@@ -60,11 +57,44 @@ export function ColumnPicker<Id extends string>({
   hiddenSections?: string[];
   /** Zapnutí / vypnutí celé sekce. */
   onToggleSection?: (section: string) => void;
+  /** Aktuální formáty. */
+  styles?: Record<string, GridColumnStyle>;
+  /** Okamžitá změna formátu sloupce. */
+  onColumnStyleChange?: (id: Id, style: GridColumnStyle | null) => void;
+  /** Zrušení všech formátů. */
+  onClearColumnStyles?: () => void;
   texts?: Partial<GridTexts>;
-}) {
+}
+
+/**
+ * Výběr zobrazených sloupců – seznam se zaškrtávacími poli
+ * a volitelně pojmenované pohledy (uložené sestavy sloupců).
+ * Velikost obsahu se řídí zoomem gridu (em jednotky odvozené od fontSize).
+ */
+export function ColumnPicker<Id extends string>({
+  columns,
+  visible,
+  onToggle,
+  onReset,
+  onReorder,
+  zoom = 1,
+  title,
+  views,
+  onSaveDefault,
+  onClearDefault,
+  hasCustomDefault = false,
+  hiddenSections = [],
+  onToggleSection,
+  styles = {},
+  onColumnStyleChange,
+  onClearColumnStyles,
+  texts: textOverrides,
+}: ColumnPickerProps<Id>) {
+  const formatPrefix = useId();
   const dsTexts = useDsTexts();
   const texts = useResolvedGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
+  const [formatId, setFormatId] = useState<Id | null>(null);
   const [newName, setNewName] = useState("");
   const [savedDefault, setSavedDefault] = useState(false);
   // Přetahování sloupců v seznamu: táhnutý sloupec a místo vložení.
@@ -123,11 +153,21 @@ export function ColumnPicker<Id extends string>({
 
       <PopoverContent
         align="end"
-        className="w-[min(26em,calc(100vw-2rem))] min-w-[17rem] overflow-hidden p-0"
+        className="w-[min(26em,calc(100vw-2rem))] min-w-0 max-w-[calc(100vw-2rem)] overflow-hidden p-0"
         style={{ fontSize }}
+        onEscapeKeyDown={(event) => {
+          if (formatId !== null) {
+            event.preventDefault();
+            const id = formatId;
+            setFormatId(null);
+            document.getElementById(`${formatPrefix}-format-${id}`)?.focus();
+          }
+        }}
       >
         <div className="flex items-center justify-between gap-2 border-b bg-secondary/60 px-[1em] py-[0.75em]">
-          <span className="typo-label text-[1.05em] text-foreground">{title}</span>
+          <span className="typo-label text-[1.05em] text-foreground">
+            {title ?? texts.columnsTitle}
+          </span>
           <span className="flex items-center gap-[0.8em]">
             {hasCustomDefault && onClearDefault ? (
               <button
@@ -160,6 +200,7 @@ export function ColumnPicker<Id extends string>({
             const section = c.section ?? "";
             const sectionStart = section && sortedColumns[i - 1]?.section !== section;
             const sectionOff = !!section && hiddenSections.includes(section);
+            const format = styles[c.id] ?? {};
             const toggleDisabled = Boolean(c.locked || c.disableToggleReason);
             return (
               <div key={c.id}>
@@ -280,11 +321,62 @@ export function ColumnPicker<Id extends string>({
                         : c.label}
                     </span>
                   </label>
+                  {format.bold ? (
+                    <span aria-hidden className="font-semibold">
+                      B
+                    </span>
+                  ) : null}
+                  {format.tone ? (
+                    <span
+                      aria-hidden
+                      className="column-tone-dot"
+                      style={
+                        {
+                          "--col-swatch-mark": `var(--col-tone-${format.tone.replace(/-(soft|strong)$/, "")}-mark)`,
+                        } as CSSProperties
+                      }
+                    />
+                  ) : null}
+                  {onColumnStyleChange && isStyleableColumn(c) ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          id={`${formatPrefix}-format-${c.id}`}
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 shrink-0"
+                          aria-label={dsTexts.columnPicker.formatColumn(c.label)}
+                          aria-expanded={formatId === c.id}
+                          onClick={() => setFormatId(formatId === c.id ? null : c.id)}
+                        >
+                          <Paintbrush />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{dsTexts.columnPicker.formatColumn(c.label)}</TooltipContent>
+                    </Tooltip>
+                  ) : null}
                 </div>
+                {formatId === c.id && onColumnStyleChange ? (
+                  <ColumnFormatEditor
+                    value={format}
+                    onChange={(next) => onColumnStyleChange(c.id, next)}
+                    onClose={() => {
+                      setFormatId(null);
+                      document.getElementById(`${formatPrefix}-format-${c.id}`)?.focus();
+                    }}
+                  />
+                ) : null}
               </div>
             );
           })}
         </div>
+        {onClearColumnStyles && Object.values(styles).some((style) => style.bold || style.tone) ? (
+          <div className="border-t p-2">
+            <Button variant="ghost" size="sm" onClick={onClearColumnStyles}>
+              {dsTexts.columnPicker.clearFormats}
+            </Button>
+          </div>
+        ) : null}
         {onSaveDefault ? (
           <div className="flex items-center justify-end gap-[0.5em] border-t px-[1em] py-[0.5em]">
             <button

@@ -174,7 +174,7 @@ export function buildGridPrintSection(
   const columns: PrintColumn[] = data.columns.map((label, index) => {
     const format = gridPrintColumnFormat(data, index);
     const align = data.columnMeta?.[index]?.align ?? (format === "amount" ? "right" : "left");
-    return { key: `c${index}`, label, format, align };
+    return { key: `c${index}`, label, format, align, style: data.columnMeta?.[index]?.style };
   });
   const order = printOrder(data);
   const rows: Array<Record<string, unknown>> = [];

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ColumnFormatShowcase } from "@/components/showcase/ColumnFormatShowcase";
 import { CompanyFilterShowcase } from "@/components/showcase/CompanyFilterShowcase";
 import { PrimaryActionsShowcase } from "@/components/showcase/PrimaryActionsShowcase";
 import { useEffect, useMemo, useState } from "react";
@@ -207,6 +208,7 @@ function GridPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}>
+      <ColumnFormatShowcase />
       <PrimaryActionsShowcase />
       <CompanyFilterShowcase />
       <div className="mb-3">

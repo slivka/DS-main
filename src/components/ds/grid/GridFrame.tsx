@@ -143,16 +143,7 @@ export function GridFrame({
     />
   );
   const basicPicker = (
-    <ColumnPicker
-      columns={columnPicker.columns}
-      visible={columnPicker.visible}
-      onToggle={columnPicker.onToggle}
-      onReorder={columnPicker.onReorder}
-      onReset={columnPicker.onReset}
-      zoom={zoom}
-      title={columnPicker.title}
-      texts={texts}
-    />
+    <ColumnPicker {...columnPicker} zoom={zoom} title={columnPicker.title} texts={texts} />
   );
   const hasContext = Boolean(context.period || context.book || context.right);
   return (

@@ -111,6 +111,7 @@ export function DataGridToolbar<Row>({
             .map((c) => ({
               id: c.id,
               label: c.label,
+              styleable: c.styleable,
               ...(c.locked !== undefined ? { locked: c.locked } : {}),
               ...(c.disableToggleReason !== undefined
                 ? { disableToggleReason: c.disableToggleReason }
@@ -118,6 +119,9 @@ export function DataGridToolbar<Row>({
               ...(pinned.has(c.id) ? { pinned: true } : {}),
               ...(c.section !== undefined ? { section: c.section } : {}),
             })),
+          styles: cols.styles,
+          onColumnStyleChange: cols.setColumnStyle,
+          onClearColumnStyles: cols.clearColumnStyles,
           visible: cols.columnVisible,
           onToggle: cols.toggle,
           onReorder: cols.reorder,
