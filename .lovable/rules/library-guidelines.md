@@ -31,6 +31,7 @@ The design system's components require these packages to work correctly. A consu
 | @tanstack/react-query | 5.101.1 |
 | @tanstack/react-router | 1.170.16 |
 | lucide-react | 0.575.0 |
+| pdfjs-dist | 5.4.624 |
 | react | 19.2.7 |
 | react-dom | 19.2.7 |
 | tailwindcss | 4.3.3 |
