@@ -12,7 +12,8 @@
       "lucide-react": "0.575.0",
       "react": "19.2.7",
       "react-dom": "19.2.7",
-      "tailwindcss": "4.3.3"
+      "tailwindcss": "4.3.3",
+      "pdfjs-dist": "5.4.624"
     },
     "theme_files": [
       "src/styles.css"
@@ -10669,7 +10670,7 @@
         },
         {
           "label": "Ovladač panelu v záhlaví",
-          "code": "// Historický název příkladu: od 2.128.0 je ovladač v liště akcí.\n<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} tooltip={panelSummary} />} />"
+          "code": "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />"
         }
       ],
       "antipatterns": [
