@@ -80,6 +80,24 @@ export function refreshCatalog() {
     const rule = "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.";
     if (!component.antipatterns.includes(rule)) component.antipatterns.push(rule);
   }
+  for (const component of catalog.components.filter((c) =>
+    ["MultiSelect", "ChipMultiSelect"].includes(c.name),
+  )) {
+    component.usage =
+      "Vícenásobný výběr hodnot aplikace. Hledání přímo v poli; šipky mění aktivní položku, Enter/mezerník přepíná zaškrtnutí bez zavření. Tab prochází Vybrat vše a Vymazat; Escape zavře a vrátí fokus na pole.";
+    component.examples = [
+      {
+        label: "Výběr firem klávesnicí",
+        code:
+          component.name === "MultiSelect"
+            ? '<MultiSelect options={companies} selected={companyIds} onChange={setCompanyIds} allLabel="Všechny firmy" itemsLabel="firmy" />'
+            : '<ChipMultiSelect options={companies} value={companyIds} onChange={setCompanyIds} allLabel="Vybrat vše" clearLabel="Vymazat" />',
+      },
+    ];
+    component.antipatterns = [
+      "Nevkládejte obyčejná tlačítka místo CommandItem; Tab uvnitř vícenásobné nabídky ji nesmí zavřít ani vybrat položku.",
+    ];
+  }
   const pill = catalog.components.find((component) => component.name === "ContextPill");
   if (pill && !pill.props?.some((prop) => prop.name === "onSearchChange")) {
     pill.props ??= [];

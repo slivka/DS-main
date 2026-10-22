@@ -306,7 +306,7 @@ export interface DsTexts {
     eu: string;
     other: string;
   };
-  multiSelect: { selectAll: string; noValues: string };
+  multiSelect: { selectAll: string; noValues: string; add?: string; clear?: string };
   rateField?: {
     note: string;
     manual: string;

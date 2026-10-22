@@ -186,8 +186,11 @@ export const InlineSearchContent = React.forwardRef<
         // dřív, než klik doběhne. Výjimkou jsou prvky, které fokus potřebují.
         const element = event.target instanceof Element ? event.target : null;
         if (
-          !context?.multiple &&
-          !element?.closest("input, textarea, select, [contenteditable=true]")
+          !element?.closest(
+            context?.multiple
+              ? "button, input, textarea, select, [contenteditable=true]"
+              : "input, textarea, select, [contenteditable=true]",
+          )
         )
           event.preventDefault();
       }}
@@ -317,16 +320,3 @@ export const InlineSearchInput = React.forwardRef<
     context.target,
   );
 });
-
-/** Přístupný název tlačítka (aria-label nebo <label for>) převzatý vstupem hledání. */
-function triggerName(target: HTMLDivElement): string | undefined {
-  const button = target.querySelector<HTMLButtonElement>("button[role=combobox], button");
-  if (!button) return undefined;
-  const label = button.getAttribute("aria-label");
-  if (label) return label;
-  const text = Array.from(button.labels ?? [])
-    .map((node) => node.textContent?.trim())
-    .filter(Boolean)
-    .join(" ");
-  return text || undefined;
-}

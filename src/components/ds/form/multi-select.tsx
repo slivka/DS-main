@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+/** Vícenásobný výběr · vlastní zaškrtnutí a klávesnici · nemění data aplikace. */
+import { forwardRef, useMemo, useState, type ComponentPropsWithoutRef } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Command, CommandItem, CommandList } from "../../ui/command";
@@ -16,7 +17,10 @@ import { ComboboxResizeHandle } from "./resizable-combobox";
 export type MultiSelectOption = { value: string; label: string };
 
 /** Vlastnosti vícenásobného výběru. */
-export interface MultiSelectProps {
+export interface MultiSelectProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange" | "placeholder"
+> {
   options: MultiSelectOption[];
   selected: string[];
   onChange: (next: string[]) => void;
@@ -40,19 +44,23 @@ export interface MultiSelectProps {
  * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
  * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
  */
-export function MultiSelect({
-  options,
-  selected,
-  onChange,
-  allLabel,
-  itemsLabel,
-  placeholder,
-  className = "",
-  zoom,
-  showSearch = true,
-  showSelectAll = true,
-  clearLabel,
-}: MultiSelectProps) {
+export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function MultiSelect(
+  {
+    options,
+    selected,
+    onChange,
+    allLabel,
+    itemsLabel,
+    placeholder,
+    className = "",
+    zoom,
+    showSearch = true,
+    showSelectAll = true,
+    clearLabel,
+    ...props
+  }: MultiSelectProps,
+  ref,
+) {
   const dsTexts = useDsTexts();
   const resolvedClearLabel = clearLabel ?? dsTexts.grid.clear;
   const [search, setSearch] = useState("");
@@ -79,6 +87,8 @@ export function MultiSelect({
 
   return (
     <div
+      ref={ref}
+      {...props}
       className="relative inline-flex max-w-full"
       style={resize.width ? { width: resize.width } : undefined}
     >
@@ -188,4 +198,4 @@ export function MultiSelect({
       <ComboboxResizeHandle onPointerDown={resize.onHandlePointerDown} />
     </div>
   );
-}
+});

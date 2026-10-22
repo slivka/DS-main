@@ -70,3 +70,16 @@ export function moveSingleFocus(
   close();
   next?.focus();
 }
+
+/** Přístupný název tlačítka (aria-label nebo <label for>) převzatý vstupem hledání. */
+export function triggerName(target: HTMLDivElement): string | undefined {
+  const button = target.querySelector<HTMLButtonElement>("button[role=combobox], button");
+  if (!button) return undefined;
+  const label = button.getAttribute("aria-label");
+  if (label) return label;
+  const text = Array.from(button.labels ?? [])
+    .map((node) => node.textContent?.trim())
+    .filter(Boolean)
+    .join(" ");
+  return text || undefined;
+}

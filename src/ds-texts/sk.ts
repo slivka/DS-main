@@ -397,7 +397,12 @@ export const DS_TEXTS_SK: DsTexts = {
     eu: "Európska únia",
     other: "Ostatné štáty",
   },
-  multiSelect: { selectAll: "Vybrať všetko", noValues: "Žiadne hodnoty." },
+  multiSelect: {
+    selectAll: "Vybrať všetko",
+    noValues: "Žiadne hodnoty.",
+    add: "Pridať",
+    clear: "Zrušiť výber",
+  },
   optionSelect: {
     emptyValue: "— nevybráno —",
     inactive: "neaktivní",
