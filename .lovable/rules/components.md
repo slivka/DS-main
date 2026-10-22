@@ -5044,6 +5044,12 @@ Platební kalendář se sdílenou GridToolbar, standardním Přidat a vedlejší
 **Kalendář faktury:**
 
 ```tsx
+<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />
+```
+
+**Uložení kalendáře v zoomované liště:**
+
+```tsx
 <PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: "Uložit kalendář", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />
 ```
 

@@ -10952,6 +10952,10 @@
       "examples": [
         {
           "label": "Kalendář faktury",
+          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+        },
+        {
+          "label": "Uložení kalendáře v zoomované liště",
           "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: \"Uložit kalendář\", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />"
         }
       ],
