@@ -178,6 +178,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-constantSymbol",
               t.constantSymbol,
+              lockedValue("constantSymbol", "document-constantSymbol", value.constantSymbol ?? "") ??
               symbolControl(
                 constantSymbolOptions && !symbolsDisabledReason ? (
                   <OptionSelect
@@ -203,7 +204,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   />
                 ),
                 "document-constantSymbol",
-              ),
+              )),
               symbolItem.span,
               symbolItem.mobileHalf,
               symbolItem.className,
