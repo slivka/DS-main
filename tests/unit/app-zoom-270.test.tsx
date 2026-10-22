@@ -43,7 +43,11 @@ beforeEach(() => {
   resetAppZoomCacheForTests();
   setPlatform("Win32");
 });
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  // Platforma „Mac“ by v dalším souboru vypnula Ctrl + plus; vrátí se výchozí hodnota prohlížeče.
+  delete (navigator as { platform?: string }).platform;
+});
 
 type K = {
   key: string;

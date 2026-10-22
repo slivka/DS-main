@@ -3,6 +3,7 @@
 ## 2.132.0 (nevydáno)
 
 - Testy: společný úklid po každém testu nově resetuje i paměť zoomu aplikace a kontrola izolace hlídá, že tento úklid nechybí (náhodné pořadí, seed 2488739314).
+- Testy: test zoomu „na Macu“ nechával přepnutou platformu na Mac, takže následný test rámů ignoroval Ctrl + plus; platformu nyní vrací test i společný úklid (hlídá kontrola izolace).
 
 - Ukázka Datová mřížka: přepínač úložiště rozložení přesunut z lišty gridu do řádku filtrů (lišta při 1 440 px opět bez přetečení) a ukázka Formát sloupců posunuta za filtr firmy, aby nepřidávala zastávky Tabu před ním.
 
