@@ -25,6 +25,7 @@ import { useRecordPanelContent, type DemoPermission } from "./record-panel-conte
 import { PURCHASE_INVOICE_HEADER } from "./document-form-showcase-data";
 import { MOCK_ACCOUNTS, MOCK_PARTNERS } from "../../lib/mock/accounting";
 import { LinkedListShowcase } from "./LinkedListShowcase";
+import { AdjacentPanelExample } from "./AdjacentPanelExample";
 
 type DemoRow = (typeof DOCUMENTS)[number];
 const columns: DataGridColumn<DemoRow>[] = [
@@ -50,6 +51,7 @@ export function RecordPanelShowcase() {
   const [narrow, setNarrow] = useState(false);
   const [zoom, setZoom] = useState(false);
   const [dialog, setDialog] = useState(false);
+  const [adjacent, setAdjacent] = useState(false);
 
   const [sourceUrl, setSourceUrl] = useState("");
   const [value, setValue] = useState(PURCHASE_INVOICE_HEADER);
@@ -144,11 +146,7 @@ export function RecordPanelShowcase() {
             size={size}
             defaultSize={384}
             onSizeChange={setSize}
-            onOpenInAdjacentPane={() =>
-              document
-                .querySelector('[data-testid="linked-list-showcase"]')
-                ?.scrollIntoView({ block: "start" })
-            }
+            onOpenInAdjacentPane={() => setAdjacent(!adjacent)}
           >
             <div ref={form} className="min-w-0 p-3" data-testid="document-panel-form">
               <DocumentForm
