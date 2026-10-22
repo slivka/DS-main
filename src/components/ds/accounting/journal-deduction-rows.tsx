@@ -106,6 +106,7 @@ function DeductionRow({
       <TableRow
         data-slot="journal-deduction-row"
         data-kind={row.kind}
+        data-separator={first || undefined}
         className={cn("bg-muted/20", first && "border-t-2 border-t-border")}
       >
         {columns.map((column) => (

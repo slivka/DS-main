@@ -13,7 +13,8 @@ const { RecordDialog } = await import("../../src/components/ds");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 type JournalLine = import("../../src/components/ds/accounting/journal-lines").JournalLine;
 type VatCodeOption = import("../../src/components/ds/accounting/journal-lines").VatCodeOption;
-type Deductions = import("../../src/components/ds/accounting/journal-lines-editor").JournalDeductions;
+type Deductions =
+  import("../../src/components/ds/accounting/journal-lines-editor").JournalDeductions;
 type EditorProps = React.ComponentProps<typeof JournalLinesEditor>;
 
 const U21: VatCodeOption = {
@@ -105,8 +106,8 @@ describe("JournalLinesEditor – odečty záloh", () => {
     expect(firstDeduction).toBeGreaterThan(0);
     expect(rows.slice(firstDeduction)).toEqual(["journal-deduction-row", "journal-deduction-row"]);
     const deductionRows = container.querySelectorAll('[data-slot="journal-deduction-row"]');
-    expect(deductionRows[0]?.className).toContain("border-t-2");
-    expect(deductionRows[1]?.className).not.toContain("border-t-2");
+    expect(deductionRows[0]?.hasAttribute("data-separator")).toBe(true);
+    expect(deductionRows[1]?.hasAttribute("data-separator")).toBe(false);
     expect(container.textContent).not.toContain("Odečtené zálohy");
   });
 
