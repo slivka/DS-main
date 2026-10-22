@@ -35,7 +35,7 @@ export function PanelTabs({ tabs }: { tabs: readonly RecordSidePanelTab[] }) {
                 <TabsTrigger
                   value={id}
                   aria-label={name}
-                  className="relative h-full shrink-0 flex-none rounded-md border-0 px-2.5 text-muted-foreground shadow-none transition-colors after:absolute after:inset-x-1.5 after:bottom-0 after:h-0.5 after:rounded-full after:bg-transparent hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
+                  className="relative h-full shrink-0 flex-none rounded-md border-0 px-2.5 text-muted-foreground shadow-none transition-colors after:absolute after:inset-x-1.5 after:bottom-0 after:h-0.5 after:rounded-full after:bg-transparent hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring aria-selected:bg-primary/10 aria-selected:text-primary aria-selected:shadow-none aria-selected:after:bg-primary"
                 >
                   <Icon className="size-4 shrink-0" aria-hidden="true" />
                   {count && count > 0 ? (
