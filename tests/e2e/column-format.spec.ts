@@ -95,7 +95,7 @@ test("ColumnPicker formát, výběr, klávesnice, tmavý vzhled a zoom", async (
   if (!(await columnsButton.isVisible())) {
     await demo.locator(".grid-toolbar-overflow-menu").click();
     await page
-      .locator('[data-slot="popover-content"]')
+      .getByRole("dialog")
       .getByRole("button", { name: "Sloupce", exact: true })
       .click();
   } else {
