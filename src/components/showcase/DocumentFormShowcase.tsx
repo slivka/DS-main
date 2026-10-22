@@ -1,47 +1,19 @@
+import { ImportedMovementShowcase } from "./ImportedMovementShowcase";
+import { DocumentFormInvoiceShowcase } from "./DocumentFormInvoiceShowcase";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
-  DataGrid,
   DocumentForm,
   PanelToggleButton,
   RecordSidePanel,
   DocumentSettingsDialog,
-  NoticeBar,
-  PaymentScheduleEditor,
-  StatusBadge,
-  type DataGridColumn,
-  type DocumentSettingsValue,
-  type DocumentHeaderValue,
-  type DocumentIdentity,
-  SegmentedField,
-  type JournalLine,
-  type PaymentScheduleItem,
-  type DocumentCounterpartyValue,
-  type DocumentPrintValue,
 } from "@/components/ds";
-import { Button } from "@/components/ui/button";
-import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
+import { MOCK_BOOKS } from "@/lib/mock/accounting";
 import { formatCodeName } from "@/lib/code-format";
-import { formatAccountCode } from "@/components/ds/accounting/account-code";
 
-import {
-  BANK_ACCOUNT_OPTIONS,
-  COMPANY_BANK_ACCOUNT_OPTIONS,
-  CONSTANT_SYMBOL_OPTIONS,
-  CURRENCIES,
-  DocumentHeaderScenarios,
-  HIDDEN_GROUP_COLUMNS,
-  HIDDEN_GROUP_ROWS,
-  INVOICE_HEADER,
-  INVOICE_LINES,
-  PAYMENT_METHOD_OPTIONS,
-  PURCHASE_INVOICE_HEADER,
-  PURCHASE_INVOICE_LINES,
-  SCHEDULE,
-  USERS,
-} from "./document-form-showcase-data";
+import { CURRENCIES, DocumentHeaderScenarios } from "./document-form-showcase-data";
 
 import { useDocumentFormShowcaseState } from "./use-document-form-showcase-state";
 import { useRecordPanelContent } from "./record-panel-content";
@@ -51,23 +23,6 @@ export function DocumentFormShowcase() {
   const state = useDocumentFormShowcaseState();
   const [panelOpen, setPanelOpen] = useState(false);
   const [incomePanelOpen, setIncomePanelOpen] = useState(false);
-  const [bankLocked, setBankLocked] = useState<DocumentHeaderValue>({
-    bookId: "b-bv",
-    number: "BA/2026/041",
-    direction: "in",
-    issueDate: "2026-10-20",
-    accountingDate: "2026-10-20",
-    bankAccount: "19-2000145399",
-    bankCode: "0800",
-    variableSymbol: "20260123",
-    constantSymbol: "0308",
-    specificSymbol: "77",
-    currency: "CZK",
-    amountTotal: 1500,
-    totalMode: "entered",
-    mainAccountId: "221001",
-    description: "Příjem z banky",
-  });
   const [panelTab, setPanelTab] = useState("attachments");
   const panelContent = useRecordPanelContent("draft", "");
   const {
@@ -75,18 +30,10 @@ export function DocumentFormShowcase() {
     setCashDateLocked,
     courierVatRelevant,
     setCourierVatRelevant,
-    invoiceVatRelevant,
-    setInvoiceVatRelevant,
     handedSuggestions,
     setHandedSuggestions,
     descriptionSuggestions,
     setDescriptionSuggestions,
-    invoice,
-    setInvoice,
-    invoiceLines,
-    setInvoiceLines,
-    schedule,
-    setSchedule,
     settingsOpen,
     setSettingsOpen,
     formError,
@@ -95,46 +42,15 @@ export function DocumentFormShowcase() {
     setLineValidationError,
     documentSettings,
     setDocumentSettings,
-    posted,
-    setPosted,
-    postedLines,
-    setPostedLines,
-    postedSchedule,
-    setPostedSchedule,
-    cash,
-    setCash,
-    cashLines,
-    setCashLines,
-    internal,
-    setInternal,
-    internalLines,
-    setInternalLines,
     courierLines,
     setCourierLines,
     courier,
     setCourier,
     cashIn,
     setCashIn,
-    cashEur,
-    setCashEur,
-    fvCzk,
-    setFvCzk,
-    fvEur,
-    setFvEur,
-    counterpartyPrint,
-    setCounterpartyPrint,
-    printData,
-    setPrintData,
-    fpNonPayer,
-    setFpNonPayer,
-    idCp,
-    setIdCp,
-    exchangeDifference,
-    setExchangeDifference,
     suggestNames,
     suggestDescriptions,
     common,
-    units,
   } = state;
   return (
     <>
@@ -284,151 +200,8 @@ export function DocumentFormShowcase() {
           />
         </RecordSidePanel>
       </ShowcaseSection>
-      <ShowcaseSection
-        title="Pokladna v EUR"
-        description="Měna zamčená (text), kurz viditelný se zdrojem."
-      >
-        <DocumentForm
-          title="Bankovní doklad EUR"
-          identity={{
-            variant: "cashBank",
-            book: formatCodeName("BV", "Banka EUR"),
-            period: "2026",
-            account: { side: "DAL", label: formatCodeName("221.002", "Běžný účet EUR") },
-            number: cashEur.number,
-          }}
-          directionBadge="out"
-          value={cashEur}
-          onChange={setCashEur}
-          lines={[]}
-          {...common}
-          currencies={CURRENCIES}
-          currencyLocked
-          books={MOCK_BOOKS.filter((b) => b.id === "b-bv")}
-          documentType="BA"
-          isNew
-          mainSide="D"
-          mainAccountLocked
-          status="draft"
-          vatRateField={{ value: cashEur.rate ?? null, onChange: () => {}, sameAsDocument: true }}
-        />
-      </ShowcaseSection>
-      <ShowcaseSection
-        title="Bankovní pohyb z importu výpisu"
-        description="Pole převzatá z banky jsou jen pro čtení se zámkem a důvodem v bublině (fieldLockedReasons)."
-      >
-        <DocumentForm
-          title="Bankovní pohyb"
-          identity={{
-            variant: "cashBank",
-            book: formatCodeName("BV", "Banka"),
-            period: "2026",
-            account: { side: "DAL", label: formatCodeName("221.001", "Běžný účet") },
-            number: bankLocked.number,
-          }}
-          directionBadge="in"
-          value={bankLocked}
-          onChange={setBankLocked}
-          lines={[]}
-          {...common}
-          books={MOCK_BOOKS.filter((b) => b.id === "b-bv")}
-          documentType="BA"
-          mainSide="D"
-          mainAccountLocked
-          status="draft"
-          editableFields={["description"]}
-          fieldLockedReasons={{
-            issueDate: "Převzato z banky",
-            bankAccount: "Převzato z banky",
-            bankCode: "Převzato z banky",
-            variableSymbol: "Převzato z banky",
-            constantSymbol: "Převzato z banky",
-            specificSymbol: "Převzato z banky",
-            amountTotal: "Převzato z banky",
-            currency: "Převzato z banky",
-          }}
-        />
-      </ShowcaseSection>
-      <ShowcaseSection
-        title="Plátce – vydaná faktura v CZK"
-        description="Zapnuté DPH zobrazuje stav partnera, DUZP i Datum DPH."
-      >
-        <DocumentForm
-          title="Vydaná faktura"
-          value={fvCzk}
-          onChange={setFvCzk}
-          lines={[]}
-          {...common}
-          currencies={CURRENCIES}
-          books={MOCK_BOOKS}
-          documentType="FV"
-          mainSide="MD"
-          status="filed"
-          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
-          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
-          companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
-          counterpartyInput="partner"
-          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
-          vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
-          vat={{ visible: true }}
-          counterpartyTab={{
-            value: counterpartyPrint,
-            onChange: setCounterpartyPrint,
-            onRefreshCounterparty: () => toast.success("Údaje odběratele obnoveny"),
-            refreshCounterpartyWarning: "Aktualizovat ruční změny údaji partnera?",
-            counterpartyManualFields: ["email", "street"],
-          }}
-          printTab={{ value: printData, onChange: setPrintData }}
-        />
-      </ShowcaseSection>
-      <ShowcaseSection
-        title="Vydaná faktura v EUR"
-        description="Firemní eurový účet je přes celou šířku; platební údaje používají číselníky."
-      >
-        <DocumentForm
-          title="Vydaná faktura EUR"
-          value={fvEur}
-          onChange={setFvEur}
-          lines={[]}
-          {...common}
-          currencies={CURRENCIES}
-          books={MOCK_BOOKS}
-          documentType="FV"
-          mainSide="MD"
-          status="draft"
-          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
-          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
-          companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
-          counterpartyInput="manual"
-          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
-          vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
-          vat={{ visible: true }}
-          counterpartyTab={{
-            value: counterpartyPrint,
-            onChange: setCounterpartyPrint,
-            counterpartyLocked: true,
-            counterpartyLockedReason: "Doklad je zařazen",
-            counterpartyFrozenAt: "24. 9. 2026",
-          }}
-          printTab={{ value: printData, onChange: setPrintData }}
-        />
-      </ShowcaseSection>
-      <ShowcaseSection
-        title="Interní doklad"
-        description="ID bez partnera skládá popis do sekce Data."
-      >
-        <DocumentForm
-          title="Interní doklad"
-          value={idCp}
-          onChange={setIdCp}
-          lines={[]}
-          {...common}
-          books={MOCK_BOOKS}
-          documentType="ID"
-          status="filed"
-          vat={{ visible: false }}
-        />
-      </ShowcaseSection>
+      <ImportedMovementShowcase common={common} />
+      <DocumentFormInvoiceShowcase state={state} />
     </>
   );
 }

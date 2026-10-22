@@ -25,7 +25,7 @@ export function useCompactDateGeometry(labelsKey: string) {
       const fields = Array.from(container.querySelectorAll<HTMLElement>('[data-slot="field"]'));
       for (const field of fields) field.style.setProperty("--document-date-scale", "1");
       for (const field of fields) {
-        const input = field.querySelector("input");
+        const input = field.querySelector("input, [data-document-date-locked]");
         if (!input) continue;
         const style = getComputedStyle(input);
         const border = 2 * parseFloat(style.borderLeftWidth);

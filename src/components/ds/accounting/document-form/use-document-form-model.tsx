@@ -1,0 +1,286 @@
+/** Model dokladu · vlastní zpětnou vazbu, pole a záložky · nesmí ukládat data aplikace. */
+import { useState } from "react";
+import { toggleInvalidDate, useDocumentCounterpartyWarnings } from "./document-validation-feedback";
+import { reportingLinesChange, useDocumentFormFeedback } from "./use-document-form-issues";
+import type { DocumentFormProps, DocumentDateField } from "./document-form-types";
+import { useCurrencyControl } from "./use-currency-control";
+import { useDocumentPaymentFields } from "./use-document-payment-fields";
+import { useVariableSymbolLink } from "./use-variable-symbol-link";
+import { buildDocumentNotices } from "./build-document-notices";
+import { useDocumentHeaderFields } from "./use-document-field-renderers";
+import { buildDocumentTabs } from "./build-document-tabs";
+import { changeDocumentRounding } from "./use-document-form-layout";
+import { useDocumentFormBase } from "./use-document-form-base";
+/** Společný model faktur, zálohových listů a ostatních dokladů. */
+export function useDocumentFormModel(props: DocumentFormProps) {
+  const base = useDocumentFormBase(props);
+  const {
+    inputs,
+    dsTexts,
+    t,
+    code,
+    bankMovement,
+    internal,
+    f,
+    effectiveValue,
+    effectiveAccountingLink,
+    patch,
+    tab,
+    setTab,
+    formRef,
+    can,
+    lockReason,
+    receivedDocument,
+    issuedDocument,
+    forcedSum,
+    totalMode,
+    lineRounding,
+    vatTotals,
+    total,
+    partner,
+    sameAccount,
+    allowedMainAccounts,
+    mode,
+    foreign,
+    currencySymbol,
+    currencyOptions,
+    identityVariant,
+    effectiveIdentity,
+    canEditIdentityAccount,
+    identityAccount,
+    actionMenu,
+  } = base;
+  const {
+    value,
+    lines,
+    onLinesChange,
+    accounts,
+    dimensions,
+    partners,
+    mainSide,
+    homeCurrency,
+    homeCurrencySymbol,
+    rateAmount,
+    vatRateField,
+    vat,
+    currencyLocked,
+    currencyDisabledReason,
+    fieldErrors,
+    taxDocumentNumberWarning,
+    readOnly,
+    dateWarnings,
+    notices,
+    linesEditorProps,
+    appIssues,
+    error,
+    validationActive,
+    counterpartyInput,
+    onFieldChange,
+    roundingLabel,
+    roundingLimit,
+    currencies,
+    tabs,
+    counterpartyTab,
+    printTab,
+  } = inputs;
+  const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
+  const { counterpartyIco, counterpartyDic, icoWarning, effectiveFieldWarnings } =
+    useDocumentCounterpartyWarnings({
+      value,
+      partner,
+      internal,
+      counterpartyInput,
+      fieldWarnings: props.fieldWarnings,
+      internalManualPartner: dsTexts.documentEdit.internalManualPartner,
+    });
+  const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;
+  const vatRelevant = value.vatRelevant !== false;
+  const showVatFields = Boolean(vat?.visible && vatRelevant);
+  const combinedNotices = buildDocumentNotices({
+    value,
+    dateWarnings,
+    f,
+    showVatFields,
+    filedVatDateWarning,
+    notices,
+    bankAccountOptions: props.bankAccountOptions ?? [],
+    t,
+  });
+  const showTaxNumber =
+    ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID"].includes(code));
+  const vsLink = useVariableSymbolLink(code, value, patch, dsTexts.documentEdit);
+  const {
+    issues: formIssueList,
+    onValidationChange,
+    issueFieldErrors,
+    issueFieldWarnings,
+    cellIssues,
+  } = useDocumentFormFeedback({
+    validation: {
+      code,
+      value,
+      foreign,
+      vatRateField,
+      t,
+      fieldErrors,
+      fieldWarnings: effectiveFieldWarnings,
+      taxDocumentNumberWarning,
+      icoWarning,
+      readOnly,
+      invalidDates: Object.keys(invalidDates) as DocumentDateField[],
+      variableSymbolWarning: vsLink.warning,
+      variableSymbolLabel: t.variableSymbol,
+      taxNumberLabel: dsTexts.documentEdit.taxNumber,
+      fieldLabels: {
+        taxDocumentNumber: dsTexts.documentEdit.taxNumber,
+        counterpartyCountry: dsTexts.documentForm.country,
+        bankCode: dsTexts.documentEdit.bankCode,
+        bankIban: dsTexts.documentEdit.iban,
+        bankSwift: dsTexts.documentEdit.swift,
+        bankAccountKind: dsTexts.documentEdit.accountKind,
+      },
+    },
+    issues: appIssues,
+    error,
+    validationActive,
+    rowLabel: dsTexts.journalEditor.row,
+    onValidationChange: linesEditorProps?.onValidationChange,
+  });
+  const { field, date, suggestedText, taxNumberField } = useDocumentHeaderFields({
+    value: effectiveValue,
+    patch,
+    can,
+    dateWarnings,
+    accountingDateLink: effectiveAccountingLink,
+    bankMovement,
+    showTaxNumber,
+    taxDocumentNumberWarning,
+    // Neaktivní validace skrývá jen klientské chyby; projekce ponechá server i varování.
+    fieldErrors: { ...(validationActive === false ? {} : fieldErrors), ...issueFieldErrors },
+    fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
+    lockReason,
+    onInvalidDate: (key, invalid) =>
+      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
+  });
+  const {
+    externalNumberField,
+    bankAccountField,
+    issuedBankAccountAbove,
+    symbolsDisabledReason,
+    companyAccountField,
+  } = useDocumentPaymentFields(props, {
+    f,
+    t,
+    value,
+    patch,
+    can,
+    field,
+    receivedDocument,
+    issuedDocument,
+    showVatFields,
+    sourcePatch: vsLink.sourcePatch,
+  });
+  const changeRounding = (roundingAmount: number) => {
+    patch({ roundingAmount });
+    onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
+  };
+  const allTabs = buildDocumentTabs({
+    lines,
+    onLinesChange: reportingLinesChange(lines, onLinesChange, onFieldChange),
+    accounts,
+    dimensions,
+    partners,
+    mode,
+    mainSide,
+    value,
+    totalMode,
+    currencies,
+    homeCurrency,
+    homeCurrencySymbol,
+    rateAmount,
+    linesEditorProps: {
+      ...linesEditorProps,
+      onValidationChange,
+      cellIssues,
+    },
+    readOnly,
+    f,
+    lineRounding,
+    total,
+    can,
+    changeRounding,
+    roundingLabel,
+    t,
+    roundingLimit,
+    vatTotals,
+    tabs,
+    issuedDocument,
+    counterpartyTab,
+    printTab,
+  });
+  const currencyControl = useCurrencyControl({
+    value,
+    patch,
+    can,
+    currencyLocked,
+    readOnly,
+    identityVariant,
+    currencyDisabledReason,
+    lockedReason: lockReason("currency"),
+    currencyOptions,
+    currenciesPresent: Boolean(currencies),
+    t,
+  });
+  return {
+    ...inputs,
+    ...base,
+    formRef,
+    bankMovement,
+    dsTexts,
+    actionMenu,
+    formIssueList,
+    combinedNotices,
+    vatRelevant,
+    receivedDocument,
+    patch,
+    code,
+    t,
+    effectiveIdentity,
+    identityAccount,
+    canEditIdentityAccount,
+    allowedMainAccounts,
+    sameAccount,
+    companyAccountField,
+    f,
+    partner,
+    counterpartyIco,
+    counterpartyDic,
+    icoWarning,
+    can,
+    field,
+    suggestedText,
+    externalNumberField,
+    bankAccountField,
+    taxNumberField,
+    internal,
+    showVatFields,
+    filedVatDateWarning,
+    date,
+    lockReason,
+    issueFieldErrors,
+    issueFieldWarnings,
+    issuedDocument,
+    issuedBankAccountAbove,
+    symbolsDisabledReason,
+    vsLink,
+    foreign,
+    total,
+    totalMode,
+    forcedSum,
+    currencySymbol,
+    currencyControl,
+    allTabs,
+    tab,
+    setTab,
+  };
+}

@@ -44,8 +44,9 @@ export function BankMovementAccount({
   const ds = useDsTexts();
   const t = ds.documentEdit;
   const iban = value.bankAccountKind === "iban";
-  const accountLocked = lockReason?.(iban ? "bankIban" : "bankAccount");
-  const codeLocked = lockReason?.(iban ? "bankSwift" : "bankCode");
+  const accountLocked =
+    (iban ? lockReason?.("bankIban") : undefined) ?? lockReason?.("bankAccount");
+  const codeLocked = (iban ? lockReason?.("bankSwift") : undefined) ?? lockReason?.("bankCode");
   const invalidIban =
     iban && value.bankIban && !isValidIban(value.bankIban)
       ? ds.documentForm.invalidIban

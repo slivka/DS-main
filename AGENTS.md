@@ -67,3 +67,5 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Templates/advances reuse grids/dialogs and afterVatRecap. Why: APP owns data/writes.
 
 - Multi-selection uses cmdk items and the opt-in inline-search multiple focus contract; single-selection Tab remains non-confirming. Why: portaled search and actions share one keyboard owner.
+
+- DocumentForm composes an input resolver, base model, feedback model and view; preview scenarios remain separate excluded modules. Why: preserve the public contract while keeping source units bounded.
