@@ -1,5 +1,6 @@
 ## DS 2.128.0 (nevydáno)
 
+- [ ] Doplnění Petra: panelToggle za nabídkou v řádku akcí formulářů; Zdroj přes zbývající plochu panelu, PDF podle šířky; testy, Chromium ve dvou šířkách, katalog a úplná kontrola.
 - [x] Opravné kolo zámků: reference, IBAN/SWIFT aliasy, priority důvodů, šířka data/fokus, zahraniční ukázka, rozdělení orchestrátorů, katalog a check:full.
 - Ověření opravných zámků: check:quick --harness průběžně; document-field-locks 12/12 (IBAN/SWIFT/reference, priority, nezměněná pole, fokus, viditelný důvod menu). check:full --harness OK: 1 180/1 180 testů ve 128 souborech; lint 0 chyb, formát a audit částek OK. Chromium document-field-locks 1/1: shodná šířka zamčeného/výběrového data při 1280/360 px a fokus zámku po odkazu chyby. Zahraniční BA ukázka vizuálně ověřena bez pageerror. Katalog proti vydané 2.127.0: 475 → 475 komponent / 1 123 → 1 159 props, 0 odebrání. DocumentForm 8 řádků, vstupy 124, základní model 158, model zpětné vazby 286, zobrazení 292; ukázky 207/146/115, původní další doklady zachovány. Automatické sestavení OK; plná E2E sada/FF/WebKit neběžely. Nevydáno, release Claude.
 - [x] MultiSelect / ChipMultiSelect: šipky, Enter/mezerník, Tab akcí, Escape; unit a Chromium filtr firmy; závěrečná kontrola níže.
