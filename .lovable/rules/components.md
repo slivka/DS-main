@@ -1634,7 +1634,7 @@ Přepínač kontextu (prostoru) nahoře ve sloupci StandaloneShell: zkratka, ná
 | `currentLabel` | string | `—` |
 | `open` | boolean | `—` |
 | `onOpenChange` | function | `—` |
-| `className` | string | `flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground [&_svg]:size-4` |
+| `className` | string | `flex size-9 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground [&_svg]:size-4` |
 
 **Examples:**
 
@@ -5308,7 +5308,7 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 | `busy` | boolean | `false` |
 | `children` | any | `—` |
 | `extraActions` | any | `—` |
-| `size` | sm · md · lg · xl | `sm` |
+| `size` | sm · md · lg · xl | `—` |
 | `contentClassName` | string | `—` |
 | `sidePanel` | any | `—` |
 | `sidePanelLabel` | string | `—` |
