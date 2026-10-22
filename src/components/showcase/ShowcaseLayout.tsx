@@ -1,39 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
-import {
-  BookOpen,
-  Building2,
-  Car,
-  FileSpreadsheet,
-  Landmark,
-  LayoutGrid,
-  Library,
-  MapPin,
-  MessageSquare,
-  Palette,
-  Printer,
-  Receipt,
-  Route as RouteIcon,
-  Settings,
-  Settings2,
-  ShieldCheck,
-  SlidersHorizontal,
-  TextCursorInput,
-  UserRound,
-  Users,
-} from "lucide-react";
+import { BookOpen, Building2, Car, FileSpreadsheet, Landmark, LayoutGrid, Library, MapPin, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound, Users } from "lucide-react";
 
-import {
-  AppShell,
-  CompanySwitcher,
-  CommandPalette,
-  PeriodSwitcher,
-  NotificationBell,
-  SearchButton,
-  ThemeToggleButton,
-  UserMenu,
-  type Crumb,
-  type NavGroup,
-} from "../ds";
+import { AppShell, CompanySwitcher, CommandPalette, PeriodSwitcher, NotificationBell, SearchButton, ThemeToggleButton, UserMenu, type Crumb, type NavGroup } from "../ds";
 import { MOCK_COMPANIES, MOCK_PERIODS, MOCK_WORKSPACES } from "../../lib/mock/accounting";
 import { applyTheme } from "../../lib/theme";
 

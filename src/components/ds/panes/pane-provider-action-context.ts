@@ -2,7 +2,7 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
 import type { PaneTabsState, ClosedTabRecord, PaneLayoutCount } from "./pane-state";
-import type { PaneTabsApi, PaneTabsTexts, RecordNavItem } from "./pane-context-types";
+import type { PaneTabsTexts, RecordNavItem } from "./pane-context-types";
 import type { PendingUnsaved } from "./pane-unsaved-controller";
 import type { useConfirmDialog } from "../feedback/confirm-dialog";
 /** Sdílené závislosti vnitřních akcí, bez nového veřejného API. */

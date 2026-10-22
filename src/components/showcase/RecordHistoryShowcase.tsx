@@ -1,12 +1,6 @@
 /** Ukázka historie záznamu · vlastní demo stav režimu a filtru · nesmí se distribuovat. */
 import { useState } from "react";
-import {
-  PageHeader,
-  RecordHistoryTimeline,
-  type HistoryEvent,
-  type HistoryKind,
-  type HistoryMode,
-} from "../ds";
+import { PageHeader, RecordHistoryTimeline, type HistoryEvent, type HistoryKind, type HistoryMode } from "../ds";
 import { DEMO_HISTORY, DEMO_NOW } from "./record-history-data";
 
 /** Historie se stavem řízeným ukázkou. */

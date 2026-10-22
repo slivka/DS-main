@@ -3,11 +3,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import { useState } from "react";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
-import {
-  PaneTabsProvider,
-  usePaneTabs,
-  useLinkedPanel,
-} from "../../src/components/ds/panes/pane-context";
+import { PaneTabsProvider, usePaneTabs, useLinkedPanel } from "../../src/components/ds/panes/pane-context";
 import { PaneLayout } from "../../src/components/ds/panes/pane-layout";
 import { createPaneTabsState, openTabInState } from "../../src/components/ds/panes/pane-state";
 import { findLinkedPanel } from "../../src/components/ds/panes/linked-panel";

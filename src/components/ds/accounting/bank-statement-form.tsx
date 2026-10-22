@@ -7,11 +7,7 @@ import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { TooltipProvider } from "../../ui/tooltip";
-import {
-  BankStatementIdentity,
-  BankStatementBasic,
-  statementDifference,
-} from "./bank-statement-sections";
+import { BankStatementIdentity, BankStatementBasic, statementDifference } from "./bank-statement-sections";
 import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";

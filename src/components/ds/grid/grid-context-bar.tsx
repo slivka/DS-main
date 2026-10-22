@@ -9,13 +9,7 @@ import { cn } from "../../../lib/utils";
 import { DateRangeField } from "../form/date-range-field";
 import type { BookOption } from "../accounting/book-select";
 import { GridToolbarSeparator } from "./grid-toolbar";
-import {
-  gridPeriodLabel,
-  gridPeriodRange,
-  moveGridPeriod,
-  type GridPeriodKind,
-  type GridPeriodValue,
-} from "./grid-period";
+import { gridPeriodLabel, gridPeriodRange, moveGridPeriod, type GridPeriodKind, type GridPeriodValue } from "./grid-period";
 import { gridFontSize, useGridZoomContext, type GridDensity } from "./grid-zoom";
 
 export interface GridPeriodTexts {

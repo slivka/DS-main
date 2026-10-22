@@ -3,10 +3,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 import { RecordDialog, RecordReadOnlyProvider } from "../../src/components/ds";
-import {
-  DimensionSelect,
-  type DimensionOption,
-} from "../../src/components/ds/accounting/dimension-select";
+import { DimensionSelect, type DimensionOption } from "../../src/components/ds/accounting/dimension-select";
 import { JournalCellEditor } from "../../src/components/ds/accounting/JournalCellEditor";
 import { JournalRowDetail } from "../../src/components/ds/accounting/JournalRowDetail";
 import { JournalEditorContext } from "../../src/components/ds/accounting/journal-editor-context";

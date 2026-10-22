@@ -1,25 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import {
-  closeTabInState,
-  createPaneTabsState,
-  openTabInState,
-  replaceTabContentInState,
-  setLayoutInState,
-  type PaneTabsState,
-} from "../../src/components/ds/panes/pane-state";
-import {
-  findLinkedPanel,
-  findLinkedTab,
-  linkedTabTitle,
-  openLinkedPanelInState,
-  openLinkedTabInState,
-  returnLinkedTabInState,
-  setLinkedPanelSectionInState,
-  setLinkedTabPinnedInState,
-  syncLinkedTabsInState,
-  setLinkedSourceSelectionInState,
-} from "../../src/components/ds/panes/linked-tabs";
+import { closeTabInState, createPaneTabsState, openTabInState, replaceTabContentInState, setLayoutInState, type PaneTabsState } from "../../src/components/ds/panes/pane-state";
+import { findLinkedPanel, findLinkedTab, linkedTabTitle, openLinkedPanelInState, openLinkedTabInState, returnLinkedTabInState, setLinkedPanelSectionInState, setLinkedTabPinnedInState, syncLinkedTabsInState, setLinkedSourceSelectionInState } from "../../src/components/ds/panes/linked-tabs";
 
 const SECTION = { id: "history", label: "Historie" };
 

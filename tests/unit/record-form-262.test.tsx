@@ -1,12 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import {
-  CheckboxField,
-  Field,
-  FieldValue,
-  NoticeBar,
-  RecordActionBar,
-} from "../../src/components/ds";
+import { CheckboxField, Field, FieldValue, NoticeBar, RecordActionBar } from "../../src/components/ds";
 import { Input } from "../../src/components/ui/input";
 
 describe("record form 2.62", () => {

@@ -1,22 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import {
-  applyLayoutInState,
-  closeTabInState,
-  createPaneTabsState,
-  normalizePaneTabsState,
-  openFromHistoryInState,
-  openRecordInState,
-  openTabInState,
-  parsePaneTabs,
-  pushClosedTab,
-  reopenClosedTabInState,
-  serializeLayout,
-  serializePaneTabs,
-  setLayoutInState,
-  MAX_TABS_PER_PANE,
-  type PaneTabsState,
-} from "../../src/components/ds/panes/pane-state";
+import { applyLayoutInState, closeTabInState, createPaneTabsState, normalizePaneTabsState, openFromHistoryInState, openRecordInState, openTabInState, parsePaneTabs, pushClosedTab, reopenClosedTabInState, serializeLayout, serializePaneTabs, setLayoutInState, MAX_TABS_PER_PANE, type PaneTabsState } from "../../src/components/ds/panes/pane-state";
 
 const pane0 = (state: PaneTabsState) => state.panes[0];
 

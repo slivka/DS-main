@@ -8,12 +8,7 @@ import type { DocumentFields } from "../document-fields";
 import { companyAccountControlForForm } from "./BankAccountControls";
 import { useBankAccountField } from "./use-bank-account-field";
 import { useExternalNumberField } from "./use-external-number-field";
-import type {
-  DocumentFormProps,
-  DocumentFormTexts,
-  DocumentHeaderField,
-  DocumentHeaderValue,
-} from "./document-form-types";
+import type { DocumentFormProps, DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
 
 /** Odvozené vstupy z DocumentForm. */
 export interface DocumentPaymentFieldsContext {

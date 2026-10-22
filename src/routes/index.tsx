@@ -2,21 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
-import {
-  AccountCode,
-  AmountCell,
-  AmountInput,
-  CheckboxField,
-  DecimalInput,
-  DocumentStatusBadge,
-  OptionSelect,
-  PageHeader,
-  StatusBadge,
-  StatusDot,
-  SwitchField,
-  DocumentDirectionBadge,
-  GridSegmentedToggle,
-} from "@/components/ds";
+import { AccountCode, AmountCell, AmountInput, CheckboxField, DecimalInput, DocumentStatusBadge, OptionSelect, PageHeader, StatusBadge, StatusDot, SwitchField, DocumentDirectionBadge, GridSegmentedToggle } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

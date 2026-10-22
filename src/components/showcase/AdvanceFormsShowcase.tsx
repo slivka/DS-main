@@ -8,13 +8,7 @@ import { AdvanceAllocationDialog } from "../ds/accounting/advances/advance-alloc
 import type { AdvanceAllocation } from "../ds/accounting/advances/advance-types";
 import { advanceListVariant } from "../ds/accounting/advance-list-variant";
 import { useDsTexts } from "../../ds-texts";
-import {
-  MOCK_ACCOUNTS,
-  MOCK_BOOKS,
-  MOCK_PARTNERS,
-  MOCK_VAT_CODES_OUT,
-  MOCK_VAT_CODES_IN,
-} from "../../lib/mock/accounting";
+import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_PARTNERS, MOCK_VAT_CODES_OUT, MOCK_VAT_CODES_IN } from "../../lib/mock/accounting";
 import { INVOICE_HEADER, INVOICE_LINES, CURRENCIES } from "./document-form-showcase-data";
 import { ADVANCE_DEDUCTIONS, ADVANCE_CURRENCY } from "./advance-showcase-data";
 import { ShowcaseSection } from "./ShowcaseLayout";

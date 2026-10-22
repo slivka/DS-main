@@ -4,35 +4,24 @@
  * Nesmí: vykreslovat UI ani obsahovat stav formuláře.
  */
 import type { FormIssue } from "../../../../lib/form-issues";
-import type { FieldErrorLink } from "../../feedback/field-error-summary";
+
 import type { ReactNode } from "react";
-import type {
-  RecordMoreAction,
-  RecordPrimaryAction,
-  RecordSaveAction,
-} from "../../layout/record-action-bar";
+
 import type { VatStatus } from "../../data-display/vat-status-badge";
 import type { AccountOption } from "../account-select";
 import type { BankAccountOption } from "../bank-account-field";
 import type { BookOption } from "../book-select";
 import type { CurrencyOption } from "../currency-amount";
 import type { DimensionOption } from "../dimension-select";
-import type { DocumentFields, DocumentIdentityVariant, DocumentTypeCode } from "../document-fields";
+import type { DocumentFields, DocumentTypeCode } from "../document-fields";
 import type { JournalLinesEditorProps } from "../journal-lines-editor";
 import type { DocumentStatus } from "../document-status-badge";
 import type { JournalLine } from "../journal-lines";
 import type { PartnerOption } from "../partner-select";
 import type { CounterpartySeed } from "../counterparty-field";
-import type {
-  ManualBankAccountErrors,
-  ManualBankAccountValue,
-} from "../received-bank-account-field";
+import type { ManualBankAccountErrors } from "../received-bank-account-field";
 import type { IcoLinkTarget } from "../../form/ico-link";
-import type {
-  DocumentCounterpartyTabProps,
-  DocumentPrintTabProps,
-  DocumentPrintValue,
-} from "../document-detail-tabs";
+import type { DocumentCounterpartyTabProps, DocumentPrintTabProps } from "../document-detail-tabs";
 
 import type {
   DocumentDirection,

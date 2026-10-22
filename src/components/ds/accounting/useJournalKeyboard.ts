@@ -7,16 +7,7 @@
 import type * as React from "react";
 
 import type { JournalLine } from "./journal-lines";
-import {
-  DIMENSION_COLUMNS,
-  NUMERIC_COLUMNS,
-  PARTNER_COLUMNS,
-  VAT_COLUMNS,
-  VS_COLUMNS,
-  dataColumnOf,
-  isAccountColumn,
-  type ColumnId,
-} from "./journal-lines-model";
+import { DIMENSION_COLUMNS, NUMERIC_COLUMNS, PARTNER_COLUMNS, VAT_COLUMNS, VS_COLUMNS, dataColumnOf, isAccountColumn, type ColumnId } from "./journal-lines-model";
 import type { JournalEditorState } from "./useJournalEditorState";
 
 /** Klávesové akce editoru nad sdíleným stavem. */

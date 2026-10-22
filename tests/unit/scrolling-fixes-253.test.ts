@@ -3,11 +3,7 @@ import { afterAll, describe, expect, it } from "bun:test";
 import { resolveJournalColumnLayout } from "../../src/components/ds/accounting/journal-lines-editor";
 import { gridFontSize } from "../../src/components/ds/grid/grid-zoom";
 import { shouldFocusPaneScroll } from "../../src/components/ds/panes/pane-layout";
-import {
-  clearTabState,
-  createThrottle,
-  paneScrollStorageKey,
-} from "../../src/components/ds/panes/pane-tab-store";
+import { clearTabState, createThrottle, paneScrollStorageKey } from "../../src/components/ds/panes/pane-tab-store";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

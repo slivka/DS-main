@@ -3,14 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
-import {
-  HistoryPanel,
-  LoadingOverlay,
-  RecordDialog,
-  RecordNotes,
-  useConfirmDialog,
-  type RecordNote,
-} from "@/components/ds";
+import { HistoryPanel, LoadingOverlay, RecordDialog, RecordNotes, useConfirmDialog, type RecordNote } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { GridEmptyRow, GridErrorRow } from "@/components/ds/grid/grid-states";
 import { Table, TableBody } from "@/components/ui/table";

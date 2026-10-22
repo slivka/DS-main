@@ -4,13 +4,7 @@
  * šířky panelů (`data-required-width`) a jeho přepočet při změně velikosti.
  * Nesmí: vykreslovat – vrací jen hodnoty a obsluhy pro AppShellSidebar.
  */
-import {
-  useLayoutEffect,
-  useState,
-  type KeyboardEvent as ReactKeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
-  type RefObject,
-} from "react";
+import { useLayoutEffect, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
 
 import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
 

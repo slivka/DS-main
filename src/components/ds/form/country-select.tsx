@@ -2,12 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Check, ChevronDown, SearchX } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
-import {
-  InlineSearchPopover as Popover,
-  InlineSearchContent as PopoverContent,
-  InlineSearchTrigger as PopoverTrigger,
-  InlineSearchInput as CommandInput,
-} from "./inline-search";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "./inline-search";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 export type Country = { code: string; code3?: string; name: string; is_eu?: boolean };

@@ -16,13 +16,7 @@ export type { BankStatementTexts } from "./bank-statement-texts";
 import type { Locale } from "date-fns";
 import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
-import type {
-  AttachmentTexts,
-  RecordHistoryTexts,
-  RecordNotesTexts,
-  RecordPanelTexts,
-  SourcePreviewTexts,
-} from "./record-panel-texts";
+import type { AttachmentTexts, RecordHistoryTexts, RecordNotesTexts, RecordPanelTexts, SourcePreviewTexts } from "./record-panel-texts";
 export type {
   AttachmentTexts,
   RecordHistoryTexts,

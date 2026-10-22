@@ -1,10 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import {
-  buildGridPrintSection,
-  gridPrintColumnWidths,
-  gridPrintOrientation,
-  gridPrintParams,
-} from "../../src/components/ds/grid/grid-print";
+import { buildGridPrintSection, gridPrintColumnWidths, gridPrintOrientation, gridPrintParams } from "../../src/components/ds/grid/grid-print";
 import type { GridExportData } from "../../src/lib/excel-export";
 
 describe("orientace tisku gridu", () => {

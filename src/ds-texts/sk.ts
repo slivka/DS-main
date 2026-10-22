@@ -8,13 +8,7 @@ import { TEMPLATES_SK } from "./sk-templates";
 import { ADVANCES_SK } from "./sk-advances";
 import { FILE_IMPORT_SK } from "./sk-file-import";
 import { SK_VAT_GROUPS } from "./sk-vat-groups";
-import {
-  ATTACHMENTS_SK,
-  RECORD_HISTORY_SK,
-  RECORD_NOTES_SK,
-  RECORD_PANEL_SK,
-  SOURCE_PREVIEW_SK,
-} from "./sk-record-panel";
+import { ATTACHMENTS_SK, RECORD_HISTORY_SK, RECORD_NOTES_SK, RECORD_PANEL_SK, SOURCE_PREVIEW_SK } from "./sk-record-panel";
 import { BANK_STATEMENT_SK } from "./sk-bank-statement";
 import { sk } from "date-fns/locale";
 

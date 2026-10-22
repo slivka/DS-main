@@ -1,12 +1,5 @@
 /** Nástroje panelu · vlastní měření hlavní akce · nesmí určovat dostupnost operací. */
-import {
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import { forwardRef, useEffect, useRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";

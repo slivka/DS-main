@@ -1,19 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 
-import {
-  APP_ZOOM_STORAGE_KEY,
-  getAppZoom,
-  resetAppZoomCacheForTests,
-  setAppZoom,
-} from "../../src/lib/app-zoom";
+import { APP_ZOOM_STORAGE_KEY, getAppZoom, resetAppZoomCacheForTests, setAppZoom } from "../../src/lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../src/lib/resize-lock";
-import {
-  AUTO_GRID_ACTIONS_WIDTH,
-  AUTO_GRID_COLUMN_MIN,
-  AUTO_GRID_SELECT_WIDTH,
-  requiredGridWidthAt100,
-} from "../../src/components/ds/grid/grid-auto-zoom";
+import { AUTO_GRID_ACTIONS_WIDTH, AUTO_GRID_COLUMN_MIN, AUTO_GRID_SELECT_WIDTH, requiredGridWidthAt100 } from "../../src/components/ds/grid/grid-auto-zoom";
 import { resolveJournalZoomLayout } from "../../src/components/ds/accounting/journal-lines-editor";
 import { resolveMenuMaximum, resolveMenuWidth } from "../../src/components/ds/layout/AppShell";
 

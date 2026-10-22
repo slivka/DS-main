@@ -2,20 +2,8 @@ import { Button } from "../../ui/button";
 import { forwardRef, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
-import {
-  InlineSearchPopover as Popover,
-  InlineSearchContent as PopoverContent,
-  InlineSearchTrigger as PopoverTrigger,
-  InlineSearchInput as CommandInput,
-} from "../form/inline-search";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "../../ui/command";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "../form/inline-search";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandSeparator } from "../../ui/command";
 import { TruncatedText } from "../data-display/truncated-text";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";

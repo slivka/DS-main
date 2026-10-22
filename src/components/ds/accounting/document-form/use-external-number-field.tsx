@@ -2,11 +2,7 @@
 import { Input } from "../../../ui/input";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { useDsTexts } from "../../../../ds-texts";
-import type {
-  DocumentFormTexts,
-  DocumentHeaderField,
-  DocumentHeaderValue,
-} from "./document-form-types";
+import type { DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
 interface Args {
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;

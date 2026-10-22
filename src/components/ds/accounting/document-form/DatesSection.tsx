@@ -5,11 +5,7 @@ import type { ComponentProps } from "react";
 import type { DateField } from "../../form/date-field";
 import { SectionHeading } from "../../layout/section-heading";
 import type { DocumentFields } from "../document-fields";
-import type {
-  DocumentDateField,
-  DocumentFormTexts,
-  DocumentVatConfig,
-} from "./document-form-types";
+import type { DocumentDateField, DocumentFormTexts, DocumentVatConfig } from "./document-form-types";
 export interface DocumentDatesSectionProps {
   t: DocumentFormTexts;
   f: DocumentFields;

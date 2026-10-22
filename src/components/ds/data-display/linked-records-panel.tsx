@@ -12,15 +12,7 @@ import { TruncatedText } from "./truncated-text";
 import { SettlementBar } from "./settlement-bar";
 import { LinkedRecordEntry } from "./linked-record-entry";
 import { LinkRecordDialog } from "./link-record-dialog";
-import type {
-  LinkedRecordGroup,
-  LinkedRecordItem,
-  LinkedRecordModifiers,
-  LinkedRecordsMode,
-  SettlementRow,
-  LinkRecordConfig,
-  LinkRecordValue,
-} from "./linked-record-types";
+import type { LinkedRecordGroup, LinkedRecordItem, LinkedRecordModifiers, LinkedRecordsMode, SettlementRow, LinkRecordConfig, LinkRecordValue } from "./linked-record-types";
 export type * from "./linked-record-types";
 
 export interface LinkedRecordsPanelProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {

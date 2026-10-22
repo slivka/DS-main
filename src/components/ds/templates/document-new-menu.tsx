@@ -4,15 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-  DropdownMenuSeparator,
-} from "../../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuSeparator } from "../../ui/dropdown-menu";
 import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import type { DocumentTemplate, DuplicationMode } from "./template-types";
 /** Vlastnosti tlačítka Nový na liště GridFrame (toolbarLeft). */

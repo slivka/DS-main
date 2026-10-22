@@ -2,12 +2,7 @@ import { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Command } from "../../ui/command";
-import {
-  InlineSearchPopover as Popover,
-  InlineSearchContent as PopoverContent,
-  InlineSearchTrigger as PopoverTrigger,
-  InlineSearchInput,
-} from "./inline-search";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput } from "./inline-search";
 import { gridFontSize } from "../grid/grid-zoom";
 import { useResizableWidth } from "../../../hooks/use-resizable-width";
 import { useDsTexts } from "../../../ds-texts";

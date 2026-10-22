@@ -9,18 +9,7 @@ import type { PartnerOption } from "./partner-select";
 import type { UnitOption } from "./unit-select";
 import type { GridColumn } from "../grid/grid-columns";
 import type { JournalLine, JournalLineColumn, VatCalcMode, VatCodeOption } from "./journal-lines";
-import {
-  SHARED_COLUMNS,
-  SPLIT_COLUMNS,
-  VAT_COLUMNS,
-  accountDataColumn,
-  formatJournalAccountDisplay,
-  isAccountColumn,
-  isAccountNameColumn,
-  toHomeAmount,
-  type ColumnId,
-  type JournalAccountColumnId,
-} from "./journal-lines-model";
+import { SHARED_COLUMNS, SPLIT_COLUMNS, VAT_COLUMNS, accountDataColumn, formatJournalAccountDisplay, isAccountColumn, isAccountNameColumn, toHomeAmount, type ColumnId, type JournalAccountColumnId } from "./journal-lines-model";
 import type { JournalLinesMode } from "./journal-column-layout";
 import { resolveLineVat } from "./journal-vat";
 import { formatAmount } from "../../../lib/format";

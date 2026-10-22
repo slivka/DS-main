@@ -2,13 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { DataGrid, type DataGridColumn } from "../../src/components/ds/grid/DataGrid";
 import { GridAmountEditor, exceedsMax } from "../../src/components/ds/grid/grid-amount-editor";
-import {
-  insertGroupTotalRows,
-  isInteractiveTarget,
-  nextEditorIndex,
-  resolveSelectedRows,
-  toggleVisibleSelection,
-} from "../../src/components/ds/grid/grid-selection";
+import { insertGroupTotalRows, isInteractiveTarget, nextEditorIndex, resolveSelectedRows, toggleVisibleSelection } from "../../src/components/ds/grid/grid-selection";
 
 type R = { id: string; partner: string; amount: number };
 const rows: R[] = Array.from({ length: 60 }, (_, i) => ({

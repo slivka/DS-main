@@ -2,16 +2,10 @@
 import { afterEach, expect, test } from "bun:test";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { DS_TEXTS_CS, DsTextsProvider } from "../../src/ds-texts";
-import {
-  DocumentForm,
-  type DocumentHeaderValue,
-} from "../../src/components/ds/accounting/document-form";
+import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 import { documentFieldsForType } from "../../src/components/ds/accounting/document-fields";
 import { GridAddActions } from "../../src/components/ds/grid/grid-add-actions";
-import {
-  GridAddLabelContext,
-  GridToolbarOverflowContext,
-} from "../../src/components/ds/grid/grid-toolbar-context";
+import { GridAddLabelContext, GridToolbarOverflowContext } from "../../src/components/ds/grid/grid-toolbar-context";
 
 afterEach(cleanup);
 const value: DocumentHeaderValue = {

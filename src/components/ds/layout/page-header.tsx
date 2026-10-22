@@ -1,41 +1,14 @@
 import * as React from "react";
 import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
-import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUp,
-  Copy,
-  Maximize2,
-  Minimize2,
-  MoreHorizontal,
-  PanelRight,
-  Pin,
-  PinOff,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Copy, Maximize2, Minimize2, MoreHorizontal, PanelRight, Pin, PinOff, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { usePageLayoutVariant } from "./page-layout";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import {
-  DEFAULT_PANE_CHROME_TEXTS,
-  usePaneChrome,
-  type PaneChrome,
-  type PaneChromeTexts,
-} from "../panes/pane-context";
+import { DEFAULT_PANE_CHROME_TEXTS, usePaneChrome, type PaneChrome, type PaneChromeTexts } from "../panes/pane-context";
 
 export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"div">, "title"> {
   title: React.ReactNode;

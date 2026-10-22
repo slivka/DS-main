@@ -17,13 +17,7 @@ import { JournalGrossHelper } from "./journal-gross-helper";
 import { journalAccountColumnLabel } from "./journal-columns";
 import { useJournalEditor } from "./journal-editor-context";
 import { isResultAccountType, type JournalLine } from "./journal-lines";
-import {
-  calculateLineAmount,
-  dataColumnOf,
-  isAccountColumn,
-  isAccountNameColumn,
-  type ColumnId,
-} from "./journal-lines-model";
+import { calculateLineAmount, dataColumnOf, isAccountColumn, isAccountNameColumn, type ColumnId } from "./journal-lines-model";
 
 /** Props buňky. */
 export interface JournalCellProps {

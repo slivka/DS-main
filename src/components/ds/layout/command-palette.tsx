@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, type LinkProps } from "@tanstack/react-router";
 
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
 
 export type CommandTarget = {
   label: string;

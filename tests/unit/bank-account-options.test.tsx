@@ -2,10 +2,7 @@
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import {
-  BankAccountField,
-  type BankAccountOption,
-} from "../../src/components/ds/accounting/bank-account-field";
+import { BankAccountField, type BankAccountOption } from "../../src/components/ds/accounting/bank-account-field";
 import { DocumentForm } from "../../src/components/ds/accounting/document-form";
 import { ReceivedBankAccountField } from "../../src/components/ds/accounting/received-bank-account-field";
 import { DS_TEXTS_CS } from "../../src/ds-texts";

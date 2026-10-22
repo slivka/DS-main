@@ -1,15 +1,7 @@
 /** Zaokrouhlení jako Postgres round(numeric, 2), tolerance a dorovnání skupin DPH (2.109.0). */
 import { describe, expect, it } from "bun:test";
 import { mulDivRound, roundHalfAwayFromZero } from "../../src/lib/decimal-round";
-import {
-  allocateVatGroupTax,
-  baseDeltaForDifference,
-  baseFromGrossAmount,
-  computeVatGroups,
-  resolveDifferenceActions,
-  taxFromGrossTotal,
-  vatGroupsFromStored,
-} from "../../src/components/ds/accounting/journal-vat-groups";
+import { allocateVatGroupTax, baseDeltaForDifference, baseFromGrossAmount, computeVatGroups, resolveDifferenceActions, taxFromGrossTotal, vatGroupsFromStored } from "../../src/components/ds/accounting/journal-vat-groups";
 import type { JournalLine, VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
 
 const code = (id: string, rate: number): VatCodeOption =>

@@ -10,12 +10,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PanelLeftOpen } from "lucide-react";
 
-import {
-  effectiveViewportWidth,
-  isAppZoomShortcut,
-  useAppZoom,
-  useAppZoomShortcuts,
-} from "../../../lib/app-zoom";
+import { effectiveViewportWidth, isAppZoomShortcut, useAppZoom, useAppZoomShortcuts } from "../../../lib/app-zoom";
 import { useGlobalShortcuts } from "../../../lib/global-shortcuts";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";

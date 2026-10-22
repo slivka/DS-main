@@ -4,19 +4,7 @@
  * zavře odchod fokusu, Escape nebo klepnutí mimo; hover a fokus beze změny.
  * Nesmí: spouštět akci spouštěče ani měnit jeho přístupný název či aria-describedby.
  */
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  useEffect,
-  useRef,
-  useState,
-  type FocusEvent,
-  type MouseEvent,
-  type PointerEvent,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { Children, cloneElement, isValidElement, useEffect, useRef, useState, type FocusEvent, type MouseEvent, type PointerEvent, type ReactElement, type ReactNode } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
 /** Doba zobrazení důvodu po klepnutí. */

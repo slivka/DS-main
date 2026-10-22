@@ -1,22 +1,11 @@
 /** Rozložení a přetažení panelů · vlastní vnitřní kompozici · nesmí měnit veřejný kontrakt. */
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ComponentType,
-  type ReactNode,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DndContext,
   PointerSensor,
   closestCenter,
   pointerWithin,
   type CollisionDetection,
-  useDraggable,
-  useDroppable,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -27,27 +16,9 @@ import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { APP_ZOOM_EVENT, getAppZoom } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
-import {
-  buildTabMenuActions,
-  PaneApiContext,
-  PaneChromeContext,
-  PaneScrollContext,
-  usePaneTabs,
-  type PaneApi,
-  type PaneChrome,
-  type PaneChromeTexts,
-  type PaneTabsApi,
-} from "./pane-context";
-import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
-import {
-  evenWidths,
-  findTab,
-  paneKey,
-  type PaneLayoutCount,
-  type PaneTab,
-  type TabPane,
-} from "./pane-state";
-import { useTabScrollRestore } from "./pane-tab-store";
+import { type PaneTabsApi } from "./pane-context";
+
+import { evenWidths, findTab, type PaneTab } from "./pane-state";
 
 import type { PaneLayoutProps } from "./pane-layout-types";
 import { DEFAULT_PANE_TEXTS, maxPaneLayout, requiredPaneWidth } from "./pane-layout-utils";

@@ -1,21 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FileText, ListChecks, Rows3 } from "lucide-react";
-import {
-  Button,
-  CheckList,
-  DataGrid,
-  FileChipBar,
-  FileDropZone,
-  NoticeBar,
-  PageHeader,
-  PaneDropOverlay,
-  RecordDialog,
-  RecordSidePanel,
-  RecordPanelToolbar,
-  SelectableGroupList,
-  SourcePreview,
-  type FileChip,
-} from "../ds";
+import { Button, CheckList, DataGrid, FileChipBar, FileDropZone, NoticeBar, PageHeader, PaneDropOverlay, RecordDialog, RecordSidePanel, RecordPanelToolbar, SelectableGroupList, SourcePreview, type FileChip } from "../ds";
 import type { RejectedFile } from "../../hooks/use-file-drop";
 import { IMPORT_GROUPS, IMPORT_MOVEMENTS, importChecks } from "./file-import-data";
 

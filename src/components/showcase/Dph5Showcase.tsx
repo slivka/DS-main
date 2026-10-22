@@ -1,18 +1,7 @@
 /** Ukázka DPH 5 B a Zálohových listů B (2.118.0) · vlastní ukázková data · jen náhled. */
 import { useEffect, useRef, useState } from "react";
 
-import {
-  DocumentPostingGrid,
-  JournalLinesEditor,
-  StatusBadge,
-  advanceListVariant,
-  advancePaymentStatusConfig,
-  type AdvancePaymentStatus,
-  type JournalLine,
-  type JournalLinesVat,
-  type JournalVatOverride,
-  type VatCodeOption,
-} from "@/components/ds";
+import { DocumentPostingGrid, JournalLinesEditor, StatusBadge, advanceListVariant, advancePaymentStatusConfig, type AdvancePaymentStatus, type JournalLine, type JournalLinesVat, type JournalVatOverride, type VatCodeOption } from "@/components/ds";
 import { useDsTexts } from "@/ds-texts";
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { MOCK_ACCOUNTS, MOCK_VAT_CODES_IN, MOCK_VAT_CODES_OUT } from "@/lib/mock/accounting";

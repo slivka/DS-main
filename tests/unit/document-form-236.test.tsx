@@ -1,11 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
+
 import { renderToStaticMarkup } from "react-dom/server";
 
-import {
-  DocumentForm,
-  type DocumentHeaderValue,
-} from "../../src/components/ds/accounting/document-form";
+import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 import { NoticeBar } from "../../src/components/ds/feedback/notice-bar";
 import { StatusBadge } from "../../src/components/ds/data-display/status-badge";
 

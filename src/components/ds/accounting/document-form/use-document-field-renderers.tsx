@@ -10,13 +10,7 @@ import { SuggestInput } from "../../form/suggest-input";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
 import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
-import type {
-  DocumentAccountingDateLink,
-  DocumentDateField,
-  DocumentHeaderField,
-  DocumentHeaderValue,
-  DocumentSuggestConfig,
-} from "./document-form-types";
+import type { DocumentAccountingDateLink, DocumentDateField, DocumentHeaderField, DocumentHeaderValue, DocumentSuggestConfig } from "./document-form-types";
 export interface DocumentFieldRenderersArgs {
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;

@@ -6,14 +6,10 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { DataGrid, type DataGridColumn } from "@/components/ds/grid/DataGrid";
+import { type DataGridColumn } from "@/components/ds/grid/DataGrid";
 import { SegmentedField } from "@/components/ds/form/segmented-field";
 import { ShowcaseSection } from "./ShowcaseLayout";
-import {
-  DocumentForm,
-  type DocumentHeaderValue,
-  type DocumentIdentity,
-} from "@/components/ds/accounting/document-form";
+import { DocumentForm, type DocumentHeaderValue, type DocumentIdentity } from "@/components/ds/accounting/document-form";
 import type { JournalLine } from "@/components/ds/accounting/journal-lines";
 import type { PaymentScheduleItem } from "@/components/ds/accounting/payment-schedule";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";

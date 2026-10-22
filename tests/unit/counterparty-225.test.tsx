@@ -1,14 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import {
-  counterpartyFromPartner,
-  counterpartyFromText,
-  filterCounterpartyPartners,
-} from "../../src/components/ds/accounting/counterparty-field";
-import {
-  DocumentForm,
-  type DocumentHeaderValue,
-} from "../../src/components/ds/accounting/document-form";
+import { counterpartyFromPartner, counterpartyFromText, filterCounterpartyPartners } from "../../src/components/ds/accounting/counterparty-field";
+import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 
 const partners = [{ id: "p1", name: "Alfa stavby s.r.o.", ico: "12345678", dic: "CZ12345678" }];
 const base: DocumentHeaderValue = {

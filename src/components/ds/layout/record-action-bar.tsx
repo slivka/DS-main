@@ -1,23 +1,9 @@
 /** Lišta akcí · vlastní společné ukládání a stavy · nesmí ukládat aplikační data. */
 import { useEffect, useId, useRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Loader2,
-  MoreHorizontal,
-  Save,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, Loader2, MoreHorizontal, Save, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";

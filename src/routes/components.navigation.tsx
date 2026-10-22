@@ -1,34 +1,10 @@
 import { PageHeaderDirtyDemo } from "@/components/showcase/page-header-dirty-demo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  BarChart3,
-  Building2,
-  FileText,
-  Home,
-  KeyRound,
-  LayoutGrid,
-  Receipt,
-  SlidersHorizontal,
-  Users,
-} from "lucide-react";
+import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, SlidersHorizontal, Users } from "lucide-react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
-import {
-  ComingSoon,
-  PermissionGate,
-  ReadOnlyBanner,
-  NotificationBell,
-  ThemeSetting,
-  CompanySwitcher,
-  PeriodSwitcher,
-  DataGrid,
-  RecordDialog,
-  StatusBadge,
-  type DataGridColumn,
-  type NavGroup,
-  type NavItem,
-} from "@/components/ds";
+import { ComingSoon, PermissionGate, ReadOnlyBanner, NotificationBell, ThemeSetting, CompanySwitcher, PeriodSwitcher, DataGrid, RecordDialog, StatusBadge, type DataGridColumn, type NavGroup, type NavItem } from "@/components/ds";
 import { UnsavedActionsShowcase } from "@/components/showcase/UnsavedActionsShowcase";
 import { PaneShowcase } from "@/components/showcase/PaneShowcase";
 import { Button } from "@/components/ui/button";

@@ -1,16 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import {
-  calculateLineAmount,
-  DEFAULT_JOURNAL_LINES_TEXTS,
-  formatJournalAccountDisplay,
-  JournalLinesEditor,
-  journalAmountLabels,
-  normalizeJournalAccountVisibility,
-  orderJournalLines,
-  reorderJournalLines,
-  roundingSuggestion,
-} from "../../src/components/ds/accounting/journal-lines-editor";
+import { calculateLineAmount, DEFAULT_JOURNAL_LINES_TEXTS, formatJournalAccountDisplay, JournalLinesEditor, journalAmountLabels, normalizeJournalAccountVisibility, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 

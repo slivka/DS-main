@@ -8,11 +8,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { BankAccountField, type BankAccountOption } from "../bank-account-field";
 import type { ManualBankAccountErrors } from "../received-bank-account-field";
 import { ReceivedAccountControl } from "./BankAccountControls";
-import type {
-  DocumentFormTexts,
-  DocumentHeaderField,
-  DocumentHeaderValue,
-} from "./document-form-types";
+import type { DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
 
 /** Vstupy pole bankovního účtu. */
 interface Args {

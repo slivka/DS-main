@@ -8,18 +8,9 @@ import type { DocumentHeaderValue } from "@/components/ds/accounting/document-fo
 import type { JournalLine } from "@/components/ds/accounting/journal-lines";
 import type { PaymentScheduleItem } from "@/components/ds/accounting/payment-schedule";
 import type { DocumentSettingsValue } from "@/components/ds/accounting/document-settings-dialog";
-import type {
-  DocumentCounterpartyValue,
-  DocumentPrintValue,
-} from "@/components/ds/accounting/document-detail-tabs";
+import type { DocumentCounterpartyValue, DocumentPrintValue } from "@/components/ds/accounting/document-detail-tabs";
 import { MOCK_ACCOUNTS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
-import {
-  INVOICE_HEADER,
-  INVOICE_LINES,
-  PURCHASE_INVOICE_HEADER,
-  PURCHASE_INVOICE_LINES,
-  SCHEDULE,
-} from "./document-form-showcase-data";
+import { INVOICE_HEADER, INVOICE_LINES, PURCHASE_INVOICE_HEADER, PURCHASE_INVOICE_LINES, SCHEDULE } from "./document-form-showcase-data";
 
 export function useDocumentFormShowcaseState() {
   const [cashDateLocked, setCashDateLocked] = useState(true);

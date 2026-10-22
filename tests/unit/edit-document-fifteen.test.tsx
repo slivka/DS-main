@@ -7,12 +7,7 @@ import { reportingLinesChange } from "../../src/components/ds/accounting/documen
 import { VsField } from "../../src/components/ds/accounting/vs-field";
 import { deriveVariableSymbol } from "../../src/components/ds/accounting/variable-symbol-link";
 import { FormIssuesBar } from "../../src/components/ds/feedback/form-issues-bar";
-import {
-  formIssuesTitle,
-  mergeFormIssues,
-  visibleFormIssues,
-  type FormIssue,
-} from "../../src/lib/form-issues";
+import { formIssuesTitle, mergeFormIssues, visibleFormIssues, type FormIssue } from "../../src/lib/form-issues";
 
 afterEach(cleanup);
 

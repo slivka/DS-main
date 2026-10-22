@@ -2,10 +2,7 @@
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
-import {
-  DocumentForm,
-  type DocumentFormProps,
-} from "../../src/components/ds/accounting/document-form";
+import { DocumentForm, type DocumentFormProps } from "../../src/components/ds/accounting/document-form";
 import { DsTextsProvider, DS_TEXTS_SK } from "../../src/ds-texts";
 afterEach(cleanup);
 const base: DocumentFormProps = {

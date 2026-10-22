@@ -1,18 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  BankAccountField,
-  CODE_SEPARATOR,
-  CheckboxField,
-  DateField,
-  DocumentForm,
-  LookupField,
-  OptionSelect,
-  RecordActionBar,
-  SwitchField,
-  formatCodeName,
-} from "../../src";
+import { BankAccountField, CODE_SEPARATOR, CheckboxField, DateField, DocumentForm, LookupField, OptionSelect, RecordActionBar, SwitchField, formatCodeName } from "../../src";
 import { journalRowColumnWidthRem } from "../../src/components/ds/accounting/journal-column-layout";
 
 describe("DS 2.85.0 – obecná pravidla", () => {

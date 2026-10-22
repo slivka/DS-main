@@ -1,9 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  toJournalRow,
-  fromJournalRow,
-  sideFieldRules,
-} from "../../src/components/ds/accounting/journal-lines";
+import { toJournalRow, fromJournalRow, sideFieldRules } from "../../src/components/ds/accounting/journal-lines";
 import { convertAmount } from "../../src/components/ds/accounting/currency-amount";
 
 test.describe("Accounting Logic Unit Tests", () => {

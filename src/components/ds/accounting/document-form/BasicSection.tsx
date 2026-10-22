@@ -13,11 +13,7 @@ import { OptionSelect } from "../../form/option-select";
 import { ReadField } from "./document-identity-line";
 import type { PartnerOption } from "../partner-select";
 import type { DocumentFields } from "../document-fields";
-import type {
-  DocumentFormTexts,
-  DocumentHeaderValue,
-  DocumentSuggestConfig,
-} from "./document-form-types";
+import type { DocumentFormTexts, DocumentHeaderValue, DocumentSuggestConfig } from "./document-form-types";
 
 type FieldRenderer = (
   id: string,

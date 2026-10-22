@@ -1,17 +1,7 @@
 /** Ukázka vzoru dialogů záznamů · jen náhled DS · nesmí se šířit spotřebitelům. */
 import { useMemo, useState } from "react";
 
-import {
-  CheckboxField,
-  DateField,
-  Field,
-  FieldGrid,
-  FieldValue,
-  OptionSelect,
-  RecordDialog,
-  SectionHeading,
-  type RecordDialogSize,
-} from "../ds";
+import { CheckboxField, DateField, Field, FieldGrid, FieldValue, OptionSelect, RecordDialog, SectionHeading, type RecordDialogSize } from "../ds";
 import { PaneApiContext } from "../ds/panes/pane-context-hooks";
 import type { PaneApi } from "../ds/panes/pane-context-types";
 import { Button } from "../ui/button";

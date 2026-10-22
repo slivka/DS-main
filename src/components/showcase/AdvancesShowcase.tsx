@@ -6,10 +6,7 @@ import { AdvanceAllocationDialog } from "../ds/accounting/advances/advance-alloc
 import { AdvanceCorrectionDialog } from "../ds/accounting/advances/advance-correction-dialog";
 import { AdvanceReasonDialog } from "../ds/accounting/advances/advance-reason-dialog";
 import { AdvanceRegisterGrid } from "../ds/accounting/advances/advance-register-grid";
-import type {
-  AdvanceAllocation,
-  AdvancePaymentPlane,
-} from "../ds/accounting/advances/advance-types";
+import type { AdvanceAllocation, AdvancePaymentPlane } from "../ds/accounting/advances/advance-types";
 import { Button } from "../ui/button";
 import { useDsTexts } from "../../ds-texts";
 import { ShowcaseSection } from "./ShowcaseLayout";

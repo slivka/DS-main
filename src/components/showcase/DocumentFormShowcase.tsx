@@ -2,46 +2,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
-import {
-  DataGrid,
-  DocumentForm,
-  PanelToggleButton,
-  RecordSidePanel,
-  DocumentSettingsDialog,
-  NoticeBar,
-  PaymentScheduleEditor,
-  StatusBadge,
-  type DataGridColumn,
-  type DocumentSettingsValue,
-  type DocumentHeaderValue,
-  type DocumentIdentity,
-  SegmentedField,
-  type JournalLine,
-  type PaymentScheduleItem,
-  type DocumentCounterpartyValue,
-  type DocumentPrintValue,
-} from "@/components/ds";
-import { Button } from "@/components/ui/button";
-import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
-import { formatCodeName } from "@/lib/code-format";
-import { formatAccountCode } from "@/components/ds/accounting/account-code";
+import { DocumentForm, PanelToggleButton, RecordSidePanel, DocumentSettingsDialog } from "@/components/ds";
 
-import {
-  BANK_ACCOUNT_OPTIONS,
-  COMPANY_BANK_ACCOUNT_OPTIONS,
-  CONSTANT_SYMBOL_OPTIONS,
-  CURRENCIES,
-  DocumentHeaderScenarios,
-  HIDDEN_GROUP_COLUMNS,
-  HIDDEN_GROUP_ROWS,
-  INVOICE_HEADER,
-  INVOICE_LINES,
-  PAYMENT_METHOD_OPTIONS,
-  PURCHASE_INVOICE_HEADER,
-  PURCHASE_INVOICE_LINES,
-  SCHEDULE,
-  USERS,
-} from "./document-form-showcase-data";
+import { MOCK_BOOKS } from "@/lib/mock/accounting";
+import { formatCodeName } from "@/lib/code-format";
+
+
+import { COMPANY_BANK_ACCOUNT_OPTIONS, CONSTANT_SYMBOL_OPTIONS, CURRENCIES, DocumentHeaderScenarios, PAYMENT_METHOD_OPTIONS } from "./document-form-showcase-data";
 
 import { useDocumentFormShowcaseState } from "./use-document-form-showcase-state";
 import { useRecordPanelContent } from "./record-panel-content";

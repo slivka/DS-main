@@ -3,13 +3,7 @@ import type { ExportCell, GridExportData } from "../../../lib/excel-export";
 import { useDsTexts, DS_TEXTS_CS, type DsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { PrintPreviewDialog } from "../print/print-preview-dialog";
-import {
-  buildReportPdf,
-  type PrintColumn,
-  type PrintContext,
-  type PrintRowStyle,
-  type PrintSection,
-} from "../print/report-pdf";
+import { buildReportPdf, type PrintColumn, type PrintContext, type PrintRowStyle, type PrintSection } from "../print/report-pdf";
 import { gridPeriodLabel, type GridPeriodValue } from "./grid-period";
 import { GridSegmentedToggle, type GridSegmentedToggleOption } from "./grid-segmented-toggle";
 

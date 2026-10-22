@@ -9,13 +9,7 @@ import * as React from "react";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
 import type { JournalLine, VatCodeOption } from "./journal-lines";
 import { roundJournalAmount, roundingSuggestion } from "./journal-lines-model";
-import {
-  buildVatPreviewLines,
-  computeJournalTotals,
-  mergeFxRoundingPreview,
-  summarizeVat,
-  type VatPreviewConfig,
-} from "./journal-vat";
+import { buildVatPreviewLines, computeJournalTotals, mergeFxRoundingPreview, summarizeVat, type VatPreviewConfig } from "./journal-vat";
 import type { JournalEditorTexts } from "../../../ds-texts";
 
 /** Vstup výpočtu součtů. */

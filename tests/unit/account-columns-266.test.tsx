@@ -1,8 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import {
-  accountColumnPair,
-  accountColumns,
-} from "../../src/components/ds/accounting/account-columns";
+import { accountColumnPair, accountColumns } from "../../src/components/ds/accounting/account-columns";
 
 type Row = { debit: string; credit: string; account: string };
 const names: Record<string, string> = { "321100": "Závazky", "311200": "Odběratelé" };

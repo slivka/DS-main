@@ -4,13 +4,7 @@ import { StatusBadge } from "../data-display/status-badge";
 import { GridAction } from "./grid-action";
 import { GridToggleButton } from "./grid-toolbar";
 import type { DataGridColumn } from "./DataGrid";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 
 export interface ActiveStatusTexts {
   column: string;

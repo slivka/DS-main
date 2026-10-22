@@ -1,12 +1,7 @@
 /** Ukázka skupin DPH 2.109.0 · vlastní ukázková data · jen náhled, nesmí do knihovny. */
 import { useEffect, useRef, useState } from "react";
 
-import {
-  JournalLinesEditor,
-  type JournalLine,
-  type JournalVatOverride,
-  type VatCodeOption,
-} from "@/components/ds";
+import { JournalLinesEditor, type JournalLine, type JournalVatOverride, type VatCodeOption } from "@/components/ds";
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { MOCK_ACCOUNTS, MOCK_VAT_CODES_IN, MOCK_VAT_CODES_OUT } from "@/lib/mock/accounting";
 

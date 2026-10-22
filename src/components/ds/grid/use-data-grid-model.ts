@@ -5,22 +5,17 @@
  * Nesmí: znát doménová id sloupců – připnuté a kompaktní sloupce dostává přes
  * `pinnedColumnIds` / `compactColumnIds` (výchozí sady v grid-column-presets.ts).
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
-import { Table, TableBody } from "../../ui/table";
-import { fmtAmount } from "../../../lib/format";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
-import { cn } from "../../../lib/utils";
+
 import { usePageLayoutVariant } from "../layout/page-layout";
-import { GridPagination, useGridPagination } from "./grid-pagination";
+import { useGridPagination } from "./grid-pagination";
 import { useGridSort, useSortedRows } from "./grid-sort";
-import { GridBody, GridErrorRow } from "./grid-states";
-import { GridExport } from "./grid-export";
+
 import { gridPrintParams } from "./grid-print";
-import { GridZoomContext, ZoomGrid, useGridZoom, useWheelZoom } from "./grid-zoom";
-import { GroupBar, GroupControl } from "./grid-grouping";
-import { GridTitleBar } from "./grid-title";
-import { GridSelectionToggle } from "./grid-selection-toggle";
+import { useGridZoom, useWheelZoom } from "./grid-zoom";
+
 import { useResolvedGridTexts } from "./grid-texts";
 import { gridPeriodLabel } from "./grid-period";
 import { requiredGridWidthAt100, useAutoGridZoom } from "./grid-auto-zoom";
@@ -28,15 +23,15 @@ import { useGridVirtual } from "./grid-virtual";
 import { DEFAULT_COMPACT_COLUMNS, DEFAULT_PINNED_COLUMNS } from "./grid-column-presets";
 import { useDataGridColumns } from "./useDataGridColumns";
 import { useDataGridGroups } from "./useDataGridGroups";
-import { GridFrame } from "./GridFrame";
+
 import { useRowActions } from "./useRowActions";
 import { useDataGridSelection } from "./useDataGridSelection";
 import { useColumnDrag } from "./useColumnDrag";
 import { useDataGridFilters } from "./useDataGridFilters";
-import { DataGridColGroup, DataGridHead, type DataGridLayout } from "./DataGridHead";
-import { DataGridRows, DataGridSidePanel, DataGridSummary, DataGridTotals } from "./DataGridBody";
+import { type DataGridLayout } from "./DataGridHead";
+
 import { buildExportData, totalCells as computeTotalCells } from "./data-grid-model";
-import type { DataGridColumn, DataGridProps } from "./data-grid-types";
+import type { DataGridProps } from "./data-grid-types";
 
 /** Odvodí sdílený model gridu bez změny řízení jeho stavu. */
 export function useDataGridModel<Row>(props: DataGridProps<Row>) {
@@ -227,6 +222,7 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
   const hasHeaderAbove = Boolean((showTitle && title) || period || book || contextRight);
 
   return {
+    autoZoom,
     storageKey,
     resolvedHeight,
     title,

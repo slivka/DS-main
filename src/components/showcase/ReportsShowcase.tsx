@@ -3,19 +3,7 @@ import { toast } from "sonner";
 import { Archive } from "lucide-react";
 
 import { ShowcaseSection } from "./ShowcaseLayout";
-import {
-  AccountSelect,
-  BarBreakdownChart,
-  FilterChips,
-  gridPeriodRange,
-  TreeGrid,
-  formatAccountCode,
-  type AccountCatalogItem,
-  type FilterChip,
-  type TreeGridColumn,
-  type TreeGridExpandLevel,
-  type GridViewMode,
-} from "@/components/ds";
+import { AccountSelect, BarBreakdownChart, FilterChips, gridPeriodRange, TreeGrid, formatAccountCode, type AccountCatalogItem, type FilterChip, type TreeGridColumn, type TreeGridExpandLevel, type GridViewMode } from "@/components/ds";
 import { Label } from "@/components/ui/label";
 import { MOCK_ACCOUNTS, MOCK_CHART_TREE, type ChartNode } from "@/lib/mock/accounting";
 

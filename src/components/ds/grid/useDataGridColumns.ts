@@ -7,12 +7,7 @@
 import { useMemo } from "react";
 
 import { useGridColumns } from "./grid-columns";
-import {
-  createGridBookColumn,
-  GRID_BOOK_COLUMN_ID,
-  placeGridBookColumnFirst,
-  type GridBookConfig,
-} from "./grid-context-bar";
+import { createGridBookColumn, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig } from "./grid-context-bar";
 import { isBranchColumn, isCompactColumn } from "./grid-column-presets";
 import type { DataGridColumn } from "./data-grid-types";
 

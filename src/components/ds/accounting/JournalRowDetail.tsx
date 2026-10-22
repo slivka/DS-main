@@ -6,8 +6,8 @@
  */
 import type * as React from "react";
 
-import { formatAmount } from "../../../lib/format";
-import { cn } from "../../../lib/utils";
+
+
 import { DetailField } from "./journal-detail-field";
 import { VatDetail } from "./journal-vat-detail";
 import { Input } from "../../ui/input";
@@ -16,14 +16,7 @@ import { DimensionSelect } from "./dimension-select";
 import { JournalGrossHelper } from "./journal-gross-helper";
 import { useJournalEditor } from "./journal-editor-context";
 import type { JournalLine, JournalLineColumn } from "./journal-lines";
-import {
-  DIMENSION_COLUMNS,
-  PARTNER_COLUMNS,
-  SHARED_COLUMNS,
-  SPLIT_COLUMNS,
-  VS_COLUMNS,
-  type ColumnId,
-} from "./journal-lines-model";
+import { DIMENSION_COLUMNS, PARTNER_COLUMNS, SHARED_COLUMNS, SPLIT_COLUMNS, VS_COLUMNS } from "./journal-lines-model";
 import { PartnerSelect } from "./partner-select";
 import { UnitSelect } from "./unit-select";
 import { VsField } from "./vs-field";

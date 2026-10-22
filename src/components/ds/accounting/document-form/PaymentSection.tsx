@@ -13,11 +13,7 @@ import { VsField } from "../vs-field";
 import { SectionHeading } from "../../layout/section-heading";
 import type { DocumentFields } from "../document-fields";
 import type { VariableSymbolLinkState } from "./use-variable-symbol-link";
-import type {
-  DocumentFormTexts,
-  DocumentHeaderField,
-  DocumentHeaderValue,
-} from "./document-form-types";
+import type { DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
 
 type FieldRenderer = (
   id: string,

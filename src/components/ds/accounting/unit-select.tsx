@@ -5,12 +5,7 @@ import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
-import {
-  InlineSearchPopover as Popover,
-  InlineSearchContent as PopoverContent,
-  InlineSearchTrigger as PopoverTrigger,
-  InlineSearchInput as CommandInput,
-} from "../form/inline-search";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "../form/inline-search";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import { InactiveTag } from "../data-display/inactive-tag";

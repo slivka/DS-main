@@ -1,14 +1,7 @@
 /** Navigace mezi záznamy stejného seznamu; chrání rozepsanou záložku. */
 import { toast } from "sonner";
 import type { RecordNav, RecordNavItem } from "./pane-context-types";
-import {
-  activateTabInState,
-  findRecordTab,
-  findTab,
-  paneKey,
-  replaceTabContentInState,
-  type PaneTabsState,
-} from "./pane-state";
+import { activateTabInState, findRecordTab, findTab, paneKey, replaceTabContentInState, type PaneTabsState } from "./pane-state";
 import { clearTabState, isTabDirty } from "./pane-tab-store";
 export function recordNavigation(
   tabId: string,

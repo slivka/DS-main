@@ -1,15 +1,6 @@
 import { useId, useState, type ReactNode } from "react";
 import { useDsTexts } from "../../../ds-texts";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../../ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
 
 import { Input } from "../../ui/input";
 import { Field, FieldGrid } from "../layout/RecordDialog";

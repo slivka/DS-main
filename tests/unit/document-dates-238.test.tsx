@@ -1,10 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import {
-  DocumentForm,
-  type DocumentHeaderValue,
-} from "../../src/components/ds/accounting/document-form";
+import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 import { DateField } from "../../src/components/ds/form/date-field";
 
 const baseValue: DocumentHeaderValue = {

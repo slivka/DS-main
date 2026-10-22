@@ -1,11 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import {
-  DocumentForm,
-  DocumentDirectionBadge,
-  type DocumentHeaderValue,
-} from "../../src/components/ds/accounting/document-form";
+import { DocumentForm, DocumentDirectionBadge, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 import { counterpartyCreateSeed } from "../../src/components/ds/accounting/counterparty-field";
 import { IcoLink, icoRegistryUrl, isValidCzIco } from "../../src/components/ds/form/ico-link";
 import { RateField, rateValuesDiffer } from "../../src/components/ds/form/rate-field";

@@ -1,9 +1,5 @@
 /** Ukázková data záloh · vlastní demonstrační hodnoty · nepatří do připojené knihovny. */
-import type {
-  AdvanceDeductionRow,
-  AdvanceRegisterRow,
-  AdvancePaymentTotals,
-} from "../ds/accounting/advances/advance-types";
+import type { AdvanceDeductionRow, AdvanceRegisterRow, AdvancePaymentTotals } from "../ds/accounting/advances/advance-types";
 export const ADVANCE_CURRENCY = { code: "CZK", symbol: "Kč" };
 export const ADVANCE_TOTALS: AdvancePaymentTotals = {
   amount: 2000,

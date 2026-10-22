@@ -1,63 +1,27 @@
 /** Panelové záložky · vlastní přechody, potvrzení a obnovu · nesmí vykreslovat obsah panelů. */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
+import { useDsTexts } from "../../../ds-texts";
 import { PaneTabsContext } from "./pane-context-hooks";
 import { PaneUnsavedController, type PendingUnsaved } from "./pane-unsaved-controller";
 import {
   DEFAULT_PANE_TABS_TEXTS,
-  type OpenTabOptions,
-  type PaneTabsApi,
   type PaneTabsTexts,
   type RecordNavItem,
 } from "./pane-context-types";
 import {
-  activateTabInState,
-  applyLayoutInState,
   applyMaxLayout,
-  closePaneInState,
-  closeTabInState,
-  duplicateTabInState,
-  findRecordTab,
   findTab,
-  moveTabInState,
-  openFromHistoryInState,
-  openRecordInState,
-  openTabInState,
-  otherTabIds,
   pushClosedTab,
-  reopenClosedTabInState,
-  resolveOpenMode,
-  resolveTargetPaneIndex,
-  serializeLayout,
-  setLayoutWithLimitInState,
-  setTabTitleInState,
-  stepTabHistory,
-  MAX_TABS_PER_PANE,
   type ClosedTabRecord,
-  type OpenRecordModifiers,
   type PaneLayoutCount,
   type PaneTabsState,
 } from "./pane-state";
-import {
-  clearTabState,
-  getTabDraft,
-  isTabDirty,
-  registerLiveTabs,
-  setTabDraft,
-  useTabDirtyVersion,
-} from "./pane-tab-store";
-import { recordNavigation } from "./pane-record-navigation";
-import { createLinkedPanelActions } from "./pane-linked-panel-actions";
+import { registerLiveTabs, useTabDirtyVersion } from "./pane-tab-store";
+
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
-import {
-  openLinkedTabInState,
-  returnLinkedTabInState,
-  setLinkedTabPinnedInState,
-  syncLinkedTabsInState,
-  setLinkedSourceSelectionInState,
-} from "./linked-tabs";
+import { syncLinkedTabsInState, setLinkedSourceSelectionInState } from "./linked-tabs";
 import { createPaneOpenActions } from "./pane-provider-open-actions";
 import { createPaneCloseActions } from "./pane-provider-close-actions";
 import { createPaneProviderApi } from "./pane-provider-api";
@@ -150,7 +114,7 @@ export function PaneTabsProvider({
     toast.info(notice === "narrowed" ? t.narrowed : t.restored);
     commit(next);
   };
-  const setLinkedSourceSelection = useCallback(
+  const setLinkedSourceSelection = useCallback<PaneTabsApi["setLinkedSourceSelection"]>(
     (sourceTabId, record) => {
       const current = stateRef.current;
       const next = setLinkedSourceSelectionInState(current, sourceTabId, record);

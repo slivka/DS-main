@@ -3,13 +3,7 @@
  * Vlastní: nadpis s názvem záložky, popis záměru a tlačítka pojmenovaná výsledkem.
  * Nesmí: sám ukládat ani zahazovat – rozhoduje poskytovatel záložek.
  */
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../../ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
 import { useRef } from "react";
 import { DS_TEXTS_CS, type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";

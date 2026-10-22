@@ -8,13 +8,7 @@ import type { FieldErrorLink } from "../feedback/field-error-summary";
 
 import { usePane } from "../panes/pane-context";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import { SectionHeading } from "./section-heading";
 import { RecordDialogTabs } from "./record-dialog-tabs";
@@ -23,11 +17,7 @@ import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { UnsavedChangesDialog } from "../panes/unsaved-changes-dialog";
 import { RecordReadOnlyProvider } from "../form/record-read-only";
-import {
-  RecordDialogErrorStrip,
-  RecordDialogFooterAction,
-  RecordDialogSubmitButton,
-} from "./record-dialog-footer";
+import { RecordDialogErrorStrip, RecordDialogFooterAction, RecordDialogSubmitButton } from "./record-dialog-footer";
 import { RecordDialogPane } from "./record-dialog-pane";
 import { cn } from "../../../lib/utils";
 

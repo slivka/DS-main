@@ -2,11 +2,7 @@
 import type { ReactNode } from "react";
 import { NoticeBar } from "../../feedback/notice-bar";
 import { bankAccountOptionValue, type BankAccountOption } from "../bank-account-field";
-import type {
-  DocumentDateField,
-  DocumentFormTexts,
-  DocumentHeaderValue,
-} from "./document-form-types";
+import type { DocumentDateField, DocumentFormTexts, DocumentHeaderValue } from "./document-form-types";
 export interface DocumentNoticesArgs {
   value: DocumentHeaderValue;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;

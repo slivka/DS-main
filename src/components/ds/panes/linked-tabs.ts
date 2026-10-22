@@ -5,18 +5,7 @@
  * reexportuje.
  * Nesmí: vykreslovat rozhraní, načítat data ani znát doménu aplikace.
  */
-import {
-  activateTabInState,
-  closeTabInState,
-  createTab,
-  findTab,
-  insertPaneInState,
-  insertTabInState,
-  type OpenTabResult,
-  type PaneTab,
-  type LinkedSourceRecord,
-  type PaneTabsState,
-} from "./pane-state";
+import { activateTabInState, closeTabInState, createTab, findTab, insertPaneInState, insertTabInState, type OpenTabResult, type PaneTab, type LinkedSourceRecord, type PaneTabsState } from "./pane-state";
 import { linkedPanelTitle } from "./linked-panel";
 
 /** Sekce panelu záznamu, kterou navázaná záložka zobrazuje. */

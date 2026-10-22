@@ -24,12 +24,7 @@ import { JournalToolbar } from "./JournalToolbar";
 import { JournalEditorContext, useJournalEditor } from "./journal-editor-context";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
 import { JournalLinesRecap } from "./journal-lines-recap";
-import {
-  accountDataColumn,
-  isAccountColumn,
-  isPinnedLine,
-  type ColumnId,
-} from "./journal-lines-model";
+import { accountDataColumn, isAccountColumn, isPinnedLine, type ColumnId } from "./journal-lines-model";
 import { useJournalEditorState } from "./useJournalEditorState";
 import { useJournalKeyboard } from "./useJournalKeyboard";
 

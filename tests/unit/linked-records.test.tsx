@@ -6,10 +6,7 @@ import { LinkedRecordsPanel } from "../../src/components/ds/data-display/linked-
 import { SettlementBar } from "../../src/components/ds/data-display/settlement-bar";
 import { LinkRecordDialog } from "../../src/components/ds/data-display/link-record-dialog";
 import { DS_TEXTS_CS, DS_TEXTS_SK } from "../../src/ds-texts";
-import type {
-  LinkedRecordItem,
-  LinkedRecordsMode,
-} from "../../src/components/ds/data-display/linked-record-types";
+import type { LinkedRecordItem, LinkedRecordsMode } from "../../src/components/ds/data-display/linked-record-types";
 afterEach(cleanup);
 const item: LinkedRecordItem = {
   id: "one",

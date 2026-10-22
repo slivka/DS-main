@@ -1,54 +1,23 @@
 /** Sloupec panelu · vlastní vnitřní kompozici · nesmí měnit veřejný kontrakt. */
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ComponentType,
-  type ReactNode,
-} from "react";
-import {
-  DndContext,
-  PointerSensor,
-  closestCenter,
-  pointerWithin,
-  type CollisionDetection,
-  useDraggable,
-  useDroppable,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
 
-import { Button } from "../../ui/button";
-import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import { APP_ZOOM_EVENT, getAppZoom } from "../../../lib/app-zoom";
-import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
+
 import {
   buildTabMenuActions,
   PaneApiContext,
   PaneChromeContext,
   PaneScrollContext,
-  usePaneTabs,
   type PaneApi,
   type PaneChrome,
-  type PaneChromeTexts,
   type PaneTabsApi,
 } from "./pane-context";
-import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
-import {
-  evenWidths,
-  findTab,
-  paneKey,
-  type PaneLayoutCount,
-  type PaneTab,
-  type TabPane,
-} from "./pane-state";
+import { PaneTabBar } from "./pane-tab-bar";
+import { paneKey, type TabPane } from "./pane-state";
 import { useTabScrollRestore } from "./pane-tab-store";
 
+import type { PaneLayoutTexts } from "./pane-layout-utils";
 import type { PaneLayoutProps } from "./pane-layout-types";
 import { PANE_FOCUS_EXCLUDED, shouldFocusPaneScroll } from "./pane-layout-utils";
 import { PaneEmpty } from "./pane-empty";

@@ -6,12 +6,7 @@ import { Input } from "../../ui/input";
 import { Filter, Plus } from "lucide-react";
 import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
 import { PanelToolButton } from "../layout/record-panel-tools";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-} from "../../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from "../../ui/dropdown-menu";
 import { cn } from "../../../lib/utils";
 import { AttachmentItem } from "./attachment-item";
 import { NoticeBar } from "./notice-bar";
