@@ -316,6 +316,7 @@ export function DocumentForm(props: DocumentFormProps) {
     readOnly,
     identityVariant,
     currencyDisabledReason,
+    lockedReason: lockReason("currency"),
     currencyOptions,
     currenciesPresent: Boolean(currencies),
     t,
@@ -448,6 +449,7 @@ export function DocumentForm(props: DocumentFormProps) {
                     bankCodes: props.bankCodes,
                     bankCodeOptions: props.bankCodeOptions,
                     disabled: !can("bankAccount"),
+                    lockReason,
                     // Projekce chyb a varování do polí protiúčtu (Druh účtu, Číslo/IBAN, Kód/SWIFT).
                     fieldErrors: issueFieldErrors,
                     fieldWarnings: issueFieldWarnings,
@@ -471,6 +473,7 @@ export function DocumentForm(props: DocumentFormProps) {
               bankAccountField,
               field,
               vsLink,
+              lockReason,
               layout: bankMovement ? "grid20" : "flex",
               // „Přidělí se při zařazení“ jen u vydaných dokladů ve stavu koncept.
               vsPendingText:
@@ -495,6 +498,7 @@ export function DocumentForm(props: DocumentFormProps) {
               readOnly,
               currencyControl,
               field,
+              lockReason,
             }}
           />
         </section>
