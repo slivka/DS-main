@@ -3,7 +3,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { Popover, PopoverTrigger, PopoverContent } from "../../ui/popover";
 import { CommandInput } from "../../ui/command";
-import { moveMultipleFocus, moveSingleFocus, toggleMultipleActive } from "./inline-search-multiple";
+import { moveMultipleFocus, moveSingleFocus, toggleMultipleActive, triggerName, multipleContentKey } from "./inline-search-multiple";
 
 interface SearchContextValue {
   multiple: boolean;
@@ -162,18 +162,7 @@ export const InlineSearchContent = React.forwardRef<
       onKeyDownCapture={(event) => {
         onKeyDownCapture?.(event);
         if (!context?.multiple || event.defaultPrevented) return;
-        if (event.key === "Tab") {
-          event.preventDefault();
-          event.stopPropagation();
-          moveMultipleFocus(context.target, context.contentRef.current, event.shiftKey, () =>
-            context.changeOpen(false),
-          );
-        } else if (event.key === "Escape") {
-          event.preventDefault();
-          event.stopPropagation();
-          context.changeOpen(false);
-          context.target?.querySelector<HTMLButtonElement>("button")?.focus();
-        }
+        multipleContentKey(event, context.target, context.contentRef.current, () => context.changeOpen(false));
       }}
       onBlurCapture={(event) => {
         onBlurCapture?.(event);

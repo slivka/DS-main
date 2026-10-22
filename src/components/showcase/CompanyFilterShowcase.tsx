@@ -14,7 +14,8 @@ export function CompanyFilterShowcase() {
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <section aria-label="Filtr firem" data-testid="company-filter-showcase">
-      <DataGrid
+      <DataGrid<(typeof rows)[number]>
+        storageKey="showcase-company-keyboard"
         title="Doklady podle firmy"
         rows={rows.filter((row) => !selected.length || selected.includes(row.id))}
         rowKey={(row) => row.id}

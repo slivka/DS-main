@@ -1,4 +1,16 @@
 /** Vícenásobné hledání · vlastní průchod fokusu a potvrzení · nemění jednotlivé výběry. */
+import type { KeyboardEvent } from "react";
+/** Klávesnice akcí v nabídce; jednotlivé výběry tuto cestu nepoužívají. */
+export function multipleContentKey(event: KeyboardEvent, target: HTMLElement | null, content: HTMLElement | null, close: () => void) {
+  if (event.key !== "Tab" && event.key !== "Escape") return;
+  event.preventDefault();
+  event.stopPropagation();
+  if (event.key === "Tab") moveMultipleFocus(target, content, event.shiftKey, close);
+  else {
+    close();
+    target?.querySelector<HTMLButtonElement>("button")?.focus();
+  }
+}
 /** Přesune Tab mezi hledáním a akcemi; po opuštění zavře nabídku. */
 export function moveMultipleFocus(
   target: HTMLElement | null,
