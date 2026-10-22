@@ -1,4 +1,8 @@
-## DS 2.132.0 (nevydáno)
+## DS 2.133.0 (nevydáno)
+
+- [ ] Zatím bez úkolů.
+
+## DS 2.132.0
 
 - [x] Kolo 1: jedno úložiště rozložení gridů (GridLayout, store od APP, debounce/flush, přechod starých klíčů, scope), hooky gridu na novém API, ukázka s přepínačem úložiště, unit testy
 - [x] Kolo 2: tokenová paleta a kontrast, styly v pohledech/výchozím, editor ve Sloupcích, sdílené vykreslení, Excel/tisk, ukázka a testy, check:full (nevydávat)

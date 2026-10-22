@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.132.0 (nevydáno)
+## 2.133.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.132.0
 
 - Testy: společný úklid po každém testu nově resetuje i paměť zoomu aplikace a kontrola izolace hlídá, že tento úklid nechybí (náhodné pořadí, seed 2488739314).
 - Testy: test zoomu „na Macu“ nechával přepnutou platformu na Mac, takže následný test rámů ignoroval Ctrl + plus; platformu nyní vrací test i společný úklid (hlídá kontrola izolace).

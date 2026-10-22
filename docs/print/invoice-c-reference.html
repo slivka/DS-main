@@ -1,0 +1,627 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tisk faktury TEMPO</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Roboto:wght@400;500;700&display=swap">
+<style>
+/* Rozvržení: pracovní stůl – vlevo volby tisku (předloha z knihy), vpravo listy A4 pod sebou v měřítku; druhý pohled = připomínky */
+:root{
+  --bg:#eef1f5; --surface:#ffffff; --surface-2:#f6f8fb; --line:#d6dce5; --fg:#1b2430; --muted:#5d6b7d;
+  --accent:#1f4f8f; --accent-soft:#e3ecf8; --on-accent:#ffffff;
+  --crit:#c4271b; --crit-soft:#fbe7e5; --warn:#a86400; --warn-soft:#fbf0dc; --ok:#1d7a3a; --ok-soft:#e2f3e7;
+  /* papír zůstává papírem v obou režimech */
+  --paper:#ffffff; --ink:#151515; --ink-2:#5a5a5a; --hair:#d9d9d9; --tint:#f1f5fb; --tint-ink:#1f4f8f; --desk:#c9d0da;
+  --f-ui:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-doc:"Roboto", Arial, Helvetica, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161c; --surface:#1a2029; --surface-2:#202834; --line:#313b49; --fg:#e4e9f0; --muted:#9aa7b8;
+  --accent:#7fb0ef; --accent-soft:#1f3350; --on-accent:#0d1520;
+  --crit:#ff7b6e; --crit-soft:#3a1d1b; --warn:#f0b35a; --warn-soft:#3a2c14; --ok:#6fd08c; --ok-soft:#173022; --desk:#0b0e12;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161c; --surface:#1a2029; --surface-2:#202834; --line:#313b49; --fg:#e4e9f0; --muted:#9aa7b8;
+  --accent:#7fb0ef; --accent-soft:#1f3350; --on-accent:#0d1520;
+  --crit:#ff7b6e; --crit-soft:#3a1d1b; --warn:#f0b35a; --warn-soft:#3a2c14; --ok:#6fd08c; --ok-soft:#173022; --desk:#0b0e12;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:14px;line-height:1.45}
+.wrap{max-width:1380px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+h1{font-size:22px;font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:2px 0 0;font-size:13px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--fg);padding:7px 12px;cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.seg button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.sel{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);max-width:100%}
+.layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;position:sticky;top:12px}
+@media (max-width:900px){.panel{position:static}}
+.panel h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px;font-weight:600}
+.panel h2:first-child{margin-top:0}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:13px}
+.opt input{margin:2px 0 0;accent-color:var(--accent);flex:none}
+.hint{font-size:12px;color:var(--muted);margin:0 0 4px 22px}
+.removed{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:12px;color:var(--muted)}
+.removed b{color:var(--fg);font-weight:500;text-decoration:line-through;text-decoration-color:var(--crit)}
+.stage{background:var(--desk);border-radius:8px;padding:20px;min-width:0;overflow:hidden}
+.caption{font-size:12px;color:var(--muted);margin:0 0 12px}
+.scaler{position:relative;margin:0 auto}
+.pages{position:absolute;top:0;left:0;width:794px;transform-origin:0 0;display:flex;flex-direction:column;gap:24px}
+
+/* ===== List faktury ===== */
+.sheet{position:relative;width:794px;height:1123px;background:var(--paper);color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.25);font-family:var(--f-doc);font-size:12px;line-height:1.4;padding:44px 50px 30px;display:flex;flex-direction:column;overflow:hidden}
+.pbody{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:22px}
+.pfoot{padding-top:12px}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.sheet table{border-collapse:collapse;width:100%}
+.watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:110px;font-weight:700;color:rgba(200,0,0,.08);transform:rotate(-30deg)}
+.k{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:500}
+
+.hd{display:grid;grid-template-columns:1fr auto auto;gap:22px;align-items:end}
+.hdates{display:grid;grid-template-columns:auto auto;gap:2px 12px;margin:0;padding-right:22px;border-right:1px solid var(--hair);font-size:11px;align-self:end;padding-bottom:3px}
+.hdates dt{color:var(--ink-2);text-align:right}
+.hdates dd{margin:0;font-weight:500;font-variant-numeric:tabular-nums}
+.brand{align-self:center}
+.brand{display:flex;gap:12px;align-items:center}
+.logo-wide{display:flex;align-items:center;gap:9px;height:44px;max-width:220px;flex:none}
+.lw-mark{display:grid;grid-template-columns:repeat(3,7px);gap:3px;align-items:end;height:30px}
+.lw-mark i{display:block;background:var(--tint-ink);border-radius:1px}
+.lw-mark i:nth-child(1){height:14px}.lw-mark i:nth-child(2){height:22px}.lw-mark i:nth-child(3){height:30px;background:#e07a1f}
+.lw-text{display:flex;flex-direction:column;font-weight:700;font-size:19px;letter-spacing:.06em;color:var(--tint-ink);line-height:1}
+.lw-text small{font-size:9.5px;letter-spacing:.32em;font-weight:500;color:var(--ink-2);margin-top:3px;text-transform:uppercase}
+.brand.wide .nm{display:none}
+.logo{width:48px;height:48px;border-radius:6px;background:var(--tint-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;letter-spacing:.02em;flex:none}
+.brand .nm{font-weight:700;font-size:16px}
+.doc{text-align:right}
+.doc .t{font-size:15px;font-weight:500;margin-top:2px}
+.doc .n{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em;line-height:1.15}
+.doc dl{display:grid;grid-template-columns:auto auto;justify-content:end;gap:2px 14px;margin:10px 0 0;font-size:11.5px}
+.doc dt{color:var(--ink-2)}
+.doc dd{margin:0;font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+
+.parties{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.parties.three{grid-template-columns:1.05fr 0.95fr 1.05fr;gap:14px}
+.party.dlv{border-top-style:dashed}
+.party .contact{font-size:11px;margin-top:6px;color:var(--ink-2)}
+.foottot{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+.foottot .htext{padding-top:4px}
+.paybox .cash,.spay .cash{font-size:12px;margin-top:6px}
+.cur{font-size:.6em;font-weight:500}
+.brand.nologo .nm{font-size:19px;letter-spacing:-.01em}
+.paybox .sched{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 26px;align-items:baseline;border-top:1px solid #d5deeb;padding-top:9px;font-size:11.5px}
+.sp{display:flex;gap:10px;align-items:baseline}
+.sp .num{font-weight:500}
+.sp .k{text-transform:none;letter-spacing:0;font-size:11px;font-weight:400}
+/* Návrh C – tmavé záhlaví a pás klíčových údajů */
+.sheet.C1{padding-top:0}
+.band{margin:0 -50px 26px;padding:24px 50px 18px;background:var(--tint);display:grid;grid-template-columns:1fr auto auto;gap:22px;align-items:end}
+.band .brand{align-self:center}
+.band .brand .nm{font-size:16px}
+.band .brand.nologo .nm{font-size:20px;color:var(--tint-ink)}
+.band .hdates{border-right-color:#c4d2e6}
+.band .doc .n{font-size:27px;color:var(--tint-ink)}
+.keyfig{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto;gap:12px 22px;align-items:center;border-top:2px solid var(--tint-ink);border-bottom:1px solid var(--ink);padding:12px 0}
+.keyfig .v{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:2px}
+.keyfig .big .v{font-size:27px;color:var(--tint-ink);line-height:1.15}
+.keyfig .big .k{color:var(--tint-ink)}
+.keyfig .qr{grid-column:4;grid-row:1 / span 2;align-self:center}
+.keyfig .qr canvas{width:84px;height:84px}
+.keyfig .pline{grid-column:1 / 4;display:flex;flex-wrap:wrap;gap:4px 20px;border-top:1px solid var(--hair);padding-top:12px;font-size:11px;color:var(--ink-2)}
+.keyfig .pline b{color:var(--ink);font-weight:500}
+.keyfig .pline .sp .k{color:var(--ink-2)}
+.keyfig .pline .sep{flex-basis:100%;height:0}
+.party.dates dl{display:grid;gap:1px;margin:6px 0 0;font-size:11.5px}
+.party.dates dt{color:var(--ink-2);font-size:10px}
+.party.dates dd{margin:0 0 5px;font-weight:500;font-variant-numeric:tabular-nums}
+.grp{display:flex;flex-direction:column;gap:14px}
+.party{padding:10px 14px 12px;border-top:2px solid var(--tint-ink)}
+.party.cust{background:var(--tint)}
+.party .nm{font-weight:700;font-size:13.5px;margin-top:4px}
+.party .ids{display:flex;gap:18px;margin-top:6px;font-size:11.5px}
+.party .reg{font-size:10px;color:var(--ink-2);margin-top:6px}
+
+.paybox{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:22px;padding:14px 16px;border:1.5px solid var(--tint-ink);border-radius:4px;align-items:center}
+.paybox dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:6px 0 0;font-size:11.5px}
+.paybox dt{color:var(--ink-2)}
+.paybox dd{margin:0;font-weight:500;font-variant-numeric:tabular-nums}
+.paybox dd.hl{font-weight:700}
+.qr{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:8.5px;color:var(--ink-2)}
+.qr canvas{width:96px;height:96px;image-rendering:pixelated}
+.due{text-align:right}
+.due .k{color:var(--tint-ink)}
+.due .v{font-size:28px;font-weight:700;color:var(--tint-ink);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.2}
+.due .s{font-size:11.5px;color:var(--ink)}
+.due .s b{font-weight:700}
+
+.htext,.note{white-space:pre-line}
+.sec{margin-bottom:6px}
+table.t th{font-size:9.5px;font-weight:500;color:var(--ink-2);text-align:left;border-bottom:1px solid var(--ink);padding:4px 8px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+table.t td{padding:6px 8px;border-bottom:1px solid var(--hair);vertical-align:top}
+table.t tbody tr:last-child td{border-bottom:1px solid var(--ink)}
+table.t th.num{text-align:right}
+table.t td.mut{color:var(--ink-2)}
+.totals{display:flex;justify-content:flex-end}
+.foottot .totals{display:block}
+.tbox{width:300px}
+.tbox .r{display:flex;justify-content:space-between;padding:3px 8px}
+.tbox .r.mutr{color:var(--ink-2);font-size:11px}
+.tbox .r.b{font-weight:700;border-top:1px solid var(--ink);margin-top:4px;padding-top:6px}
+.tbox .r.due2{font-weight:700;font-size:14px;background:var(--tint);color:var(--tint-ink);margin-top:6px;padding:6px 8px}
+.vattext{margin-top:8px;padding:7px 10px;border-left:3px solid var(--ink);background:#f4f4f4;font-size:11.5px}
+.sig{display:grid;grid-template-columns:1fr 1fr;gap:40px;font-size:10.5px;color:var(--ink-2);padding-top:30px}
+.sig div{border-top:1px solid var(--ink-2);padding-top:4px}
+.cont{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:6px;margin-bottom:22px;font-size:11px;color:var(--ink-2)}
+.cont b{color:var(--ink);font-size:12.5px}
+.ft{border-top:1px solid var(--ink);padding-top:7px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.6fr) auto;gap:16px;font-size:9.5px;color:var(--ink-2)}
+.ft b{color:var(--ink);font-weight:500}
+.ftxt{font-size:9.5px;color:var(--ink-2);white-space:pre-line;margin-bottom:5px}
+.mark{display:inline-block;border:1.5px solid var(--tint-ink);color:var(--tint-ink);font-weight:700;padding:2px 8px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;margin-top:6px;border-radius:2px}
+
+/* ===== Připomínky ===== */
+.review{display:grid;gap:18px;max-width:1000px}
+.review section{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.review h2{font-size:15px;margin:0 0 10px;font-weight:600}
+.review h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 6px;font-weight:600}
+.review ol,.review ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.review li{max-width:88ch}
+.sev{display:inline-block;font-size:11px;font-weight:600;border-radius:3px;padding:0 6px;margin-right:6px;vertical-align:1px;white-space:nowrap}
+.sev.c{background:var(--crit-soft);color:var(--crit)}
+.sev.w{background:var(--warn-soft);color:var(--warn)}
+.sev.o{background:var(--ok-soft);color:var(--ok)}
+.review code{font-family:var(--f-mono);font-size:12px;background:var(--surface-2);padding:0 4px;border-radius:3px}
+.tblwrap{overflow-x:auto}
+.cmp{border-collapse:collapse;width:100%;font-size:13px;min-width:620px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.cmp th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.c-red{color:var(--crit);font-weight:600}.c-green{color:var(--ok);font-weight:600}.c-amb{color:var(--warn);font-weight:600}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Tisk vydané faktury</h1>
+      <p class="sub">Šablona tisku FV / ZFV / DDPZ · ukázková data · rozhodnutí Petra 22. 10. 2026 zapracována</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Pohled">
+        <button id="v-b" data-view="B" aria-pressed="true">Návrh B · platba nahoře</button>
+        <button id="v-c" data-view="C" aria-pressed="false">Návrh C · tmavé záhlaví</button>
+        <button id="v-r" data-view="R" aria-pressed="false">Připomínky a názor</button>
+      </div>
+      <label class="sel" id="ds-wrap">Příklad
+        <select id="ds">
+          <option value="pdp">FV s přenesenou daní a 10 zálohami (z předlohy)</option>
+          <option value="std">FV s DPH 21 % + 12 %, záloha s DD, splátky</option>
+          <option value="eur">FV v EUR s českou DPH (přepočet na Kč)</option>
+          <option value="card">FV placená kartou</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <div class="layout" id="workbench">
+    <aside class="panel" aria-label="Volby tisku">
+      <h2>Volby dokladu · předloha z knihy</h2>
+      <div id="opts"></div>
+      <h2>Texty · tisknou se, když jsou vyplněné</h2>
+      <div class="opt"><input type="checkbox" id="o-htext" checked><label for="o-htext">Úvodní text vyplněn</label></div>
+      <div class="opt"><input type="checkbox" id="o-ftext" checked><label for="o-ftext">Text zápatí vyplněn</label></div>
+      <div class="hint">tiskne se hned za položkami a součty</div>
+      <div class="opt"><input type="checkbox" id="o-ntext" checked><label for="o-ntext">Poznámka vyplněna</label></div>
+      <div class="opt"><input type="checkbox" id="o-dlv" checked><label for="o-dlv">Dodací adresa vyplněna</label></div>
+      <div class="hint">uprostřed mezi Dodavatelem a Odběratelem</div>
+      <h2>Firma</h2>
+      <label class="sel" for="o-logo">Logo
+        <select id="o-logo"><option value="square">čtvercové</option><option value="wide">obdélníkové</option><option value="none">bez loga</option></select></label>
+      <div class="opt"><input type="checkbox" id="o-logoname"><label for="o-logoname">Logo obsahuje název firmy</label></div>
+      <div class="hint">„Logo obsahuje název“ (nastavení firmy, předvyplní se podle tvaru) – název vedle loga se netiskne; bez loga jen větší název</div>
+      <h2>Stav dokladu</h2>
+      <div class="opt"><input type="checkbox" id="o-draft"><label for="o-draft">Koncept (vodoznak, bez čísla, bez QR)</label></div>
+      <label class="sel" for="o-pm" style="margin-top:6px">Způsob platby
+        <select id="o-pm"><option value="">podle příkladu</option><option value="transfer">Převodem na účet</option><option value="card">Platební kartou</option><option value="cash">Hotově</option><option value="cod">Dobírkou</option><option value="offset">Zápočtem</option></select></label>
+      <h2>Navrhuji zrušit</h2>
+      <ul class="removed">
+        <li><b>Tisknout záhlaví / zápatí / poznámku</b> – tiskne se, když je text vyplněný; zaškrtávátko navíc je druhá pravda.</li>
+        <li><b>Tisknout rekapitulaci</b> – u daňového dokladu je povinná.</li>
+        <li><b>Nadpisy sloupců, sumarizační řádek</b> – vždy.</li>
+        <li><b>Kódy zboží</b> – rozhodnuto vypustit.</li>
+        <li><b>Obchodní vztah</b> – popisky Dodavatel / Odběratel vždy.</li>
+      </ul>
+    </aside>
+    <div class="stage">
+      <p class="caption" id="cap"></p>
+      <div class="scaler" id="scaler"><div class="pages" id="pages"></div></div>
+    </div>
+  </div>
+
+  <div class="review" id="review" hidden>
+    <section>
+      <h2>Rozhodnuto 22. 10. 2026</h2>
+      <ul>
+        <li><span class="sev o">ano</span>Stejná šablona pro vydanou fakturu, vydaný zálohový list a vydaný daňový doklad k přijaté platbě.</li>
+        <li><span class="sev o">ano</span>Jen varianta B; rozvržení podle starého programu se nedělá.</li>
+        <li><span class="sev o">ano</span>Kódy zboží a služeb vypustit.</li>
+        <li><span class="sev o">ano</span>Doplnit pole Objednávka odběratele.</li>
+        <li><span class="sev o">ano</span>Předloha voleb a textů tisku na knize.</li>
+        <li><span class="sev o">ano</span>Platební blok nad položkami, částka k úhradě vpravo; faktura smí jít na více stran.</li>
+        <li><span class="sev o">ano</span>Dodavatel a Odběratel vedle sebe; data dokladu v hlavičce vedle čísla dokladu, hlavičku nezvyšují.</li>
+        <li><span class="sev o">ano</span>Text zápatí hned pod položkami (vlevo vedle součtů), až potom zálohy a rekapitulace.</li>
+        <li><span class="sev o">ano</span>Dodací adresa (název, adresa, kontakt pro převzetí) se tiskne uprostřed mezi Dodavatelem a Odběratelem, když je vyplněná (v DB chybí).</li>
+        <li><span class="sev o">ano</span>Úhrady z párování se na faktuře netisknou. Částka K úhradě je vždy v plné výši; u způsobu platby bez účtu (karta, hotovost, dobírka…) se jen přidá značka s textem ze způsobu platby (16:29).</li>
+        <li><span class="sev o">ano</span>U způsobu platby kartou, hotově a zápočtem (druh card / cash / offset) popisek „Celkem“ místo „K úhradě“; u převodu a dobírky „K úhradě“ (16:43).</li>
+        <li><span class="sev o">ano</span>Nastavení firmy „Logo obsahuje název firmy“ (předvyplní se podle tvaru loga); pak se název vedle loga netiskne (16:43).</li>
+        <li><span class="sev o">ano</span>Bez modré linky pod záhlavím C; linky nad Dodavatelem, Odběratelem a nad platebními údaji modře.</li>
+        <li><span class="sev o">ano</span>Opravný daňový doklad: povinný důvod opravy při stornu vydané faktury, tiskne se.</li>
+        <li><span class="sev o">ano</span>Bez nahraného loga se netiskne nic; datum ve tvaru 31.12.2020; sleva na řádku zatím ne; okénková obálka ne.</li>
+        <li><span class="sev o">později</span>Tisk v angličtině a odeslání e-mailem.</li>
+        <li><span class="sev o">ano</span>Volby na dokladu: platební kalendář, podrobné zálohy, QR Platba, pole pro převzetí, kdo vystavil (12:57).</li>
+        <li><span class="sev o">ano</span>Texty záhlaví a zápatí ve firmě zrušit – nahradí je předloha v knize.</li>
+        <li><span class="sev o">ano</span>Údaje dodavatele ze snímku uloženého při zařazení dokladu.</li>
+        <li><span class="sev o">nově</span>Platební kalendář je součástí platebního bloku (B) nebo pásu klíčových údajů (C); u uhrazeného dokladu se netiskne.</li>
+        <li><span class="sev o">ano</span>Zápatí = text za položkami; záhlaví, zápatí i poznámka se tisknou, jen když jsou vyplněné.</li>
+        <li><span class="sev o">ano</span>Volba „Tisknout, kdo doklad vystavil“.</li>
+        <li><span class="sev o">ano</span>Souhrnný řádek záloh vypisuje čísla všech záloh (nejsou vždy po sobě jdoucí).</li>
+        <li><span class="sev o">ano</span>Stránky se dělí po sekcích: sekce se nepřetrhne, položky se smí rozdělit jen po řádcích a součty jdou vždy s koncem tabulky.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Můj názor na připomínky – co musí být v první verzi</h2>
+      <h3>Musí být hned (jinak tiskneme vadný daňový doklad)</h3>
+      <ol>
+        <li><span class="sev c">nutné</span><b>Rekapitulace u přenesené daně a záloh.</b> Zálohy bez daňového dokladu do rekapitulace nepatří, režim PD se tiskne textem, ne „0 %“. Starý program to dělal špatně a odběratel podle toho mohl přiznat nižší základ.</li>
+        <li><span class="sev c">nutné</span><b>Nadpis a obsah podle druhu dokladu.</b> FV „Faktura – daňový doklad“; FV s vypnutým DPH nebo u neplátce „Faktura“ bez rekapitulace (neplátce s větou „Nejsme plátci DPH“); ZFV „Zálohový list“ s poznámkou, že není daňovým dokladem, bez DUZP, DPH jen informativně; DDPZ „Daňový doklad k přijaté platbě“ s datem přijetí platby, bez QR a s K úhradě 0; storno „Opravný daňový doklad“ s číslem původního dokladu a důvodem.</li>
+        <li><span class="sev c">nutné</span><b>DPH v Kč u cizí měny</b> s kurzem DPH a jeho datem. Bez toho faktura v EUR není správný daňový doklad.</li>
+        <li><span class="sev c">nutné</span><b>Údaje dodavatele platné k datu vystavení.</b> Bez toho se po změně sídla přetisknou staré faktury s novou adresou. Nejjednodušší je snímek údajů firmy při zařazení, stejně jako u odběratele.</li>
+        <li><span class="sev c">nutné</span><b>Volby jako úplná kopie předlohy knihy.</b> Prázdné <code>{}</code> s výchozími hodnotami v kódu porušuje pravidlo předlohy; každý doklad musí nést všechny své volby.</li>
+      </ol>
+      <h3>Mělo by být v první verzi (levné, velký užitek)</h3>
+      <ol>
+        <li><span class="sev w">doporučuji</span><b>QR Platba, IBAN, BIC, způsob platby.</b> Data máme, QR je jedna malá knihovna. U hotovosti a zápočtu se QR ani účet netisknou.</li>
+        <li><span class="sev w">doporučuji</span><b>Odečtené zálohy s identifikací</b> (ZL, DD, datum úhrady, VS) a volba souhrnného řádku.</li>
+        <li><span class="sev w">doporučuji</span><b>Zjednodušit volby</b> na pět: platební kalendář, podrobné zálohy, QR Platba, pole pro převzetí, kdo vystavil. Ostatní buď vyplývají z vyplněného textu, nebo jsou povinné (viz panel vlevo).</li>
+        <li><span class="sev w">doporučuji</span><b>Jeden zdroj textů.</b> Záhlaví, zápatí a poznámka na dokladu s předlohou z knihy; sloupce <code>companies.invoice_header_text</code> a <code>invoice_footer_text</code> předloha v knize nahradí – zrušit, ať nejsou dvě pravdy.</li>
+        <li><span class="sev w">doporučuji</span><b>Vystavil</b> z předlohy knihy, jinak jméno, telefon a e-mail autora; uloží se k dokladu.</li>
+      </ol>
+      <h3>Klidně později</h3>
+      <ol>
+                <li><span class="sev o">později</span>ISDOC vložený do PDF, odeslání e-mailem, tisk CZ/EN.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Nové připomínky k rozhodnutím</h2>
+      <ol>
+        <li><span class="sev c">kritické</span><b>„Obchodní vztah“ nepřebírat.</b> Daňový doklad musí jednoznačně určit dodavatele a odběratele; faktura bez popisků je u dvou adres nejednoznačná. Popisky Dodavatel / Odběratel tisknout vždy.</li>
+        <li><span class="sev c">kritické</span><b>Spisová značka nesmí být za volbou „zápatí“.</b> Obchodní listiny (faktura) musí podle občanského zákoníku nést zápis v rejstříku. Proto je v bloku Dodavatel napevno.</li>
+        <li><span class="sev c">kritické</span><b>Rekapitulace nesmí jít vypnout</b> u dokladu, který vstupuje do DPH – základ, sazba a daň po sazbách jsou povinné náležitosti.</li>
+        <li><span class="sev w">k zadání</span><b>Objednávka odběratele:</b> textové pole na hlavičce FV a ZFV (do 50 znaků), kopíruje se ze ZFV do FV při vyúčtování, v historii dokladu, tiskne se jen vyplněná. Pole patří mezi popisné údaje – jde měnit i po zaúčtování.</li>
+        <li><span class="sev w">k zadání</span><b>Předloha na knize:</b> nová kniha dostane výchozí předlohu; změna předlohy se do existujících dokladů nepromítne; na dokladu v Tiskových údajích akce „Načíst z knihy“ pro případ, kdy je potřeba převzít novou předlohu.</li>
+        <li><span class="sev w">k zadání</span><b>Faktura v cizí měně s českou DPH:</b> položky a součty v měně dokladu, u součtu „Celkem v Kč“; rekapitulace po sazbách v měně dokladu i v Kč, daň v Kč tučně, pod ní kurz DPH s datem (ČNB k DUZP nebo ruční s důvodem). Daň v Kč počítat ze základu v Kč – stejně jako v DB, aby tisk a přiznání nikdy nedaly jiné číslo. Tisk čísla jen čte z DB, nic nepřepočítává.</li>
+        <li><span class="sev w">k zadání</span><b>QR Platba v EUR:</b> formát QR Platby měnu EUR umí, české banky ji ale u eurových účtů nezpracují všechny. U eurové faktury pro zahraničí bude vhodnější evropský QR pro SEPA platby – rozhodnout až s prvními zahraničními fakturami; zatím QR jen v CZK.</li>
+        <li><span class="sev o">upraveno</span><b>Měna</b> se tiskne jen u celkových částek (Celkem, K úhradě, Celkem v Kč) a v nadpisech sloupců rekapitulace u cizí měny; řádky položek a platebního kalendáře bez měny.</li>
+        <li><span class="sev w">k zadání</span><b>Stránkování:</b> nadpis tabulky se na další straně opakuje, platební blok je vždy na první straně, rekapitulace se nerozděluje, na každé straně „Strana X z Y“ a číslo dokladu.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Co v aplikaci je a co chybí</h2>
+      <div class="tblwrap"><table class="cmp">
+        <thead><tr><th>Část</th><th>Stav</th><th>Poznámka</th></tr></thead>
+        <tbody>
+          <tr><td>Záložka Tiskové údaje</td><td class="c-green">existuje</td><td>DB, DS i APP; po rozhodnutí upravit volby (viz panel).</td></tr>
+          <tr><td>Generování PDF</td><td class="c-green">základ existuje</td><td>jsPDF + Roboto, náhled tisku, pokladní doklad. Faktura netiskne vůbec.</td></tr>
+          <tr><td>Text ke kódu DPH, text způsobu platby, spisová značka, logo</td><td class="c-green">existuje</td><td><code>invoice_text</code>, <code>print_text</code>, <code>registry_court_note</code>, <code>logo_path</code>.</td></tr>
+          <tr><td>Web firmy</td><td class="c-red">chybí</td><td>Doplnit do údajů firmy.</td></tr>
+          <tr><td>Objednávka odběratele</td><td class="c-red">chybí</td><td>Rozhodnuto doplnit.</td></tr>
+          <tr><td>Předloha tisku na knize</td><td class="c-red">chybí</td><td>Rozhodnuto; dnes výchozí hodnoty jen v kódu.</td></tr>
+          <tr><td>Snímek údajů dodavatele</td><td class="c-red">chybí</td><td>Odběratel snímek má, dodavatel ne.</td></tr>
+          <tr><td>QR Platba</td><td class="c-red">chybí</td><td>Knihovna pro QR kód + formát SPAYD.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+const NB=" ";
+const fmt=(n,d=2)=>n==null||n===""?"":Number(n).toLocaleString("cs-CZ",{minimumFractionDigits:d,maximumFractionDigits:d}).replace(/\s/g,NB);
+const neg=n=>n===0?fmt(0):(n<0?"−"+fmt(-n):fmt(n));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const S={name:"Technikservis group s.r.o.",street:"V Poli 537",zip:"517 71",city:"České Meziříčí",ico:"06539653",dic:"CZ06539653",
+  court:"Zapsaná v obchodním rejstříku vedeném Krajským soudem v Hradci Králové, oddíl C, vložka 40447",web:"www.technikservis.cz",email:"info@technikservis.cz",phone:"+420 494 000 000",mono:"TS"};
+
+const DATA={
+  pdp:{caption:"Data podle předlohy: přenesená daňová povinnost, 10 záloh bez daňových dokladů. Čísla ZL, data úhrad a VS záloh jsou doplněná ukázka.",
+    number:"112012005",title:"Faktura – daňový doklad",kind:"Daňový doklad · přenesená daň",currency:"CZK",
+    delivery:{name:"Stavba Na Panenské",street:"Na Panenské 1520",zip:"252 63",city:"Roztoky u Prahy",contact:"Stavbyvedoucí: Jan Bláha, +420 602 555 010"},
+    customer:{name:"BLÁHA servis s.r.o. v likvidaci",street:"Pražská 777",zip:"252 64",city:"Velké Přílepy",ico:"08659796",dic:"CZ08659796"},
+    issued:"31.12.2020",duzp:"31.12.2020",due:"14.1.2021",order:"ZA200",vs:"112012005",ks:"",ss:"",
+    account:"115-9632830257/0100",iban:"CZ12 0100 0001 1596 3283 0257",bic:"KOMBCZPP",
+    items:[{desc:"Instalatérské a topenářské práce na akci Na Panenské, Roztoky u Prahy",qty:1,unit:"kpl",price:18795856,rate:null,label:"přenesená"}],
+    pdp:true,vatText:"Jedná se o přenesení daňové povinnosti dle zákona o DPH, kdy výši daně je povinen doplnit a přiznat plátce, pro kterého je plnění uskutečněno. Daň odvede zákazník.",
+    advances:[600000,1500000,1700000,900000,3326388,4143798,1785940,804574,638367,1506747].map((a,i)=>({
+      ref:"ZFV2020"+String([1,3,4,8,11,12,15,19,20,24][i]).padStart(4,"0"),date:["20.3.","24.4.","29.5.","26.6.","31.7.","28.8.","25.9.","23.10.","27.11.","15.12."][i]+"2020",
+      vs:"20200"+String(i+1).padStart(2,"0")+"5",amount:a,dd:null})),
+    schedule:[{due:"14.1.2021",amount:1000000},{due:"15.2.2021",amount:890042}],headerText:"Fakturujeme Vám práce podle smlouvy o dílo ZA200 a předávacího protokolu ze dne 18. 12. 2020.",
+    footerText:"Práce byly provedeny v rozsahu předávacího protokolu, vícepráce nejsou účtovány.",
+    note:"Konečná faktura po odečtení všech přijatých záloh.",issuedBy:{name:"Ekonomické oddělení",phone:"+420 494 000 010",email:"fakturace@technikservis.cz"}},
+  std:{caption:"Ukázková faktura: dvě sazby DPH, záloha se zaplaceným daňovým dokladem, platební kalendář se dvěma splátkami.",
+    number:"FV20260002",title:"Faktura – daňový doklad",kind:"Daňový doklad",currency:"CZK",
+    customer:{name:"Bytové družstvo Lipová",street:"Lipová 1180/14",zip:"500 02",city:"Hradec Králové",ico:"25260111",dic:"CZ25260111"},
+    delivery:{name:"Bytový dům Lipová 1182",street:"Lipová 1182/16",zip:"500 02",city:"Hradec Králové",contact:"Převezme: Ing. Marek Šulc, +420 603 111 222"},
+    issued:"22.10.2026",duzp:"21.10.2026",due:"5.11.2026",order:"OBJ-2026-117",vs:"2026000002",ks:"0308",ss:"",
+    account:"115-9632830257/0100",iban:"CZ12 0100 0001 1596 3283 0257",bic:"KOMBCZPP",
+    items:[
+      {desc:"Servis plynového kotle – práce technika",qty:6,unit:"hod",price:850,rate:21},
+      {desc:"Těsnicí sada a filtr kotle",qty:2,unit:"ks",price:420,rate:21},
+      {desc:"Doprava technika",qty:1,unit:"paušál",price:690,rate:21},
+      {desc:"Montáž radiátorů – bytový dům, sociální bydlení",qty:4,unit:"hod",price:850,rate:12}],
+    pdp:false,vatText:"",
+    advances:[{ref:"ZFV20260004",dd:"DDPZ20260003",date:"9.10.2026",vs:"2026000004",amount:2000,base:1652.89,vat:347.11,rate:21}],
+    schedule:[{due:"5.11.2026",amount:5000},{due:"20.11.2026",amount:4830.30}],
+    headerText:"Fakturujeme Vám servis a montáž podle objednávky OBJ-2026-117.",footerText:"Odvoz starých dílů a ekologická likvidace jsou zahrnuty v ceně.",note:"Záruka na práci 24 měsíců. Reklamace na info@technikservis.cz.",
+    issuedBy:{name:"Jana Nováková",phone:"+420 777 123 456",email:"novakova@technikservis.cz"}}
+};
+DATA.eur={caption:"Ukázková faktura v EUR českému odběrateli s českou DPH 21 %. Kurz je ukázkový; v aplikaci kurz DPH z dokladu (ČNB ke dni DUZP nebo ruční s důvodem).",
+    number:"FV20260003",title:"Faktura – daňový doklad",kind:"Daňový doklad",currency:"EUR",rate:24.350,rateDate:"31.10.2026",
+    delivery:{name:"Autodíly Hradec a.s. – sklad",street:"Pražská třída 300",zip:"500 04",city:"Hradec Králové",contact:"Příjem zboží Po–Pá 7–15 h"},
+    customer:{name:"Autodíly Hradec a.s.",street:"Brněnská 1825/12",zip:"500 06",city:"Hradec Králové",ico:"27512345",dic:"CZ27512345"},
+    issued:"2.11.2026",duzp:"31.10.2026",due:"16.11.2026",order:"",vs:"2026000003",ks:"",ss:"",
+    account:"19-2830257013/0800",iban:"CZ02 0800 0000 1928 3025 7013",bic:"GIBACZPX",
+    items:[{desc:"Servisní smlouva – údržba kompresorů 2026 10",qty:1,unit:"měsíc",price:1200,rate:21},
+      {desc:"Náhradní díly – filtrační vložky",qty:3,unit:"ks",price:85,rate:21}],
+    pdp:false,vatText:"",advances:[],schedule:[{due:"16.11.2026",amount:1000},{due:"16.12.2026",amount:760.55}],headerText:"Fakturujeme Vám servis podle smlouvy SM-2024-08 za říjen 2026.",
+    note:"",issuedBy:{name:"Jana Nováková",phone:"+420 777 123 456",email:"novakova@technikservis.cz"}};
+DATA.card={caption:"Ukázková faktura placená platební kartou: částka zůstává v plné výši, u ní značka podle způsobu platby (text z číselníku Způsob platby); bez účtu, QR a kalendáře.",
+    number:"FV20260004",title:"Faktura – daňový doklad",kind:"Daňový doklad",currency:"CZK",pm:"card",
+    delivery:{name:"Petr Dvořák – chata",street:"Pod Lesem 25",zip:"549 01",city:"Nové Město nad Metují",contact:""},
+    customer:{name:"Petr Dvořák",street:"Na Kotli 1240/5",zip:"500 03",city:"Hradec Králové",ico:"76543210",dic:"CZ7605123456"},
+    issued:"22.10.2026",duzp:"22.10.2026",due:"22.10.2026",order:"",vs:"2026000004",ks:"",ss:"",
+    account:"115-9632830257/0100",iban:"CZ12 0100 0001 1596 3283 0257",bic:"KOMBCZPP",
+    items:[{desc:"Výjezdní servis – oprava termostatu",qty:1.5,unit:"hod",price:850,rate:21},{desc:"Prostorový termostat",qty:1,unit:"ks",price:1490,rate:21}],
+    pdp:false,vatText:"",advances:[],schedule:[],headerText:"",footerText:"",note:"",
+    issuedBy:{name:"Jana Nováková",phone:"+420 777 123 456",email:"novakova@technikservis.cz"}};
+Object.values(DATA).forEach(d=>d.items.forEach(i=>{i.base=+(i.qty*i.price).toFixed(2);i.vat=i.rate?+(i.base*i.rate/100).toFixed(2):0;}));
+
+const OPTS=[
+  {k:"showPaymentSchedule",l:"Tisknout platební kalendář"},
+  {k:"showAdvanceDetail",l:"Tisknout podrobné zálohy",h:"vypnuto = jeden souhrnný řádek"},
+  {k:"showQr",l:"QR Platba",h:"u hotovosti a zápočtu se netiskne"},
+  {k:"showSignature",l:"Pole pro převzetí a razítko",h:"výchozí vypnuto"},
+  {k:"showIssuedBy",l:"Tisknout, kdo doklad vystavil",h:"jméno, telefon a e-mail v zápatí stránky"}
+];
+const state={view:"B",logo:"square",logoName:false,ds:"pdp",o:{showPaymentSchedule:true,showAdvanceDetail:true,showQr:true,showSignature:false,showIssuedBy:true},htext:true,ftext:true,ntext:true,dlv:true,draft:false,pm:""};
+try{const s=JSON.parse(localStorage.getItem("tisk-faktury-2")||"null");if(s&&s.o){Object.assign(state.o,s.o);state.view=["B","C","R"].includes(s.view)?s.view:"B";state.ds=s.ds in DATA?s.ds:"pdp";}}catch(e){}
+const save=()=>{try{localStorage.setItem("tisk-faktury-2",JSON.stringify({o:state.o,view:state.view,ds:state.ds}));}catch(e){}};
+
+document.getElementById("opts").innerHTML=OPTS.map(o=>`<div class="opt"><input type="checkbox" id="o-${o.k}" data-k="${o.k}"><label for="o-${o.k}">${o.l}</label></div>${o.h?`<div class="hint">${o.h}</div>`:""}`).join("");
+document.querySelector(".panel").addEventListener("change",e=>{
+  const t=e.target,k=t.dataset.k;
+  if(k)state.o[k]=t.checked;
+  else if(t.id==="o-htext")state.htext=t.checked;
+  else if(t.id==="o-ntext")state.ntext=t.checked;
+  else if(t.id==="o-dlv")state.dlv=t.checked;
+  else if(t.id==="o-ftext")state.ftext=t.checked;
+  else if(t.id==="o-logo"){state.logo=t.value;state.logoName=t.value==="wide";document.getElementById("o-logoname").checked=state.logoName;}
+  else if(t.id==="o-logoname")state.logoName=t.checked;
+  else if(t.id==="o-draft")state.draft=t.checked;
+  else if(t.id==="o-pm")state.pm=t.value;
+  save();render();
+});
+
+function totals(d){
+  const base=d.items.reduce((s,i)=>s+i.base,0),vat=d.items.reduce((s,i)=>s+i.vat,0),adv=d.advances.reduce((s,a)=>s+a.amount,0);
+  const g={};d.items.forEach(i=>{const key=i.rate??"PD";const x=g[key]||(g[key]={rate:i.rate,base:0,vat:0});x.base+=i.base;x.vat+=i.vat;});
+  d.advances.filter(a=>a.dd).forEach(a=>{g[a.rate].base-=a.base;g[a.rate].vat-=a.vat;});
+  const r2=x=>Math.round(x*100)/100;
+  Object.values(g).forEach(x=>{if(d.rate){x.baseCzk=r2(x.base*d.rate);x.vatCzk=x.rate?r2(x.baseCzk*x.rate/100):0;}});
+  return {base,vat,total:base+vat,adv,groups:Object.values(g).sort((a,b)=>(b.rate??-1)-(a.rate??-1)),due:+(base+vat-adv).toFixed(2)};
+}
+const addr=p=>`${esc(p.street)}<br>${esc(p.zip)}&nbsp;&nbsp;${esc(p.city)}`;
+const pl=(n,a,b,c)=>n===1?a:n<5?b:c;
+
+/* Bloky dokumentu v pořadí. Pravidla stránkování:
+   – blok se nedělí; když se nevejde, celý přejde na další stranu,
+   – skupina Položky (úvodní text + tabulka + text zápatí a součty) se smí rozdělit po řádcích,
+     na každé straně zůstanou aspoň 2 řádky a součty jdou vždy s koncem tabulky,
+   – ostatní tabulky se dělí jen tehdy, když se nevejdou ani na prázdnou stranu. */
+const logoHtml=()=>state.logo==="square"?`<div class="logo">${S.mono}</div>`
+  :state.logo==="wide"?`<div class="logo-wide" aria-label="Logo"><span class="lw-mark"><i></i><i></i><i></i></span><span class="lw-text">TECHNIKSERVIS<small>group s.r.o.</small></span></div>`:"";
+const brandCls=()=>state.logo==="none"?" nologo":state.logoName?" wide":"";
+const METHODS={
+  transfer:{name:"Převodem na účet",account:true,text:""},
+  card:{name:"Platební kartou",account:false,text:"Uhrazeno platební kartou",paid:true},
+  cash:{name:"Hotově",account:false,text:"Uhrazeno v hotovosti",paid:true},
+  offset:{name:"Zápočtem",account:false,text:"Uhrazeno zápočtem",paid:true},
+  cod:{name:"Dobírkou",account:false,text:"Úhrada dobírkou při převzetí zásilky"}
+};
+/* Způsob platby z číselníku: uses_bank_account → účet, QR, kalendář; print_text → značka u částky. Úhrady z párování se na faktuře netisknou. */
+const pmOf=d=>METHODS[state.pm||d.pm||"transfer"];
+function payInfo(d,t,o){
+  const pm=pmOf(d);
+  return {pm,dueAmt:t.due,showQr:o.showQr&&pm.account&&!state.draft&&d.currency==="CZK",
+    sched:o.showPaymentSchedule&&d.schedule.length&&pm.account};
+}
+const qrHtml=(d,t)=>`<div class="qr"><canvas width="33" height="33" data-seed="${esc(d.vs+t.due)}"></canvas>QR Platba</div>`;
+const payDl=(d,pm)=>!pm.account?`<dl><dt>Způsob platby</dt><dd>${esc(pm.name)}</dd><dt>Variabilní symbol</dt><dd>${esc(d.vs)}</dd></dl>`
+  :`<dl><dt>Způsob platby</dt><dd>${esc(pm.name)}</dd>
+      <dt>Bankovní účet</dt><dd class="hl">${d.account}</dd>
+      <dt>IBAN</dt><dd>${d.iban}</dd><dt>BIC</dt><dd>${d.bic}</dd>
+      <dt>Variabilní symbol</dt><dd class="hl">${esc(d.vs)}</dd>${d.ks?`<dt>Konstantní symbol</dt><dd>${d.ks}</dd>`:""}</dl>`;
+const markHtml=pm=>pm.text?`<span class="mark">${esc(pm.text)}</span>`:"";
+const dueLabel=pm=>pm.paid?"Celkem":"K úhradě";
+const dueHtml=(d,pi)=>`<div class="k">${dueLabel(pi.pm)}</div><div class="v">${fmt(pi.dueAmt)} <span class="cur">${d.currency}</span></div>
+      <div class="s">splatnost <b>${d.due}</b></div>${markHtml(pi.pm)}`;
+const schedHtml=(d,short)=>d.schedule.map((x,i)=>`<div class="sp"><span class="k">${i+1}.${short?"":" splátka"} do ${x.due}</span><span class="num">${fmt(x.amount)}</span></div>`).join("");
+
+function bodyBlocks(d,t,o,mode){
+  const B=[], pi=payInfo(d,t,o);
+  B.push({html:`<div class="parties${state.dlv&&d.delivery?" three":""}">
+    <div class="party"><div class="k">Dodavatel</div><div class="nm">${esc(S.name)}</div>${addr(S)}<div class="ids"><span>IČO ${S.ico}</span><span>DIČ ${S.dic}</span></div><div class="reg">${esc(S.court)}</div></div>
+    ${state.dlv&&d.delivery?`<div class="party dlv"><div class="k">Dodací adresa</div><div class="nm">${esc(d.delivery.name)}</div>${addr(d.delivery)}${d.delivery.contact?`<div class="contact">${esc(d.delivery.contact)}</div>`:""}</div>`:""}
+    <div class="party cust"><div class="k">Odběratel</div><div class="nm">${esc(d.customer.name)}</div>${addr(d.customer)}<div class="ids"><span>IČO ${d.customer.ico}</span><span>DIČ ${d.customer.dic}</span></div></div>
+  </div>`});
+  if(mode==="C")B.push({html:`<div class="keyfig">
+    <div class="big"><div class="k">${dueLabel(pi.pm)}</div><div class="v">${fmt(pi.dueAmt)} <span class="cur">${d.currency}</span></div>${markHtml(pi.pm)}</div>
+    <div><div class="k">Splatnost</div><div class="v">${d.due}</div></div>
+    <div><div class="k">${pi.pm.account?"Variabilní symbol":"Způsob platby"}</div><div class="v">${pi.pm.account?esc(d.vs):esc(pi.pm.name)}</div></div>
+    ${pi.showQr?qrHtml(d,t):"<div></div>"}
+    ${pi.pm.account?`<div class="pline"><span>Účet <b>${d.account}</b></span><span>IBAN <b>${d.iban}</b></span><span>BIC <b>${d.bic}</b></span>${d.ks?`<span>KS <b>${d.ks}</b></span>`:""}
+      ${pi.sched?`<span class="sep"></span><span>Platební kalendář:</span>${schedHtml(d)}`:""}</div>`:""}
+  </div>`});
+  if(mode==="B")B.push({html:`<div class="paybox">
+    <div><div class="k">Platební údaje</div>${payDl(d,pi.pm)}</div>
+    ${pi.showQr?qrHtml(d,t):"<div></div>"}
+    <div class="due">${dueHtml(d,pi)}</div>
+    ${pi.sched?`<div class="sched"><span class="k">Platební kalendář</span>${schedHtml(d)}</div>`:""}
+  </div>`});
+  B.push({split:"early",title:"Položky",html:`<div class="grp">
+    ${state.htext&&d.headerText?`<div class="htext lead">${esc(d.headerText)}</div>`:""}
+    <div><div class="k sec">Položky</div><table class="t"><thead><tr><th>Popis</th><th class="num">Množství</th><th>MJ</th><th class="num">Cena za MJ</th><th class="num">DPH</th><th class="num">Základ</th></tr></thead><tbody>
+    ${d.items.map(i=>`<tr><td>${esc(i.desc)}</td><td class="num">${fmt(i.qty,i.qty%1?2:0)}</td><td>${esc(i.unit)}</td><td class="num">${fmt(i.price)}</td><td class="num mut">${i.rate==null?i.label:i.rate+NB+"%"}</td><td class="num">${fmt(i.base)}</td></tr>`).join("")}</tbody></table></div>
+    <div class="foottot tail"><div>${state.ftext&&d.footerText?`<div class="htext">${esc(d.footerText)}</div>`:""}</div><div class="totals"><div class="tbox">
+    <div class="r"><span>Základ celkem</span><span class="num">${fmt(t.base)}</span></div>
+    <div class="r"><span>DPH celkem</span><span class="num">${d.pdp?"odvede odběratel":fmt(t.vat)}</span></div>
+    <div class="r b"><span>Celkem ${d.currency}</span><span class="num">${fmt(t.total)}</span></div>
+    ${d.rate?`<div class="r mutr"><span>Celkem v Kč (kurz ${fmt(d.rate,3)})</span><span class="num">${fmt(t.groups.reduce((s,g)=>s+g.baseCzk+g.vatCzk,0))}</span></div>`:""}
+    ${t.adv?`<div class="r"><span>Odečtené zálohy</span><span class="num">${neg(-t.adv)}</span></div>`:""}
+    ${pi.pm.paid&&!t.adv?"":`<div class="r due2"><span>${pi.pm.paid?"Celkem po odečtení záloh":"K úhradě"}</span><span class="num">${fmt(pi.dueAmt)} ${d.currency}</span></div>`}</div></div></div>
+  </div>`});
+  if(d.advances.length){
+    if(o.showAdvanceDetail)B.push({split:"late",title:"Odečtené zálohy",html:`<div><div class="k sec">Odečtené zálohy</div><table class="t"><thead><tr><th>Zálohový list</th><th>Daňový doklad</th><th>Uhrazeno</th><th>VS</th><th class="num">Základ</th><th class="num">DPH</th><th class="num">Částka</th></tr></thead><tbody>
+      ${d.advances.map(a=>`<tr><td>${esc(a.ref)}</td><td>${a.dd?esc(a.dd):'<span class="mut">bez DD</span>'}</td><td>${esc(a.date)}</td><td>${esc(a.vs)}</td><td class="num">${a.dd?neg(-a.base):""}</td><td class="num">${a.dd?neg(-a.vat):""}</td><td class="num">${neg(-a.amount)}</td></tr>`).join("")}
+      </tbody></table></div>`});
+    else B.push({html:`<div><div class="k sec">Odečtené zálohy</div><table class="t"><tbody><tr><td>${d.advances.length} ${pl(d.advances.length,"záloha","zálohy","záloh")}: ${d.advances.map(a=>esc(a.ref)).join(", ")}</td><td class="num">${neg(-t.adv)}</td></tr></tbody></table></div>`});
+  }
+  if(d.rate)B.push({html:`<div><div class="k sec">Rekapitulace DPH · přepočet na Kč</div>
+    <table class="t"><thead><tr><th>Sazba</th><th class="num">Základ ${d.currency}</th><th class="num">DPH ${d.currency}</th><th class="num">Základ Kč</th><th class="num">DPH Kč</th><th class="num">Celkem Kč</th></tr></thead><tbody>
+    ${t.groups.map(g=>`<tr><td>${g.rate+NB+"%"}</td><td class="num">${fmt(g.base)}</td><td class="num">${fmt(g.vat)}</td><td class="num">${fmt(g.baseCzk)}</td><td class="num"><b>${fmt(g.vatCzk)}</b></td><td class="num">${fmt(g.baseCzk+g.vatCzk)}</td></tr>`).join("")}
+    </tbody></table><div class="vattext">Přepočet kurzem ČNB ${fmt(d.rate,3)} Kč/${d.currency} platným ke dni uskutečnění zdanitelného plnění ${d.rateDate}. Daň v české měně: ${fmt(t.groups.reduce((s,g)=>s+g.vatCzk,0))} Kč.</div></div>`});
+  else B.push({html:`<div><div class="k sec">Rekapitulace DPH v Kč${d.advances.some(a=>a.dd)?" · po odečtení záloh s daňovým dokladem":""}</div>
+    <table class="t"><thead><tr><th>Sazba</th><th class="num">Základ</th><th class="num">DPH</th><th class="num">Celkem</th></tr></thead><tbody>
+    ${t.groups.map(g=>`<tr><td>${g.rate==null?"přenesená daňová povinnost":g.rate+NB+"%"}</td><td class="num">${fmt(g.base)}</td><td class="num">${g.rate==null?"odvede odběratel":fmt(g.vat)}</td><td class="num">${fmt(g.base+g.vat)}</td></tr>`).join("")}
+    </tbody></table>${d.vatText?`<div class="vattext">${esc(d.vatText)}</div>`:""}</div>`});
+  if(state.ntext&&d.note)B.push({html:`<div><div class="k sec">Poznámka</div><div class="note">${esc(d.note)}</div></div>`});
+  if(o.showSignature)B.push({html:`<div class="sig"><div>Převzal (datum, jméno, podpis)</div><div>Razítko a podpis dodavatele</div></div>`});
+  return B;
+}
+/* Návrh B: hlavička přes celou šířku, platební blok nad položkami */
+function blocksB(d,t,o){
+  return [{html:`<div class="hd">
+    <div class="brand${brandCls()}">${logoHtml()}<div class="nm">${esc(S.name)}</div></div>
+    <dl class="hdates"><dt>Datum vystavení</dt><dd>${d.issued}</dd><dt>Datum zdan. plnění</dt><dd>${d.duzp}</dd>${d.order?`<dt>Objednávka</dt><dd>${esc(d.order)}</dd>`:""}</dl>
+    <div class="doc"><div class="k">${d.kind}</div><div class="t">${d.title.split("–")[0].trim()}</div><div class="n">${state.draft?"KONCEPT":esc(d.number)}</div></div>
+  </div>`},...bodyBlocks(d,t,o,"B")];
+}
+/* Návrh C: tmavé záhlaví přes celou šířku, pod stranami pás klíčových údajů */
+function bandC(d){
+  return `<div class="band">
+    <div class="brand${brandCls()}">${logoHtml()}<div class="nm">${esc(S.name)}</div></div>
+    <dl class="hdates"><dt>Datum vystavení</dt><dd>${d.issued}</dd><dt>Datum zdan. plnění</dt><dd>${d.duzp}</dd>${d.order?`<dt>Objednávka</dt><dd>${esc(d.order)}</dd>`:""}</dl>
+    <div class="doc"><div class="k">${d.kind}</div><div class="t">${d.title.split("–")[0].trim()}</div><div class="n">${state.draft?"KONCEPT":esc(d.number)}</div></div>
+  </div>`;
+}
+
+const pagesEl=document.getElementById("pages"),scaler=document.getElementById("scaler"),stage=document.querySelector(".stage");
+let BAND="";
+function newPage(d,first){
+  const p=document.createElement("div");
+  const c1=first&&state.view==="C";
+  p.className="sheet"+(c1?" C1":"");
+  const cont=`<div class="cont"><b>${esc(S.name)}</b><span>${d.title.split("–")[0].trim()} ${state.draft?"(koncept)":esc(d.number)} · pokračování</span></div>`;
+  p.innerHTML=c1?`${BAND}<div class="pbody"></div><div class="pfoot">${footHtml(d,1,1)}</div>`
+    :`${first?"":cont}<div class="pbody"></div><div class="pfoot">${footHtml(d,1,1)}</div>`;
+  pagesEl.appendChild(p);return p.querySelector(".pbody");
+}
+const footHtml=(d,i,n)=>`<div class="ft">
+      <div>${state.o.showIssuedBy?`Vystavil: <b>${esc(d.issuedBy.name)}</b>${d.issuedBy.phone?"<br>"+esc(d.issuedBy.phone):""}${d.issuedBy.email?"<br>"+esc(d.issuedBy.email):""}`:""}</div>
+      <div>${S.web} · ${S.email} · ${S.phone}<br>${esc(S.name)} · IČO ${S.ico}</div>
+      <div class="num">${d.title.split("–")[0].trim()} ${state.draft?"":esc(d.number)}<br>Strana ${i} z ${n}</div></div>`;
+const over=b=>b.scrollHeight>b.clientHeight+1;
+/* Rozdělí tabulku bloku: v el nechá začátek, vrátí pokračování (nebo null, když to nejde). */
+function trySplit(el,body,blk,keep){
+  const backup=el.cloneNode(true),tb=el.querySelector("tbody");
+  if(!tb||tb.rows.length<keep+2)return null;
+  const rest=el.cloneNode(true),rtb=rest.querySelector("tbody");rtb.innerHTML="";
+  el.querySelectorAll(".tail").forEach(n=>n.remove());
+  rest.querySelectorAll(".lead").forEach(n=>n.remove());
+  while(over(body)&&tb.rows.length>keep)rtb.insertBefore(tb.rows[tb.rows.length-1],rtb.firstChild);
+  while(rtb.rows.length<2&&tb.rows.length>keep)rtb.insertBefore(tb.rows[tb.rows.length-1],rtb.firstChild);
+  if(over(body)||rtb.rows.length<2){el.replaceWith(backup);return {failed:backup};}
+  const sec=rest.querySelector(".sec");if(sec)sec.textContent=blk.title+" – pokračování";
+  return {rest};
+}
+function paginate(d,list){
+  pagesEl.innerHTML="";
+  let body=newPage(d,true);
+  for(const blk of list){
+    const tpl=document.createElement("template");tpl.innerHTML=blk.html.trim();
+    let el=tpl.content.firstElementChild;
+    body.appendChild(el);
+    while(over(body)){
+      const alone=body.children.length===1;
+      if(blk.split&&(alone||blk.split==="early")){
+        const r=trySplit(el,body,blk,2);
+        if(r&&r.rest){body=newPage(d,false);body.appendChild(r.rest);el=r.rest;continue;}
+        if(r&&r.failed)el=r.failed;
+      }
+      if(alone)break;
+      body.removeChild(el);body=newPage(d,false);body.appendChild(el);
+    }
+  }
+  const all=[...pagesEl.children];
+  all.forEach((p,i)=>{
+    p.querySelector(".pfoot").innerHTML=footHtml(d,i+1,all.length);
+    if(state.draft)p.insertAdjacentHTML("beforeend",'<div class="watermark">KONCEPT</div>');
+  });
+}
+
+function drawQr(cv){
+  const n=33,ctx=cv.getContext("2d");let seed=7;for(const ch of cv.dataset.seed)seed=(seed*31+ch.charCodeAt(0))>>>0;
+  const rnd=()=>{seed^=seed<<13;seed>>>=0;seed^=seed>>>17;seed^=seed<<5;seed>>>=0;return seed/4294967296;};
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,n,n);ctx.fillStyle="#000";
+  const inF=(x,y)=>(x<9&&y<9)||(x>n-10&&y<9)||(x<9&&y>n-10);
+  for(let x=1;x<n-1;x++)for(let y=1;y<n-1;y++)if(!inF(x,y)&&rnd()<.47)ctx.fillRect(x,y,1,1);
+  const f=(x,y)=>{for(let i=0;i<7;i++)for(let j=0;j<7;j++){if(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4))ctx.fillRect(x+i,y+j,1,1);}};
+  f(1,1);f(n-8,1);f(1,n-8);
+}
+function fit(){
+  if(state.view==="R")return;
+  const w=stage.clientWidth-40,sc=Math.min(1,w/794);
+  pagesEl.style.transform=`scale(${sc})`;
+  scaler.style.width=(794*sc)+"px";scaler.style.height=(pagesEl.offsetHeight*sc)+"px";
+}
+function render(){
+  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===state.view)));
+  const rev=state.view==="R";
+  document.getElementById("review").hidden=!rev;document.getElementById("workbench").hidden=rev;document.getElementById("ds-wrap").hidden=rev;
+  if(rev)return;
+  OPTS.forEach(o=>{document.getElementById("o-"+o.k).checked=state.o[o.k];});
+  document.getElementById("ds").value=state.ds;
+  const d=DATA[state.ds],t=totals(d);
+  document.getElementById("cap").textContent=d.caption+" Stránkování je skutečné: co se nevejde, pokračuje na další straně.";
+  if(state.view==="C"){BAND=bandC(d);paginate(d,bodyBlocks(d,t,state.o,"C"));}
+  else paginate(d,blocksB(d,t,state.o));
+  pagesEl.querySelectorAll("canvas[data-seed]").forEach(drawQr);
+  requestAnimationFrame(fit);
+}
+document.querySelector(".seg").addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.view;if(v){state.view=v;save();render();}});
+document.getElementById("ds").addEventListener("change",e=>{state.ds=e.target.value;save();render();});
+new ResizeObserver(()=>fit()).observe(stage);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(state.view!=="R")render();});
+render();
+})();
+</script>
+
+</body></html>
