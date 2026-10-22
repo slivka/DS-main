@@ -82,7 +82,9 @@ test("ColumnPicker formát, výběr, klávesnice, tmavý vzhled a zoom", async (
   await expect(page.getByRole("button", { name: "Zrušit formát všech sloupců" })).toHaveCount(0);
   await page.keyboard.press("Escape");
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Formát sloupce Zbývá", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Formát sloupce Zbývá", exact: true })).toHaveCount(
+    0,
+  );
   await page.setViewportSize({ width: 390, height: 1800 });
   await page.evaluate(() => {
     document.documentElement.style.fontSize = "32px";
@@ -91,7 +93,10 @@ test("ColumnPicker formát, výběr, klávesnice, tmavý vzhled a zoom", async (
   if (!(await columnsButton.isVisible())) {
     await demo.locator(".grid-toolbar-overflow-menu").click();
   }
-  await page.getByRole("button", { name: "Sloupce", exact: true }).filter({ visible: true }).click();
+  await page
+    .getByRole("button", { name: "Sloupce", exact: true })
+    .filter({ visible: true })
+    .click();
   await page.getByRole("button", { name: "Formát sloupce Zbývá", exact: true }).click();
   const narrowEditor = page.locator('[data-slot="column-format-editor"]');
   await expect(narrowEditor).toBeVisible();
