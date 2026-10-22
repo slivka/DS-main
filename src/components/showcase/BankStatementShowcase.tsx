@@ -1,6 +1,7 @@
 /** Ukázky výpisů · vlastní náhledové hodnoty · nesmí být součástí spotřebitelské knihovny. */
 import { Sigma } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
+import { toast } from "sonner";
 import {
   BankStatementForm,
   FieldToggleButton,
