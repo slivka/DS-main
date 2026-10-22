@@ -42,6 +42,7 @@ export function useCurrencyControl({
     return (
       <FieldValue
         id="document-currency"
+        aria-labelledby="document-currency-label"
         lockedReason={lockedReason}
         className="w-[6.5rem] tabular-nums"
       >

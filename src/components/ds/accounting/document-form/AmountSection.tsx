@@ -179,6 +179,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
               amountLocked ? (
                 <FieldValue
                   id="document-amountTotal"
+                  aria-labelledby="document-amountTotal-label"
                   lockedReason={amountLocked}
                   className="justify-end font-sans font-bold tabular-nums"
                 >

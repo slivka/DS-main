@@ -87,7 +87,12 @@ export function useDocumentFieldRenderers({
       return field(
         `document-${key}`,
         label,
-        <FieldValue id={`document-${key}`} lockedReason={locked} className="tabular-nums">
+        <FieldValue
+          id={`document-${key}`}
+          aria-labelledby={`document-${key}-label`}
+          lockedReason={locked}
+          className="tabular-nums"
+        >
           {formatDate(value[key])}
         </FieldValue>,
         3,

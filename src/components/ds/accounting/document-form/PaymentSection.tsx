@@ -97,7 +97,12 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
   const lockedValue = (key: DocumentHeaderField, id: string, text: string) => {
     const reason = p.lockReason?.(key);
     return reason ? (
-      <FieldValue id={id} lockedReason={reason} className="font-mono tabular-nums">
+      <FieldValue
+        id={id}
+        aria-labelledby={`${id}-label`}
+        lockedReason={reason}
+        className="font-mono tabular-nums"
+      >
         {text}
       </FieldValue>
     ) : null;

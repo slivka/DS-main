@@ -83,6 +83,7 @@ export function BankMovementAccount({
           {accountLocked ? (
             <FieldValue
               id="document-movement-account"
+              aria-labelledby="document-movement-account-label"
               lockedReason={accountLocked}
               className="font-mono tabular-nums"
             >
@@ -124,6 +125,7 @@ export function BankMovementAccount({
           {codeLocked ? (
             <FieldValue
               id="document-bank-code"
+              aria-labelledby="document-bank-code-label"
               lockedReason={codeLocked}
               className="font-mono tabular-nums"
             >
