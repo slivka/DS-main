@@ -93,6 +93,15 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
       : { span: undefined, mobileHalf: undefined, className: PAYMENT_ITEM };
   const vsItem = item(6);
   const symbolItem = item(6);
+  // Obecný zámek pole (2.128.0): hodnota jen pro čtení se zámkem a důvodem v bublině.
+  const lockedValue = (key: DocumentHeaderField, id: string, text: string) => {
+    const reason = p.lockReason?.(key);
+    return reason ? (
+      <FieldValue id={id} lockedReason={reason} className="font-mono tabular-nums">
+        {text}
+      </FieldValue>
+    ) : null;
+  };
   // Zahraniční protiúčet pohybu: KS a SS nahrazuje reference platby.
   const referenceMode = grid && value.bankAccountKind === "iban";
   const symbolControl = (control: ReactNode, id: string) =>
