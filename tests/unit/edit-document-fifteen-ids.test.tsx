@@ -1,12 +1,15 @@
 /** Edit dokladu 15 – fieldId, popisky a rámečky polí (rozděleno z fixes2 kvůli délce souboru). */
 import { afterEach, describe, expect, it } from "bun:test";
 import * as React from "react";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { DocumentForm } from "../../src/components/ds/accounting/document-form";
-import { documentClientIssues, headerFieldLabel } from "../../src/components/ds/accounting/document-form/document-validation-feedback";
+import {
+  documentClientIssues,
+  headerFieldLabel,
+} from "../../src/components/ds/accounting/document-form/document-validation-feedback";
 import { useDocumentIssueProjection } from "../../src/components/ds/accounting/document-form/use-document-issue-projection";
-
-
+import { useDocumentDateLinks } from "../../src/components/ds/accounting/document-form/use-document-date-links";
+import { RecordActionBar } from "../../src/components/ds/layout/record-action-bar";
 import { DS_TEXTS_CS } from "../../src/ds-texts";
 import { DEFAULT_DOCUMENT_FORM_TEXTS } from "../../src/components/ds/accounting/document-form";
 import type { FormIssue } from "../../src/lib/form-issues";

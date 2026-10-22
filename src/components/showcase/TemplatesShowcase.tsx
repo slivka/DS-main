@@ -8,7 +8,11 @@ import { DuplicationPreview } from "../ds/templates/duplication-preview";
 import { TemplateManager, TemplateManagerDialog } from "../ds/templates/template-manager";
 import { NoticeBar } from "../ds/feedback/notice-bar";
 import { Button } from "../ui/button";
-import type { DuplicationValue, TemplateAction, DocumentTemplate } from "../ds/templates/template-types";
+import type {
+  DuplicationValue,
+  TemplateAction,
+  DocumentTemplate,
+} from "../ds/templates/template-types";
 import { useDsTexts } from "../../ds-texts";
 import { ShowcaseSection } from "./ShowcaseLayout";
 import { SERIES_PREVIEW, TEMPLATE_EXAMPLES } from "./template-showcase-data";

@@ -2,7 +2,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MessageSquare, Paperclip } from "lucide-react";
 import { jsPDF } from "jspdf";
-import { Button, DataGrid, DocumentForm, MultiSelectionPanel, OptionSelect, PageHeader, PinnedNoteBar, RecordDialog, RecordPanelTriggers, PanelToggleButton, RecordNotes, RecordSidePanel, type DataGridColumn } from "../ds";
+import {
+  Button,
+  DataGrid,
+  DocumentForm,
+  MultiSelectionPanel,
+  OptionSelect,
+  PageHeader,
+  PinnedNoteBar,
+  RecordDialog,
+  RecordPanelTriggers,
+  PanelToggleButton,
+  RecordNotes,
+  RecordSidePanel,
+  type DataGridColumn,
+} from "../ds";
 import { useFollowSelection } from "../../hooks/use-follow-selection";
 import { useFileDrop } from "../../hooks/use-file-drop";
 import { NoticeBar } from "../ds/feedback/notice-bar";

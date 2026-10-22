@@ -11,8 +11,15 @@ import type { JournalLine } from "../journal-lines";
 import type { JournalLinesEditorProps } from "../journal-editor-types";
 import { journalFieldId } from "../journal-lines-model";
 import { documentClientIssues, type DocumentValidationArgs } from "./document-validation-feedback";
-import { useDocumentIssueProjection, type DocumentIssueProjection } from "./use-document-issue-projection";
-import type { DocumentFormError, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
+import {
+  useDocumentIssueProjection,
+  type DocumentIssueProjection,
+} from "./use-document-issue-projection";
+import type {
+  DocumentFormError,
+  DocumentHeaderField,
+  DocumentHeaderValue,
+} from "./document-form-types";
 
 /** Hlášení změny pole (hlavička: document-klíč; řádek: id buňky s rowId a columnId). */
 export type DocumentFieldChange = (fieldId: string, rowId?: string, columnId?: string) => void;

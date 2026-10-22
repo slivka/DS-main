@@ -12,7 +12,12 @@ import { DecimalInput } from "../../form/decimal-input";
 import { RateField } from "../../form/rate-field";
 import { SectionHeading } from "../../layout/section-heading";
 import { cn } from "../../../../lib/utils";
-import type { DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue, DocumentVatRateField } from "./document-form-types";
+import type {
+  DocumentFormTexts,
+  DocumentHeaderField,
+  DocumentHeaderValue,
+  DocumentVatRateField,
+} from "./document-form-types";
 
 type FieldRenderer = (
   id: string,

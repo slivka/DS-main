@@ -3,14 +3,24 @@ import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
 import { toggleInvalidDate, useDocumentCounterpartyWarnings } from "./document-validation-feedback";
-import { reportingLinesChange, reportingPatch, useDocumentFormFeedback } from "./use-document-form-issues";
+import {
+  reportingLinesChange,
+  reportingPatch,
+  useDocumentFormFeedback,
+} from "./use-document-form-issues";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { formatAccountCode } from "../account-code";
 import { documentFieldsForType, partnerLabelForType } from "../document-fields";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
-import { DEFAULT_DOCUMENT_FORM_TEXTS, type DocumentDateField, type DocumentFormProps, type DocumentHeaderField } from "./document-form-types";
+import {
+  DEFAULT_DOCUMENT_FORM_TEXTS,
+  type DocumentDateField,
+  type DocumentFormProps,
+  type DocumentHeaderField,
+  type DocumentHeaderValue,
+} from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
 import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { useVariableSymbolLink } from "./use-variable-symbol-link";

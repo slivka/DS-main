@@ -1,6 +1,22 @@
 /** Panel záznamu · vlastní rozložení a záložky · nesmí načítat data ani řídit připnutí. */
-import { forwardRef, useId, useRef, useState, useEffect, type ComponentPropsWithoutRef, type ReactNode } from "react";
-import { ArrowLeftRight, Maximize2, Minimize2, Pin, PinOff, X, type LucideIcon } from "lucide-react";
+import {
+  forwardRef,
+  useId,
+  useRef,
+  useState,
+  useEffect,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
+import {
+  ArrowLeftRight,
+  Maximize2,
+  Minimize2,
+  Pin,
+  PinOff,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";

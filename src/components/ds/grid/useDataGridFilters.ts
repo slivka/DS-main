@@ -8,7 +8,13 @@ import { useEffect, useMemo, useState } from "react";
 
 import { fmtAmount } from "../../../lib/format";
 import type { GridTexts } from "./grid-texts";
-import { cellText, columnFilterOptions, dateFilterKeys, dateFilterParts, type FilterOption } from "./data-grid-model";
+import {
+  cellText,
+  columnFilterOptions,
+  dateFilterKeys,
+  dateFilterParts,
+  type FilterOption,
+} from "./data-grid-model";
 import type { DataGridColumn } from "./data-grid-types";
 
 /** Vstup hooku filtrů. */

@@ -2,7 +2,10 @@
 import { afterEach, expect, test } from "bun:test";
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { useState } from "react";
-import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import {
+  DocumentForm,
+  type DocumentHeaderValue,
+} from "../../src/components/ds/accounting/document-form";
 afterEach(cleanup);
 function Cash({
   direction,

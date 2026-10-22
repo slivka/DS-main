@@ -5,7 +5,16 @@
  */
 import type { UnsavedChangesAction } from "../../../ds-texts";
 import type { LinkedSection } from "./linked-tabs";
-import type { LayoutSnapshot, LinkedSourceRecord, OpenRecordModifiers, PaneTab, PaneLayoutCount, PaneTabsState, OpenTabTarget, TabKind } from "./pane-state";
+import type {
+  LayoutSnapshot,
+  LinkedSourceRecord,
+  OpenRecordModifiers,
+  PaneTab,
+  PaneLayoutCount,
+  PaneTabsState,
+  OpenTabTarget,
+  TabKind,
+} from "./pane-state";
 
 export type OpenTabOptions = {
   target?: OpenTabTarget;

@@ -5,7 +5,11 @@ import type { ComponentProps } from "react";
 import type { DateField } from "../../form/date-field";
 import { SectionHeading } from "../../layout/section-heading";
 import type { DocumentFields } from "../document-fields";
-import type { DocumentDateField, DocumentFormTexts, DocumentVatConfig } from "./document-form-types";
+import type {
+  DocumentDateField,
+  DocumentFormTexts,
+  DocumentVatConfig,
+} from "./document-form-types";
 export interface DocumentDatesSectionProps {
   t: DocumentFormTexts;
   f: DocumentFields;
@@ -23,7 +27,16 @@ export interface DocumentDatesSectionProps {
   ) => ReactNode;
 }
 /** Vykreslí data se společně ukotvenou skupinou DUZP a data DPH. */
-export function DocumentDatesSection({ t, f, showVatFields, vat, filedVatDateWarning, dateWarnings, date }: DocumentDatesSectionProps) {
+export function DocumentDatesSection({
+  t,
+  f,
+  showVatFields,
+  vat,
+  filedVatDateWarning,
+  dateWarnings,
+  bankMovement,
+  date,
+}: DocumentDatesSectionProps) {
   const labelsKey = [
     t.issueDate,
     t.accountingDate,

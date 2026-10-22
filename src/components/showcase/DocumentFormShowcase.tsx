@@ -2,13 +2,46 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
-import { DocumentForm, PanelToggleButton, RecordSidePanel, DocumentSettingsDialog } from "@/components/ds";
-
-import { MOCK_BOOKS } from "@/lib/mock/accounting";
+import {
+  DataGrid,
+  DocumentForm,
+  PanelToggleButton,
+  RecordSidePanel,
+  DocumentSettingsDialog,
+  NoticeBar,
+  PaymentScheduleEditor,
+  StatusBadge,
+  type DataGridColumn,
+  type DocumentSettingsValue,
+  type DocumentHeaderValue,
+  type DocumentIdentity,
+  SegmentedField,
+  type JournalLine,
+  type PaymentScheduleItem,
+  type DocumentCounterpartyValue,
+  type DocumentPrintValue,
+} from "@/components/ds";
+import { Button } from "@/components/ui/button";
+import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 import { formatCodeName } from "@/lib/code-format";
+import { formatAccountCode } from "@/components/ds/accounting/account-code";
 
-
-import { COMPANY_BANK_ACCOUNT_OPTIONS, CONSTANT_SYMBOL_OPTIONS, CURRENCIES, DocumentHeaderScenarios, PAYMENT_METHOD_OPTIONS } from "./document-form-showcase-data";
+import {
+  BANK_ACCOUNT_OPTIONS,
+  COMPANY_BANK_ACCOUNT_OPTIONS,
+  CONSTANT_SYMBOL_OPTIONS,
+  CURRENCIES,
+  DocumentHeaderScenarios,
+  HIDDEN_GROUP_COLUMNS,
+  HIDDEN_GROUP_ROWS,
+  INVOICE_HEADER,
+  INVOICE_LINES,
+  PAYMENT_METHOD_OPTIONS,
+  PURCHASE_INVOICE_HEADER,
+  PURCHASE_INVOICE_LINES,
+  SCHEDULE,
+  USERS,
+} from "./document-form-showcase-data";
 
 import { useDocumentFormShowcaseState } from "./use-document-form-showcase-state";
 import { useRecordPanelContent } from "./record-panel-content";
@@ -20,7 +53,72 @@ export function DocumentFormShowcase() {
   const [incomePanelOpen, setIncomePanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState("attachments");
   const panelContent = useRecordPanelContent("draft", "");
-  const { cashDateLocked, setCashDateLocked, courierVatRelevant, setCourierVatRelevant, handedSuggestions, setHandedSuggestions, descriptionSuggestions, setDescriptionSuggestions, settingsOpen, setSettingsOpen, formError, setFormError, lineValidationError, setLineValidationError, documentSettings, setDocumentSettings, courierLines, setCourierLines, courier, setCourier, cashIn, setCashIn, cashEur, setCashEur, fvCzk, setFvCzk, fvEur, setFvEur, counterpartyPrint, setCounterpartyPrint, printData, setPrintData, idCp, setIdCp, suggestNames, suggestDescriptions, common } = state;
+  const {
+    cashDateLocked,
+    setCashDateLocked,
+    courierVatRelevant,
+    setCourierVatRelevant,
+    invoiceVatRelevant,
+    setInvoiceVatRelevant,
+    handedSuggestions,
+    setHandedSuggestions,
+    descriptionSuggestions,
+    setDescriptionSuggestions,
+    invoice,
+    setInvoice,
+    invoiceLines,
+    setInvoiceLines,
+    schedule,
+    setSchedule,
+    settingsOpen,
+    setSettingsOpen,
+    formError,
+    setFormError,
+    lineValidationError,
+    setLineValidationError,
+    documentSettings,
+    setDocumentSettings,
+    posted,
+    setPosted,
+    postedLines,
+    setPostedLines,
+    postedSchedule,
+    setPostedSchedule,
+    cash,
+    setCash,
+    cashLines,
+    setCashLines,
+    internal,
+    setInternal,
+    internalLines,
+    setInternalLines,
+    courierLines,
+    setCourierLines,
+    courier,
+    setCourier,
+    cashIn,
+    setCashIn,
+    cashEur,
+    setCashEur,
+    fvCzk,
+    setFvCzk,
+    fvEur,
+    setFvEur,
+    counterpartyPrint,
+    setCounterpartyPrint,
+    printData,
+    setPrintData,
+    fpNonPayer,
+    setFpNonPayer,
+    idCp,
+    setIdCp,
+    exchangeDifference,
+    setExchangeDifference,
+    suggestNames,
+    suggestDescriptions,
+    common,
+    units,
+  } = state;
   return (
     <>
       <DocumentHeaderScenarios />

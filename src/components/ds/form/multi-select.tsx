@@ -2,7 +2,12 @@ import { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Command } from "../../ui/command";
-import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput } from "./inline-search";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput,
+} from "./inline-search";
 import { gridFontSize } from "../grid/grid-zoom";
 import { useResizableWidth } from "../../../hooks/use-resizable-width";
 import { useDsTexts } from "../../../ds-texts";
@@ -14,7 +19,19 @@ export type MultiSelectOption = { value: string; label: string };
  * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
  * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
  */
-export function MultiSelect({ options, selected, onChange, allLabel, itemsLabel, className = "", zoom, showSearch = true, showSelectAll = true, clearLabel }: {
+export function MultiSelect({
+  options,
+  selected,
+  onChange,
+  allLabel,
+  itemsLabel,
+  placeholder,
+  className = "",
+  zoom,
+  showSearch = true,
+  showSelectAll = true,
+  clearLabel,
+}: {
   options: MultiSelectOption[];
   selected: string[];
   onChange: (next: string[]) => void;

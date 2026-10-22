@@ -10,7 +10,15 @@ import type { PartnerOption } from "./partner-select";
 import type { UnitOption } from "./unit-select";
 import type { JournalLinesMode } from "./journal-column-layout";
 import type { JournalLineErrors } from "./journal-lines-validation";
-import type { JournalLine, JournalLineColumn, JournalSharedSide, SideFieldRulesFn, VatCalcMode, VatCodeOption, VatPdpSubject } from "./journal-lines";
+import type {
+  JournalLine,
+  JournalLineColumn,
+  JournalSharedSide,
+  SideFieldRulesFn,
+  VatCalcMode,
+  VatCodeOption,
+  VatPdpSubject,
+} from "./journal-lines";
 import type { JournalRecapTab } from "./journal-lines-recap";
 import type { JournalTotals } from "./journal-vat";
 import type { JournalVatOverride } from "./journal-vat-groups";

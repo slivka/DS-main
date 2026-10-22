@@ -4,7 +4,12 @@
  *   na řádky poměrem základů, toleranci přepisu, pomocné výpočty z částky s DPH a návrh dorovnání.
  * Nesmí: ukládat – výsledek je náhled; skutečné řádky daně vytváří databáze.
  */
-import { exactSum, mulDivExceeds, mulDivRound, roundHalfAwayFromZero } from "../../../lib/decimal-round";
+import {
+  exactSum,
+  mulDivExceeds,
+  mulDivRound,
+  roundHalfAwayFromZero,
+} from "../../../lib/decimal-round";
 import type { JournalLine, VatCodeOption } from "./journal-lines";
 
 // Vždy polovina od nuly jako Postgres round(numeric, 2) – nikdy Math.round.

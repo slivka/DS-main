@@ -1,11 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { filterByGridPeriod, gridPeriodLabel, gridPeriodRange, moveGridPeriod } from "../../src/components/ds/grid/grid-period";
-import { createGridBookColumn, GridBookSelect, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst } from "../../src/components/ds/grid/grid-context-bar";
+import {
+  filterByGridPeriod,
+  gridPeriodLabel,
+  gridPeriodRange,
+  moveGridPeriod,
+} from "../../src/components/ds/grid/grid-period";
+import {
+  createGridBookColumn,
+  GridBookSelect,
+  GridContextBar,
+  GRID_BOOK_COLUMN_ID,
+  placeGridBookColumnFirst,
+} from "../../src/components/ds/grid/grid-context-bar";
 import { BookSelect } from "../../src/components/ds/accounting/book-select";
 import { GridZoomContext } from "../../src/components/ds/grid/grid-zoom";
-import { filterByDirection, GRID_DIRECTION_OPTIONS, GridSegmentedToggle, nextGridSegmentValue } from "../../src/components/ds/grid/grid-segmented-toggle";
+import {
+  filterByDirection,
+  GRID_DIRECTION_OPTIONS,
+  GridSegmentedToggle,
+  nextGridSegmentValue,
+} from "../../src/components/ds/grid/grid-segmented-toggle";
 
 describe("období gridu", () => {
   it("počítá měsíce kalendářního období", () => {

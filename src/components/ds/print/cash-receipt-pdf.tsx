@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { Label } from "../../ui/label";
 import { CheckboxField } from "../form/checkbox-field";
 import { StepperInput } from "../form/stepper-input";
-import { amountInWordsCs, createPrintDocument, resolveCompanyLogo, type PrintCompany, type PrintContext } from "./report-pdf";
+import {
+  amountInWordsCs,
+  createPrintDocument,
+  resolveCompanyLogo,
+  type PrintCompany,
+  type PrintContext,
+} from "./report-pdf";
 import { PrintPreviewDialog } from "./print-preview-dialog";
 
 export type CashReceiptCopies = 1 | 2 | 3 | 4 | 5;

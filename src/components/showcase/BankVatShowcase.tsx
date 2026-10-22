@@ -1,7 +1,12 @@
 /** Ukázka BA s DPH · vlastní náhledová data · nesmí být součástí knihovny. */
 import { useState } from "react";
 import { DocumentForm, type DocumentHeaderValue } from "../ds";
-import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "../../lib/mock/accounting";
+import {
+  MOCK_ACCOUNTS,
+  MOCK_BOOKS,
+  MOCK_DIMENSIONS,
+  MOCK_PARTNERS,
+} from "../../lib/mock/accounting";
 import { formatCodeName } from "../../lib/code-format";
 import { CURRENCIES } from "./document-form-showcase-data";
 import { ShowcaseSection } from "./ShowcaseLayout";

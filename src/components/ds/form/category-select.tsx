@@ -3,7 +3,12 @@ import { Check, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
-import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "./inline-search";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "./inline-search";
 import { cn } from "../../../lib/utils";
 
 export type CategoryOption = {

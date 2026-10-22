@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import type { JournalLine, VatCodeOption } from "@/components/ds/accounting/journal-lines";
-import { applyVatAllocation, baseFromGrossAmount, computeVatGroups, largestBaseLineId, removeVatOverride, resolveDifferenceActions, taxFromGrossTotal, upsertVatOverride } from "@/components/ds/accounting/journal-vat-groups";
+import {
+  applyVatAllocation,
+  baseFromGrossAmount,
+  computeVatGroups,
+  largestBaseLineId,
+  removeVatOverride,
+  resolveDifferenceActions,
+  taxFromGrossTotal,
+  upsertVatOverride,
+} from "@/components/ds/accounting/journal-vat-groups";
 
 const code = (id: string, rate: number | null, extra: Partial<VatCodeOption> = {}) =>
   ({

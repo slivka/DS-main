@@ -8,7 +8,15 @@ import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Switch } from "../../../ui/switch";
 import { RecordActionBar } from "../../layout/record-action-bar";
 import { cn } from "../../../../lib/utils";
-import { DEFAULT_DOCUMENT_FORM_TEXTS, type DocumentDirection, type DocumentFormTexts, type DocumentMoreAction, type DocumentPrimaryAction, type DocumentSaveAction, type DocumentVatConfig } from "./document-form-types";
+import {
+  DEFAULT_DOCUMENT_FORM_TEXTS,
+  type DocumentDirection,
+  type DocumentFormTexts,
+  type DocumentMoreAction,
+  type DocumentPrimaryAction,
+  type DocumentSaveAction,
+  type DocumentVatConfig,
+} from "./document-form-types";
 
 export function DocumentDirectionBadge({
   direction,

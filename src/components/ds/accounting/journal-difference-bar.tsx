@@ -8,7 +8,12 @@
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 import { AmountDifference } from "./amount-difference";
 import { useJournalEditor } from "./journal-editor-context";
 import { roundJournalAmount } from "./journal-lines-model";

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { filterNavGroups, highlightNavMatch, matchesNavSearch, normalizeNavSearch, withNavSections } from "../../src/components/ds/layout/nav-search";
+import {
+  filterNavGroups,
+  highlightNavMatch,
+  matchesNavSearch,
+  normalizeNavSearch,
+  withNavSections,
+} from "../../src/components/ds/layout/nav-search";
 
 const groups = [
   { id: "overview", label: "Přehled", items: [{ label: "Domů" }] },

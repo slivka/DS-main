@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { isPaneLayoutVisible, shouldRegisterPaneLayout } from "../../src/components/ds/panes/pane-layout";
+import {
+  isPaneLayoutVisible,
+  shouldRegisterPaneLayout,
+} from "../../src/components/ds/panes/pane-layout";
 
 const el = (rects: number, w: number, h: number) => ({
   getClientRects: () => ({ length: rects }),

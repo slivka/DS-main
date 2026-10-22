@@ -8,7 +8,12 @@ import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
 import { LinkedRecordsPanel } from "../../data-display/linked-records-panel";
 import { StatusBadge } from "../../data-display/status-badge";
 import { TooltipProvider } from "../../../ui/tooltip";
-import type { AdvanceCommand, AdvancePaymentPlane, AdvancePaymentTotals, AdvanceTaxStatus } from "./advance-types";
+import type {
+  AdvanceCommand,
+  AdvancePaymentPlane,
+  AdvancePaymentTotals,
+  AdvanceTaxStatus,
+} from "./advance-types";
 /** Řízené akce zálohy; otevření postupů zajišťuje APP. */
 export interface AdvancePaymentActions {
   /** Přiřazení ZL. */ assignList?: AdvanceCommand;

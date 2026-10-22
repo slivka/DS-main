@@ -7,7 +7,7 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
 }));
 
 const { cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
-const { JournalLinesEditor } =
+const { JournalLinesEditor, resolveJournalColumnLayout } =
   await import("../../src/components/ds/accounting/journal-lines-editor");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 type JournalLine = import("../../src/components/ds/accounting/journal-lines").JournalLine;

@@ -1,8 +1,14 @@
 import { describe, expect, it } from "bun:test";
-
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { mainAccountLabelForType, partnerLabelForType } from "../../src/components/ds/accounting/document-fields";
-import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import {
+  mainAccountLabelForType,
+  partnerLabelForType,
+} from "../../src/components/ds/accounting/document-fields";
+import {
+  DocumentForm,
+  type DocumentHeaderValue,
+} from "../../src/components/ds/accounting/document-form";
 
 const value: DocumentHeaderValue = {
   bookId: "cash",

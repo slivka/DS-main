@@ -11,9 +11,40 @@ import { toast } from "sonner";
 import { useDsTexts } from "../../../ds-texts";
 import { useIsActivePane } from "../panes/pane-context";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
-import { journalAccountFor, journalColumnDefs, journalColumnLabels, journalDisplayValue } from "./journal-columns";
-import { sideFieldRules as defaultSideFieldRules, type JournalLine, type JournalLineColumn, type VatCalcMode } from "./journal-lines";
-import { ALL_EDITABLE, VAT_COLUMNS, appendJournalLine, calculateLineAmount, createJournalLine, dataColumnOf, duplicateJournalLine, filterJournalLines, isRegularLine, journalAmountLabels, moveJournalLine, newJournalLineId, nextLineVatCode, numberJournalErrors, orderJournalLines, removeJournalLine, reorderJournalLines, toHomeAmount, type ColumnId, type EditState } from "./journal-lines-model";
+import {
+  journalAccountFor,
+  journalColumnDefs,
+  journalColumnLabels,
+  journalDisplayValue,
+} from "./journal-columns";
+import {
+  sideFieldRules as defaultSideFieldRules,
+  type JournalLine,
+  type JournalLineColumn,
+  type VatCalcMode,
+} from "./journal-lines";
+import {
+  ALL_EDITABLE,
+  VAT_COLUMNS,
+  appendJournalLine,
+  calculateLineAmount,
+  createJournalLine,
+  dataColumnOf,
+  duplicateJournalLine,
+  filterJournalLines,
+  isRegularLine,
+  journalAmountLabels,
+  moveJournalLine,
+  newJournalLineId,
+  nextLineVatCode,
+  numberJournalErrors,
+  orderJournalLines,
+  removeJournalLine,
+  reorderJournalLines,
+  toHomeAmount,
+  type ColumnId,
+  type EditState,
+} from "./journal-lines-model";
 import { journalVatIssues, validateJournalLines } from "./journal-lines-validation";
 import { useJournalLayout } from "./useJournalLayout";
 import { useJournalTotals } from "./useJournalTotals";

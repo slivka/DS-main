@@ -12,7 +12,13 @@ import { ColumnFilter } from "./ColumnFilter";
 import { ColumnResizeHandle } from "./grid-column-resize";
 import type { useGridColumns } from "./grid-columns";
 import { GRID_BOOK_COLUMN_ID } from "./grid-context-bar";
-import { BRANCH_COLUMN_WIDTH, fixedWidthStyle, isBranchColumn, pinnedColumnWidth, zoomedWidth } from "./grid-column-presets";
+import {
+  BRANCH_COLUMN_WIDTH,
+  fixedWidthStyle,
+  isBranchColumn,
+  pinnedColumnWidth,
+  zoomedWidth,
+} from "./grid-column-presets";
 import { SortHead, type useGridSort } from "./grid-sort";
 import type { GridTexts } from "./grid-texts";
 import type { DataGridColumn } from "./data-grid-types";

@@ -4,7 +4,14 @@
  * Nesmí: používat React ani DOM; texty dostává hotové z DsTexts.
  */
 import type { AccountOption } from "./account-select";
-import type { JournalLine, JournalLineColumn, JournalSharedSide, SideFieldRulesFn, VatCalcMode, VatCodeOption } from "./journal-lines";
+import type {
+  JournalLine,
+  JournalLineColumn,
+  JournalSharedSide,
+  SideFieldRulesFn,
+  VatCalcMode,
+  VatCodeOption,
+} from "./journal-lines";
 import { isGridLine, isPinnedLine } from "./journal-lines-model";
 import { resolveLineVat } from "./journal-vat";
 import { formatAmount } from "../../../lib/format";

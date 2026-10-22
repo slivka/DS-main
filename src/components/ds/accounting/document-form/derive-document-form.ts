@@ -10,7 +10,11 @@ import type { BookOption } from "../book-select";
 import type { CurrencyOption } from "../currency-amount";
 import type { PartnerOption } from "../partner-select";
 import type { JournalLine } from "../journal-lines";
-import type { DocumentFormProps, DocumentHeaderField, DocumentIdentity } from "./document-form-types";
+import type {
+  DocumentFormProps,
+  DocumentHeaderField,
+  DocumentIdentity,
+} from "./document-form-types";
 export interface DerivedArgs {
   documentType: string;
   value: DocumentFormProps["value"];

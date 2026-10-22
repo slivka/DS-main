@@ -11,7 +11,20 @@ import { formatAmount } from "../../../lib/format";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
 import type { JournalLine, VatCodeOption } from "./journal-lines";
 import { isRegularLine, roundJournalAmount, toHomeAmount } from "./journal-lines-model";
-import { applyVatAllocation, storedVatAllocation, baseFromGrossAmount, baseDeltaForDifference, computeVatGroups, largestBaseLineId, vatGroupsFromStored, removeVatOverride, resolveDifferenceActions, taxFromGrossTotal, upsertVatOverride, type VatGroup } from "./journal-vat-groups";
+import {
+  applyVatAllocation,
+  storedVatAllocation,
+  baseFromGrossAmount,
+  baseDeltaForDifference,
+  computeVatGroups,
+  largestBaseLineId,
+  vatGroupsFromStored,
+  removeVatOverride,
+  resolveDifferenceActions,
+  taxFromGrossTotal,
+  upsertVatOverride,
+  type VatGroup,
+} from "./journal-vat-groups";
 
 /** Vstup hooku skupin DPH. */
 export interface JournalVatGroupsInput {

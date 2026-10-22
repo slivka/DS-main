@@ -2,14 +2,52 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, FileText, LayoutGrid, ReceiptText, Search, Users, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
-import { DataGrid, DocumentForm, DraftRestoredBanner, LayoutMenu, LayoutSwitcher, PageHeader, PageLayout, PaneLayout, PaneLink, PaneTabsProvider, PinnedBar, createTab, maxPaneLayout, parsePaneTabs, persistDrafts, requiredPaneWidth, serializePaneTabs, setTabDirty, UnsavedChangesDialog, usePane, usePaneTabs, useTabDirty, useTabDraft, type DataGridColumn, type DocumentHeaderValue, type JournalLine, type LayoutSnapshot, type PaneTab, type PaneTabsState, type SavedLayoutItem } from "@/components/ds";
+import {
+  DataGrid,
+  DocumentForm,
+  DraftRestoredBanner,
+  LayoutMenu,
+  LayoutSwitcher,
+  PageHeader,
+  PageLayout,
+  PaneLayout,
+  PaneLink,
+  PaneTabsProvider,
+  PinnedBar,
+  createTab,
+  maxPaneLayout,
+  parsePaneTabs,
+  persistDrafts,
+  requiredPaneWidth,
+  serializePaneTabs,
+  setTabDirty,
+  UnsavedChangesDialog,
+  usePane,
+  usePaneTabs,
+  useTabDirty,
+  useTabDraft,
+  type DataGridColumn,
+  type DocumentHeaderValue,
+  type JournalLine,
+  type LayoutSnapshot,
+  type PaneTab,
+  type PaneTabsState,
+  type SavedLayoutItem,
+} from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatAmount, formatDate } from "@/lib/format";
 import { HistoryDemo } from "./RecordHistoryShowcase";
-import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_JOURNAL, MOCK_PARTNERS, type JournalEntry } from "@/lib/mock/accounting";
+import {
+  MOCK_ACCOUNTS,
+  MOCK_BOOKS,
+  MOCK_DIMENSIONS,
+  MOCK_JOURNAL,
+  MOCK_PARTNERS,
+  type JournalEntry,
+} from "@/lib/mock/accounting";
 
 const PREVIEW_WIDTHS = [1100, 1440, 1920] as const;
 const MIN_PANE_WIDTH = 420;

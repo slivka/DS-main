@@ -1,6 +1,15 @@
 /** Položka přílohy · vlastní metadata a akce · nesmí rozhodovat oprávnění podle stavu dokladu. */
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
-import { FileText, FileImage, Download, ExternalLink, Trash2, X, MoreHorizontal, Replace } from "lucide-react";
+import {
+  FileText,
+  FileImage,
+  Download,
+  ExternalLink,
+  Trash2,
+  X,
+  MoreHorizontal,
+  Replace,
+} from "lucide-react";
 import { Button } from "../../ui/button";
 import { Progress } from "../../ui/progress";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";

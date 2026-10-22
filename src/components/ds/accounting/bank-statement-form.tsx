@@ -7,7 +7,11 @@ import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { TooltipProvider } from "../../ui/tooltip";
-import { BankStatementIdentity, BankStatementBasic, statementDifference } from "./bank-statement-sections";
+import {
+  BankStatementIdentity,
+  BankStatementBasic,
+  statementDifference,
+} from "./bank-statement-sections";
 import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
@@ -94,7 +98,37 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
 /** Výpis se společnými poli, přilepenými akcemi a slotem pohybů. */
 export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormProps>(
   function BankStatementForm(p, ref) {
-    const { value, onChange, status, book, currencySymbol, period, bankAccount, balances, hasItems, readOnly, dirty, onSave, onSaveAndClose, busy, onDelete, error, notices, items, texts, className, onKeyDown, ...rest } = p;
+    const {
+      value,
+      onChange,
+      status,
+      book,
+      currency: _currency,
+      currencySymbol,
+      period,
+      bankAccount,
+      balances,
+      home: _home,
+      onHomeBankClosingChange: _onHomeBankClosingChange,
+      hasItems,
+      isNew: _isNew,
+      onSaveThenAdd: _onSaveThenAdd,
+      readOnly,
+      dirty,
+      onSave,
+      onSaveAndClose,
+      busy,
+      onCheckedChange: _onCheckedChange,
+      checkDisabledReason: _checkDisabledReason,
+      onDelete,
+      error,
+      notices,
+      items,
+      texts,
+      className,
+      onKeyDown,
+      ...rest
+    } = p;
     const ds = useDsTexts();
     const t = { ...ds.bankStatement, ...texts };
     const id = useId();

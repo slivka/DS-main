@@ -6,7 +6,12 @@ import { JournalVatAccountingFields } from "../../src/components/ds/accounting/j
 import { JournalEditorContext } from "../../src/components/ds/accounting/journal-editor-context";
 import { useJournalEditorState } from "../../src/components/ds/accounting/useJournalEditorState";
 import { useJournalKeyboard } from "../../src/components/ds/accounting/useJournalKeyboard";
-import { fromJournalRow, toJournalRow, type JournalLine, type VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
+import {
+  fromJournalRow,
+  toJournalRow,
+  type JournalLine,
+  type VatCodeOption,
+} from "../../src/components/ds/accounting/journal-lines";
 import { duplicateJournalLine } from "../../src/components/ds/accounting/journal-lines-model";
 
 afterEach(cleanup);

@@ -1,4 +1,4 @@
-import { useRef, type MouseEvent } from "react";
+import { useRef, type MouseEvent, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";

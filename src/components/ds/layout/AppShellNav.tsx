@@ -5,7 +5,15 @@
  */
 import { Link } from "@tanstack/react-router";
 import type { LinkProps } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from "react";
 import { Search, X } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -15,7 +23,13 @@ import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
 import type { OpenTabTarget } from "../panes/pane-state";
 import { filterNavGroups, highlightNavMatch, withNavSections } from "./nav-search";
-import { isNavItemActive, navItemClassName, NavItemContent, type NavGroup, type NavItem } from "./nav-items";
+import {
+  isNavItemActive,
+  navItemClassName,
+  NavItemContent,
+  type NavGroup,
+  type NavItem,
+} from "./nav-items";
 import { ShellNavGroup } from "./AppShellNavGroup";
 
 /** Props levého menu; všechny texty dodává AppShell z DsTexts. */

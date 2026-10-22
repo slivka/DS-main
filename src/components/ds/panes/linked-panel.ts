@@ -5,8 +5,21 @@
  * umístění v rozložení řeší placeLinkedTab z linked-tabs.
  * Nesmí: vykreslovat rozhraní, načítat data ani znát doménu aplikace.
  */
-import { activateTabInState, createTab, findTab, type LinkedSourceRecord, type PaneTab, type PaneTabsState } from "./pane-state";
-import { placeLinkedTab, setLinkedSourceSelectionInState, sourceRecord, syncLinkedTabsInState, type OpenLinkedTabResult } from "./linked-tabs";
+import {
+  activateTabInState,
+  createTab,
+  findTab,
+  type LinkedSourceRecord,
+  type PaneTab,
+  type PaneTabsState,
+} from "./pane-state";
+import {
+  placeLinkedTab,
+  setLinkedSourceSelectionInState,
+  sourceRecord,
+  syncLinkedTabsInState,
+  type OpenLinkedTabResult,
+} from "./linked-tabs";
 
 /** Id sekce vyhrazené navázané záložce s celým panelem. */
 export const LINKED_PANEL_SECTION = "panel";

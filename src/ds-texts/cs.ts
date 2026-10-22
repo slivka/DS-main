@@ -8,7 +8,13 @@ import { TEMPLATES_CS } from "./cs-templates";
 import { ADVANCES_CS } from "./cs-advances";
 import { FILE_IMPORT_CS } from "./cs-file-import";
 import { CS_VAT_GROUPS } from "./cs-vat-groups";
-import { ATTACHMENTS_CS, RECORD_HISTORY_CS, RECORD_NOTES_CS, RECORD_PANEL_CS, SOURCE_PREVIEW_CS } from "./cs-record-panel";
+import {
+  ATTACHMENTS_CS,
+  RECORD_HISTORY_CS,
+  RECORD_NOTES_CS,
+  RECORD_PANEL_CS,
+  SOURCE_PREVIEW_CS,
+} from "./cs-record-panel";
 import { BANK_STATEMENT_CS } from "./cs-bank-statement";
 import { cs } from "date-fns/locale";
 

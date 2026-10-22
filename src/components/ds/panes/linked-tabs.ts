@@ -5,7 +5,18 @@
  * reexportuje.
  * Nesmí: vykreslovat rozhraní, načítat data ani znát doménu aplikace.
  */
-import { activateTabInState, closeTabInState, createTab, findTab, insertPaneInState, insertTabInState, type OpenTabResult, type PaneTab, type LinkedSourceRecord, type PaneTabsState } from "./pane-state";
+import {
+  activateTabInState,
+  closeTabInState,
+  createTab,
+  findTab,
+  insertPaneInState,
+  insertTabInState,
+  type OpenTabResult,
+  type PaneTab,
+  type LinkedSourceRecord,
+  type PaneTabsState,
+} from "./pane-state";
 import { linkedPanelTitle } from "./linked-panel";
 
 /** Sekce panelu záznamu, kterou navázaná záložka zobrazuje. */
@@ -208,7 +219,7 @@ export function syncLinkedTabsInState(state: PaneTabsState): PaneTabsState {
       const sourceKey = source.tab.recordKey ?? source.tab.route;
       if (linked.record && linked.recordSourceKey !== sourceKey) {
         // Zdroj přešel na jiný záznam – hlášený záznam patří starému klíči.
-        const { ...rest } = linked;
+        const { record: _drop, recordSourceKey: _key, ...rest } = linked;
         changed = true;
         paneChanged = true;
         tab = { ...tab, linked: rest };

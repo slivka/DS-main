@@ -8,7 +8,11 @@ import { useDsTexts } from "../../../../ds-texts";
 
 import { BankAccountField, type BankAccountOption } from "../bank-account-field";
 import { PaymentOrderAccountField } from "../payment-order-account-field";
-import { ReceivedBankAccountField, type ManualBankAccountErrors, type ManualBankAccountValue } from "../received-bank-account-field";
+import {
+  ReceivedBankAccountField,
+  type ManualBankAccountErrors,
+  type ManualBankAccountValue,
+} from "../received-bank-account-field";
 import { LockedAccountValue } from "../locked-account-value";
 import { OptionSelect } from "../../form/option-select";
 import { Field } from "../../layout/RecordDialog";

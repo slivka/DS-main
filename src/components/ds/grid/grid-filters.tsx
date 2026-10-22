@@ -129,7 +129,13 @@ export function GridFilterToggle({
   );
 }
 
-export function GridFilterPanel({ open, zoom = 1, density = "normal", children }: {
+export function GridFilterPanel({
+  open,
+  onClear: _onClear,
+  zoom = 1,
+  density = "normal",
+  children,
+}: {
   open: boolean;
   /** @deprecated Zrušení filtrů patří do GridFilterToggle. */
   onClear?: () => void;

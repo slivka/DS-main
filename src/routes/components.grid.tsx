@@ -5,7 +5,25 @@ import { Building2 } from "lucide-react";
 
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { Button } from "@/components/ui/button";
-import { DataGrid, TreeGrid, DocumentStatusBadge, GridContextBar, GridSegmentedToggle, GRID_DIRECTION_OPTIONS, filterByDirection, GridToggleButton, gridPeriodRange, accountColumns, accountColumnPair, debitCreditColumns, type DataGridColumn, type TreeGridColumn, OptionSelect, DateRangeField, PageTabs } from "@/components/ds";
+import {
+  DataGrid,
+  TreeGrid,
+  DocumentStatusBadge,
+  GridContextBar,
+  GridSegmentedToggle,
+  GRID_DIRECTION_OPTIONS,
+  filterByDirection,
+  GridToggleButton,
+  gridPeriodRange,
+  accountColumns,
+  accountColumnPair,
+  debitCreditColumns,
+  type DataGridColumn,
+  type TreeGridColumn,
+  OptionSelect,
+  DateRangeField,
+  PageTabs,
+} from "@/components/ds";
 import { MOCK_ACCOUNTS, MOCK_JOURNAL, type JournalEntry } from "@/lib/mock/accounting";
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
 import { formatDate } from "@/lib/format";

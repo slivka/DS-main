@@ -2,7 +2,13 @@
 import type { MutableRefObject } from "react";
 import type { PaneTabsApi } from "./pane-context-types";
 import { activateTabInState, findTab, type PaneTabsState } from "./pane-state";
-import { findLinkedPanel, openLinkedPanelInState, setLinkedPanelSectionInState, resolveLinkedPanelRecord, updateLinkedPanelRecordInState } from "./linked-panel";
+import {
+  findLinkedPanel,
+  openLinkedPanelInState,
+  setLinkedPanelSectionInState,
+  resolveLinkedPanelRecord,
+  updateLinkedPanelRecordInState,
+} from "./linked-panel";
 import { sourceRecord } from "./linked-tabs";
 import type { OpenLinkedTabResult } from "./linked-tabs";
 

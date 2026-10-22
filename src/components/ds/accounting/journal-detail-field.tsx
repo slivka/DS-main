@@ -2,7 +2,11 @@
 import type * as React from "react";
 import { cn } from "../../../lib/utils";
 import { Label } from "../../ui/label";
-import { FieldFeedbackContext, FieldFeedbackIndicator, useFieldStatus } from "../form/field-feedback";
+import {
+  FieldFeedbackContext,
+  FieldFeedbackIndicator,
+  useFieldStatus,
+} from "../form/field-feedback";
 
 /**
  * Popsané pole detailu: popisek nahoře, prvek pod ním, nic dalšího. Chyba i varování jsou

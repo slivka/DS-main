@@ -9,7 +9,12 @@ import { APP_ZOOM_EVENT } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
 import { useGridColumns, type GridColumn } from "../grid/grid-columns";
 import { useGridZoom } from "../grid/grid-zoom";
-import { journalColumnWidthsRem, normalizeJournalAccountVisibility, resolveJournalZoomLayout, type JournalLinesMode } from "./journal-column-layout";
+import {
+  journalColumnWidthsRem,
+  normalizeJournalAccountVisibility,
+  resolveJournalZoomLayout,
+  type JournalLinesMode,
+} from "./journal-column-layout";
 import type { ColumnId } from "./journal-lines-model";
 
 /** Vstup hooku rozložení. */

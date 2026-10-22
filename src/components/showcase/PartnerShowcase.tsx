@@ -1,6 +1,40 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { AddressFieldGrid, CheckboxField, CheckboxGroup, DataGrid, Field, FieldGrid, FieldValue, FormSection, GridRowMenu, IcoField, LegalFormField, LookupField, NoticeBar, PageHeader, RecordActionBar, RecordDialog, SectionHeading, SegmentedField, SettingsSection, ShowInactiveToggle, SwitchField, StatusBadge, VatStatusBadge, activeStatusColumn, activeToggleMenuItem, czIban, filterInactiveRows, formatIban, isValidCzAccount, parseCzAccount, type AddressValue, type DataGridColumn } from "@/components/ds";
+import {
+  AddressFieldGrid,
+  CheckboxField,
+  CheckboxGroup,
+  DataGrid,
+  Field,
+  FieldGrid,
+  FieldValue,
+  FormSection,
+  GridRowMenu,
+  IcoField,
+  LegalFormField,
+  LookupField,
+  OptionSelect,
+  NoticeBar,
+  PageHeader,
+  RecordActionBar,
+  RecordDialog,
+  SectionHeading,
+  SegmentedField,
+  SettingsSection,
+  ShowInactiveToggle,
+  SwitchField,
+  StatusBadge,
+  VatStatusBadge,
+  activeStatusColumn,
+  activeToggleMenuItem,
+  czIban,
+  filterInactiveRows,
+  formatIban,
+  isValidCzAccount,
+  parseCzAccount,
+  type AddressValue,
+  type DataGridColumn,
+} from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

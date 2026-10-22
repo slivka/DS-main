@@ -4,7 +4,12 @@ import { Check, Plus } from "lucide-react";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { Command } from "../../ui/command";
-import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput } from "./inline-search";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput,
+} from "./inline-search";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
 import { SelectSearchAction } from "./select-search-action";

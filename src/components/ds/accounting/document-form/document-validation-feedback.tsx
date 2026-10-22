@@ -4,7 +4,12 @@
  */
 import { isValidCzIco } from "../../form/ico-link";
 import type { FormIssue } from "../../../../lib/form-issues";
-import type { DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue, DocumentVatRateField } from "./document-form-types";
+import type {
+  DocumentFormTexts,
+  DocumentHeaderField,
+  DocumentHeaderValue,
+  DocumentVatRateField,
+} from "./document-form-types";
 
 /** Vstupy klientských kontrol. */
 export interface DocumentValidationArgs {

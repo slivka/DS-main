@@ -3,7 +3,10 @@ import { afterEach, expect, test, mock } from "bun:test";
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { useState } from "react";
 import { DuplicationDialog } from "../../src/components/ds/templates/duplication-dialog";
-import type { DuplicationValue, DuplicationPreviewRow } from "../../src/components/ds/templates/template-types";
+import type {
+  DuplicationValue,
+  DuplicationPreviewRow,
+} from "../../src/components/ds/templates/template-types";
 import { RecordDialog } from "../../src/components/ds/layout/RecordDialog";
 afterEach(cleanup);
 const value: DuplicationValue = { mode: "single", date: "2026-11-15", months: 12, day: 15 };

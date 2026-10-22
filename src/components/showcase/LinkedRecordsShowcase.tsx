@@ -1,7 +1,21 @@
 /** Ukázky vazeb · vlastní demo akce a data · nesmí se distribuovat. */
 import { useState } from "react";
-import { LinkedRecordsPanel, PageHeader, OptionSelect, type LinkedRecordsMode, type LinkedRecordGroup, type LinkedRecordItem, type LinkedRecordModifiers } from "../ds";
-import { ASSET_GROUPS, LINK_CANDIDATES, LINK_GROUPS, LINK_SETTLEMENT, LINK_TYPES } from "./linked-record-data";
+import {
+  LinkedRecordsPanel,
+  PageHeader,
+  OptionSelect,
+  type LinkedRecordsMode,
+  type LinkedRecordGroup,
+  type LinkedRecordItem,
+  type LinkedRecordModifiers,
+} from "../ds";
+import {
+  ASSET_GROUPS,
+  LINK_CANDIDATES,
+  LINK_GROUPS,
+  LINK_SETTLEMENT,
+  LINK_TYPES,
+} from "./linked-record-data";
 export function LinkedRecordsDemo({
   readOnly = false,
   initialMode = "list",

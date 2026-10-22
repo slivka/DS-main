@@ -3,7 +3,12 @@ import { Check, Plus, X } from "lucide-react";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { Command } from "../../ui/command";
-import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput } from "./inline-search";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput,
+} from "./inline-search";
 
 export type ChipOption = { value: string; label: string };
 

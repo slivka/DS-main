@@ -2,7 +2,11 @@
 import { useId } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { OptionSelect } from "../../form/option-select";
-import type { DocumentFormTexts, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
+import type {
+  DocumentFormTexts,
+  DocumentHeaderField,
+  DocumentHeaderValue,
+} from "./document-form-types";
 interface Args {
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;

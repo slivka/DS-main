@@ -1,7 +1,10 @@
 import { describe, expect, it } from "bun:test";
 
 import { hasOverflowRight } from "../../src/components/ds/grid/grid-zoom";
-import { calculateGridToolbarOverflowLevel, type GridToolbarWidths } from "../../src/components/ds/grid/grid-toolbar";
+import {
+  calculateGridToolbarOverflowLevel,
+  type GridToolbarWidths,
+} from "../../src/components/ds/grid/grid-toolbar";
 
 describe("výpočet úrovně řádku akcí", () => {
   const widths: GridToolbarWidths = {

@@ -2,12 +2,26 @@ import { Fragment, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import type { LinkProps } from "@tanstack/react-router";
 
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import { cn } from "../../../lib/utils";
 import { useEffectiveIsMobile } from "../../../lib/app-zoom";
 import { useDsTexts } from "../../../ds-texts";
 import { withNavSections } from "./nav-search";
-import { isNavItemActive, navItemClassName, NavItemContent, NavSectionLabel, type NavGroup } from "./nav-items";
+import {
+  isNavItemActive,
+  navItemClassName,
+  NavItemContent,
+  NavSectionLabel,
+  type NavGroup,
+} from "./nav-items";
 
 export interface StandaloneNavProps {
   groups: NavGroup[];

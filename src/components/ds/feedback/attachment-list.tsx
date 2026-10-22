@@ -6,7 +6,12 @@ import { Input } from "../../ui/input";
 import { Filter, Plus } from "lucide-react";
 import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
 import { PanelToolButton } from "../layout/record-panel-tools";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from "../../ui/dropdown-menu";
 import { cn } from "../../../lib/utils";
 import { AttachmentItem } from "./attachment-item";
 import { NoticeBar } from "./notice-bar";
@@ -70,7 +75,21 @@ export const AttachmentList = forwardRef<HTMLDivElement, AttachmentListProps>(
         },
       });
     // Oddělit aplikační props od DOM atributů bez jejich propouštění do elementu.
-    const { ...dom } = rest;
+    const {
+      canRemove: _canRemove,
+      removeKind: _removeKind,
+      removeDisabledReason: _removeReason,
+      addDisabledReason: _addReason,
+      onReplaceSource: _replace,
+      canReplaceSource: _canReplace,
+      replaceDisabledReason: _replaceReason,
+      onDownload: _download,
+      onOpen: _open,
+      onSetSource: _setSource,
+      canSetSource: _canSetSource,
+      setSourceDisabledReason: _sourceReason,
+      ...dom
+    } = rest;
     return (
       <div ref={ref} {...dom} className={cn("min-w-0", className)}>
         <div

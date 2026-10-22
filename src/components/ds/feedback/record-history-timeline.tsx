@@ -13,9 +13,22 @@ import { TruncatedText } from "../data-display/truncated-text";
 import { List, ListTree, Filter } from "lucide-react";
 import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
 import { PanelToolButton } from "../layout/record-panel-tools";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuItem } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
+} from "../../ui/dropdown-menu";
 import { HistoryEventDetail } from "./record-history-detail";
-import { HISTORY_KINDS, countHistoryChanges, groupHistoryByDay, type HistoryEvent, type HistoryKind, type HistoryMode } from "./record-history-model";
+import {
+  HISTORY_KINDS,
+  countHistoryChanges,
+  groupHistoryByDay,
+  type HistoryEvent,
+  type HistoryKind,
+  type HistoryMode,
+} from "./record-history-model";
 
 export type {
   HistoryChange,

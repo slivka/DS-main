@@ -1,11 +1,40 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { AccountCode, DataGrid, Field, FieldGrid, FieldValue, GridAmountEditor, GridRowMenu, GridSegmentedToggle, GridToggleButton, PageLayout, PageTabs, RecordDialog, StatusBadge, exceedsMax, vsColumn, type DataGridColumn, type StatusConfig } from "@/components/ds";
+import {
+  AccountCode,
+  DataGrid,
+  Field,
+  FieldGrid,
+  FieldValue,
+  GridAmountEditor,
+  GridRowMenu,
+  GridSegmentedToggle,
+  GridToggleButton,
+  PageLayout,
+  PageTabs,
+  RecordDialog,
+  StatusBadge,
+  exceedsMax,
+  vsColumn,
+  type DataGridColumn,
+  type StatusConfig,
+} from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { fmtAmount, formatDate } from "@/lib/format";
-import { HOME_CURRENCY_SYMBOL, MATCHING_TODAY, MOCK_COUNTER_ITEMS, MOCK_MATCH_HISTORY, MOCK_OPEN_ITEMS, daysOverdue, remaining, type MatchHistoryRow, type OpenItem, type OpenItemStatus } from "@/lib/mock/matching";
+import {
+  HOME_CURRENCY_SYMBOL,
+  MATCHING_TODAY,
+  MOCK_COUNTER_ITEMS,
+  MOCK_MATCH_HISTORY,
+  MOCK_OPEN_ITEMS,
+  daysOverdue,
+  remaining,
+  type MatchHistoryRow,
+  type OpenItem,
+  type OpenItemStatus,
+} from "@/lib/mock/matching";
 
 const STATUS: StatusConfig<OpenItemStatus> = {
   open: { label: "Otevřená", tone: "info" },

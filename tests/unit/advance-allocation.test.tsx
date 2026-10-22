@@ -3,7 +3,10 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { useState } from "react";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { AdvanceAllocationDialog } from "../../src/components/ds/accounting/advances/advance-allocation-dialog";
-import { allocationInvalid, allocationTotal } from "../../src/components/ds/accounting/advances/advance-allocation-model";
+import {
+  allocationInvalid,
+  allocationTotal,
+} from "../../src/components/ds/accounting/advances/advance-allocation-model";
 import type { AdvanceAllocation } from "../../src/components/ds/accounting/advances/advance-types";
 const candidates = [
   { id: "a", document: "ZL 1", remaining: 1000, defaultAmount: 1000 },

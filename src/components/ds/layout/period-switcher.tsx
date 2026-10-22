@@ -4,7 +4,11 @@ import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/comman
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { formatDate } from "../../../lib/format";
-import { FISCAL_PERIOD_STATE_LABELS, type FiscalPeriod, type FiscalPeriodState } from "../accounting/fiscal-period-select";
+import {
+  FISCAL_PERIOD_STATE_LABELS,
+  type FiscalPeriod,
+  type FiscalPeriodState,
+} from "../accounting/fiscal-period-select";
 import { ContextPill, useContextPillClose } from "./context-pill";
 
 export interface PeriodSwitcherProps {

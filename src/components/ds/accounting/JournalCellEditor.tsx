@@ -10,7 +10,15 @@ import { AccountSelect } from "./account-select";
 import { DimensionSelect } from "./dimension-select";
 import { useJournalEditor } from "./journal-editor-context";
 import { isResultAccountType, type JournalLine } from "./journal-lines";
-import { NUMERIC_COLUMNS, VAT_NUMERIC, VS_COLUMNS, accountDataColumn, dataColumnOf, isAccountColumn, type ColumnId } from "./journal-lines-model";
+import {
+  NUMERIC_COLUMNS,
+  VAT_NUMERIC,
+  VS_COLUMNS,
+  accountDataColumn,
+  dataColumnOf,
+  isAccountColumn,
+  type ColumnId,
+} from "./journal-lines-model";
 import { resolveLineVat } from "./journal-vat";
 import { PartnerSelect } from "./partner-select";
 import { UnitSelect } from "./unit-select";

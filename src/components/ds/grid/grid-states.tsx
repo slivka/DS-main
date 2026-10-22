@@ -26,7 +26,18 @@ export function GridSkeletonRows({ rows = 6, cols }: { rows?: number; cols: numb
 }
 
 /** Jednotný prázdný stav uvnitř tabulky – s výzvou k akci. */
-export function GridEmptyRow({ colSpan, title, description, actionLabel, onAction, filtered = false, onClearFilter, children, texts: textOverrides }: {
+export function GridEmptyRow({
+  colSpan,
+  icon: _icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+  filtered = false,
+  onClearFilter,
+  children,
+  texts: textOverrides,
+}: {
   colSpan: number;
   icon?: ComponentType<{ className?: string }>;
   title: string;

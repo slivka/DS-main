@@ -1,6 +1,23 @@
 import { describe, expect, test } from "bun:test";
 
-import { applyMaxLayout, closePaneInState, closeTabInState, createPaneTabsState, migratePaneStateV1, moveTabInState, openTabInState, parseActiveTabUrl, parsePaneTabs, serializeActiveTabUrl, serializePaneTabs, setLayoutInState, setLayoutWithLimitInState, stepTabHistory, MAX_TABS_PER_PANE, type CreateTabInput } from "../../src/components/ds/panes/pane-state";
+import {
+  applyMaxLayout,
+  closePaneInState,
+  closeTabInState,
+  createPaneTabsState,
+  migratePaneStateV1,
+  moveTabInState,
+  openTabInState,
+  parseActiveTabUrl,
+  parsePaneTabs,
+  serializeActiveTabUrl,
+  serializePaneTabs,
+  setLayoutInState,
+  setLayoutWithLimitInState,
+  stepTabHistory,
+  MAX_TABS_PER_PANE,
+  type CreateTabInput,
+} from "../../src/components/ds/panes/pane-state";
 
 const open = (
   state: ReturnType<typeof createPaneTabsState>,

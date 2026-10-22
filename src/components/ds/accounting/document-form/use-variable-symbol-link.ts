@@ -4,7 +4,12 @@
  */
 import type { DsTexts } from "../../../../ds-texts";
 import { useRef } from "react";
-import { deriveVariableSymbol, effectiveVariableSymbolLinked, supportsVariableSymbolLink, variableSymbolSource } from "../variable-symbol-link";
+import {
+  deriveVariableSymbol,
+  effectiveVariableSymbolLinked,
+  supportsVariableSymbolLink,
+  variableSymbolSource,
+} from "../variable-symbol-link";
 import type { DocumentHeaderValue } from "./document-form-types";
 
 /** Stav pole VS pro PaymentSection. */

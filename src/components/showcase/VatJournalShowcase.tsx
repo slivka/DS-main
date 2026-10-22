@@ -1,8 +1,20 @@
 import { useState } from "react";
 
-import { JournalLinesEditor, type JournalLine, type VatCalcMode, type VatCodeOption } from "@/components/ds";
+import {
+  JournalLinesEditor,
+  type JournalLine,
+  type VatCalcMode,
+  type VatCodeOption,
+} from "@/components/ds";
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
-import { MOCK_ACCOUNTS, MOCK_DIMENSIONS, MOCK_PARTNERS, MOCK_PDP_SUBJECTS, MOCK_VAT_CODES_IN, MOCK_VAT_CODES_OUT } from "@/lib/mock/accounting";
+import {
+  MOCK_ACCOUNTS,
+  MOCK_DIMENSIONS,
+  MOCK_PARTNERS,
+  MOCK_PDP_SUBJECTS,
+  MOCK_VAT_CODES_IN,
+  MOCK_VAT_CODES_OUT,
+} from "@/lib/mock/accounting";
 
 type ExampleProps = {
   title: string;

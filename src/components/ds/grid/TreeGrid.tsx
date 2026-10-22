@@ -25,9 +25,20 @@ import { gridPeriodLabel } from "./grid-period";
 import { requiredGridWidthAt100, useAutoGridZoom } from "./grid-auto-zoom";
 import { GridFrame } from "./GridFrame";
 import { useRowActions } from "./useRowActions";
-import { buildTree, buildTreeExport, flattenTree, matchTree, treeNodeTotals } from "./tree-grid-model";
+import {
+  buildTree,
+  buildTreeExport,
+  flattenTree,
+  matchTree,
+  treeNodeTotals,
+} from "./tree-grid-model";
 import { TreeGridRows, TreeGridTotals, treeAlignClass } from "./TreeGridBody";
-import { DEFAULT_TREE_GRID_TEXTS, type TreeGridColumn, type TreeGridProps, type TreeGridRow } from "./tree-grid-types";
+import {
+  DEFAULT_TREE_GRID_TEXTS,
+  type TreeGridColumn,
+  type TreeGridProps,
+  type TreeGridRow,
+} from "./tree-grid-types";
 
 export * from "./tree-grid-types";
 

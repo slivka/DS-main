@@ -2,11 +2,25 @@
 import { useState } from "react";
 import { CashNumberShowcase } from "./cash-number-showcase";
 import { Button } from "@/components/ui/button";
-import { DataGrid, DocumentForm, NoticeBar, PaymentScheduleEditor, StatusBadge } from "@/components/ds";
+import {
+  DataGrid,
+  DocumentForm,
+  NoticeBar,
+  PaymentScheduleEditor,
+  StatusBadge,
+} from "@/components/ds";
 import { ShowcaseSection } from "./ShowcaseLayout";
 import { toast } from "sonner";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
-import { BANK_ACCOUNT_OPTIONS, CONSTANT_SYMBOL_OPTIONS, CURRENCIES, HIDDEN_GROUP_COLUMNS, HIDDEN_GROUP_ROWS, PAYMENT_METHOD_OPTIONS, USERS } from "./document-form-showcase-data";
+import {
+  BANK_ACCOUNT_OPTIONS,
+  CONSTANT_SYMBOL_OPTIONS,
+  CURRENCIES,
+  HIDDEN_GROUP_COLUMNS,
+  HIDDEN_GROUP_ROWS,
+  PAYMENT_METHOD_OPTIONS,
+  USERS,
+} from "./document-form-showcase-data";
 import type { ReturnTypeOfDocumentShowcaseState } from "./use-document-form-showcase-state";
 
 /** Vykreslí scénáře přijatých, pokladních a interních dokladů. */

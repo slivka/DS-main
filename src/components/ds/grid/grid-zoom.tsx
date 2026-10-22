@@ -201,7 +201,23 @@ export function ZoomControl({
 
 /** Obal tabulky – mění velikost písma i šířku sloupců (padding v em).
  *  Ctrl/Cmd + kolečko myši zoomuje přímo nad tabulkou. */
-export function ZoomGrid({ zoom, setZoom, className = "", maxHeight, height, stickyHeader, overflowFallback = false, hiddenColumns, columnOrder, columnOffset = 0, density, scrollRef, loading, children }: {
+export function ZoomGrid({
+  zoom,
+  setZoom,
+  className = "",
+  maxHeight,
+  height,
+  noFit = false,
+  stickyHeader,
+  overflowFallback = false,
+  hiddenColumns,
+  columnOrder,
+  columnOffset = 0,
+  density,
+  scrollRef,
+  loading,
+  children,
+}: {
   zoom: number;
   setZoom?: (v: number) => void;
   className?: string;

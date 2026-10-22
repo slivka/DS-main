@@ -7,7 +7,11 @@ import type { ReactNode } from "react";
 
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
-import { FieldFeedbackContext, FieldFeedbackIndicator, FieldHintIcon } from "../form/field-feedback";
+import {
+  FieldFeedbackContext,
+  FieldFeedbackIndicator,
+  FieldHintIcon,
+} from "../form/field-feedback";
 
 const FIELD_SPAN_CLASSES = {
   1: "@min-[40rem]:col-span-1",

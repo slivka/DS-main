@@ -1,7 +1,14 @@
 /** Ukázkové operace příloh a poznámek · vlastní stav demo · nesmí ukládat produkční data. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FileText, History, Link, MessageSquare, Paperclip } from "lucide-react";
-import { AttachmentList, OptionSelect, RecordNotes, SourcePreview, type RecordAttachment, type RecordSidePanelTab } from "../ds";
+import {
+  AttachmentList,
+  OptionSelect,
+  RecordNotes,
+  SourcePreview,
+  type RecordAttachment,
+  type RecordSidePanelTab,
+} from "../ds";
 import { LinkedRecordsDemo } from "./LinkedRecordsShowcase";
 import { HistoryDemo } from "./RecordHistoryShowcase";
 import { ACCEPT, ATTACHMENTS, LIMIT, NOTES } from "./record-panel-data";

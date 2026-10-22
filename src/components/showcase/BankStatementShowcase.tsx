@@ -1,7 +1,20 @@
 /** Ukázky výpisů · vlastní náhledové hodnoty · nesmí být součástí spotřebitelské knihovny. */
 import { Sigma } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
-import { BankStatementForm, FieldToggleButton, PaymentOrderAccountField, FieldValue, CounterpartyInputField, SuggestInput, PaneLayout, PaneTabsProvider, createTab, type PaneTabsState, type BankStatementValue, type BankStatementFormProps } from "../ds";
+import {
+  BankStatementForm,
+  FieldToggleButton,
+  PaymentOrderAccountField,
+  FieldValue,
+  CounterpartyInputField,
+  SuggestInput,
+  PaneLayout,
+  PaneTabsProvider,
+  createTab,
+  type PaneTabsState,
+  type BankStatementValue,
+  type BankStatementFormProps,
+} from "../ds";
 import { Button } from "../ui/button";
 import { DsTextsProvider, useDsTexts } from "../../ds-texts";
 import { MOCK_PARTNERS } from "../../lib/mock/accounting";

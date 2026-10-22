@@ -11,7 +11,11 @@ import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar, type RecordMoreAction } from "../../layout/record-action-bar";
 import { DocumentStatusBadge } from "../document-status-badge";
 import { DocumentVatActionStatus, UnverifiedSupplierBadge } from "./document-vat-action-status";
-import type { DocumentFormProps, DocumentFormTexts, DocumentSaveAction } from "./document-form-types";
+import type {
+  DocumentFormProps,
+  DocumentFormTexts,
+  DocumentSaveAction,
+} from "./document-form-types";
 
 /** Vlastnosti horní části. */
 export interface DocumentFormTopProps {

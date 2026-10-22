@@ -5,7 +5,10 @@ import { Paperclip } from "lucide-react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { PanelToggleButton } from "../../src/components/ds/layout/panel-toggle-button";
 import { RecordSidePanel } from "../../src/components/ds/layout/record-side-panel";
-import { PanelResize, panelSizeBounds } from "../../src/components/ds/layout/record-side-panel/panel-resize";
+import {
+  PanelResize,
+  panelSizeBounds,
+} from "../../src/components/ds/layout/record-side-panel/panel-resize";
 import { RecordNotes } from "../../src/components/ds/feedback/record-notes";
 import { AttachmentList } from "../../src/components/ds/feedback/attachment-list";
 import { DataGrid } from "../../src/components/ds/grid/DataGrid";

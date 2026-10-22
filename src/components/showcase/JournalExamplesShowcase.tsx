@@ -1,7 +1,12 @@
 /** Ukázky řádků zápisu (preview-only). */
 import { useState } from "react";
 import { toast } from "sonner";
-import { JournalLinesEditor, fromJournalRow, toJournalRow, type JournalLine } from "@/components/ds";
+import {
+  JournalLinesEditor,
+  fromJournalRow,
+  toJournalRow,
+  type JournalLine,
+} from "@/components/ds";
 import { formatAmount } from "@/lib/format";
 import { MOCK_ACCOUNTS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 import { ShowcaseSection } from "./ShowcaseLayout";

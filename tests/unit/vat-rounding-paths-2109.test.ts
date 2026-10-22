@@ -1,8 +1,22 @@
 /** Druhé opravné kolo 2.109.0: zaokrouhlení ve všech cestách DPH, zaúčtovaný doklad, samovyměření. */
 import { describe, expect, it } from "bun:test";
-import { buildVatPreviewLines, calculateVatFromBase, resolveLineVat, summarizeVat } from "../../src/components/ds/accounting/journal-vat";
-import { calculateLineAmount, toHomeAmount } from "../../src/components/ds/accounting/journal-lines-model";
-import { applyVatAllocation, computeVatGroups, storedVatAllocation, upsertVatOverride, vatGroupsFromStored } from "../../src/components/ds/accounting/journal-vat-groups";
+import {
+  buildVatPreviewLines,
+  calculateVatFromBase,
+  resolveLineVat,
+  summarizeVat,
+} from "../../src/components/ds/accounting/journal-vat";
+import {
+  calculateLineAmount,
+  toHomeAmount,
+} from "../../src/components/ds/accounting/journal-lines-model";
+import {
+  applyVatAllocation,
+  computeVatGroups,
+  storedVatAllocation,
+  upsertVatOverride,
+  vatGroupsFromStored,
+} from "../../src/components/ds/accounting/journal-vat-groups";
 import { vatSummaryWithGroupTax } from "../../src/components/ds/accounting/journal-vat-summary-groups";
 import { mulDivExceeds } from "../../src/lib/decimal-round";
 import { convertAmount } from "../../src/components/ds/accounting/currency-amount";

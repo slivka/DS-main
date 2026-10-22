@@ -1,8 +1,34 @@
 import { useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { Building2, History, KeyRound, Landmark, ListTree, Plus, Settings, Users, Globe2, LayoutList } from "lucide-react";
+import {
+  Building2,
+  History,
+  KeyRound,
+  Landmark,
+  Library,
+  ListTree,
+  Plus,
+  Settings,
+  Users,
+  Globe2,
+  LayoutList,
+} from "lucide-react";
 
-import { ConfirmByTypingDialog, ContextSwitcher, DangerZone, DataGrid, NoticeBar, PageHeader, SectionHeading, SegmentedField, StandaloneNav, StandaloneShell, UserMenu, type DataGridColumn, type NavGroup } from "@/components/ds";
+import {
+  ConfirmByTypingDialog,
+  ContextSwitcher,
+  DangerZone,
+  DataGrid,
+  NoticeBar,
+  PageHeader,
+  SectionHeading,
+  SegmentedField,
+  StandaloneNav,
+  StandaloneShell,
+  UserMenu,
+  type DataGridColumn,
+  type NavGroup,
+} from "@/components/ds";
 import { Button } from "@/components/ui/button";
 
 const SPACES = [

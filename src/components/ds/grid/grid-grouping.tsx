@@ -1,8 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronRight as ChevronRightIcon, GripVertical, Layers, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronRight as ChevronRightIcon,
+  GripVertical,
+  Layers,
+  X,
+} from "lucide-react";
 import { Button } from "../../ui/button";
 import { TableCell, TableRow } from "../../ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 import { gridFontSize } from "./grid-zoom";
 import { compareValues } from "./grid-sort";
 import { fmtAmount } from "../../../lib/format";

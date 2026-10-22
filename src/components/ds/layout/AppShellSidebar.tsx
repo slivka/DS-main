@@ -3,7 +3,12 @@
  * Vlastní: sloupec menu s tlačítkem sbalení, oddělovač šířky a překryv hledání ve sbaleném menu.
  * Nesmí: držet stav – šířku, sbalení i překryv dostává od AppShell.
  */
-import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent, ReactNode, RefObject } from "react";
+import type {
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+  ReactNode,
+  RefObject,
+} from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 import { Button } from "../../ui/button";

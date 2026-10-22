@@ -2,7 +2,12 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { useState } from "react";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
-import { RecordHistoryTimeline, type HistoryEvent, type HistoryKind, type HistoryMode } from "../../src/components/ds/feedback/record-history-timeline";
+import {
+  RecordHistoryTimeline,
+  type HistoryEvent,
+  type HistoryKind,
+  type HistoryMode,
+} from "../../src/components/ds/feedback/record-history-timeline";
 import { groupHistoryByDay } from "../../src/components/ds/feedback/record-history-model";
 import { DsTextsProvider, DS_TEXTS_CS, DS_TEXTS_SK } from "../../src/ds-texts";
 

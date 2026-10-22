@@ -2,7 +2,10 @@
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
-import { DocumentForm, type DocumentFormProps } from "../../src/components/ds/accounting/document-form";
+import {
+  DocumentForm,
+  type DocumentFormProps,
+} from "../../src/components/ds/accounting/document-form";
 import { RateField } from "../../src/components/ds/form/rate-field";
 import { DS_TEXTS_SK, DsTextsProvider } from "../../src/ds-texts";
 import { RecordActionBar } from "../../src/components/ds/layout/record-action-bar";

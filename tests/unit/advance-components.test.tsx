@@ -6,7 +6,10 @@ import { AdvanceDeductionsSection } from "../../src/components/ds/accounting/adv
 import { AdvanceCorrectionDialog } from "../../src/components/ds/accounting/advances/advance-correction-dialog";
 import { AdvanceRegisterGrid } from "../../src/components/ds/accounting/advances/advance-register-grid";
 import { AdvanceReasonDialog } from "../../src/components/ds/accounting/advances/advance-reason-dialog";
-import type { AdvancePaymentPlane, AdvancePaymentTotals } from "../../src/components/ds/accounting/advances/advance-types";
+import type {
+  AdvancePaymentPlane,
+  AdvancePaymentTotals,
+} from "../../src/components/ds/accounting/advances/advance-types";
 const totals: AdvancePaymentTotals = {
   amount: 2000,
   listAmount: 1815,

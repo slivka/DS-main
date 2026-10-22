@@ -13,7 +13,11 @@ import { OptionSelect } from "../../form/option-select";
 import { ReadField } from "./document-identity-line";
 import type { PartnerOption } from "../partner-select";
 import type { DocumentFields } from "../document-fields";
-import type { DocumentFormTexts, DocumentHeaderValue, DocumentSuggestConfig } from "./document-form-types";
+import type {
+  DocumentFormTexts,
+  DocumentHeaderValue,
+  DocumentSuggestConfig,
+} from "./document-form-types";
 
 type FieldRenderer = (
   id: string,
@@ -69,7 +73,34 @@ export interface DocumentBasicSectionProps {
 }
 /** Vykreslí základní údaje dokladu. */
 export function DocumentBasicSection(p: DocumentBasicSectionProps) {
-  const { f, t, value, patch, partner, partners, partnerLabel, counterpartyIco, counterpartyDic, icoWarning, icoLinkTarget, can, onCreatePartner, onEditCounterparty, readOnly, field, suggestedText, handedOverBySuggest, descriptionSuggest, externalNumberField, receivedDocument, bankAccountField, counterpartyInput, onCounterpartyInputChange, counterpartyInputLockedReason } = p;
+  const {
+    f,
+    t,
+    value,
+    patch,
+    partner,
+    partners,
+    partnerLabel,
+    counterpartyIco,
+    counterpartyDic,
+    linkedPartner,
+    icoWarning,
+    icoLinkTarget,
+    can,
+    onCreatePartner,
+    onEditCounterparty,
+    readOnly,
+    field,
+    suggestedText,
+    handedOverBySuggest,
+    descriptionSuggest,
+    externalNumberField,
+    receivedDocument,
+    bankAccountField,
+    counterpartyInput,
+    onCounterpartyInputChange,
+    counterpartyInputLockedReason,
+  } = p;
   return (
     <>
       <>

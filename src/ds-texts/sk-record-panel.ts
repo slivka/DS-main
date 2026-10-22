@@ -1,5 +1,11 @@
 /** Slovenské texty panelu · vlastní překlady · nesmí obsahovat logiku oprávnění. */
-import type { AttachmentTexts, RecordHistoryTexts, RecordNotesTexts, RecordPanelTexts, SourcePreviewTexts } from "./record-panel-texts";
+import type {
+  AttachmentTexts,
+  RecordHistoryTexts,
+  RecordNotesTexts,
+  RecordPanelTexts,
+  SourcePreviewTexts,
+} from "./record-panel-texts";
 /** Panel záznamu. */
 export const RECORD_PANEL_SK: RecordPanelTexts = {
   panel: "Panel",

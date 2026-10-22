@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { generatePaymentSchedule, sumPaymentSchedule } from "../../src/components/ds/accounting/payment-schedule";
+import {
+  generatePaymentSchedule,
+  sumPaymentSchedule,
+} from "../../src/components/ds/accounting/payment-schedule";
 import { documentFieldsForType } from "../../src/components/ds/accounting/document-fields";
 
 test.describe("generatePaymentSchedule", () => {

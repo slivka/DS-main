@@ -1,7 +1,25 @@
 /** Ukázka Design 3 · pouze paměťová data · nesmí se distribuovat s knihovnou. */
 import { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
-import { Button, Badge, Calendar, DateField, DocumentStatusBadge, MonthYearSelect, Field, FieldGrid, Input, PageHeader, PaneLayout, PaneTabsProvider, RecordActionBar, SectionHeading, createTab, type PaneLayoutCount, type PaneTabsState } from "../ds";
+import {
+  Button,
+  Badge,
+  Calendar,
+  DateField,
+  DocumentStatusBadge,
+  MonthYearSelect,
+  Field,
+  FieldGrid,
+  Input,
+  PageHeader,
+  PaneLayout,
+  PaneTabsProvider,
+  RecordActionBar,
+  SectionHeading,
+  createTab,
+  type PaneLayoutCount,
+  type PaneTabsState,
+} from "../ds";
 import { DocumentIdentityLine } from "../ds/accounting/document-form/document-identity-line";
 import { shiftDocumentDate } from "../../lib/date-quick-options";
 import { useRef } from "react";

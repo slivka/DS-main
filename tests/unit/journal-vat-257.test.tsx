@@ -1,10 +1,26 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import {
+  DocumentForm,
+  type DocumentHeaderValue,
+} from "../../src/components/ds/accounting/document-form";
 import { JournalLinesEditor } from "../../src/components/ds/accounting/journal-lines-editor";
-import { toJournalRows, type JournalLine, type VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
-import { applyVatCalcMode, baseFromGross, buildVatPreviewLines, computeJournalTotals, fillInitialVatCode, isSelfAssessed, resolveLineVat, summarizeVat } from "../../src/components/ds/accounting/journal-vat";
+import {
+  toJournalRows,
+  type JournalLine,
+  type VatCodeOption,
+} from "../../src/components/ds/accounting/journal-lines";
+import {
+  applyVatCalcMode,
+  baseFromGross,
+  buildVatPreviewLines,
+  computeJournalTotals,
+  fillInitialVatCode,
+  isSelfAssessed,
+  resolveLineVat,
+  summarizeVat,
+} from "../../src/components/ds/accounting/journal-vat";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 
 const CODES: VatCodeOption[] = [

@@ -2,7 +2,14 @@ import { useMemo, useState } from "react";
 import { Trash2, Unlock, Lock } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
@@ -13,7 +20,13 @@ import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { amountClass, formatAmount, formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { roundHalfAwayFromZero } from "../../../lib/decimal-round";
-import { generatePaymentSchedule, sumPaymentSchedule, type PaymentScheduleInterval, type PaymentScheduleItem, type PaymentScheduleParams } from "./payment-schedule";
+import {
+  generatePaymentSchedule,
+  sumPaymentSchedule,
+  type PaymentScheduleInterval,
+  type PaymentScheduleItem,
+  type PaymentScheduleParams,
+} from "./payment-schedule";
 
 export type PaymentScheduleUser = { id: string; name: string };
 

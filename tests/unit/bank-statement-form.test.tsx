@@ -1,7 +1,10 @@
 /** Výpis · vlastní testy údajů a stavů · nesmí testovat zdrojový text. */
 import { afterEach, expect, test } from "bun:test";
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { BankStatementForm, type BankStatementFormProps } from "../../src/components/ds/accounting/bank-statement-form";
+import {
+  BankStatementForm,
+  type BankStatementFormProps,
+} from "../../src/components/ds/accounting/bank-statement-form";
 import { DsTextsProvider } from "../../src/ds-texts";
 
 afterEach(cleanup);

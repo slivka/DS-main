@@ -2,7 +2,17 @@ import { describe, expect, it } from "bun:test";
 
 import { journalColumnWidthsRem } from "../../src/components/ds/accounting/journal-column-layout";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
-import { appendJournalLine, createJournalLine, duplicateJournalLine, filterJournalLines, moveJournalLine, nextLineVatCode, numberJournalErrors, removeJournalLine, toHomeAmount } from "../../src/components/ds/accounting/journal-lines-model";
+import {
+  appendJournalLine,
+  createJournalLine,
+  duplicateJournalLine,
+  filterJournalLines,
+  moveJournalLine,
+  nextLineVatCode,
+  numberJournalErrors,
+  removeJournalLine,
+  toHomeAmount,
+} from "../../src/components/ds/accounting/journal-lines-model";
 import { validateJournalLines } from "../../src/components/ds/accounting/journal-lines-validation";
 import { sideFieldRules } from "../../src/components/ds/accounting/journal-lines";
 import { DS_TEXTS_CS } from "../../src/ds-texts";
