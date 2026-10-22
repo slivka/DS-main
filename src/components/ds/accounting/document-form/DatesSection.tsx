@@ -27,16 +27,7 @@ export interface DocumentDatesSectionProps {
   ) => ReactNode;
 }
 /** Vykreslí data se společně ukotvenou skupinou DUZP a data DPH. */
-export function DocumentDatesSection({
-  t,
-  f,
-  showVatFields,
-  vat,
-  filedVatDateWarning,
-  dateWarnings,
-  bankMovement,
-  date,
-}: DocumentDatesSectionProps) {
+export function DocumentDatesSection({ t, f, showVatFields, vat, filedVatDateWarning, dateWarnings, date }: DocumentDatesSectionProps) {
   const labelsKey = [
     t.issueDate,
     t.accountingDate,

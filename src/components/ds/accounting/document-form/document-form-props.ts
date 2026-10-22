@@ -34,7 +34,22 @@ import type {
   DocumentPrintValue,
 } from "../document-detail-tabs";
 
-import type { DocumentDirection, DocumentIdentity, DocumentHeaderValue, DocumentHeaderField, DocumentSuggestConfig, DocumentAccountingDateLink, DocumentDateField, DocumentVatConfig, DocumentFormTab, DocumentSaveAction, DocumentPrimaryAction, DocumentMoreAction, DocumentSettingsAction, DocumentFormError } from "./document-form-values";
+import type {
+  DocumentDirection,
+  DocumentIdentity,
+  DocumentHeaderValue,
+  DocumentHeaderField,
+  DocumentSuggestConfig,
+  DocumentAccountingDateLink,
+  DocumentDateField,
+  DocumentVatConfig,
+  DocumentFormTab,
+  DocumentSaveAction,
+  DocumentPrimaryAction,
+  DocumentMoreAction,
+  DocumentSettingsAction,
+  DocumentFormError,
+} from "./document-form-values";
 import type { DocumentFormTexts } from "./document-form-texts";
 /** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
 export interface DocumentVatRateField {

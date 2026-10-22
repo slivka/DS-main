@@ -62,14 +62,39 @@ import type { PaneProviderActionContext } from "./pane-provider-action-context";
 import type { createPaneOpenActions } from "./pane-provider-open-actions";
 import type { createPaneCloseActions } from "./pane-provider-close-actions";
 /** Složí veřejné akce z jediné instance přechodů. */
-export function createPaneProviderApi(context: PaneProviderActionContext,
- open: ReturnType<typeof createPaneOpenActions>, close: ReturnType<typeof createPaneCloseActions>,
- view: Pick<PaneTabsApi, "state" | "closedTabCount" | "flashPaneId" | "attentionTabIds" | "setLinkedSourceSelection" | "reportMaxLayout" | "requestNewTab"> & { toggleMaximize: (index: number) => void }) {
-const { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts, setPending, setMaximized, setClosedStack, maximized, confirm, titleOf, flash, rememberClosed, onNotice } = context;
-const { openRecord, openFromHistory, reopenClosedTab, getRecordNav, openLinkedTab, openTab } = open;
-const { guardDiscard, closeTab, closeOtherTabs, closePane, step } = close;
-const { state, flashPaneId, attentionTabIds, setLinkedSourceSelection, reportMaxLayout } = view;
-const closedStack = { length: view.closedTabCount };
+export function createPaneProviderApi(
+  context: PaneProviderActionContext,
+  open: ReturnType<typeof createPaneOpenActions>,
+  close: ReturnType<typeof createPaneCloseActions>,
+  view: Pick<
+    PaneTabsApi,
+    | "state"
+    | "closedTabCount"
+    | "flashPaneId"
+    | "attentionTabIds"
+    | "setLinkedSourceSelection"
+    | "reportMaxLayout"
+    | "requestNewTab"
+  > & { toggleMaximize: (index: number) => void },
+) {
+  const {
+    stateRef,
+    recordNavs,
+    lastMax,
+    commit,
+    t,
+    p,
+    dsTexts,
+    setMaximized,
+    maximized,
+    confirm,
+    rememberClosed,
+  } = context;
+  const { openRecord, openFromHistory, reopenClosedTab, getRecordNav, openLinkedTab, openTab } =
+    open;
+  const { guardDiscard, closeTab, closeOtherTabs, closePane, step } = close;
+  const { state, flashPaneId, attentionTabIds, setLinkedSourceSelection, reportMaxLayout } = view;
+  const closedStack = { length: view.closedTabCount };
   const api: PaneTabsApi = {
     ...createLinkedPanelActions({
       stateRef,
@@ -189,5 +214,5 @@ const closedStack = { length: view.closedTabCount };
     requestNewTab: view.requestNewTab,
     reportMaxLayout,
   };
-return api;
+  return api;
 }

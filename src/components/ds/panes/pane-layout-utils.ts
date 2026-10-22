@@ -85,4 +85,3 @@ export function isPaneLayoutVisible(
 export function shouldRegisterPaneLayout(embedded: boolean, visible: boolean) {
   return !embedded && visible;
 }
-

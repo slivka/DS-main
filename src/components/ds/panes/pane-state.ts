@@ -590,7 +590,7 @@ export function reopenClosedTabInState(
       state.panes.findIndex((pane) => pane.id === state.active),
     );
   const pane = state.panes[paneIndex];
-  const { pinned: _legacyPinned, ...storedTab } = record.tab as PaneTab & { pinned?: boolean };
+  const { ...storedTab } = record.tab as PaneTab & { pinned?: boolean };
   const tab: PaneTab = { ...storedTab, id: createPaneId("tab"), lastUsed: now };
   const after = pane.tabs[Math.min(record.index, pane.tabs.length) - 1]?.id ?? null;
   if (!after && pane.tabs.length) {
@@ -1024,7 +1024,7 @@ export function normalizePaneTabsState(state: PaneTabsState): PaneTabsState {
     panes: state.panes.map((pane) => ({
       ...pane,
       tabs: pane.tabs.map((tab) => {
-        const { pinned: _legacyPinned, ...current } = tab as PaneTab & { pinned?: boolean };
+        const { ...current } = tab as PaneTab & { pinned?: boolean };
         return { ...current, openerTabId: current.openerTabId ?? null };
       }),
     })),

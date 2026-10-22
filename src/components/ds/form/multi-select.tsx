@@ -19,19 +19,7 @@ export type MultiSelectOption = { value: string; label: string };
  * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
  * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
  */
-export function MultiSelect({
-  options,
-  selected,
-  onChange,
-  allLabel,
-  itemsLabel,
-  placeholder,
-  className = "",
-  zoom,
-  showSearch = true,
-  showSelectAll = true,
-  clearLabel,
-}: {
+export function MultiSelect({ options, selected, onChange, allLabel, itemsLabel, className = "", zoom, showSearch = true, showSelectAll = true, clearLabel }: {
   options: MultiSelectOption[];
   selected: string[];
   onChange: (next: string[]) => void;

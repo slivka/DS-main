@@ -61,7 +61,7 @@ import {
 import type { PaneProviderActionContext } from "./pane-provider-action-context";
 /** Zavření i historie sdílejí ochranu neuložených změn. */
 export function createPaneCloseActions(context: PaneProviderActionContext) {
-const { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts, setPending, setMaximized, setClosedStack, maximized, confirm, titleOf, flash, rememberClosed, onNotice } = context;
+  const { stateRef, commit, p, setPending, setMaximized, rememberClosed } = context;
   const guardDiscard = (
     tabIds: string[],
     intent: string,
@@ -128,5 +128,5 @@ const { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts, setPend
       if (next !== stateRef.current) clearTabState(tabId);
       commit(next);
     });
-return { guardDiscard, closeTab, closeOtherTabs, closePane, step };
+  return { guardDiscard, closeTab, closeOtherTabs, closePane, step };
 }

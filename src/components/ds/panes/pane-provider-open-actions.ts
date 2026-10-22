@@ -61,7 +61,22 @@ import {
 import type { PaneProviderActionContext } from "./pane-provider-action-context";
 /** Otevírání a obnova používají původní přechody a úklid. */
 export function createPaneOpenActions(context: PaneProviderActionContext) {
-const { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts, setPending, setMaximized, setClosedStack, maximized, confirm, titleOf, flash, rememberClosed, onNotice } = context;
+  const {
+    stateRef,
+    closedRef,
+    recordNavs,
+    commit,
+    t,
+    p,
+    setPending,
+    setMaximized,
+    setClosedStack,
+    maximized,
+    confirm,
+    titleOf,
+    flash,
+    onNotice,
+  } = context;
   const doOpen = (
     route: string,
     params: Record<string, unknown> | undefined,
@@ -238,5 +253,5 @@ const { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts, setPend
     };
     attempt(false);
   };
-return { openTab, openRecord, openFromHistory, reopenClosedTab, getRecordNav, openLinkedTab };
+  return { openTab, openRecord, openFromHistory, reopenClosedTab, getRecordNav, openLinkedTab };
 }

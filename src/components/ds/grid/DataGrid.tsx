@@ -49,8 +49,46 @@ import { useDataGridModel } from "./use-data-grid-model";
 import { DataGridToolbar } from "./data-grid-toolbar";
 /** Sdílený grid skládá jediný model, nástroje a tělo. */
 export function DataGrid<Row>(props: DataGridProps<Row>) {
- const model = useDataGridModel(props);
- const { storageKey, resolvedHeight, title, showTitle, exportTitle, rows, rowKey, loading, error, onRowClick, period, book, contextRight, filterChips, viewMode, exportName, exportMeta, onEditRow, groupable, paginated, selectable, groupTotals, plain, hideToolbar, showTotalRow, className, texts, filtersOpen, setFiltersOpen, zoomState, zoom, setZoom, density, blockRef, cols, shown, compact, pinned, sort, filter, sorted, pagination, selection, selectMode, rowActions, groups, grouping, displayItems, exportData, virtual, activeFilterLabels, exportFilterLabels, printConfig, clearAll, drag, totals, hasTotals, groupTotalLabelIndex, layout, colSpan, hasHeaderAbove } = model;
+  const model = useDataGridModel(props);
+  const {
+    resolvedHeight,
+    title,
+    showTitle,
+    rowKey,
+    loading,
+    error,
+    onRowClick,
+    filterChips,
+    onEditRow,
+    paginated,
+    groupTotals,
+    plain,
+    hideToolbar,
+    showTotalRow,
+    className,
+    texts,
+    zoom,
+    setZoom,
+    density,
+    blockRef,
+    sort,
+    filter,
+    sorted,
+    pagination,
+    selection,
+    selectMode,
+    rowActions,
+    grouping,
+    displayItems,
+    virtual,
+    clearAll,
+    drag,
+    totals,
+    hasTotals,
+    groupTotalLabelIndex,
+    layout,
+    colSpan,
+  } = model;
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
       <div

@@ -73,34 +73,7 @@ export interface DocumentBasicSectionProps {
 }
 /** Vykreslí základní údaje dokladu. */
 export function DocumentBasicSection(p: DocumentBasicSectionProps) {
-  const {
-    f,
-    t,
-    value,
-    patch,
-    partner,
-    partners,
-    partnerLabel,
-    counterpartyIco,
-    counterpartyDic,
-    linkedPartner,
-    icoWarning,
-    icoLinkTarget,
-    can,
-    onCreatePartner,
-    onEditCounterparty,
-    readOnly,
-    field,
-    suggestedText,
-    handedOverBySuggest,
-    descriptionSuggest,
-    externalNumberField,
-    receivedDocument,
-    bankAccountField,
-    counterpartyInput,
-    onCounterpartyInputChange,
-    counterpartyInputLockedReason,
-  } = p;
+  const { f, t, value, patch, partner, partners, partnerLabel, counterpartyIco, counterpartyDic, icoWarning, icoLinkTarget, can, onCreatePartner, onEditCounterparty, readOnly, field, suggestedText, handedOverBySuggest, descriptionSuggest, externalNumberField, receivedDocument, bankAccountField, counterpartyInput, onCounterpartyInputChange, counterpartyInputLockedReason } = p;
   return (
     <>
       <>

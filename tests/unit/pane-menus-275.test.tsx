@@ -16,7 +16,7 @@ const { LayoutMenu } = await import("../../src/components/ds/panes/layout-menu")
 const { UserMenu } = await import("../../src/components/ds/layout/user-menu");
 const { buildTabMenuActions, PaneTabsProvider, usePaneTabs } =
   await import("../../src/components/ds/panes/pane-context");
-const { createPaneTabsState, createTab, reopenClosedTabInState, setLayoutInState } =
+const { createPaneTabsState, createTab, setLayoutInState } =
   await import("../../src/components/ds/panes/pane-state");
 const { setTabDirty } = await import("../../src/components/ds/panes/pane-tab-store");
 const { DsTextsProvider, DS_TEXTS_SK } = await import("../../src/ds-texts");

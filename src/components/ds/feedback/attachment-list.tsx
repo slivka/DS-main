@@ -75,21 +75,7 @@ export const AttachmentList = forwardRef<HTMLDivElement, AttachmentListProps>(
         },
       });
     // Oddělit aplikační props od DOM atributů bez jejich propouštění do elementu.
-    const {
-      canRemove: _canRemove,
-      removeKind: _removeKind,
-      removeDisabledReason: _removeReason,
-      addDisabledReason: _addReason,
-      onReplaceSource: _replace,
-      canReplaceSource: _canReplace,
-      replaceDisabledReason: _replaceReason,
-      onDownload: _download,
-      onOpen: _open,
-      onSetSource: _setSource,
-      canSetSource: _canSetSource,
-      setSourceDisabledReason: _sourceReason,
-      ...dom
-    } = rest;
+    const { ...dom } = rest;
     return (
       <div ref={ref} {...dom} className={cn("min-w-0", className)}>
         <div

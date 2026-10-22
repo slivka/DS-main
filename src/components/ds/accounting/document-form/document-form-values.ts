@@ -166,4 +166,3 @@ export function vsFromDocumentNumber(text: string): string | null {
   const digits = text.replace(/\D/g, "");
   return digits.length > 0 && digits.length <= 10 ? digits : null;
 }
-

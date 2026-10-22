@@ -166,4 +166,3 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   paymentOrderDisabled: "Nezahrnuje se do platebních příkazů",
   payToBankAccount: "Uhradit na bankovní účet",
 };
-

@@ -219,7 +219,7 @@ export function syncLinkedTabsInState(state: PaneTabsState): PaneTabsState {
       const sourceKey = source.tab.recordKey ?? source.tab.route;
       if (linked.record && linked.recordSourceKey !== sourceKey) {
         // Zdroj přešel na jiný záznam – hlášený záznam patří starému klíči.
-        const { record: _drop, recordSourceKey: _key, ...rest } = linked;
+        const { ...rest } = linked;
         changed = true;
         paneChanged = true;
         tab = { ...tab, linked: rest };

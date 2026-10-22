@@ -151,21 +151,41 @@ export function PaneTabsProvider({
     commit(next);
   };
   const setLinkedSourceSelection = useCallback(
-      (sourceTabId, record) => {
-        const current = stateRef.current;
-        const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
-        if (next !== current) commit(next);
-      },
-      [commit],
+    (sourceTabId, record) => {
+      const current = stateRef.current;
+      const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
+      if (next !== current) commit(next);
+    },
+    [commit],
   );
-  const context = { stateRef, closedRef, recordNavs, lastMax, commit, t, p, dsTexts,
-    setPending, setMaximized, setClosedStack, maximized, confirm, titleOf, flash,
-    rememberClosed, onNotice };
+  const context = {
+    stateRef,
+    closedRef,
+    recordNavs,
+    lastMax,
+    commit,
+    t,
+    p,
+    dsTexts,
+    setPending,
+    setMaximized,
+    setClosedStack,
+    maximized,
+    confirm,
+    titleOf,
+    flash,
+    rememberClosed,
+    onNotice,
+  };
   const close = createPaneCloseActions(context);
   const open = createPaneOpenActions(context);
   const api = createPaneProviderApi(context, open, close, {
-    state, closedTabCount: closedStack.length, flashPaneId,
-    attentionTabIds: pending?.tabIds ?? [], setLinkedSourceSelection, reportMaxLayout,
+    state,
+    closedTabCount: closedStack.length,
+    flashPaneId,
+    attentionTabIds: pending?.tabIds ?? [],
+    setLinkedSourceSelection,
+    reportMaxLayout,
     requestNewTab: () => onNewTabRequest?.(),
     toggleMaximize: (index) => apiRef.current.maximizePane(index),
   });
