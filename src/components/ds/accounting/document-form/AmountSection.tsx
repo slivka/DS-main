@@ -176,31 +176,43 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
             {field(
               "document-amountTotal",
               t.amountTotal,
-              <>
-                <div className="relative">
-                  <DecimalInput
-                    id="document-amountTotal"
-                    value={total}
-                    onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })}
-                    readOnly={totalMode === "sum" || !can("amountTotal")}
-                    className={cn(
-                      "h-[var(--control-h)] pr-[var(--field-toggle-space)] text-right text-sm font-sans font-bold tabular-nums",
-                      totalMode === "sum" && "bg-muted",
-                      !can("amountTotal") && "bg-muted/40 text-muted-foreground opacity-100",
-                    )}
-                  />
-                  <FieldToggleButton
-                    icon={Sigma}
-                    pressed={totalMode === "sum"}
-                    label={toggleTexts.sum}
-                    pressedTooltip={toggleTexts.sumPressed}
-                    unpressedTooltip={toggleTexts.sumUnpressed}
-                    lockedReason={forcedSum ? toggleTexts.sumLocked : undefined}
-                    disabled={!can("totalMode")}
-                    onPressedChange={(pressed) => patch({ totalMode: pressed ? "sum" : "entered" })}
-                  />
-                </div>
-              </>,
+              amountLocked ? (
+                <FieldValue
+                  id="document-amountTotal"
+                  lockedReason={amountLocked}
+                  className="justify-end font-sans font-bold tabular-nums"
+                >
+                  {formatCurrency(total, currencySymbol)}
+                </FieldValue>
+              ) : (
+                <>
+                  <div className="relative">
+                    <DecimalInput
+                      id="document-amountTotal"
+                      value={total}
+                      onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })}
+                      readOnly={totalMode === "sum" || !can("amountTotal")}
+                      className={cn(
+                        "h-[var(--control-h)] pr-[var(--field-toggle-space)] text-right text-sm font-sans font-bold tabular-nums",
+                        totalMode === "sum" && "bg-muted",
+                        !can("amountTotal") && "bg-muted/40 text-muted-foreground opacity-100",
+                      )}
+                    />
+                    <FieldToggleButton
+                      icon={Sigma}
+                      pressed={totalMode === "sum"}
+                      label={toggleTexts.sum}
+                      pressedTooltip={toggleTexts.sumPressed}
+                      unpressedTooltip={toggleTexts.sumUnpressed}
+                      lockedReason={forcedSum ? toggleTexts.sumLocked : undefined}
+                      disabled={!can("totalMode")}
+                      onPressedChange={(pressed) =>
+                        patch({ totalMode: pressed ? "sum" : "entered" })
+                      }
+                    />
+                  </div>
+                </>
+              ),
               6,
             )}
           </div>
