@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.128.0 (nevydáno)
+## 2.129.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.128.0
 
 - Opravy po CI (bez změny API): GridFrame předává přepínači a panelu filtrů jedinečné id z `useId` (nové nepovinné props `panelId` / `id`, výchozí dosavadní konstanta) – na stránce s více gridy už nevzniká duplicitní `grid-filter-panel`. Chromium má na CI stejné delší čekání 20 s jako Firefox/WebKit: těžké ukázkové stránky se na dev serveru hydratují ~10 s. Úklid v `tests/setup.ts` nově po každém testu čistí i localStorage/sessionStorage (náhodné pořadí, seed 3475711926).
 - Ověření oprav CI: check:full --harness OK, 1 190/1 190 ve 130 souborech, katalog bez ztrát; unit `--randomize --seed=3475711926` 1 190/1 190; Chromium lokálně 39/39 (grid-toolbar-232, document-field-ids, document-field-locks, payment-schedule, record-panel, design-three). Nestabilní IdentityLine v design-three nesouvisí. Nevydáno, release Claude.
