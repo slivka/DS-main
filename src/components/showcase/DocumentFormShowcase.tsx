@@ -1,5 +1,5 @@
 import { ImportedMovementShowcase } from "./ImportedMovementShowcase";
-import { DocumentFormSecondaryShowcase } from "./DocumentFormSecondaryShowcase";
+import { DocumentFormInvoiceShowcase } from "./DocumentFormInvoiceShowcase";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -270,7 +270,7 @@ export function DocumentFormShowcase() {
         </RecordSidePanel>
       </ShowcaseSection>
       <ImportedMovementShowcase common={common} />
-      <DocumentFormSecondaryShowcase state={state} />
+      <DocumentFormInvoiceShowcase state={state} />
     </>
   );
 }

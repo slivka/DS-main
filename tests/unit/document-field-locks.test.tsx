@@ -198,7 +198,7 @@ describe("DocumentForm fieldLockedReasons", () => {
         fieldLockedReasons={{ issueDate: REASON }}
         issues={[
           {
-            fieldId: "issueDate",
+            fieldId: "document-issueDate",
             label: "Datum pohybu",
             message: "Ověřte datum banky",
             severity: "error",
