@@ -7977,7 +7977,11 @@
         {
           "name": "size",
           "type": "\"sm\" | \"md\"",
-          "required": false
+          "required": false,
+          "values": [
+            "sm",
+            "md"
+          ]
         },
         {
           "name": "chooseLabel",
@@ -8098,7 +8102,11 @@
         {
           "name": "size",
           "type": "\"sm\" | \"md\"",
-          "required": false
+          "required": false,
+          "values": [
+            "sm",
+            "md"
+          ]
         }
       ],
       "usage": "Výsledky kontrol APP (severity, title, detail, action). Souhrn chyb/upozornění; pořadí error → warning → info → ok, bez doménové kontroly.",
@@ -8202,7 +8210,11 @@
         {
           "name": "size",
           "type": "\"sm\" | \"md\"",
-          "required": false
+          "required": false,
+          "values": [
+            "sm",
+            "md"
+          ]
         }
       ],
       "usage": "Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; Sémantický seznam s fokusovatelnými checkboxy; aria-disabled a aria-describedby zpřístupní důvod zákazu. Detail je tlačítko s aria-pressed. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.",
