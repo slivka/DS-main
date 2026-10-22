@@ -1,6 +1,9 @@
 /** Interní fronta zápisů: operace zachytí svůj store; zrušení nezasahuje rozběhnutý zápis. */
 export class GridPrefsSaveQueue {
-  private pending = new Map<string, { timer: ReturnType<typeof setTimeout>; run: () => Promise<void> }>();
+  private pending = new Map<
+    string,
+    { timer: ReturnType<typeof setTimeout>; run: () => Promise<void> }
+  >();
   private active = new Set<Promise<void>>();
 
   schedule(key: string, run: () => Promise<void>) {

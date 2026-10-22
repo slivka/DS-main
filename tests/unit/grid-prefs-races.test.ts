@@ -28,10 +28,14 @@ function makeStore(loadAll: GridPrefsStore["loadAll"] = async () => ({})) {
   const errors: unknown[] = [];
   const store: GridPrefsStore = {
     loadAll,
-    save: async (key, layout) => { saved.push({ key, layout }); },
+    save: async (key, layout) => {
+      saved.push({ key, layout });
+    },
     remove: async () => undefined,
     removeAll: async () => undefined,
-    onError: (error) => { errors.push(error); },
+    onError: (error) => {
+      errors.push(error);
+    },
   };
   return { store, saved, errors };
 }
@@ -47,7 +51,9 @@ it("pomalá hydratace A po konfiguraci B nepřepíše paměť ani zrcadlo B", as
   slow.resolve({ grid: { pageSize: 25 } });
   await first;
   expect(getGridLayout("grid").pageSize).toBe(100);
-  expect(JSON.parse(window.localStorage.getItem("gridLayout:B:grid") ?? "null")).toEqual({ pageSize: 100 });
+  expect(JSON.parse(window.localStorage.getItem("gridLayout:B:grid") ?? "null")).toEqual({
+    pageSize: 100,
+  });
   expect(window.localStorage.getItem("gridLayout:A:grid")).toBeNull();
   updateGridLayout("grid", { widths: { amount: 150 } });
   await flushGridPrefs();
@@ -163,7 +169,9 @@ it("reset ihned oznámí všechny známé gridy s výchozím rozložením", asyn
 it("reset vrátí odmítnutý Promise při chybě removeAll", async () => {
   const { store } = makeStore();
   const error = new Error("removeAll failed");
-  store.removeAll = async () => { throw error; };
+  store.removeAll = async () => {
+    throw error;
+  };
   configureGridPrefsStore(store);
   updateGridLayout("grid", { pageSize: 25 });
   await expect(resetGridPrefs()).rejects.toBe(error);
@@ -179,7 +187,9 @@ it("flush po timeoutMs vrátí, zachová zrcadlo a další flush počká na rozb
   await flushGridPrefs({ timeoutMs: 10 });
   expect(JSON.parse(window.localStorage.getItem("gridLayout:A:grid") ?? "null").pageSize).toBe(25);
   let finished = false;
-  const flushing = flushGridPrefs().then(() => { finished = true; });
+  const flushing = flushGridPrefs().then(() => {
+    finished = true;
+  });
   await Promise.resolve();
   expect(finished).toBe(false);
   slow.resolve();
