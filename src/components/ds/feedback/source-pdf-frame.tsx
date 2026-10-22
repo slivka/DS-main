@@ -41,7 +41,10 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
           void task.destroy();
         };
         const pdf = await task.promise;
-        if (stopped) { dispose(); return; }
+        if (stopped) {
+          dispose();
+          return;
+        }
         const render = async () => {
           const current = ++generation;
           const width = document.body.clientWidth;
@@ -63,7 +66,10 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
             canvas.style.display = "block";
             const text = await page.getTextContent();
             canvas.setAttribute("role", "img");
-            canvas.setAttribute("aria-label", text.items.map(item => "str" in item ? item.str : "").join(" "));
+            canvas.setAttribute(
+              "aria-label",
+              text.items.map((item) => ("str" in item ? item.str : "")).join(" "),
+            );
             await page.render({
               canvas,
               canvasContext: context,
