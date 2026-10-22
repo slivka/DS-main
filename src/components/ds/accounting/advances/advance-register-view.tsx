@@ -86,6 +86,7 @@ export const AdvanceRegisterView = forwardRef<HTMLDivElement, AdvanceRegisterVie
       () => advanceRegisterColumns(tab, t, homeCurrency, vatPayer),
       [tab, t, homeCurrency, vatPayer],
     );
+    const segment = useMemo(() => advanceRegisterSegment(tab), [tab]);
     const paymentOptions = [
       { value: "all" as const, label: t.filterAll },
       { value: "unsettled" as const, label: t.unsettled },
@@ -134,7 +135,7 @@ export const AdvanceRegisterView = forwardRef<HTMLDivElement, AdvanceRegisterVie
             columnFilters={false}
             showTotalRow={false}
             paginated={false}
-            sortSegment={advanceRegisterSegment}
+            sortSegment={segment}
             loading={loading}
             error={error}
             onRowClick={(row) => {

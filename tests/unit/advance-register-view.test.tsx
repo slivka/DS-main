@@ -35,8 +35,9 @@ function setup(tab: AdvanceRegisterTab, extra: Partial<AdvanceRegisterViewProps>
 describe("AdvanceRegisterView", () => {
   it("má tři záložky a jeden společný Stav k datu, který přepnutí zachová", () => {
     const { calls, view, props } = setup("balance");
-    const tabs = screen.getAllByRole("tab").map((tab) => tab.textContent);
-    expect(tabs).toEqual(["Zůstatek", "Platby záloh", "Vyúčtování záloh"]);
+    for (const name of ["Zůstatek", "Platby záloh", "Vyúčtování záloh"])
+      expect(screen.getByRole("tab", { name })).toBeTruthy();
+    expect(screen.getAllByRole("tab")).toHaveLength(3);
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Platby záloh" }));
     expect(calls.tab).toEqual(["payments"]);
     view.rerender(
@@ -82,7 +83,9 @@ describe("AdvanceRegisterView", () => {
       false,
     );
     const byAmountDesc = [...rows].sort((a, b) => (b.amountHome ?? 0) - (a.amountHome ?? 0));
-    const result = sortWithinSegments(rows, byAmountDesc, advanceRegisterSegment).map((r) => r.id);
+    const result = sortWithinSegments(rows, byAmountDesc, advanceRegisterSegment("payments")).map(
+      (r) => r.id,
+    );
     expect(result).toEqual([
       "account:314100",
       "p2",

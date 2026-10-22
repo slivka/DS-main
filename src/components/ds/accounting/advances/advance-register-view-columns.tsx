@@ -56,9 +56,15 @@ export function buildAdvanceRegisterRows(
   return out;
 }
 
-/** Klíč úseku řazení: položky jen uvnitř své skupiny, ostatní řádky stojí. */
-export const advanceRegisterSegment = (row: AdvanceRegisterDisplayRow) =>
-  row.rowKind === "detail" ? `${row.account}|${row.partner ?? ""}` : null;
+/** Klíč úseku řazení: položky jen uvnitř své skupiny (v Zůstatku i partnera), ostatní stojí. */
+export const advanceRegisterSegment =
+  (tab: AdvanceRegisterTab) =>
+  (row: AdvanceRegisterDisplayRow): string | null =>
+    row.rowKind !== "detail"
+      ? null
+      : tab === "balance"
+        ? `${row.account}|${row.partner ?? ""}`
+        : row.account;
 
 /** Kontrolní rozdíl je nenulový (hodnota z APP). */
 export const hasAdvanceDifference = (row: AdvanceRegisterDisplayRow) =>
