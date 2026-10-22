@@ -173,13 +173,19 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-paymentReference",
               t.paymentReference,
-              lockedValue("paymentReference", "document-paymentReference", value.paymentReference ?? "") ?? <Input
-                id="document-paymentReference"
-                value={value.paymentReference ?? ""}
-                onChange={(event) => patch({ paymentReference: event.target.value })}
-                disabled={!can("paymentReference")}
-                className="h-[var(--control-h)] font-mono"
-              />,
+              lockedValue(
+                "paymentReference",
+                "document-paymentReference",
+                value.paymentReference ?? "",
+              ) ?? (
+                <Input
+                  id="document-paymentReference"
+                  value={value.paymentReference ?? ""}
+                  onChange={(event) => patch({ paymentReference: event.target.value })}
+                  disabled={!can("paymentReference")}
+                  className="h-[var(--control-h)] font-mono"
+                />
+              ),
               14,
               false,
             )
