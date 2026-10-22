@@ -118,4 +118,6 @@ export * from "./components/ds/accounting/advances/advance-allocation-dialog";
 export * from "./components/ds/accounting/advances/advance-reason-dialog";
 export * from "./components/ds/accounting/advances/advance-deductions-section";
 export * from "./components/ds/accounting/advances/advance-register-grid";
+export * from "./components/ds/accounting/advances/advance-register-view-types";
+export * from "./components/ds/accounting/advances/advance-register-view";
 export * from "./components/ds/accounting/advances/advance-correction-dialog";

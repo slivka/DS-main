@@ -189,6 +189,8 @@ export * from "./accounting/advances/advance-allocation-dialog";
 export * from "./accounting/advances/advance-reason-dialog";
 export * from "./accounting/advances/advance-deductions-section";
 export * from "./accounting/advances/advance-register-grid";
+export * from "./accounting/advances/advance-register-view-types";
+export * from "./accounting/advances/advance-register-view";
 export * from "./accounting/advances/advance-correction-dialog";
 export * from "./accounting/journal-recap-footer";
 export * from "./accounting/dimension-select";

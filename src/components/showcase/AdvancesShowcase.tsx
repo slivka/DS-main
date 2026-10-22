@@ -15,6 +15,7 @@ import { useDsTexts } from "../../ds-texts";
 import { ShowcaseSection } from "./ShowcaseLayout";
 import { ADVANCE_CURRENCY, ADVANCE_TOTALS, ADVANCE_REGISTER } from "./advance-showcase-data";
 import { AdvanceFormsShowcase } from "./AdvanceFormsShowcase";
+import { AdvanceRegisterViewShowcase } from "./AdvanceRegisterViewShowcase";
 export function AdvancesShowcase() {
   const t = useDsTexts().advances;
   const [allocation, setAllocation] = useState<"list" | "taxDocument" | null>(null);
@@ -123,6 +124,7 @@ export function AdvancesShowcase() {
           onOpen={(row) => toast(row.partner)}
         />
       </ShowcaseSection>
+      <AdvanceRegisterViewShowcase />
       <AdvanceAllocationDialog
         open={allocation !== null}
         onOpenChange={(open) => {

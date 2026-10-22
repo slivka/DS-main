@@ -34,6 +34,12 @@ const definitions = [
     '<AdvanceRegisterGrid rows={rows} storageKey="advances" filters={filters} onFiltersChange={setFilters} asOf={asOf} onOpen={openPayment} />',
   ],
   [
+    "AdvanceRegisterView",
+    "advance-register-view",
+    "Evidence poskytnutých i přijatých záloh se záložkami Zůstatek · Platby záloh · Vyúčtování záloh (PageTabs), jedním společným Stavem k datu a řízenými filtry (stav podle záložky, více účtů). Skupiny účtu (v Zůstatku i partnera) a součtové/kontrolní řádky z obálky DB rows/totals/total_count; DS nic nepočítá ani nepáruje. Součtové řádky nejdou otevřít, při řazení zůstávají u skupiny. vatPayer=false skryje DD, scopeIncomplete skryje kontrolu účtu. AdvanceRegisterGrid zůstává beze změny.",
+    '<AdvanceRegisterView activeTab={tab} onTabChange={setTab} data={{ rows, totals, total_count }} storageKey="advances-provided" homeCurrency={company.currencySymbol} asOf={asOf} filters={filters} onFiltersChange={setFilters} accountOptions={accounts} vatPayer={company.vatPayer} scopeIncomplete={scopeText} pagination={{ page, pageSize, onPageChange, onPageSizeChange }} onOpen={openDocument} />',
+  ],
+  [
     "AdvanceCorrectionDialog",
     "advance-correction-dialog",
     "Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit/Nevytvářet. Zavření není odmítnutí. currencyCode dodává APP; bez něj částky jako dosud bez měny.",

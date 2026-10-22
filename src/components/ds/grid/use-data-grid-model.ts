@@ -9,7 +9,7 @@ import { useMemo, useRef, useState } from "react";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
 import { usePageLayoutVariant } from "../layout/page-layout";
 import { useGridPagination } from "./grid-pagination";
-import { useGridSort, useSortedRows } from "./grid-sort";
+import { sortWithinSegments, useGridSort, useSortedRows } from "./grid-sort";
 import { gridPrintParams } from "./grid-print";
 import { useGridZoom, useWheelZoom } from "./grid-zoom";
 import { useResolvedGridTexts } from "./grid-texts";
@@ -101,7 +101,15 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
     onSearchChange: props.onSearchChange,
     onColumnFiltersChange: props.onColumnFiltersChange,
   });
-  const sorted = useSortedRows(filter.filtered, sort, valueOf);
+  const sortedAll = useSortedRows(filter.filtered, sort, valueOf);
+  const sortSegment = props.sortSegment;
+  const sorted = useMemo(
+    () =>
+      sortSegment && sort.key
+        ? sortWithinSegments(filter.filtered, sortedAll, sortSegment)
+        : sortedAll,
+    [filter.filtered, sortedAll, sortSegment, sort.key],
+  );
   const pagination = useGridPagination(storageKey, sorted, { defaultPageSize: 50 });
   /** Bez stránkování zobrazujeme (a seskupujeme) všechny filtrované řádky. */
   const pageRows = paginated ? pagination.rows : sorted;
