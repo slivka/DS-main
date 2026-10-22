@@ -134,7 +134,7 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
       );
       onFiles(result.files, result.rejected);
     };
-    document.addEventListener("dragstart", markInternal);
+    window.addEventListener("dragstart", markInternal, true);
     window.addEventListener("dragend", clearInternal, true);
     window.addEventListener("drop", finishDrop, true);
     node.addEventListener("dragenter", enter);
@@ -142,7 +142,7 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
     node.addEventListener("dragover", over);
     node.addEventListener("drop", drop);
     return () => {
-      document.removeEventListener("dragstart", markInternal);
+      window.removeEventListener("dragstart", markInternal, true);
       window.removeEventListener("dragend", clearInternal, true);
       window.removeEventListener("drop", finishDrop, true);
       node.removeAttribute("data-file-drop-enabled");

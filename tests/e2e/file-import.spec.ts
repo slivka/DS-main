@@ -10,7 +10,7 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   await expect(dialog).toBeVisible();
 
   // Jediné tlačítko plochy otevře výběr oběma klávesami bez vnořených ovladačů.
-  const choose = dialog.getByRole("button", { name: "Přetáhněte soubory sem" });
+  const choose = dialog.getByRole("button", { name: "Vybrat soubory…" });
   for (const key of ["Enter", " "]) {
     const chooser = page.waitForEvent("filechooser");
     await choose.press(key);
@@ -38,7 +38,7 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
     ["Odebrat druhy.xml", 2],
     ["Odebrat treti.xml", 2],
     ["+1 dalších", 1],
-    ["Přetáhněte soubory sem", 1],
+    ["Přidat soubory…", 1],
   ] as const) {
     // Stavové bubliny čipů jsou také přístupné přes Tab, nesmíme je přeskočit v očekávání.
     for (let index = 0; index < steps; index++) await page.keyboard.press("Tab");
@@ -53,7 +53,7 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   await expect(chips.getByRole("button", { name: "Odebrat ctvrty.xml" })).toBeFocused();
   const accessibility = await new AxeBuilder({ page })
     .include('[data-slot="file-drop-zone"]')
-    .withRules(["nested-interactive"])
+    .withRules(["nested-interactive", "label-content-name-mismatch"])
     .analyze();
   expect(accessibility.violations).toEqual([]);
 

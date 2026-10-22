@@ -6,6 +6,7 @@ import { PaneTabsContext } from "./pane-context-hooks";
 import { PaneUnsavedController, type PendingUnsaved } from "./pane-unsaved-controller";
 import {
   DEFAULT_PANE_TABS_TEXTS,
+  type PaneTabsApi,
   type PaneTabsTexts,
   type RecordNavItem,
 } from "./pane-context-types";

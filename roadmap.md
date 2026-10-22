@@ -2,6 +2,8 @@
 
 - [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
 - [ ] FileDropZone: přístupný název obsahuje viditelný text „Vybrat soubory…“ (WCAG 2.5.3), neopakovat aria-label skupiny a tlačítka.
+- [ ] useFileDrop: interní dragstart zachytit na window v capture fázi.
+- [ ] Průběžný check:quick, závěrečný check:full, katalog bez ztrát a Chromium importu.
 
 ## DS 2.126.0
 
