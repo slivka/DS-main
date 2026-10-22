@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.126.0 (nevydáno)
+## 2.127.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.126.0
 
 - FileDropZone: přetažení obsluhuje skupina, výběr samostatné nativní tlačítko s jednou zastávkou Tab a popisem limitů. Children včetně FileChipBar jsou mimo tlačítko; odebrání a více/méně zůstávají samostatně dostupné. Regresní komponentový test i Chromium s kontrolou axe nested-interactive.
 - Ověření oddělení tlačítka: check:full --harness OK, 1 160/1 160 unit ve 126 souborech; Chromium file-import 1/1 včetně skutečného Tab a Enter/mezerníku, axe nested-interactive 0 nálezů. Katalog 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání; automatické sestavení OK. Plná E2E sada/FF/WebKit neběžely; bez vydání.

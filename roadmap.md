@@ -1,4 +1,9 @@
-## DS 2.126.0 (nevydáno)
+## DS 2.127.0 (nevydáno)
+
+- [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
+- [ ] FileDropZone: přístupný název obsahuje viditelný text „Vybrat soubory…“ (WCAG 2.5.3), neopakovat aria-label skupiny a tlačítka.
+
+## DS 2.126.0
 
 - [x] Oddělit FileDropZone skupinu přetažení od tlačítka výběru; ověřit Tab čipů a axe nested-interactive, check:full.
 - Ověření oddělení tlačítka: check:full --harness OK, 1 160/1 160 testů ve 126 souborech; Chromium file-import 1/1 (Enter/mezerník, Tab čipů/více/výběru, axe nested-interactive bez nálezů). Katalog 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání; automatické sestavení OK. Plná E2E sada/FF/WebKit neběžely, nevydáno.
