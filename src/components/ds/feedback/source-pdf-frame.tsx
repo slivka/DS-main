@@ -85,8 +85,11 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
     };
     // Srcdoc může být připraveno před připojením React load handleru.
     const check = window.setInterval(() => {
-      if (element.contentDocument?.URL !== "about:srcdoc" ||
-          element.contentDocument.readyState !== "complete") return;
+      if (
+        element.contentDocument?.URL !== "about:srcdoc" ||
+        element.contentDocument.readyState !== "complete"
+      )
+        return;
       window.clearInterval(check);
       void load();
     }, 20);

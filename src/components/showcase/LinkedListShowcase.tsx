@@ -157,7 +157,11 @@ function LinkedListContent() {
                   ))}
                 </TabsList>
                 {content.tabs.map(({ id, content: body }) => (
-                  <TabsContent key={id} value={id} className="flex min-h-0 flex-1 flex-col overflow-auto">
+                  <TabsContent
+                    key={id}
+                    value={id}
+                    className="flex min-h-0 flex-1 flex-col overflow-auto"
+                  >
                     {body}
                   </TabsContent>
                 ))}

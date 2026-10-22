@@ -19,14 +19,16 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
   const verifyPdf = async (host: typeof panel) => {
     const preview = host.locator('[data-slot="source-preview"]');
     const viewport = preview.locator('[data-slot="source-preview-viewport"]');
-    const pdf = host.frameLocator('iframe').locator('canvas');
+    const pdf = host.frameLocator("iframe").locator("canvas");
     await expect(pdf).toBeVisible();
-    await expect.poll(async () => {
-      const geometry = await viewport.boundingBox();
-      const frame = await host.locator('iframe').boundingBox();
-      return Math.abs((geometry?.height ?? 0) - (frame?.height ?? -10));
-    }).toBeLessThan(3);
-    const remaining = await preview.evaluate(node => {
+    await expect
+      .poll(async () => {
+        const geometry = await viewport.boundingBox();
+        const frame = await host.locator("iframe").boundingBox();
+        return Math.abs((geometry?.height ?? 0) - (frame?.height ?? -10));
+      })
+      .toBeLessThan(3);
+    const remaining = await preview.evaluate((node) => {
       const frame = node.querySelector('[data-slot="source-preview-viewport"]');
       const rect = node.getBoundingClientRect();
       const box = frame?.getBoundingClientRect();
@@ -35,31 +37,37 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
     expect(remaining).toBeLessThan(2);
     const viewportBox = await viewport.boundingBox();
     expect(viewportBox?.height ?? 0).toBeGreaterThan(350);
-    await expect.poll(async () => {
-      return await host.locator('iframe').evaluate(frame => {
-        const doc = (frame as HTMLIFrameElement).contentDocument;
-        const canvas = doc?.querySelector('canvas');
-        return canvas && doc ? Math.abs(canvas.width - doc.body.clientWidth) : 100;
-      });
-    }).toBeLessThan(2);
-    const overflow = await host.locator('iframe').evaluate(frame => {
+    await expect
+      .poll(async () => {
+        return await host.locator("iframe").evaluate((frame) => {
+          const doc = (frame as HTMLIFrameElement).contentDocument;
+          const canvas = doc?.querySelector("canvas");
+          return canvas && doc ? Math.abs(canvas.width - doc.body.clientWidth) : 100;
+        });
+      })
+      .toBeLessThan(2);
+    const overflow = await host.locator("iframe").evaluate((frame) => {
       const doc = (frame as HTMLIFrameElement).contentDocument;
       return doc ? doc.documentElement.scrollWidth - doc.documentElement.clientWidth : 100;
     });
     expect(overflow).toBeLessThanOrEqual(0);
   };
   await verifyPdf(panel);
-  const resize = panel.getByRole('separator', {name:'Změnit šířku panelu'});
+  const resize = panel.getByRole("separator", { name: "Změnit šířku panelu" });
   await resize.focus();
-  for (let index = 0; index < 6; index++) await resize.press('ArrowLeft');
-  await expect(resize).toHaveAttribute('aria-valuenow','480');
+  for (let index = 0; index < 6; index++) await resize.press("ArrowLeft");
+  await expect(resize).toHaveAttribute("aria-valuenow", "480");
   await verifyPdf(panel);
-  await panel.screenshot({path:'/tmp/browser/record-panel/pdf-wide.png'});
+  await panel.screenshot({ path: "/tmp/browser/record-panel/pdf-wide.png" });
   await resize.dblclick();
   // Ovladač zůstává poslední samostatnou akcí, v záhlaví není.
-  const panelButton = example.getByRole('button',{name:'Panel',exact:true});
+  const panelButton = example.getByRole("button", { name: "Panel", exact: true });
   await expect(panelButton).toHaveCount(1);
-  expect(await panelButton.evaluate(node => node.closest('[data-slot="record-action-buttons"]')?.lastElementChild?.contains(node))).toBe(true);
+  expect(
+    await panelButton.evaluate((node) =>
+      node.closest('[data-slot="record-action-buttons"]')?.lastElementChild?.contains(node),
+    ),
+  ).toBe(true);
   await panel.getByRole("tab", { name: "Přílohy: 2", exact: true }).click();
   const handle = panel.getByRole("separator", { name: "Změnit šířku panelu" });
   await handle.focus();
@@ -96,13 +104,13 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
   const row = grid.getByRole("row").filter({ hasText: "FP 2026/0142" });
   await row.getByRole("button", { name: "Přílohy: 2", exact: true }).click();
   const gridPanel = grid.locator('[data-slot="record-side-panel"]');
-  await gridPanel.getByRole('tab',{name:'Zdroj',exact:true}).click();
+  await gridPanel.getByRole("tab", { name: "Zdroj", exact: true }).click();
   await verifyPdf(gridPanel);
-  const gridResize = gridPanel.getByRole('separator',{name:'Změnit šířku panelu'});
+  const gridResize = gridPanel.getByRole("separator", { name: "Změnit šířku panelu" });
   await gridResize.focus();
-  for (let index = 0; index < 6; index++) await gridResize.press('ArrowLeft');
+  for (let index = 0; index < 6; index++) await gridResize.press("ArrowLeft");
   await verifyPdf(gridPanel);
-  await gridPanel.screenshot({path:'/tmp/browser/record-panel/pdf-grid.png'});
+  await gridPanel.screenshot({ path: "/tmp/browser/record-panel/pdf-grid.png" });
   await expect(row.getByRole("checkbox")).not.toBeChecked();
   await grid
     .locator('[data-slot="record-side-panel"]')

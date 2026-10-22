@@ -20,12 +20,14 @@ const LIMIT = 20_000_000;
 describe("SourcePreview", () => {
   it("chyba PDF žádá aplikaci o obnovení adresy", () => {
     const expired = mock();
-    const ui = render(wrap(<SourcePreview source={pdf} accept={ACCEPT} maxSize={LIMIT} onUrlExpired={expired} />));
-    const frame = ui.container.querySelector('iframe');
-    if (!frame) throw new Error('PDF náhled chybí');
+    const ui = render(
+      wrap(<SourcePreview source={pdf} accept={ACCEPT} maxSize={LIMIT} onUrlExpired={expired} />),
+    );
+    const frame = ui.container.querySelector("iframe");
+    if (!frame) throw new Error("PDF náhled chybí");
     fireEvent.error(frame);
     expect(expired).toHaveBeenCalledTimes(1);
-    expect(ui.getByRole('status').textContent).toContain('vypršela');
+    expect(ui.getByRole("status").textContent).toContain("vypršela");
   });
   it("PDF vykreslí iframe s názvem souboru", () => {
     const { container, getByText } = render(
