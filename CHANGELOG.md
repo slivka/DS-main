@@ -2,6 +2,9 @@
 
 ## 2.134.0 (nevydáno)
 
+- Úložiště rozložení: hydratace kontroluje generaci konfigurace po loadAll (i chybě); přepnutí účtu a clear aktivního scope zneplatní staré načítání. Debounce se při přepnutí zahodí, rozběhnutý zápis doběhne do zachyceného původního store bez přenosu chyb do nového účtu.
+- `clearGridPrefsCache(scope?)` umí vyčistit odcházející účet i při aktivním local, aniž by vymazal aktivní rozložení jiného scope. `resetGridPrefs()` nyní vrací Promise: lokální reset a oznámení známým gridům jsou okamžité, chyba removeAll se propaguje (APP použije await/try-catch). `flushGridPrefs({ timeoutMs? })` omezí čekání, zachová zrcadlo a další flush bez limitu počká i na již běžící zápisy.
+
 - Pouze zpevnění E2E, bez změny chování komponent/API. `grid-actions-divider.spec.ts`: před měřením scrollIntoViewIfNeeded a dvě shodná boundingBox; místo nestabilního pixelového ořezu se kontroluje skutečný neprůhledný 1px inset v computed box-shadow (samostatně od stínu přetečení). Pixelové snímky se při zoomu a překrytí sticky záhlavím ukázaly nestabilní i po ořezu do viewportu.
 - `advance-register-view.spec.ts`: ověření tabindex="0", skutečný vstup Shift+Tab/Tab a hover; čekání na přeložený obsah přes role="tooltip". Při přestavbě řádku se opakuje vstup uživatele, nikoli mění komponenta.
 - Ověření Chromium bez retries: `bun run test:e2e tests/e2e/grid-actions-divider.spec.ts tests/e2e/advance-register-view.spec.ts --project=chromium --repeat-each=20 --workers=1` → **60/60 prošlo (19,4 min)**. Požadovaný oddělovač v editoru 20/20, evidence záloh 20/20, doplňkový oddělovač běžného gridu 20/20. Předchozí pokusy se snímky byly neúspěšné; uvedené výsledky jsou z konečné upravené verze. 2.133.0 již vydaná (9688232b, 7b5c893c jsou v historii); package/meta zůstávají 2.133.0. Toto kolo nevydáno, release Claude.

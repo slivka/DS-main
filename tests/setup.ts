@@ -39,7 +39,7 @@ const { cleanup } = await import("@testing-library/react");
 const { configureGridPrefsStore, resetGridPrefs } = await import("../src/lib/grid-prefs");
 const { resetAppZoomCacheForTests } = await import("../src/lib/app-zoom");
 
-afterEach(() => {
+afterEach(async () => {
   // Odpojí všechny vykreslené stromy včetně Radix portálů (bubliny, nabídky, dialogy).
   cleanup();
   jest.useRealTimers();
@@ -59,7 +59,7 @@ afterEach(() => {
   window.sessionStorage.clear();
   // Paměť rozložení gridů je modulová – bez resetu by přežila mezi soubory.
   configureGridPrefsStore(null);
-  resetGridPrefs();
+  await resetGridPrefs();
   // Zoom aplikace má modulovou paměť; bez resetu by další soubor startoval s cizím zoomem.
   resetAppZoomCacheForTests();
   const active = document.activeElement as HTMLElement | null;

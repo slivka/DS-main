@@ -260,6 +260,7 @@ export async function hydrateGridPrefs(): Promise<void> {
 export async function resetGridPrefs(): Promise<void> {
   const store = currentStore;
   const keysToNotify = [...knownKeys];
+  knownKeys.clear();
   generation += 1;
   saves.cancel();
   memory.clear();
@@ -274,7 +275,6 @@ export async function resetGridPrefs(): Promise<void> {
   }
   // Otevřené gridy při oznámení synchronně přečtou již prázdné rozložení.
   for (const key of keysToNotify) dispatchChange(key);
-  knownKeys.clear();
   await store?.removeAll();
 }
 

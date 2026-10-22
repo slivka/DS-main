@@ -29,7 +29,7 @@ for (const name of readdirSync(dir, { recursive: true }).map(String)) {
 const setup = readFileSync("tests/setup.ts", "utf8");
 for (const reset of [
   "resetAppZoomCacheForTests()",
-  "resetGridPrefs()",
+  "await resetGridPrefs()",
   "localStorage.clear()",
   "restoreNavigator()",
   "window.innerWidth = 1440",

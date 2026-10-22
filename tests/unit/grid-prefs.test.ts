@@ -197,7 +197,7 @@ describe("grid-prefs úložiště rozložení", () => {
     updateGridLayout("g9", { pageSize: 50 });
     await flushGridPrefs();
     window.localStorage.setItem("columns:g9", JSON.stringify({ a: false }));
-    resetGridPrefs();
+    await resetGridPrefs();
     expect(getGridLayout("g9")).toEqual({});
     expect(window.localStorage.getItem("gridLayout:local:g9")).toBeNull();
     expect(window.localStorage.getItem("columns:g9")).toBeNull();
