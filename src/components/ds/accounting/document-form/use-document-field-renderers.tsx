@@ -213,6 +213,7 @@ export function useDocumentHeaderFields(a: DocumentHeaderFieldsArgs) {
     accountingDateLink: dateLink,
     fieldErrors: a.fieldErrors,
     fieldWarnings: a.fieldWarnings,
+    lockReason: a.lockReason,
     onInvalidDate: a.onInvalidDate,
   });
   const taxNumberField = a.showTaxNumber
