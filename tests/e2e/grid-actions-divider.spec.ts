@@ -21,6 +21,7 @@ async function checkDivider(page: Page, zoom: number) {
     expect(shadow, `${part} @ ${zoom}`).toContain("inset");
     expect(shadow).toMatch(/1px 0px 0px/);
     // Pixel na levé hraně buňky se liší od pixelu uvnitř buňky (čára je vidět).
+    await cell.scrollIntoViewIfNeeded();
     const box = (await cell.boundingBox())!;
     const shot = (
       await page.screenshot({
