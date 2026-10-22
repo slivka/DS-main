@@ -57,6 +57,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Share feedback, translated column labels and origin-tagged editor issues; register control-h independently. Why: stable heights and no stale errors.
 
 - Source scanning for monetary rounding belongs in the shared check-money-rounding script, not unit tests; exceptions carry reasons in one list. Why: tests verify behavior and both check levels enforce the same audit.
+- Unit tests never mock.module library modules; shared cleanup lives in tests/setup.ts and check-test-isolation lists allowed external mocks with reasons. Why: Bun module mocks persist for the whole run, so file order must not decide results.
 
 - Use check:full --harness; CI runs all stages. Keep noImplicitReturns enabled for consumers.
 - CI reads Bun from .bun-version; unit storage always comes from happy-dom. Why: runner updates must not change test DOM behavior.
