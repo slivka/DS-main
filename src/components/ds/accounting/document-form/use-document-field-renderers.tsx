@@ -86,11 +86,7 @@ export function useDocumentFieldRenderers({
       return field(
         `document-${key}`,
         label,
-        <LockedDocumentDate
-          id={`document-${key}`}
-          reason={locked}
-          value={value[key]}
-        />,
+        <LockedDocumentDate id={`document-${key}`} reason={locked} value={value[key]} />,
         3,
         false,
         className,

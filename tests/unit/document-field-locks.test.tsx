@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-const { cleanup, fireEvent, render } = await import("@testing-library/react");
+const { cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { DocumentForm } = await import("../../src/components/ds/accounting/document-form");
 const { BankStatementForm } =
   await import("../../src/components/ds/accounting/bank-statement-form");
@@ -30,7 +30,7 @@ const baValue = {
   description: "Příjem z banky",
 };
 
-function BaForm(props: Record<string, unknown>) {
+function BaForm(props: Partial<React.ComponentProps<typeof DocumentForm>>) {
   const [value, setValue] = React.useState(baValue);
   return (
     <DocumentForm
@@ -63,7 +63,7 @@ const lockedReasons = {
   currency: REASON,
 };
 
-describe("DocumentForm fieldLockedReasons (2.128.0)", () => {
+describe("DocumentForm fieldLockedReasons", () => {
   it("pole s důvodem vykreslí jen pro čtení se zámkem a hodnotou", () => {
     const view = render(<BaForm fieldLockedReasons={lockedReasons} />);
     const expected: Array<[string, string]> = [
@@ -113,9 +113,106 @@ describe("DocumentForm fieldLockedReasons (2.128.0)", () => {
     expect(vs).toHaveProperty("disabled", false);
     expect(view.queryByRole("group", { name: "Variabilní symbol" })).toBeNull();
   });
+  for (const specific of [false, true]) {
+    it(`IBAN / SWIFT / reference zamčené ${specific ? "specifickými" : "obecnými"} klíči`, async () => {
+      const change = mock();
+      const reasons = {
+        bankAccount: "Účet z banky",
+        bankCode: "Banka z výpisu",
+        paymentReference: REASON,
+        ...(specific ? { bankIban: "IBAN z banky", bankSwift: "SWIFT z banky" } : {}),
+      };
+      const view = render(
+        <BaForm
+          value={{
+            ...baValue,
+            bankAccountKind: "iban",
+            bankIban: "DE89370400440532013000",
+            bankSwift: "COBADEFFXXX",
+            paymentReference: "INV-123",
+          }}
+          onChange={change}
+          fieldLockedReasons={reasons}
+        />,
+      );
+      for (const [label, text, reason] of [
+        ["Účet protistrany", "DE89370400440532013000", specific ? "IBAN z banky" : "Účet z banky"],
+        ["SWIFT", "COBADEFFXXX", specific ? "SWIFT z banky" : "Banka z výpisu"],
+        ["Platební reference", "INV-123", REASON],
+      ]) {
+        const field = view.getByRole("group", { name: label });
+        expect(field.textContent).toContain(text);
+        expect(view.queryByRole("textbox", { name: label })).toBeNull();
+        const button = field.querySelector("button");
+        expect(button?.getAttribute("aria-label")).toBe(reason);
+        if (!button) throw new Error("Chybí zámek");
+        fireEvent.click(button);
+        await waitFor(() =>
+          expect(view.getAllByRole("tooltip").some((node) => node.textContent === reason)).toBe(
+            true,
+          ),
+        );
+        fireEvent.keyDown(button, { key: "Escape" });
+      }
+      expect(change).not.toHaveBeenCalled();
+    });
+  }
+  it("obecný zámek měny má přednost před currencyDisabledReason", () => {
+    const view = render(
+      <BaForm currencyDisabledReason="Měna knihy" fieldLockedReasons={{ currency: REASON }} />,
+    );
+    expect(
+      view.getByRole("group", { name: "Měna" }).querySelector("button")?.getAttribute("aria-label"),
+    ).toBe(REASON);
+    expect(view.queryByText("Měna knihy")).toBeNull();
+  });
+  it("obecný zámek částky má přednost před nuceným součtem interního dokladu", () => {
+    const view = render(<BaForm documentType="ID" fieldLockedReasons={{ amountTotal: REASON }} />);
+    expect(
+      view
+        .getByRole("group", { name: "Celkem za doklad" })
+        .querySelector("button")
+        ?.getAttribute("aria-label"),
+    ).toBe(REASON);
+    expect(view.queryByRole("button", { name: "Sčítat částky z řádků" })).toBeNull();
+  });
+  it("obecný zámek protistrany má přednost před zámkem režimu", () => {
+    const view = render(
+      <BaForm
+        documentType="PO"
+        counterpartyInput="manual"
+        counterpartyInputLockedReason="Režim neměnit"
+        fieldLockedReasons={{ counterpartyName: REASON, partnerId: "Partner zamčen" }}
+        value={{ ...baValue, counterpartyName: "Zahraniční partner" }}
+      />,
+    );
+    expect(view.getByRole("group", { name: "Partner" }).textContent).toContain(
+      "Zahraniční partner",
+    );
+    expect(view.getByRole("button", { name: REASON })).toBeTruthy();
+    expect(view.queryByText("Režim neměnit")).toBeNull();
+  });
+  it("klik na chybu zamčeného data zaměří tlačítko zámku", () => {
+    const view = render(
+      <BaForm
+        fieldLockedReasons={{ issueDate: REASON }}
+        issues={[
+          {
+            fieldId: "issueDate",
+            label: "Datum pohybu",
+            message: "Ověřte datum banky",
+            severity: "error",
+            source: "server",
+          },
+        ]}
+      />,
+    );
+    fireEvent.click(view.getByRole("button", { name: "Datum pohybu: Ověřte datum banky" }));
+    expect(document.activeElement).toBe(view.getByRole("button", { name: REASON }));
+  });
 });
 
-describe("BankStatementForm menuActions (2.128.0)", () => {
+describe("BankStatementForm menuActions", () => {
   const statement = {
     value: { date: "2026-10-12", number: "2026/10", bankClosing: null },
     onChange: () => {},
@@ -169,6 +266,10 @@ describe("BankStatementForm menuActions (2.128.0)", () => {
     fireEvent.keyDown(view.getByRole("button", { name: "Další akce" }), { key: "Enter" });
     const item = await view.findByRole("menuitem", { name: /Import výpisu…/ });
     expect(item.getAttribute("aria-disabled")).toBe("true");
+    const reason = item.querySelector<HTMLElement>('[data-slot="disabled-reason-text"]');
+    expect(reason?.textContent).toBe("Výpis je zaúčtován");
+    expect(reason?.hidden).toBe(false);
+    expect(item.getAttribute("aria-describedby")).toBe(reason?.id ?? "missing");
     fireEvent.click(item);
     expect(onImport).not.toHaveBeenCalled();
   });

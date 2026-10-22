@@ -105,7 +105,9 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
     onCounterpartyInputChange,
     counterpartyInputLockedReason,
   } = p;
-  const generalPartnerReason = (counterpartyInput === "manual" ? p.lockReason?.("counterpartyName") : undefined) ?? p.lockReason?.("partnerId");
+  const generalPartnerReason =
+    (counterpartyInput === "manual" ? p.lockReason?.("counterpartyName") : undefined) ??
+    p.lockReason?.("partnerId");
   return (
     <>
       <>
@@ -114,37 +116,49 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
           {field(
             "document-partner",
             partnerLabel,
-            generalPartnerReason ? <FieldValue id="document-partner" aria-labelledby="document-partner-label" lockedReason={generalPartnerReason}>{value.counterpartyName ?? partner?.name ?? ""}</FieldValue> : <CounterpartyInputField
-              id="document-partner"
-              partners={partners}
-              mode={counterpartyInput}
-              partnerId={value.partnerId}
-              name={value.counterpartyName ?? partner?.name ?? ""}
-              onPartnerChange={(partnerId) => {
-                const selected = partners.find((item) => item.id === partnerId);
-                patch({
-                  partnerId,
-                  counterpartyName: selected?.name ?? value.counterpartyName,
-                  counterpartyIco: selected?.ico ?? null,
-                  counterpartyDic: selected?.dic ?? null,
-                });
-              }}
-              onNameChange={(counterpartyName) => patch({ counterpartyName })}
-              onModeChange={onCounterpartyInputChange}
-              lockedReason={counterpartyInputLockedReason}
-              partnerModeLabel={t.selectFromDirectory}
-              manualModeLabel={t.enterManually}
-              replaceManualWarning={t.replaceManualCounterparty}
-              hasManualData={Boolean(value.counterpartyName || counterpartyIco || counterpartyDic)}
-              disabled={!can("partnerId")}
-              readOnly={readOnly}
-              onCreatePartner={
-                onCreatePartner
-                  ? (query) => onCreatePartner(counterpartyCreateSeed(query))
-                  : undefined
-              }
-              onEditPartner={onEditCounterparty}
-            />,
+            generalPartnerReason ? (
+              <FieldValue
+                id="document-partner"
+                aria-labelledby="document-partner-label"
+                lockedReason={generalPartnerReason}
+              >
+                {value.counterpartyName ?? partner?.name ?? ""}
+              </FieldValue>
+            ) : (
+              <CounterpartyInputField
+                id="document-partner"
+                partners={partners}
+                mode={counterpartyInput}
+                partnerId={value.partnerId}
+                name={value.counterpartyName ?? partner?.name ?? ""}
+                onPartnerChange={(partnerId) => {
+                  const selected = partners.find((item) => item.id === partnerId);
+                  patch({
+                    partnerId,
+                    counterpartyName: selected?.name ?? value.counterpartyName,
+                    counterpartyIco: selected?.ico ?? null,
+                    counterpartyDic: selected?.dic ?? null,
+                  });
+                }}
+                onNameChange={(counterpartyName) => patch({ counterpartyName })}
+                onModeChange={onCounterpartyInputChange}
+                lockedReason={counterpartyInputLockedReason}
+                partnerModeLabel={t.selectFromDirectory}
+                manualModeLabel={t.enterManually}
+                replaceManualWarning={t.replaceManualCounterparty}
+                hasManualData={Boolean(
+                  value.counterpartyName || counterpartyIco || counterpartyDic,
+                )}
+                disabled={!can("partnerId")}
+                readOnly={readOnly}
+                onCreatePartner={
+                  onCreatePartner
+                    ? (query) => onCreatePartner(counterpartyCreateSeed(query))
+                    : undefined
+                }
+                onEditPartner={onEditCounterparty}
+              />
+            ),
             14,
             false,
             "@min-[40rem]:pr-3",
