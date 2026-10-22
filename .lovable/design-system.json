@@ -10666,6 +10666,10 @@
         {
           "label": "Ovladač panelu za akcemi",
           "code": "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />"
+        },
+        {
+          "label": "Ovladač panelu v záhlaví",
+          "code": "// Historický název příkladu: od 2.128.0 je ovladač v liště akcí.\n<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} tooltip={panelSummary} />} />"
         }
       ],
       "antipatterns": [

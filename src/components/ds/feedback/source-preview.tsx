@@ -98,11 +98,7 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   });
   if (!source) {
     return (
-      <div
-        ref={ref}
-        {...props}
-        className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}
-      >
+      <div ref={ref} {...props} className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}>
         <div
           ref={dropHost}
           className={cn(

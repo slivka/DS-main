@@ -2162,6 +2162,13 @@ Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavate
 <DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />
 ```
 
+**Ovladač panelu v záhlaví:**
+
+```tsx
+// Historický název příkladu: od 2.128.0 je ovladač v liště akcí.
+<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} tooltip={panelSummary} />} />
+```
+
 **Avoid:**
 
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
