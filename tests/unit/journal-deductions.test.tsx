@@ -132,7 +132,7 @@ describe("JournalLinesEditor – odečty záloh", () => {
     const { container } = renderEditor({ deductions: deductions() });
     const text = (slot: string) => container.querySelector(`[data-slot="${slot}"]`)?.textContent;
     expect(text("journal-deduction-items")).toContain("12 100,00");
-    expect(text("journal-deduction-deducted")).toContain("-1 605,00");
+    expect(text("journal-deduction-deducted")).toContain("−1 605,00");
     expect(text("journal-deduction-to-pay")).toContain("10 495,00");
   });
 
@@ -140,7 +140,7 @@ describe("JournalLinesEditor – odečty záloh", () => {
     const { container } = renderEditor({ deductions: deductions() });
     const recap = container.querySelector('[data-slot="journal-vat-recap"]');
     expect(recap?.querySelector('[data-slot="journal-vat-deduction-row"]')?.textContent).toContain(
-      "-826,45",
+      "−826,45",
     );
     expect(recap?.querySelector('[data-slot="journal-vat-total-by-code"]')?.textContent).toContain(
       "9 173,55",
