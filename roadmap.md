@@ -1,6 +1,6 @@
 ## DS 2.134.0 (nevydáno)
 
-- [ ] Zpevnit Chromium testy oddělovače Akce (stabilní rozměry, ořez snímku) a bubliny evidence záloh (hover, fokusovatelnost); každý ověřit 20× bez změny komponent a zapsat výsledky do CHANGELOGu.
+- [x] Zpevnit Chromium testy oddělovače Akce (stabilní rozměry, computed inset stín místo pixelového snímku) a bubliny evidence záloh (Tab/hover, tabindex, role tooltip); každý 20/20, navíc běžný grid 20/20, celkem 60/60 bez retries. Výsledky v CHANGELOGu; komponenty beze změny, nevydáno.
 
 ## DS 2.133.0
 
