@@ -53,7 +53,9 @@ describe("InvoicePrint – formát a platební pravidla", () => {
     { quantity: 0, unit_price: 0, expected: ["0", "0,00"] },
   ])("prázdné množství/cena se nepletou s nulou: %j", ({ quantity, unit_price, expected }) => {
     const c = canvas();
-    c.data.lines = [{ description: "Doprava", quantity, unit_price, unit: null, vat_rate: 21, base: 690 }];
+    c.data.lines = [
+      { description: "Doprava", quantity, unit_price, unit: null, vat_rate: 21, base: 690 },
+    ];
     const text = mock(c.doc.text.bind(c.doc));
     c.doc.text = text;
     drawInvoiceItems(c);
@@ -61,9 +63,9 @@ describe("InvoicePrint – formát a platební pravidla", () => {
       ([value]) => Array.isArray(value) && value[0] === "Doprava",
     );
     expect(start).toBeGreaterThanOrEqual(0);
-    const cells = text.mock.calls.slice(start, start + 6).map(([value]) =>
-      Array.isArray(value) ? value.join("") : value,
-    );
+    const cells = text.mock.calls
+      .slice(start, start + 6)
+      .map(([value]) => (Array.isArray(value) ? value.join("") : value));
     expect(cells).toEqual(["Doprava", expected[0], "", expected[1], "21 %", "690,00"]);
   });
   it("datum bez mezer a bez změny časového pásma", () =>
