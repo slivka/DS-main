@@ -2727,3 +2727,27 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .inline-search-field[data-search-open]:has(~ [data-slot="field-inline-actions"]) [cmdk-input] {
   padding-right: calc(var(--control-h) * 2);
 }
+
+/* Oddělovač ukotveného sloupce Akce. U `position: sticky` v tabulce
+   s `border-collapse` se levý okraj nevykreslí spolehlivě (posouvá se
+   s obsahem), proto se čára kreslí vnitřním stínem 1px přímo v buňce.
+   Okraj zůstává průhledný, aby se nezdvojil s posledním datovým sloupcem;
+   stín přetečení se skládá přes `--grid-actions-shadow`. */
+.zoom-grid {
+  --grid-actions-divider: color-mix(in oklab, var(--border) 85%, transparent);
+}
+.zoom-grid table:has([data-slot="grid-actions"]) tr > :is(th, td):last-child,
+.zoom-grid :is(th, td):is(.grid-actions-header, .grid-actions-cell, .grid-actions-footer),
+.zoom-grid.journal-lines-grid :is(th, td)[data-pin-right] {
+  border-left-color: transparent !important;
+  box-shadow:
+    inset 1px 0 0 var(--grid-actions-divider),
+    var(--grid-actions-shadow, 0 0 0 0 transparent) !important;
+}
+.zoom-grid[data-overflow-right="true"] {
+  --grid-actions-shadow: -6px 0 6px -6px color-mix(in oklab, var(--foreground) 30%, transparent);
+}
+.zoom-grid[data-overflow-right="true"] tfoot,
+.zoom-grid.journal-lines-grid[data-overflow="true"] {
+  --grid-actions-shadow: 0 0 0 0 transparent;
+}
