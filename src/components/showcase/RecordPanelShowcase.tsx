@@ -105,17 +105,7 @@ export function RecordPanelShowcase() {
   );
   return (
     <div data-testid="record-panel-showcase" data-ready={Boolean(sourceUrl)} className="space-y-6">
-      <PageHeader
-        title="Panel záznamu"
-        panelToggle={
-          <PanelToggleButton
-            open={open}
-            indicator
-            tooltip="Panel · Přílohy 2 · Poznámky 2"
-            onToggle={() => setOpen(!open)}
-          />
-        }
-      />
+      <PageHeader title="Panel záznamu" />
       <div className="flex flex-wrap items-center gap-3">
         <div className="w-48">
           <OptionSelect
@@ -143,6 +133,7 @@ export function RecordPanelShowcase() {
       <div className={narrow ? "max-w-[35rem]" : ""} data-testid="document-panel-example">
         <div className={zoom ? "record-panel-demo-zoom" : ""}>
           <RecordSidePanel
+            className="h-[40rem]"
             open={open}
             onOpenChange={setOpen}
             activeTab={tab}
@@ -157,6 +148,14 @@ export function RecordPanelShowcase() {
           >
             <div ref={form} className="min-w-0 p-3" data-testid="document-panel-form">
               <DocumentForm
+                panelToggle={
+                  <PanelToggleButton
+                    open={open}
+                    indicator
+                    tooltip="Panel · Přílohy 2 · Poznámky 2"
+                    onToggle={() => setOpen(!open)}
+                  />
+                }
                 title="Přijatá faktura"
                 documentType="FP"
                 status={status === "read" ? "filed" : status}
@@ -208,6 +207,9 @@ export function RecordPanelShowcase() {
       <section data-testid="grid-panel-example">
         <PageHeader title="Doklady" />
         <RecordSidePanel
+          className="h-[40rem]"
+          size={size}
+          onSizeChange={setSize}
           open={gridOpen}
           onOpenChange={setGridOpen}
           activeTab={gridTab}

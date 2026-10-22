@@ -11,6 +11,9 @@
 
 <!-- LOVABLE:END -->
 
+- Route form panel toggles through RecordActionBar and include their fixed control slot in action-width measurement. Why: the toggle stays last and visible at every width without duplicating live controls.
+- SourcePreview fills a min-height-zero flex chain; RecordSidePanel hosts must receive an available height, and native PDF frames reapply fit-width on viewport resize. Why: editor, grid and linked panes share one preview geometry.
+
 - Pravidla dokladů, DPH a editoru řádků: `src/components/ds/accounting/AGENTS.md`.
 - Pravidla kvality, formulářů a gridů DS: `src/components/ds/AGENTS.md`; před změnami této části je přečti.
 - Značky měn pocházejí z dat; nikdy nevkládej pevné `Kč` ani `CZK`.
