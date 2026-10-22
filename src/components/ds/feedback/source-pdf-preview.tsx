@@ -1,5 +1,5 @@
 /** PDF zdroje · vlastní klientské vykreslení podle šířky · nesmí načítat doménová data. */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /** Vnitřní vlastnosti náhledu, adresu a chybovou obsluhu dodává SourcePreview. */
 interface SourcePdfPreviewProps {
@@ -14,11 +14,12 @@ interface SourcePdfPreviewProps {
 /** Iframe má vlastní svislé posouvání; PDF.js stránky vždy změří podle aktuální šířky. */
 export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps) {
   const frame = useRef<HTMLIFrameElement>(null);
+  const [ready, setReady] = useState(false);
   const error = useRef(onError);
   error.current = onError;
   useEffect(() => {
     const element = frame.current;
-    if (!element) return;
+    if (!element || !ready) return;
     let stopped = false;
     let loaded = false;
     let generation = 0;
@@ -41,7 +42,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         const pdf = await task.promise;
         const render = async () => {
           const current = ++generation;
-          const width = document.documentElement.clientWidth;
+          const width = document.body.clientWidth;
           if (!width || stopped) return;
           const pages = document.createDocumentFragment();
           for (let number = 1; number <= pdf.numPages; number++) {
@@ -83,22 +84,20 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         if (!stopped) error.current();
       }
     };
-    element.addEventListener("load", load);
-    if (element.contentDocument?.URL === "about:srcdoc" &&
-        element.contentDocument.readyState === "complete") void load();
+    void load();
     return () => {
       stopped = true;
       generation++;
       clearTimeout(timer);
-      element.removeEventListener("load", load);
       observer?.disconnect();
       dispose();
     };
-  }, [url]);
+  }, [url, ready]);
   return (
     <iframe
       ref={frame}
       title={title}
+      onLoad={() => setReady(true)}
       onError={onError}
       data-slot="source-pdf-preview"
       className="absolute inset-0 h-full w-full border-0"
