@@ -142,7 +142,6 @@ export function RecordPanelShowcase() {
             pinned={pinned}
             onPinnedChange={setPinned}
             size={size}
-            defaultSize={384}
             onSizeChange={setSize}
             onOpenInAdjacentPane={() => setAdjacent(!adjacent)}
           >
@@ -251,7 +250,6 @@ export function RecordPanelShowcase() {
             columns={columns}
             rowKey={(row) => row.id}
             storageKey="record-panel-demo"
-            onRefresh={() => undefined}
             panelToggle={
               <PanelToggleButton
                 open={gridOpen}
