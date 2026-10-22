@@ -1,8 +1,13 @@
 # Changelog – Slivka Design System
 
-## 2.130.0 (nevydáno)
+## 2.130.0 (nevydáno) – Drobné opravy 3
 
-- Zatím bez změn.
+- RecordDialog (dialog i panel): Zrušit / Uložit vždy v jednom řádku vpravo; levá skupina (Odstranit, doplňkové, životní cyklus) vlevo, při nedostatku místa se zalomí nad pravou. Pod sebou přes celou šířku až pod 24 rem šířky dialogu (Uložit nahoře). Pruh chyb beze změny.
+- RecordDialog size="sm": FieldGrid a `Field span` se řadí do sloupců od 24 rem přes nový `FieldGridBreakpointContext` (`"default" | "compact"`); jinde zůstává 40 rem. `fieldSpanClass(span, breakpoint?)` má nepovinný druhý parametr.
+- `description` dialogu je viditelná pod nadpisem (text-sm, zalamuje se), `aria-describedby` zachováno i v panelu.
+- ContextSwitcher: výška podle obsahu, okraj 8/12 px, ikona 36 px, mezera 12 px, dlouhý název se třemi tečkami s bublinou. StandaloneShell: postranní panel p-3 a mezera 12 px.
+- Vnitřně: patička (`RecordDialogFooter`, `RecordDialogFooterStart`) a přepínač bočního panelu ve vlastních modulech; RecordDialog 500 → 493 řádků bez změny API.
+- Testy: unit `small-edits-three`, E2E Chromium `small-edits-three`; zpevněn E2E „tečka neuložených změn“ (čekání na ustálení rozvržení, tečka i štítek ze stejného nadpisu).
 
 ## 2.129.0
 
