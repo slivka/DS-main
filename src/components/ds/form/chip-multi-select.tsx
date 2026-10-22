@@ -12,6 +12,20 @@ import {
 
 export type ChipOption = { value: string; label: string };
 
+/** Vlastnosti vícenásobného výběru. */
+export interface ChipMultiSelectProps {
+  options: ChipOption[];
+  value: string[];
+  onChange: (next: string[]) => void;
+  addLabel?: string;
+  searchPlaceholder?: string;
+  emptyLabel?: string;
+  allLabel?: string;
+  clearLabel?: string;
+  /** Text zobrazený, keď ne je nič vybrané. */
+  placeholder?: string;
+}
+
 /**
  * Sdílený výber viacerých hodnot v štýle štítkov – vybrané hodnoty sú chipy,
  * přidávání přes popover se zaškrtávacím seznamem, hledáním a volbou „vybrat vše“.
@@ -26,18 +40,7 @@ export function ChipMultiSelect({
   allLabel,
   clearLabel = "Zrušit výběr",
   placeholder,
-}: {
-  options: ChipOption[];
-  value: string[];
-  onChange: (next: string[]) => void;
-  addLabel?: string;
-  searchPlaceholder?: string;
-  emptyLabel?: string;
-  allLabel?: string;
-  clearLabel?: string;
-  /** Text zobrazený, keď ne je nič vybrané. */
-  placeholder?: string;
-}) {
+}: ChipMultiSelectProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -85,15 +88,28 @@ export function ChipMultiSelect({
               onValueChange={setSearch}
               className="h-8"
             />
-            <div className="flex items-center justify-between border-b border-border pb-1 text-xs">
-              <Button variant="link" size="sm"
+            <div
+              onKeyDown={(event) => {
+                if (
+                  event.target instanceof HTMLButtonElement &&
+                  (event.key === "Enter" || event.key === " ")
+                )
+                  event.stopPropagation();
+              }}
+              className="flex items-center justify-between border-b border-border pb-1 text-xs"
+            >
+              <Button
+                variant="link"
+                size="sm"
                 type="button"
                 className="font-medium text-primary hover:underline"
                 onClick={() => onChange(options.map((o) => o.value))}
               >
                 {allLabel}
               </Button>
-              <Button variant="link" size="sm"
+              <Button
+                variant="link"
+                size="sm"
                 type="button"
                 className="text-muted-foreground hover:underline"
                 onClick={() => onChange([])}

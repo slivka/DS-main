@@ -21,7 +21,8 @@ export function moveMultipleFocus(
       'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
     ),
   ).filter(
-    (node) => !target?.contains(node) && !content?.contains(node) && node.getClientRects().length > 0,
+    (node) =>
+      !target?.contains(node) && !content?.contains(node) && node.getClientRects().length > 0,
   );
   const before = outside.filter(
     (node) => trigger && node.compareDocumentPosition(trigger) & Node.DOCUMENT_POSITION_FOLLOWING,
@@ -38,4 +39,34 @@ export function toggleMultipleActive(input: HTMLInputElement) {
   const listId = input.getAttribute("aria-controls");
   const root = listId ? document.getElementById(listId)?.closest("[cmdk-root]") : null;
   root?.querySelector<HTMLElement>('[cmdk-item][data-selected="true"]')?.click();
+}
+/** Jednotlivý výběr při Tab nevybírá a přesouvá fokus mimo nabídku. */
+export function moveSingleFocus(
+  target: HTMLElement | null,
+  content: HTMLElement | null,
+  backwards: boolean,
+  close: () => void,
+) {
+  const trigger = target?.querySelector<HTMLElement>('button[role="combobox"]');
+  const focusable = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
+    ),
+  ).filter(
+    (node) =>
+      !target?.contains(node) && !content?.contains(node) && node.getClientRects().length > 0,
+  );
+  const next = backwards
+    ? focusable
+        .filter(
+          (node) =>
+            trigger && node.compareDocumentPosition(trigger) & Node.DOCUMENT_POSITION_FOLLOWING,
+        )
+        .at(-1)
+    : focusable.find(
+        (node) =>
+          trigger && trigger.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+  close();
+  next?.focus();
 }

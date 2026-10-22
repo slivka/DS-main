@@ -3,7 +3,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { Popover, PopoverTrigger, PopoverContent } from "../../ui/popover";
 import { CommandInput } from "../../ui/command";
-import { moveMultipleFocus, toggleMultipleActive } from "./inline-search-multiple";
+import { moveMultipleFocus, moveSingleFocus, toggleMultipleActive } from "./inline-search-multiple";
 
 interface SearchContextValue {
   multiple: boolean;
@@ -139,7 +139,15 @@ export const InlineSearchContent = React.forwardRef<
   React.ElementRef<typeof PopoverContent>,
   React.ComponentProps<typeof PopoverContent>
 >(function InlineSearchContent(
-  { onOpenAutoFocus, onCloseAutoFocus, onInteractOutside, onMouseDown, onKeyDownCapture, onBlurCapture, ...props },
+  {
+    onOpenAutoFocus,
+    onCloseAutoFocus,
+    onInteractOutside,
+    onMouseDown,
+    onKeyDownCapture,
+    onBlurCapture,
+    ...props
+  },
   ref,
 ) {
   const context = React.useContext(SearchContext);
@@ -157,7 +165,9 @@ export const InlineSearchContent = React.forwardRef<
         if (event.key === "Tab") {
           event.preventDefault();
           event.stopPropagation();
-          moveMultipleFocus(context.target, context.contentRef.current, event.shiftKey, () => context.changeOpen(false));
+          moveMultipleFocus(context.target, context.contentRef.current, event.shiftKey, () =>
+            context.changeOpen(false),
+          );
         } else if (event.key === "Escape") {
           event.preventDefault();
           event.stopPropagation();
@@ -167,14 +177,18 @@ export const InlineSearchContent = React.forwardRef<
       }}
       onBlurCapture={(event) => {
         onBlurCapture?.(event);
-        if (context?.multiple && event.relatedTarget && !insideSearch(context, event.relatedTarget)) context.changeOpen(false);
+        if (context?.multiple && event.relatedTarget && !insideSearch(context, event.relatedTarget))
+          context.changeOpen(false);
       }}
       onMouseDown={(event) => {
         onMouseDown?.(event);
         // Standardní combobox: klik do nabídky nebere fokus vstupu, jinak by blur nabídku zavřel
         // dřív, než klik doběhne. Výjimkou jsou prvky, které fokus potřebují.
         const element = event.target instanceof Element ? event.target : null;
-        if (!context?.multiple && !element?.closest("input, textarea, select, [contenteditable=true]"))
+        if (
+          !context?.multiple &&
+          !element?.closest("input, textarea, select, [contenteditable=true]")
+        )
           event.preventDefault();
       }}
       onInteractOutside={(event) => {
@@ -281,32 +295,16 @@ export const InlineSearchInput = React.forwardRef<
           if (context.multiple) {
             event.preventDefault();
             event.stopPropagation();
-            moveMultipleFocus(context.target, context.contentRef.current, event.shiftKey, () => context.changeOpen(false));
+            moveMultipleFocus(context.target, context.contentRef.current, event.shiftKey, () =>
+              context.changeOpen(false),
+            );
             return;
           }
           event.preventDefault();
           event.stopPropagation();
-          const focusable = Array.from(
-            document.querySelectorAll<HTMLElement>(
-              'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
-            ),
-          ).filter((node) => !insideSearch(context, node) && node.getClientRects().length > 0);
-          const trigger = context.target?.querySelector('button[role="combobox"]');
-          const next = event.shiftKey
-            ? focusable
-                .filter(
-                  (node) =>
-                    trigger &&
-                    node.compareDocumentPosition(trigger) & Node.DOCUMENT_POSITION_FOLLOWING,
-                )
-                .at(-1)
-            : focusable.find(
-                (node) =>
-                  trigger &&
-                  trigger.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING,
-              );
-          context.changeOpen(false);
-          next?.focus();
+          moveSingleFocus(context.target, context.contentRef.current, event.shiftKey, () =>
+            context.changeOpen(false),
+          );
           return;
         }
         onKeyDown?.(event);

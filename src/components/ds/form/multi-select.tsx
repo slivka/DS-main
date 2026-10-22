@@ -15,23 +15,8 @@ import { ComboboxResizeHandle } from "./resizable-combobox";
 
 export type MultiSelectOption = { value: string; label: string };
 
-/**
- * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
- * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
- */
-export function MultiSelect({
-  options,
-  selected,
-  onChange,
-  allLabel,
-  itemsLabel,
-  placeholder,
-  className = "",
-  zoom,
-  showSearch = true,
-  showSelectAll = true,
-  clearLabel,
-}: {
+/** Vlastnosti vícenásobného výběru. */
+export interface MultiSelectProps {
   options: MultiSelectOption[];
   selected: string[];
   onChange: (next: string[]) => void;
@@ -49,7 +34,25 @@ export function MultiSelect({
   showSelectAll?: boolean;
   /** Text tlačítka pro vymazání výběru. */
   clearLabel?: string;
-}) {
+}
+
+/**
+ * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
+ * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
+ */
+export function MultiSelect({
+  options,
+  selected,
+  onChange,
+  allLabel,
+  itemsLabel,
+  placeholder,
+  className = "",
+  zoom,
+  showSearch = true,
+  showSelectAll = true,
+  clearLabel,
+}: MultiSelectProps) {
   const dsTexts = useDsTexts();
   const resolvedClearLabel = clearLabel ?? dsTexts.grid.clear;
   const [search, setSearch] = useState("");
@@ -114,9 +117,20 @@ export function MultiSelect({
           <Command shouldFilter={false}>
             {showSearch ? <InlineSearchInput value={search} onValueChange={setSearch} /> : null}
             {showSelectAll || resolvedClearLabel ? (
-              <div className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]">
+              <div
+                onKeyDown={(event) => {
+                  if (
+                    event.target instanceof HTMLButtonElement &&
+                    (event.key === "Enter" || event.key === " ")
+                  )
+                    event.stopPropagation();
+                }}
+                className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]"
+              >
                 {showSelectAll ? (
-                  <Button variant="link" size="sm"
+                  <Button
+                    variant="link"
+                    size="sm"
                     type="button"
                     className="typo-action text-primary hover:underline"
                     onClick={() => onChange(options.map((o) => o.value))}
@@ -126,7 +140,9 @@ export function MultiSelect({
                 ) : (
                   <span />
                 )}
-                <Button variant="link" size="sm"
+                <Button
+                  variant="link"
+                  size="sm"
                   type="button"
                   className="typo-action text-muted-foreground hover:underline"
                   onClick={() => onChange([])}
