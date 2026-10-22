@@ -63,7 +63,7 @@ function DeductionCell({
       </Tooltip>
     );
   }
-  if (columnId === "vatCode") return <>{row.vatCode}</>;
+  if (columnId === "vatCodeId") return <>{row.vatCode}</>;
   if (columnId === "amount") {
     if (row.kind === "manual" && deductions?.onAmountChange)
       return (
