@@ -145,8 +145,10 @@ export function useGridColumns<Id extends string>(
     [columns],
   );
   const persistentRecord = useCallback(
-    <Value,>(record: Partial<Record<Id, Value>>) =>
-      Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))),
+    <Value,>(record: Partial<Record<Id, Value>>): Record<string, Value> =>
+      Object.fromEntries(
+        Object.entries(record).filter(([id]) => persistentIds.has(id as Id)),
+      ) as Record<string, Value>,
     [persistentIds],
   );
   const persistentOrder = useCallback(
