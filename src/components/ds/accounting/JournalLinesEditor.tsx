@@ -15,6 +15,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { GridZoomContext, ZoomGrid } from "../grid/grid-zoom";
 import { JournalFooter } from "./JournalFooter";
+import { JournalDeductionRows } from "./journal-deduction-rows";
+import { JournalDeductionTotals } from "./journal-deduction-summary";
 import { JournalGrossHelperPopover } from "./journal-gross-helper";
 import { JournalDifferenceBar } from "./journal-difference-bar";
 import { JournalVatRecap } from "./journal-vat-recap";
@@ -170,6 +172,7 @@ function JournalGrid() {
                   <JournalRow key={line.id} line={line} rowIndex={rowIndex} />
                 ))
               )}
+              <JournalDeductionRows />
             </TableBody>
             <JournalFooter />
           </Table>
@@ -218,6 +221,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
           >
             <JournalToolbar />
             <JournalGrid />
+            <JournalDeductionTotals />
             <JournalVatRecap />
             {props.afterVatRecap}
             <JournalGrossHelperPopover />

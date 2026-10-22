@@ -4,6 +4,7 @@ import type {
   AdvanceRegisterRow,
   AdvancePaymentTotals,
 } from "../ds/accounting/advances/advance-types";
+import type { JournalDeductionRow } from "../ds/accounting/journal-deductions-types";
 export const ADVANCE_CURRENCY = { code: "CZK", symbol: "Kč" };
 export const ADVANCE_TOTALS: AdvancePaymentTotals = {
   amount: 2000,
@@ -81,3 +82,42 @@ export const ADVANCE_REGISTER: AdvanceRegisterRow[] = [
     withoutDD: false,
   },
 ];
+/** Odečty jako řádky dokladu (APP mapuje z DB). */
+export const DEDUCTION_ROWS: JournalDeductionRow[] = [
+  {
+    id: "zfv1",
+    kind: "advance",
+    text: "Odečet zálohy ZFV 2026001 (VS 2026001)",
+    vatCode: "Z 21 %",
+    base: -41.32,
+    vat: -8.68,
+    account: "324.001",
+    status: "Uzavřený",
+    payment: "Spárováno",
+    taxDocument: "DDPZ 2026001",
+    remove: { can: false, reason: "Doklad je uzavřený" },
+  },
+  {
+    id: "zfv2",
+    kind: "advance",
+    text: "Odečet zálohy ZFV 2026002 (VS 2026002)",
+    vatCode: "Z 21 %",
+    base: -20.66,
+    vat: -4.34,
+    account: "324.001",
+    status: "Otevřený",
+    payment: "Bez platby",
+    remove: { can: true },
+  },
+];
+/** Ruční odečet (částka upravitelná). */
+export const MANUAL_DEDUCTION: JournalDeductionRow = {
+  id: "manual",
+  kind: "manual",
+  text: "Ruční odečet zálohy",
+  vatCode: "Z 21 %",
+  base: -20,
+  vat: -4.2,
+  account: "324.001",
+  remove: { can: true },
+};

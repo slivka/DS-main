@@ -125,6 +125,24 @@ export interface AdvanceTexts {
   blocked: string;
   /** Popisek actions. */
   actions: string;
+  /** Split tlačítko odečtu v liště řádků. */
+  deductionAdd: string;
+  /** Položka nabídky výběru zálohy. */
+  deductionPick: string;
+  /** Položka nabídky ručního odečtu. */
+  deductionManual: string;
+  /** Rozbalit detail odečtu. */
+  deductionDetail: string;
+  /** Součet položek bez odečtů. */
+  itemsTotal: string;
+  /** Součet odečtených záloh. */
+  deductedTotal: string;
+  /** Částka k úhradě. */
+  toPayTotal: string;
+  /** Řádek součtu podle kódu DPH v rekapitulaci. */
+  totalByCode: string;
+  /** Důvod odebrání odečtu v potvrzení. */
+  removeReason: string;
   /** Souhrn přiřazení již formátovaných částek. */
   allocationSummary: (assigned: string, total: string) => string;
   /** Lhůta dodaná aplikací. */
