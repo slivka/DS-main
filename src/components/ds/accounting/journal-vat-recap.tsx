@@ -224,7 +224,7 @@ export function JournalVatRecap() {
             </tr>
           ))}
         </tbody>
-        <JournalDeductionRecapBody span={span} />
+        <JournalDeductionRecapBody homeOn={homeOn} />
         {outsideBases.length > 0 ? (
           <tbody
             data-slot="journal-vat-section-outside"

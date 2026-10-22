@@ -2,6 +2,9 @@
 
 - [x] Odečty záloh jako řádky dokladu (FV, FP, PO), split akce, tři součty, rekapitulace
 - [x] Čitelné zakázané primární tlačítko a důvod u RecordDialog
+- [x] Opravy po kontrole Clauda: jediné K úhradě z dat APP, Součet položek nad odečty, kód DPH a „Celkem po odečtu záloh“ v rekapitulaci, povinné total, částky v měně firmy, přetečení lišty, role group, fokus po odebrání, testy
+- [ ] Odečty v tisku a exportu gridu – editor řádků vlastní tisk/export nemá; čeká na rozhodnutí, zda je doplnit do tiskové sestavy dokladu (APP) nebo do DS
+- [ ] 2.130.0: RecordDialog (500 řádků) rozdělit – patička a tělo do vlastních modulů bez změny API
 
 ## DS 2.128.0
 

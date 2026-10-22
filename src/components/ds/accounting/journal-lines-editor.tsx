@@ -54,6 +54,7 @@ export type {
   JournalDeductionRow,
   JournalDeductions,
   JournalDeductionTotalByCode,
+  JournalDeductionTotals,
 } from "./journal-deductions-types";
 export { JournalLinesEditor } from "./JournalLinesEditor";
 

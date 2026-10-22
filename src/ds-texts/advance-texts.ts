@@ -139,8 +139,10 @@ export interface AdvanceTexts {
   deductedTotal: string;
   /** Částka k úhradě. */
   toPayTotal: string;
-  /** Řádek součtu podle kódu DPH v rekapitulaci. */
-  totalByCode: string;
+  /** Řádek „Celkem po odečtu záloh“ podle kódu DPH v rekapitulaci. */
+  totalAfterDeductions: string;
+  /** Řádek Součet mřížky nad odečty (jen položky). */
+  itemsSum: string;
   /** Důvod odebrání odečtu v potvrzení. */
   removeReason: string;
   /** Souhrn přiřazení již formátovaných částek. */

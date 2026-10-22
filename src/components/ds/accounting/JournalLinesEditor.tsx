@@ -14,7 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { GridZoomContext, ZoomGrid } from "../grid/grid-zoom";
-import { JournalFooter } from "./JournalFooter";
+import { JournalFooter, JournalSumRow } from "./JournalFooter";
 import { JournalDeductionRows } from "./journal-deduction-rows";
 import { JournalDeductionTotals } from "./journal-deduction-summary";
 import { JournalGrossHelperPopover } from "./journal-gross-helper";
@@ -125,6 +125,7 @@ function JournalHeader() {
 function JournalGrid() {
   const { editor } = useJournalEditor();
   const { layout, displayedLines, t } = editor;
+  const hasDeductions = (editor.props.deductions?.rows.length ?? 0) > 0;
   const storageKey = editor.props.storageKey ?? "journal-lines";
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const dragIds = displayedLines.filter((line) => !isPinnedLine(line)).map((line) => line.id);
@@ -172,9 +173,9 @@ function JournalGrid() {
                   <JournalRow key={line.id} line={line} rowIndex={rowIndex} />
                 ))
               )}
-              <JournalDeductionRows />
+              {hasDeductions ? <JournalSumRow itemsOnly /> : null}
             </TableBody>
-            <JournalFooter />
+            {hasDeductions ? <JournalDeductionRows /> : <JournalFooter />}
           </Table>
         </SortableContext>
       </DndContext>
@@ -216,6 +217,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
         >
           <div
             ref={layout.setRootRef}
+            data-slot="journal-lines-editor"
             className={cn("@container overflow-clip rounded-lg border bg-card", props.className)}
             onKeyDown={keyboard.onRootKeyDown}
           >
@@ -225,7 +227,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             <JournalVatRecap />
             {props.afterVatRecap}
             <JournalGrossHelperPopover />
-            <JournalDifferenceBar />
+            {props.deductions ? null : <JournalDifferenceBar />}
             <JournalLinesRecap
               lines={
                 vatOn

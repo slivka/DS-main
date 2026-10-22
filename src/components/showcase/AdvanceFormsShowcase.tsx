@@ -15,10 +15,17 @@ import {
   MOCK_VAT_CODES_IN,
 } from "../../lib/mock/accounting";
 import { INVOICE_HEADER, INVOICE_LINES, CURRENCIES } from "./document-form-showcase-data";
-import { DEDUCTION_ROWS, MANUAL_DEDUCTION, ADVANCE_CURRENCY } from "./advance-showcase-data";
+import {
+  DEDUCTION_ROWS,
+  MANUAL_DEDUCTION,
+  ADVANCE_CURRENCY,
+  SHOWCASE_ITEMS,
+} from "./advance-showcase-data";
 import type { JournalDeductions } from "../ds/accounting/journal-deductions-types";
 
-const round = (value: number) => Math.round(value * 100) / 100;
+/** Součet v celých haléřích (APP čte hotové částky z DB). */
+const sumCents = (values: number[]) =>
+  values.reduce((sum, value) => sum + Math.round(value * 100), 0) / 100;
 import { ShowcaseSection } from "./ShowcaseLayout";
 type ShowcaseType = "FV" | "FP" | "ZFV" | "ZFP" | "PO";
 const INITIAL: Record<ShowcaseType, typeof DEDUCTION_ROWS> = {
@@ -31,29 +38,27 @@ const INITIAL: Record<ShowcaseType, typeof DEDUCTION_ROWS> = {
 function AdvanceForm({ type }: { type: ShowcaseType }) {
   const t = useDsTexts();
   const [value, setValue] = useState({ ...INVOICE_HEADER, recordKey: type });
-  const [lines, setLines] = useState(INVOICE_LINES);
+  const purchase = type === "FP" || type === "ZFP";
+  const codes = purchase ? MOCK_VAT_CODES_IN : MOCK_VAT_CODES_OUT;
+  const code = codes[0];
+  const [lines, setLines] = useState(() =>
+    INVOICE_LINES.map((line) => (line.isFxRounding ? line : { ...line, vatCodeId: code?.id })),
+  );
   const [adding, setAdding] = useState(false);
   const [allocation, setAllocation] = useState<AdvanceAllocation[]>([]);
-  const [rows, setRows] = useState(INITIAL[type]);
-  // Součty dodává APP z DB; ukázka je skládá z řádků.
-  const itemsTotal = round(
-    lines.reduce((sum, line) => sum + (line.foreignAmount ?? line.amount ?? 0), 0),
+  const [rows, setRows] = useState(() =>
+    INITIAL[type].map((row) => ({ ...row, vatCode: code?.code })),
   );
-  const deducted = round(rows.reduce((sum, row) => sum + row.base + row.vat, 0));
-  const byCode = new Map<string, { base: number; vat: number }>([
-    ["Z 21 %", { base: itemsTotal, vat: round(itemsTotal * 0.21) }],
-  ]);
-  for (const row of rows) {
-    const code = row.vatCode ?? "";
-    const prev = byCode.get(code) ?? { base: 0, vat: 0 };
-    byCode.set(code, { base: round(prev.base + row.base), vat: round(prev.vat + row.vat) });
-  }
+  // APP načte součty z DB; ukázka je skládá v celých haléřích (bez výpočtu DPH v DS).
+  const deducted = sumCents(rows.map((row) => row.total));
+  const after = (key: "base" | "vat" | "total" | "homeBase" | "homeVat" | "homeTotal") =>
+    sumCents([SHOWCASE_ITEMS[key], ...rows.map((row) => row[key] ?? 0)]);
   const deductions: JournalDeductions = {
     rows,
     onAdd: (kind) => {
       if (kind === "manual") {
         if (!rows.some((row) => row.id === MANUAL_DEDUCTION.id))
-          setRows([...rows, MANUAL_DEDUCTION]);
+          setRows([...rows, { ...MANUAL_DEDUCTION, vatCode: code?.code }]);
         return;
       }
       setAllocation([]);
@@ -64,21 +69,41 @@ function AdvanceForm({ type }: { type: ShowcaseType }) {
       toast(`${t.advances.remove}: ${row.text}${reason ? ` (${reason})` : ""}`);
     },
     removeReason: type === "FP" ? { required: true } : undefined,
+    // APP uloží základ a z DB vrátí přepočtený řádek; ukázka DPH a kurz nemění.
     onAmountChange: (row, base) =>
       setRows(
         rows.map((item) =>
-          item.id === row.id ? { ...item, base, vat: round(base * 0.21) } : item,
+          item.id === row.id ? { ...item, base, total: sumCents([base, item.vat]) } : item,
         ),
       ),
-    totals: { items: itemsTotal, deducted, toPay: round(itemsTotal + deducted) },
+    totals: {
+      itemsGross: SHOWCASE_ITEMS.total,
+      deductionsGross: deducted,
+      payable: sumCents([SHOWCASE_ITEMS.total, deducted]),
+    },
     recap: {
       deductionRows: rows.map((row) => ({
         id: row.id,
+        vatCode: row.vatCode ?? "",
         label: row.text,
         base: row.base,
         vat: row.vat,
+        total: row.total,
+        homeBase: row.homeBase,
+        homeVat: row.homeVat,
+        homeTotal: row.homeTotal,
       })),
-      totalsByCode: [...byCode].map(([vatCode, value]) => ({ vatCode, ...value })),
+      totalsByCode: [
+        {
+          vatCode: code?.code ?? "",
+          base: after("base"),
+          vat: after("vat"),
+          total: after("total"),
+          homeBase: after("homeBase"),
+          homeVat: after("homeVat"),
+          homeTotal: after("homeTotal"),
+        },
+      ],
     },
   };
   const zl =
@@ -106,8 +131,8 @@ function AdvanceForm({ type }: { type: ShowcaseType }) {
           withoutAccounts: Boolean(zl),
           vat: {
             enabled: true,
-            defaultDirection: type === "FP" || type === "ZFP" ? "in" : "out",
-            codes: type === "FP" || type === "ZFP" ? MOCK_VAT_CODES_IN : MOCK_VAT_CODES_OUT,
+            defaultDirection: purchase ? "in" : "out",
+            codes,
           },
           deductions: zl ? undefined : deductions,
         }}

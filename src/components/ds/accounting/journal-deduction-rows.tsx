@@ -14,11 +14,9 @@ import { DecimalInput } from "../form/decimal-input";
 import { GridAction, GridActions } from "../grid/grid-action";
 import { useJournalEditor } from "./journal-editor-context";
 import type { JournalDeductionRow } from "./journal-deductions-types";
-import { isAccountColumn, isAccountNameColumn, roundJournalAmount } from "./journal-lines-model";
+import { isAccountColumn, isAccountNameColumn } from "./journal-lines-model";
 
 const money = (value: number) => formatAmount(value, 2);
-const totalOf = (row: { base: number; vat: number; total?: number }) =>
-  row.total ?? roundJournalAmount(row.base + row.vat);
 const AMOUNT = "text-right font-mono tabular-nums";
 
 /** Text detailu (stav · platba · DD) pro bublinu i rozbalení. */
@@ -80,7 +78,8 @@ function DeductionCell({
     return amount(row.base);
   }
   if (columnId === "vatAmount") return amount(row.vat);
-  if (columnId === "grossAmount") return amount(totalOf(row));
+  if (columnId === "grossAmount") return amount(row.total);
+  if (columnId === "homeAmount") return row.homeBase === undefined ? null : amount(row.homeBase);
   if (columnId === accountId) return <>{row.account}</>;
   return null;
 }
@@ -174,10 +173,31 @@ export function JournalDeductionRows() {
   const deductions = editor.props.deductions;
   const t = editor.dsTexts.advances;
   const { confirm, confirmDialog } = useConfirmDialog();
+  const bodyRef = React.useRef<HTMLTableSectionElement>(null);
   if (!deductions || deductions.rows.length === 0) return null;
+  /** Po odebrání fokus na tlačítko odebrání dalšího řádku, jinak na split „Odečet zálohy“. */
+  const focusAfter = (index: number) => {
+    const root = bodyRef.current?.closest('[data-slot="journal-lines-editor"]');
+    // Až po návratu fokusu z potvrzovacího dialogu (Radix ho vrací v následujícím tiku).
+    window.setTimeout(() => {
+      const buttons = bodyRef.current?.querySelectorAll<HTMLElement>(
+        '[data-slot="journal-deduction-remove"]:not([disabled])',
+      );
+      const next = buttons?.[Math.min(index, (buttons?.length ?? 1) - 1)];
+      const fallback = root?.querySelector<HTMLElement>(
+        '[data-slot="journal-deduction-add"], [data-slot="journal-deduction-menu"]',
+      );
+      (next ?? fallback)?.focus();
+    }, 30);
+  };
   const remove = (row: JournalDeductionRow) => {
     if (!row.remove?.can) return;
-    if (deductions.confirmRemove === false) return deductions.onRemove?.(row, "");
+    const index = deductions.rows.filter((item) => item.remove?.can).indexOf(row);
+    const done = (reason: string) => {
+      deductions.onRemove?.(row, reason);
+      focusAfter(index);
+    };
+    if (deductions.confirmRemove === false) return done("");
     const reason = deductions.removeReason;
     confirm({
       title: t.remove,
@@ -191,11 +211,11 @@ export function JournalDeductionRows() {
             placeholder: reason.placeholder,
           }
         : undefined,
-      onConfirm: (text) => deductions.onRemove?.(row, text),
+      onConfirm: (text) => done(text),
     });
   };
   return (
-    <>
+    <tbody ref={bodyRef} data-slot="journal-deductions" className="[&_tr:last-child]:border-0">
       {deductions.rows.map((row, index) => (
         <DeductionRow key={row.id} row={row} first={index === 0} onRemove={remove} />
       ))}
@@ -204,6 +224,6 @@ export function JournalDeductionRows() {
           <td>{confirmDialog}</td>
         </tr>
       ) : null}
-    </>
+    </tbody>
   );
 }

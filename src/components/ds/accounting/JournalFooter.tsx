@@ -16,14 +16,18 @@ const TOTAL_SLOTS: Record<string, string> = {
   grossAmount: "journal-lines-total-gross",
 };
 
-/** Patička mřížky se součty. */
-export function JournalFooter() {
+/** Řádek Součet; s odečty záloh jako „Součet položek“ nad oddělovací čarou odečtů. */
+export function JournalSumRow({ itemsOnly = false }: { itemsOnly?: boolean }) {
   const { editor } = useJournalEditor();
   const { totals, vatOn, foreign, t } = editor;
+  const columns = editor.layout.visibleColumns;
   // Součet je bez zaokrouhlení (to má vlastní hodnotu v liště pod mřížkou).
   const homeSum = roundJournalAmount(totals.total - totals.roundingValue);
   const value = (id: string) => {
-    if (id === "row") return t.vatGroups.sum;
+    // „Součet položek“ je delší – stojí ve sloupci Popis, aby se nevešel do úzkého Ř. jen zkrácený.
+    const labelId = itemsOnly && columns.some((column) => column.id === "text") ? "text" : "row";
+    if (id === labelId) return itemsOnly ? editor.dsTexts.advances.itemsSum : t.vatGroups.sum;
+    if (id === "row" || id === "text") return null;
     if (id === "amount")
       return formatAmount(
         vatOn ? totals.documentBaseTotal : foreign ? totals.documentLinesTotal : homeSum,
@@ -35,23 +39,34 @@ export function JournalFooter() {
     return null;
   };
   return (
+    <TableRow
+      data-slot="journal-footer-sum"
+      data-items-only={itemsOnly || undefined}
+      className={cn(itemsOnly && "border-t bg-muted/50 font-medium hover:bg-muted/50")}
+    >
+      {editor.layout.visibleColumns.map((column) => (
+        <TableCell
+          key={column.id}
+          data-slot={TOTAL_SLOTS[column.id]}
+          data-pin-right={column.id === "actions" || undefined}
+          className={cn(
+            column.id === "row" && "journal-row-cell",
+            column.align === "right" && "text-right",
+            column.id === "actions" && "grid-actions-footer sticky right-0 z-10 bg-muted",
+          )}
+        >
+          {value(column.id)}
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+}
+
+/** Patička mřížky se součty. */
+export function JournalFooter() {
+  return (
     <TableFooter>
-      <TableRow data-slot="journal-footer-sum">
-        {editor.layout.visibleColumns.map((column) => (
-          <TableCell
-            key={column.id}
-            data-slot={TOTAL_SLOTS[column.id]}
-            data-pin-right={column.id === "actions" || undefined}
-            className={cn(
-              column.id === "row" && "journal-row-cell",
-              column.align === "right" && "text-right",
-              column.id === "actions" && "grid-actions-footer sticky right-0 z-10 bg-muted",
-            )}
-          >
-            {value(column.id)}
-          </TableCell>
-        ))}
-      </TableRow>
+      <JournalSumRow />
     </TableFooter>
   );
 }
