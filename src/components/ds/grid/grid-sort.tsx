@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { TableHead } from "../../ui/table";
+import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
+import { useGridLayoutChange } from "./use-grid-layout-change";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type SortDir = "asc" | "desc";
@@ -8,8 +10,8 @@ export type SortDir = "asc" | "desc";
 export type SortState<Id extends string> = { key: Id | null; dir: SortDir };
 
 /**
- * Sdílené řazení gridů. Stav se ukládá do prohlížeče pod `sort:<storageKey>`,
- * takže si každý grid pamatuje poslední zvojený sloupec i směr.
+ * Sdílené řazení gridů. Stav se ukládá do úložiště rozložení gridů
+ * (`updateGridLayout`), takže si každý grid pamatuje poslední zvojený sloupec i směr.
  */
 export function useGridSort<Id extends string>(
   storageKey: string,
@@ -18,16 +20,19 @@ export function useGridSort<Id extends string>(
 ) {
   const [state, setState] = useState<SortState<Id>>({ key: defaultKey, dir: defaultDir });
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`sort:${storageKey}`);
-      if (!raw) return;
-      const saved = JSON.parse(raw) as SortState<Id>;
-      if (saved && (saved.dir === "asc" || saved.dir === "desc")) setState(saved);
-    } catch {
-      /* poškozené nastavení ignorujeme */
-    }
+  const applyStored = useCallback(() => {
+    const saved = getGridLayout(storageKey).sort;
+    if (!saved || (saved.dir !== "asc" && saved.dir !== "desc")) return;
+    setState((cur) =>
+      cur.key === saved.key && cur.dir === saved.dir
+        ? cur
+        : { key: saved.key as Id | null, dir: saved.dir },
+    );
   }, [storageKey]);
+  useEffect(() => {
+    applyStored();
+  }, [applyStored]);
+  useGridLayoutChange(storageKey, applyStored);
 
   const toggle = useCallback(
     (key: Id) => {
@@ -36,11 +41,7 @@ export function useGridSort<Id extends string>(
           prev.key === key
             ? { key, dir: prev.dir === "asc" ? "desc" : "asc" }
             : { key, dir: "asc" };
-        try {
-          localStorage.setItem(`sort:${storageKey}`, JSON.stringify(next));
-        } catch {
-          /* úložiště není dostupné */
-        }
+        updateGridLayout(storageKey, { sort: next });
         return next;
       });
     },

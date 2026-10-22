@@ -20,6 +20,8 @@ import {
 } from "../../ui/dropdown-menu";
 import { gridFontSize } from "./grid-zoom";
 import { compareValues } from "./grid-sort";
+import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
+import { useGridLayoutChange } from "./use-grid-layout-change";
 import { fmtAmount } from "../../../lib/format";
 import { formatUserDate } from "../../../lib/date-time-preferences";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
@@ -62,7 +64,7 @@ const CHIP_MIME = "application/x-grid-group-chip";
 
 /**
  * Sdílené seskupování řádků gridu podle sloupců.
- * Volba se ukládá do prohlížeče pod `grouping:<storageKey>`.
+ * Volba se ukládá do úložiště rozložení gridů (`updateGridLayout`).
  */
 export function useGridGrouping(
   storageKey: string,
@@ -77,6 +79,18 @@ export function useGridGrouping(
   const [groups, setGroups] = useState<GroupSpec[]>(defaultGroups);
   const [collapsed, setCollapsed] = useState<string[]>([]);
 
+  const readStored = useCallback((): { enabled: boolean; groups: GroupSpec[] } => {
+    const saved = getGridLayout(storageKey).grouping;
+    if (!saved) return { enabled: defaultGroups.length > 0, groups: defaultGroups };
+    return {
+      enabled: !!saved.enabled,
+      groups: Array.isArray(saved.groups)
+        ? (saved.groups.filter((g) => g && g.id) as GroupSpec[])
+        : [],
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey, defaultGroupsKey]);
+
   useEffect(() => {
     setCollapsed([]);
     if (disabled) {
@@ -84,32 +98,26 @@ export function useGridGrouping(
       setGroups([]);
       return;
     }
-    try {
-      const raw = localStorage.getItem(`grouping:${storageKey}`);
-      if (!raw) {
-        setEnabledState(defaultGroups.length > 0);
-        setGroups(defaultGroups);
-        return;
-      }
-      const saved = JSON.parse(raw) as { enabled?: boolean; groups?: GroupSpec[] };
-      setEnabledState(!!saved.enabled);
-      setGroups(Array.isArray(saved.groups) ? saved.groups.filter((g) => g && g.id) : []);
-    } catch {
-      setEnabledState(false);
-      setGroups([]);
-    }
+    const saved = readStored();
+    setEnabledState(saved.enabled);
+    setGroups(saved.groups);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, disabled, defaultGroupsKey]);
+
+  // Synchronizace mezi dvěma gridy se stejným klíčem (bez resetu sbalení).
+  useGridLayoutChange(storageKey, () => {
+    if (disabled) return;
+    const saved = readStored();
+    setEnabledState((cur) => (cur === saved.enabled ? cur : saved.enabled));
+    setGroups((cur) => (JSON.stringify(cur) === JSON.stringify(saved.groups) ? cur : saved.groups));
+  });
 
   const persist = useCallback(
     (next: { enabled: boolean; groups: GroupSpec[] }) => {
       if (disabled) return;
       setEnabledState(next.enabled);
       setGroups(next.groups);
-      try {
-        localStorage.setItem(`grouping:${storageKey}`, JSON.stringify(next));
-      } catch {
-        /* úložiště není dostupné */
-      }
+      updateGridLayout(storageKey, { grouping: next });
     },
     [storageKey, disabled],
   );

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
+import { useGridLayoutChange } from "./use-grid-layout-change";
 
 const keepVisibleState = <Id extends string>(value: Record<Id, boolean>) => value;
 
@@ -20,7 +22,7 @@ export type ColumnViewsApi = {
 
 /**
  * Pojmenované pohledy (uložené sestavy sloupců) pro jeden grid.
- * Ukládá se do prohlížeče pod `columnViews:<storageKey>`.
+ * Ukládá se do úložiště rozložení gridů (`updateGridLayout`).
  */
 export function useColumnViews<Id extends string>(
   storageKey: string,
@@ -32,24 +34,25 @@ export function useColumnViews<Id extends string>(
   const [views, setViews] = useState<ColumnView[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const storedViews = useCallback(
+    () => (getGridLayout(storageKey).views as ColumnView[] | undefined) ?? [],
+    [storageKey],
+  );
+
   useEffect(() => {
     setActiveId(null);
-    try {
-      const raw = localStorage.getItem(`columnViews:${storageKey}`);
-      setViews(raw ? (JSON.parse(raw) as ColumnView[]) : []);
-    } catch {
-      setViews([]);
-    }
-  }, [storageKey]);
+    setViews(storedViews());
+  }, [storageKey, storedViews]);
+
+  useGridLayoutChange(storageKey, () => {
+    const next = storedViews();
+    setViews((cur) => (JSON.stringify(cur) === JSON.stringify(next) ? cur : next));
+  });
 
   const persistViews = useCallback(
     (next: ColumnView[]) => {
       setViews(next);
-      try {
-        localStorage.setItem(`columnViews:${storageKey}`, JSON.stringify(next));
-      } catch {
-        /* úložiště není dostupné */
-      }
+      updateGridLayout(storageKey, { views: next });
     },
     [storageKey],
   );
@@ -128,7 +131,7 @@ export type GridColumnGroup = { section: string; span: number };
 
 /**
  * Sdílená správa viditelnosti sloupců pro všechny gridy.
- * Nastavení se ukládá do prohlížeče pod `columns:<storageKey>`.
+ * Nastavení se ukládá do úložiště rozložení gridů (`updateGridLayout`).
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
 export function useGridColumns<Id extends string>(
@@ -142,8 +145,10 @@ export function useGridColumns<Id extends string>(
     [columns],
   );
   const persistentRecord = useCallback(
-    <Value,>(record: Partial<Record<Id, Value>>) =>
-      Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))),
+    <Value,>(record: Partial<Record<Id, Value>>): Record<string, Value> =>
+      Object.fromEntries(
+        Object.entries(record).filter(([id]) => persistentIds.has(id as Id)),
+      ) as Record<string, Value>,
     [persistentIds],
   );
   const persistentOrder = useCallback(
@@ -162,61 +167,44 @@ export function useGridColumns<Id extends string>(
   );
 
   const [visible, setVisible] = useState<Record<Id, boolean>>(defaults);
-  const visibilityOverridesKey = `columnVisibilityOverrides:${storageKey}`;
   const [explicitVisibility, setExplicitVisibility] = useState<Id[]>([]);
 
-  useEffect(() => {
-    try {
-      // Aktuální stav; pokud chybí, použijeme uložené vlastní výchozí nastavení.
-      let raw = localStorage.getItem(`columns:${storageKey}`);
-      if (!raw) {
-        const defRaw = localStorage.getItem(`columnsDefault:${storageKey}`);
-        if (defRaw) {
-          const def = JSON.parse(defRaw) as { visible?: Partial<Record<Id, boolean>> };
-          raw = def.visible ? JSON.stringify(def.visible) : null;
-        }
-      }
-      if (!raw) return;
-      const saved = JSON.parse(raw) as Partial<Record<Id, boolean>>;
-      setVisible(() => {
-        const next = { ...defaults };
+  // Aktuální stav; pokud chybí, použijeme uložené vlastní výchozí nastavení.
+  const applyStoredVisible = useCallback(() => {
+    const layout = getGridLayout(storageKey);
+    const saved = layout.visible ?? layout.customDefault?.visible;
+    setVisible((cur) => {
+      const next = { ...cur };
+      if (saved) {
         for (const c of columns) {
           if (typeof saved[c.id] === "boolean") next[c.id] = c.locked ? true : saved[c.id]!;
         }
-        return normalizeVisible(next);
-      });
-    } catch {
-      /* poškozené nastavení ignorujeme */
-    }
+      }
+      const normalized = normalizeVisible(next);
+      return JSON.stringify(normalized) === JSON.stringify(cur) ? cur : normalized;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, normalizeVisible]);
 
   useEffect(() => {
-    let saved: Id[] = [];
-    try {
-      const raw = localStorage.getItem(visibilityOverridesKey);
-      saved = raw ? (JSON.parse(raw) as Id[]).filter((id) => persistentIds.has(id)) : [];
-    } catch {
-      saved = [];
-    }
+    applyStoredVisible();
+  }, [applyStoredVisible]);
+
+  const applyStoredOverrides = useCallback(() => {
+    const saved = (getGridLayout(storageKey).visibilityOverrides ?? []).filter((id) =>
+      persistentIds.has(id as Id),
+    ) as Id[];
     // Stav nastavíme jen při skutečné změně obsahu – jinak by nestabilní
     // identita `persistentIds` (inline `columns` u volajícího) způsobila
     // nekonečný cyklus render → efekt → setState.
     setExplicitVisibility((cur) =>
       cur.length === saved.length && cur.every((id, i) => id === saved[i]) ? cur : saved,
     );
-  }, [visibilityOverridesKey, persistentIds]);
+  }, [storageKey, persistentIds]);
 
   useEffect(() => {
-    const sync = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey: string; visible: Record<Id, boolean> }>)
-        .detail;
-      if (detail?.storageKey === storageKey && detail.visible)
-        setVisible(normalizeVisible(detail.visible));
-    };
-    window.addEventListener("grid-columns-change", sync);
-    return () => window.removeEventListener("grid-columns-change", sync);
-  }, [storageKey, normalizeVisible]);
+    applyStoredOverrides();
+  }, [applyStoredOverrides]);
 
   /** Nové (dynamické) sloupce doplníme do stavu s výchozí viditelností. */
   useEffect(() => {
@@ -233,14 +221,7 @@ export function useGridColumns<Id extends string>(
     (next: Record<Id, boolean>) => {
       const safe = normalizeVisible(next);
       setVisible(safe);
-      try {
-        localStorage.setItem(`columns:${storageKey}`, JSON.stringify(persistentRecord(safe)));
-      } catch {
-        /* úložiště není dostupné */
-      }
-      window.dispatchEvent(
-        new CustomEvent("grid-columns-change", { detail: { storageKey, visible: safe } }),
-      );
+      updateGridLayout(storageKey, { visible: persistentRecord(safe) });
     },
     [storageKey, persistentRecord, normalizeVisible],
   );
@@ -250,15 +231,11 @@ export function useGridColumns<Id extends string>(
       persist({ ...visible, [id]: !visible[id] });
       setExplicitVisibility((current) => {
         const next = current.includes(id) ? current : [...current, id];
-        try {
-          localStorage.setItem(visibilityOverridesKey, JSON.stringify(next));
-        } catch {
-          /* úložiště není dostupné */
-        }
+        updateGridLayout(storageKey, { visibilityOverrides: next });
         return next;
       });
     },
-    [persist, visible, visibilityOverridesKey],
+    [persist, visible, storageKey],
   );
 
   // --- pořadí sloupců ---------------------------------------------------
@@ -266,23 +243,11 @@ export function useGridColumns<Id extends string>(
   const orderKey = defaultOrder.join("|");
   const [order, setOrder] = useState<Id[]>(defaultOrder);
 
-  useEffect(() => {
+  // Bez uloženého pořadí použijeme pořadí z vlastního výchozího nastavení.
+  const applyStoredOrder = useCallback(() => {
     const base = orderKey.split("|") as Id[];
-    let saved: Id[] = [];
-    try {
-      let raw = localStorage.getItem(`columnOrder:${storageKey}`);
-      if (!raw) {
-        // Bez uloženého pořadí použijeme pořadí z vlastního výchozího nastavení.
-        const defRaw = localStorage.getItem(`columnsDefault:${storageKey}`);
-        if (defRaw) {
-          const def = JSON.parse(defRaw) as { order?: Id[] };
-          if (def.order?.length) raw = JSON.stringify(def.order);
-        }
-      }
-      if (raw) saved = JSON.parse(raw) as Id[];
-    } catch {
-      saved = [];
-    }
+    const layout = getGridLayout(storageKey);
+    const saved = (layout.order ?? layout.customDefault?.order ?? []) as Id[];
     // zachováme uložené pořadí, nové sloupce doplníme na jejich původní místa
     const kept = saved.filter((id) => base.includes(id));
     const next = kept.length ? [...kept] : [...base];
@@ -290,28 +255,17 @@ export function useGridColumns<Id extends string>(
       if (!next.includes(id)) next.splice(Math.min(i, next.length), 0, id);
     });
     setOrder((cur) => (cur.join("|") === next.join("|") ? cur : next));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, orderKey]);
 
   useEffect(() => {
-    const sync = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey: string; order: Id[] }>).detail;
-      if (detail?.storageKey === storageKey && detail.order) setOrder(detail.order);
-    };
-    window.addEventListener("grid-column-order-change", sync);
-    return () => window.removeEventListener("grid-column-order-change", sync);
-  }, [storageKey]);
+    applyStoredOrder();
+  }, [applyStoredOrder]);
 
   const persistOrder = useCallback(
     (next: Id[]) => {
       setOrder(next);
-      try {
-        localStorage.setItem(`columnOrder:${storageKey}`, JSON.stringify(persistentOrder(next)));
-      } catch {
-        /* úložiště není dostupné */
-      }
-      window.dispatchEvent(
-        new CustomEvent("grid-column-order-change", { detail: { storageKey, order: next } }),
-      );
+      updateGridLayout(storageKey, { order: persistentOrder(next) });
     },
     [storageKey, persistentOrder],
   );
@@ -349,42 +303,23 @@ export function useGridColumns<Id extends string>(
   // --- šířky sloupců -----------------------------------------------------
   // Šířky se sdílejí mezi všemi instancemi gridu se stejným storageKey
   // (např. vnořené podgridy ve stromovém zobrazení) – změna na jednom
-  // se okamžitě projeví na všech.
-  const widthsKey = `columnWidths:${storageKey}`;
+  // se okamžitě projeví na všech (událost `grid-layout-change`).
   const [widths, setWidths] = useState<Partial<Record<Id, number>>>({});
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`columnWidths:${storageKey}`);
-      setWidths(raw ? (JSON.parse(raw) as Partial<Record<Id, number>>) : {});
-    } catch {
-      setWidths({});
-    }
+  const applyStoredWidths = useCallback(() => {
+    const saved = (getGridLayout(storageKey).widths ?? {}) as Partial<Record<Id, number>>;
+    setWidths((cur) => (JSON.stringify(cur) === JSON.stringify(saved) ? cur : saved));
   }, [storageKey]);
 
   useEffect(() => {
-    const onShared = (e: Event) => {
-      const detail = (e as CustomEvent<{ key: string; widths: Partial<Record<Id, number>> }>)
-        .detail;
-      if (!detail || detail.key !== widthsKey) return;
-      setWidths(detail.widths);
-    };
-    window.addEventListener("grid-column-widths", onShared);
-    return () => window.removeEventListener("grid-column-widths", onShared);
-  }, [widthsKey]);
+    applyStoredWidths();
+  }, [applyStoredWidths]);
 
   const storeWidths = useCallback(
     (next: Partial<Record<Id, number>>) => {
-      try {
-        localStorage.setItem(widthsKey, JSON.stringify(persistentRecord(next)));
-      } catch {
-        /* úložiště není dostupné */
-      }
-      window.dispatchEvent(
-        new CustomEvent("grid-column-widths", { detail: { key: widthsKey, widths: next } }),
-      );
+      updateGridLayout(storageKey, { widths: persistentRecord(next) });
     },
-    [widthsKey, persistentRecord],
+    [storageKey, persistentRecord],
   );
 
   const persistWidths = useCallback(
@@ -422,57 +357,43 @@ export function useGridColumns<Id extends string>(
   );
 
   // --- vlastní výchozí nastavení ----------------------------------------
-  const defaultKey = `columnsDefault:${storageKey}`;
   const [hasCustomDefault, setHasCustomDefault] = useState(false);
 
+  const applyStoredDefault = useCallback(() => {
+    setHasCustomDefault(!!getGridLayout(storageKey).customDefault);
+  }, [storageKey]);
+
   useEffect(() => {
-    try {
-      setHasCustomDefault(!!localStorage.getItem(defaultKey));
-    } catch {
-      setHasCustomDefault(false);
-    }
-  }, [defaultKey]);
+    applyStoredDefault();
+  }, [applyStoredDefault]);
 
   /** Uloží aktuální viditelnost, pořadí i šířky jako výchozí zobrazení gridu. */
   const saveDefault = useCallback(() => {
-    try {
-      localStorage.setItem(
-        defaultKey,
-        JSON.stringify({
-          visible: persistentRecord(visible),
-          order: persistentOrder(order),
-          widths: persistentRecord(widths),
-        }),
-      );
-      setHasCustomDefault(true);
-    } catch {
-      /* úložiště není dostupné */
-    }
-  }, [defaultKey, visible, order, widths, persistentRecord, persistentOrder]);
+    updateGridLayout(storageKey, {
+      customDefault: {
+        visible: persistentRecord(visible),
+        order: persistentOrder(order),
+        widths: persistentRecord(widths),
+      },
+    });
+    setHasCustomDefault(true);
+  }, [storageKey, visible, order, widths, persistentRecord, persistentOrder]);
 
   /** Zruší vlastní výchozí zobrazení (vrátí tovární). */
   const clearDefault = useCallback(() => {
-    try {
-      localStorage.removeItem(defaultKey);
-    } catch {
-      /* úložiště není dostupné */
-    }
+    updateGridLayout(storageKey, { customDefault: undefined });
     setHasCustomDefault(false);
-  }, [defaultKey]);
+  }, [storageKey]);
 
   /** Obnoví výchozí zobrazení – vlastní, pokud je uložené, jinak tovární. */
   const reset = useCallback(() => {
-    let saved: {
-      visible?: Partial<Record<Id, boolean>>;
-      order?: Id[];
-      widths?: Partial<Record<Id, number>>;
-    } | null = null;
-    try {
-      const raw = localStorage.getItem(defaultKey);
-      saved = raw ? JSON.parse(raw) : null;
-    } catch {
-      saved = null;
-    }
+    const saved = getGridLayout(storageKey).customDefault as
+      | {
+          visible?: Partial<Record<Id, boolean>>;
+          order?: Id[];
+          widths?: Partial<Record<Id, number>>;
+        }
+      | undefined;
     if (saved?.visible) {
       const next = { ...defaults };
       for (const c of columns) {
@@ -495,21 +416,8 @@ export function useGridColumns<Id extends string>(
     }
     persistWidths(saved?.widths ?? {});
     setExplicitVisibility([]);
-    try {
-      localStorage.removeItem(visibilityOverridesKey);
-    } catch {
-      /* úložiště není dostupné */
-    }
-  }, [
-    defaultKey,
-    defaults,
-    columns,
-    persist,
-    persistOrder,
-    persistWidths,
-    defaultOrder,
-    visibilityOverridesKey,
-  ]);
+    updateGridLayout(storageKey, { visibilityOverrides: undefined });
+  }, [storageKey, defaults, columns, persist, persistOrder, persistWidths, defaultOrder]);
 
   const views = useColumnViews(
     storageKey,
@@ -524,29 +432,21 @@ export function useGridColumns<Id extends string>(
     () => Array.from(new Set(columns.map((c) => c.section).filter(Boolean))) as string[],
     [columns],
   );
-  const sectionsKey = `columnSections:${storageKey}`;
   const [hiddenSections, setHiddenSections] = useState<string[]>([]);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`columnSections:${storageKey}`);
-      const saved = raw ? (JSON.parse(raw) as string[]) : [];
-      const known = saved.filter((s) => sections.includes(s));
-      // Nikdy nesmí být skryté všechny sekce – grid by zůstal bez sloupců.
-      const safe = sections.length > 0 && known.length >= sections.length ? [] : known;
-      if (safe.length !== saved.length) {
-        try {
-          localStorage.setItem(`columnSections:${storageKey}`, JSON.stringify(safe));
-        } catch {
-          /* úložiště není dostupné */
-        }
-      }
-      setHiddenSections(safe);
-    } catch {
-      setHiddenSections([]);
-    }
+  const applyStoredSections = useCallback(() => {
+    const saved = getGridLayout(storageKey).sections ?? [];
+    const known = saved.filter((s) => sections.includes(s));
+    // Nikdy nesmí být skryté všechny sekce – grid by zůstal bez sloupců.
+    const safe = sections.length > 0 && known.length >= sections.length ? [] : known;
+    if (safe.length !== saved.length) updateGridLayout(storageKey, { sections: safe });
+    setHiddenSections((cur) => (cur.join("|") === safe.join("|") ? cur : safe));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, sections.join("|")]);
+
+  useEffect(() => {
+    applyStoredSections();
+  }, [applyStoredSections]);
 
   const toggleSection = useCallback(
     (section: string) => {
@@ -555,15 +455,11 @@ export function useGridColumns<Id extends string>(
         // poslední zapnutou sekci nelze vypnout
         if (hiding && cur.length + 1 >= sections.length) return cur;
         const next = hiding ? [...cur, section] : cur.filter((s) => s !== section);
-        try {
-          localStorage.setItem(sectionsKey, JSON.stringify(next));
-        } catch {
-          /* úložiště není dostupné */
-        }
+        updateGridLayout(storageKey, { sections: next });
         return next;
       });
     },
-    [sectionsKey, sections.length],
+    [storageKey, sections.length],
   );
 
   const sectionVisible = useCallback(
@@ -638,6 +534,16 @@ export function useGridColumns<Id extends string>(
     }
     return 0;
   }, [orderedColumns, effectiveVisible]);
+
+  // Synchronizace mezi instancemi gridu se stejným klíčem (událost grid-layout-change).
+  useGridLayoutChange(storageKey, () => {
+    applyStoredVisible();
+    applyStoredOverrides();
+    applyStoredOrder();
+    applyStoredWidths();
+    applyStoredDefault();
+    applyStoredSections();
+  });
 
   return {
     columns: orderedColumns,
