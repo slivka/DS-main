@@ -173,7 +173,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-paymentReference",
               t.paymentReference,
-              <Input
+              lockedValue("paymentReference", "document-paymentReference", value.paymentReference ?? "") ?? <Input
                 id="document-paymentReference"
                 value={value.paymentReference ?? ""}
                 onChange={(event) => patch({ paymentReference: event.target.value })}
