@@ -5302,6 +5302,7 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 | `description` | string | `—` |
 | `onSubmit` | function | `—` |
 | `submitDisabled` | boolean | `false` |
+| `submitDisabledReason` | string | `—` |
 | `submitLabel` | string | `—` |
 | `closeLabel` | string | `—` |
 | `busy` | boolean | `false` |
