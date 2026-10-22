@@ -1,5 +1,5 @@
 /** PDF zdroje · vlastní klientské vykreslení podle šířky · nesmí načítat doménová data. */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 /** Vnitřní vlastnosti náhledu, adresu a chybovou obsluhu dodává SourcePreview. */
 interface SourcePdfPreviewProps {
@@ -14,12 +14,11 @@ interface SourcePdfPreviewProps {
 /** Iframe má vlastní svislé posouvání; PDF.js stránky vždy změří podle aktuální šířky. */
 export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps) {
   const frame = useRef<HTMLIFrameElement>(null);
-  const [ready, setReady] = useState(false);
   const error = useRef(onError);
   error.current = onError;
   useEffect(() => {
     const element = frame.current;
-    if (!element || !ready) return;
+    if (!element) return;
     let stopped = false;
     let loaded = false;
     let generation = 0;
@@ -84,20 +83,26 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         if (!stopped) error.current();
       }
     };
-    void load();
+    // Srcdoc může být připraveno před připojením React load handleru.
+    const check = window.setInterval(() => {
+      if (element.contentDocument?.URL !== "about:srcdoc" ||
+          element.contentDocument.readyState !== "complete") return;
+      window.clearInterval(check);
+      void load();
+    }, 20);
     return () => {
       stopped = true;
+      window.clearInterval(check);
       generation++;
       clearTimeout(timer);
       observer?.disconnect();
       dispose();
     };
-  }, [url, ready]);
+  }, [url]);
   return (
     <iframe
       ref={frame}
       title={title}
-      onLoad={() => setReady(true)}
       onError={onError}
       data-slot="source-pdf-preview"
       className="absolute inset-0 h-full w-full border-0"
