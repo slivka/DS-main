@@ -121,7 +121,15 @@ export function BankMovementAccount({
           error={iban ? fieldErrors?.bankSwift : fieldErrors?.bankCode}
           warning={iban ? fieldWarnings?.bankSwift : fieldWarnings?.bankCode}
         >
-          {iban ? (
+          {codeLocked ? (
+            <FieldValue
+              id="document-bank-code"
+              lockedReason={codeLocked}
+              className="font-mono tabular-nums"
+            >
+              {iban ? (value.bankSwift ?? "") : (value.bankCode ?? "")}
+            </FieldValue>
+          ) : iban ? (
             <Input
               id="document-bank-code"
               value={value.bankSwift ?? ""}
