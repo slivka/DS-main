@@ -1,4 +1,5 @@
 /** Faktura návrh C · skládá sekce společného jsPDF · žádné doménové výpočty ani druhý tiskový systém. */
+import { resolveInvoiceOptions } from "./invoice-options";
 import { createPrintDocument } from "../report-pdf";
 import { INVOICE_PRINT_CS, INVOICE_PRINT_SK } from "../../../../ds-texts/invoice-print-texts";
 import type { BuildInvoicePdfOptions, InvoicePrintData } from "./invoice-types";
@@ -29,7 +30,7 @@ export async function buildInvoicePdf(
   ]);
   const c: InvoiceCanvas = {
     doc,
-    data,
+    data: { ...data, print: { ...data.print, options: resolveInvoiceOptions(data.print.options) } },
     opts,
     texts: { ...(opts.locale === "sk" ? INVOICE_PRINT_SK : INVOICE_PRINT_CS), ...opts.texts },
     y: 35,

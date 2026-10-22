@@ -235,6 +235,8 @@ export const INVOICE_PRINT_SK: InvoicePrintTexts = {
   download: "Stiahnuť PDF",
   preparing: "Pripravujem náhľad…",
   error: "Náhľad sa nepodarilo pripraviť.",
+  logoSquare: "Štvorcové logo",
+  logoWide: "Obdĺžnikové logo",
   examplePdp: "Prenesená daň · 10 záloh",
   exampleStandard: "DPH 21 % + 12 %",
   exampleEur: "Faktúra v EUR",

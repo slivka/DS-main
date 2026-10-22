@@ -6,7 +6,12 @@ import {
   invoiceWrap,
   type InvoiceCanvas,
 } from "./invoice-canvas";
-import { formatInvoiceAmount as money, formatInvoiceDate } from "./invoice-format";
+import {
+  formatInvoiceAmount as money,
+  formatInvoiceDate,
+  formatInvoiceRate,
+} from "./invoice-format";
+import { invoiceHomeCurrency, resolveInvoiceOptions } from "./invoice-options";
 import { drawInvoiceTable } from "./invoice-table";
 import { INVOICE_THEME as T } from "./invoice-theme";
 /** Seznam záloh nebo souhrn všech čísel. */
@@ -14,7 +19,7 @@ export function drawInvoiceAdvances(c: InvoiceCanvas) {
   const a = c.data.advances,
     t = c.texts;
   if (!a.length) return;
-  if (!c.data.print.options.showAdvanceDetail) {
+  if (!resolveInvoiceOptions(c.data.print.options).showAdvanceDetail) {
     invoiceText(
       c,
       `${t.advances} (${a.length}): ${a.flatMap((v) => v.advance_list_numbers).join(", ")} · ${money(c.data.totals.advances_deducted)}`,
@@ -50,7 +55,7 @@ export function drawInvoiceVat(c: InvoiceCanvas) {
   const d = c.data,
     t = c.texts;
   if (d.kind === "invoice_non_vat") return;
-  const home = c.opts.homeCurrency;
+  const home = invoiceHomeCurrency(c.opts);
   const foreign = Boolean(home && d.payment.currency_code !== home.code);
   const currency = d.payment.currency_code;
   if (d.vat_recap.length) {
@@ -93,7 +98,7 @@ export function drawInvoiceVat(c: InvoiceCanvas) {
     if (foreign && home && d.totals.rate != null) {
       const values = {
         source: d.totals.rate_source ?? "",
-        rate: d.totals.rate.toLocaleString("cs-CZ", { maximumFractionDigits: 6 }),
+        rate: formatInvoiceRate(d.totals.rate, c.opts.locale),
         home: home.symbol,
         currency,
         date: formatInvoiceDate(d.date_tax ?? d.totals.rate_date),
@@ -137,7 +142,7 @@ export function drawInvoiceIdentityDetails(c: InvoiceCanvas) {
 /** Poznámka a nerozdělené pole převzetí. */
 export function drawInvoiceClosing(c: InvoiceCanvas) {
   invoiceText(c, c.data.print.note ?? "", c.texts.note);
-  if (!c.data.print.options.showSignature) return;
+  if (!resolveInvoiceOptions(c.data.print.options).showSignature) return;
   invoiceEnsure(c, 24);
   invoiceFont(c, 8, false, T.gray);
   c.doc.text(c.texts.receivedSignature, T.margin, c.y + 5);

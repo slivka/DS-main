@@ -5,7 +5,7 @@ import {
   invoiceTextHeight,
   type InvoiceCanvas,
 } from "./invoice-canvas";
-import { formatInvoiceAmount as money } from "./invoice-format";
+import { formatInvoiceAmount as money, formatInvoiceQuantity } from "./invoice-format";
 import { INVOICE_THEME as T } from "./invoice-theme";
 import {
   drawInvoiceTableHead,
@@ -73,7 +73,7 @@ export function drawInvoiceItems(c: InvoiceCanvas) {
   ];
   const rows = c.data.lines.map((l) => [
     { text: l.description },
-    { text: money(l.quantity) },
+    { text: formatInvoiceQuantity(l.quantity, c.opts.locale) },
     { text: l.unit ?? "" },
     { text: money(l.unit_price) },
     {
@@ -85,7 +85,8 @@ export function drawInvoiceItems(c: InvoiceCanvas) {
   const measured = measureInvoiceRows(c, columns, rows);
   const lead = c.data.print.header_text ?? "";
   const leadH = invoiceTextHeight(c, lead);
-  const tail = invoiceTotalsHeight(c);
+  const tailHeight = invoiceTotalsHeight(c);
+  const tail = tailHeight > T.bottom - T.continuationTop ? 0 : tailHeight;
   invoiceEnsure(
     c,
     leadH +
@@ -94,6 +95,7 @@ export function drawInvoiceItems(c: InvoiceCanvas) {
       (measured.length <= 2 ? tail : 0),
   );
   if (lead) invoiceText(c, lead);
+  invoiceEnsure(c, T.tableHeadHeight + measured.slice(0, 2).reduce((s, r) => s + r.height, 0));
   const pages = planInvoiceItemPages(
     measured.map((r) => r.height),
     T.bottom - c.y,
@@ -106,7 +108,10 @@ export function drawInvoiceItems(c: InvoiceCanvas) {
     drawInvoiceTableHead(c, t.items, columns, page > 0);
     indices.forEach((index, i) => {
       const row = measured[index];
-      if (row) drawInvoiceTableRow(c, columns, row, i === indices.length - 1);
+      if (row) {
+        invoiceEnsure(c, row.height);
+        drawInvoiceTableRow(c, columns, row, i === indices.length - 1);
+      }
     });
     if (page === pages.length - 1) drawInvoiceTotals(c);
   });

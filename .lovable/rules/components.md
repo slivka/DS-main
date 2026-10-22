@@ -7601,6 +7601,7 @@ Společná řízená pole předlohy knihy a dokladu: pět voleb (kalendář, zá
 **Avoid:**
 
 - Nepočítejte tiskové daně ani odečty v DS; nepřidávejte druhý PDF systém ani generované firemní logo.
+- Tiskové volby jsou volitelné: kalendář false, podrobné zálohy true, QR true, podpis false, vystavil true. Staré showHeader/showFooter/showVatRecap/showNote/showColumnHeadings/showTotalsRow jsou ignorované @deprecated do 3.0.0.
 
 ### DocumentDeliveryFields
 

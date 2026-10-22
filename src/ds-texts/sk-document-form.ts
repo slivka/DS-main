@@ -45,11 +45,17 @@ export const DOCUMENT_FORM_TEXTS_SK: DsTexts["documentForm"] = {
   printGeneral: "Obecné",
   printItems: "Položky",
   issuedBy: "Vystavil",
+  /** @deprecated Od 2.133.0 nepoužíváno; použijte invoicePrint. Odstranění v 3.0.0. */
   printHeader: "Tisknout záhlaví",
+  /** @deprecated Od 2.133.0 nepoužíváno; použijte invoicePrint. Odstranění v 3.0.0. */
   printFooter: "Tisknout zápatí",
+  /** @deprecated Od 2.133.0 nepoužíváno; použijte invoicePrint. Odstranění v 3.0.0. */
   printVatRecap: "Tisknout rekapitulaci DPH",
+  /** @deprecated Od 2.133.0 nepoužíváno; použijte invoicePrint. Odstranění v 3.0.0. */
   printNote: "Tisknout poznámku",
+  /** @deprecated Od 2.133.0 nepoužíváno; použijte invoicePrint. Odstranění v 3.0.0. */
   printColumnHeadings: "Tisknout nadpisy sloupců",
+  /** @deprecated Od 2.133.0 nepoužíváno; použijte invoicePrint. Odstranění v 3.0.0. */
   printTotalsRow: "Tisknout součtový řádek",
   printPaymentSchedule: "Tisknout platební kalendář",
   headerText: "Záhlaví",
