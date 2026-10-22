@@ -95,7 +95,6 @@ export const AdvanceRegisterGrid = forwardRef<HTMLDivElement, AdvanceRegisterGri
           columns={columns}
           rowKey={(row) => row.id}
           title={t.register}
-          showTitle
           asOf={asOf}
           loading={loading}
           error={error}

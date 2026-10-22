@@ -30,7 +30,7 @@ const definitions = [
   [
     "AdvanceRegisterGrid",
     "advance-register-grid",
-    "Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočítá lhůty ani historické zůstatky.",
+    "Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočítá lhůty ani historické zůstatky. Bez viditelného nadpisového pruhu; title Evidence záloh zůstává přístupným názvem tabulky a názvem exportu.",
     '<AdvanceRegisterGrid rows={rows} storageKey="advances" filters={filters} onFiltersChange={setFilters} asOf={asOf} onOpen={openPayment} />',
   ],
   [

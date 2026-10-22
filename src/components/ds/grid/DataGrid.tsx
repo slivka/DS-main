@@ -98,7 +98,10 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
             className={`grid-table-surface min-w-0 max-w-full flex-1 ${hideToolbar ? "rounded-none border-t-0 !shadow-none" : "rounded-t-none border-t-0"} ${plain ? "rounded-b-lg !shadow-none" : paginated ? "rounded-b-none! border-b-0" : "rounded-b-none!"} ${className ?? ""}`}
             {...(loading !== undefined ? { loading } : {})}
           >
-            <Table className="w-full">
+            <Table
+              className="w-full"
+              aria-label={typeof title === "string" ? title : props.exportTitle}
+            >
               <DataGridColGroup layout={layout} />
               <DataGridHead
                 layout={layout}

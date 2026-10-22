@@ -339,7 +339,6 @@ function NavigationPage() {
         <DataGrid<UserRow>
           storageKey="ds-navigation-users"
           title="Uživatelé"
-          showTitle
           rows={USER_ROWS}
           columns={USER_COLUMNS}
           rowKey={(row) => row.id}
