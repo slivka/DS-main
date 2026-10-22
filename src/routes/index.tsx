@@ -16,7 +16,7 @@ import {
   SwitchField,
   DocumentDirectionBadge,
   GridSegmentedToggle,
-} from "@/components/ds";
+} from "@/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
