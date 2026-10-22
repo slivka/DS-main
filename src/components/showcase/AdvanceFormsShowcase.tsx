@@ -36,7 +36,9 @@ function AdvanceForm({ type }: { type: ShowcaseType }) {
   const [allocation, setAllocation] = useState<AdvanceAllocation[]>([]);
   const [rows, setRows] = useState(INITIAL[type]);
   // Součty dodává APP z DB; ukázka je skládá z řádků.
-  const itemsTotal = round(lines.reduce((sum, line) => sum + (line.amount ?? 0), 0));
+  const itemsTotal = round(
+    lines.reduce((sum, line) => sum + (line.foreignAmount ?? line.amount ?? 0), 0),
+  );
   const deducted = round(rows.reduce((sum, row) => sum + row.base + row.vat, 0));
   const byCode = new Map<string, { base: number; vat: number }>([
     ["Z 21 %", { base: itemsTotal, vat: round(itemsTotal * 0.21) }],
