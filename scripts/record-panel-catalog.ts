@@ -212,9 +212,10 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     if (!document.usage?.includes("panelToggle"))
       document.usage = (document.usage ?? "") + guidance;
     document.examples ??= [];
-    document.examples = (document.examples ?? []).filter(
-      (item) => item.label !== "Ovladač panelu v záhlaví",
-    );
+    // Historický katalogový klíč zachováme, jeho obsah už učí nové umístění.
+    const oldExample = document.examples.find(item => item.label === "Ovladač panelu v záhlaví");
+    if (oldExample) oldExample.code = "// Od 2.128.0 se tentýž prop vykreslí za nabídkou v liště akcí, nikoli v záhlaví.\n<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} tooltip={panelSummary} />} />";
+    else document.examples.push({label: "Ovladač panelu v záhlaví", code: "// Historický název příkladu: od 2.128.0 je ovladač v liště akcí.\n<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} tooltip={panelSummary} />} />"});
     if (!document.examples.some((item) => item.label === "Ovladač panelu za akcemi"))
       document.examples.push({
         label: "Ovladač panelu za akcemi",

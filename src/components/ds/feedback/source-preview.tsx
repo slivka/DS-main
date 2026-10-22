@@ -101,7 +101,7 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
       <div
         ref={ref}
         {...props}
-        className={cn("flex h-full min-h-0 flex-1 flex-col gap-2", className)}
+        className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}
       >
         <div
           ref={dropHost}
@@ -146,7 +146,7 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
       ref={ref}
       {...props}
       data-slot="source-preview"
-      className={cn("flex h-full min-h-0 flex-1 flex-col gap-2", className)}
+      className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}
     >
       <RecordPanelToolbar
         start={

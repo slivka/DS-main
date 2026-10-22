@@ -5,7 +5,7 @@ import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-/** Ovladač panelu v záhlaví okna i liště gridu. */
+/** Ovladač panelu za nabídkou v liště akcí formuláře, v gridu za Obnovit. */
 export interface PanelToggleButtonProps extends Omit<
   ComponentPropsWithoutRef<"button">,
   "onToggle"
