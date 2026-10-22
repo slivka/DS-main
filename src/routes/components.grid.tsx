@@ -208,9 +208,9 @@ function GridPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}>
-      <ColumnFormatShowcase />
       <PrimaryActionsShowcase />
       <CompanyFilterShowcase />
+      <ColumnFormatShowcase />
       <div className="mb-3">
         <PageTabs
           value={pageSection}
