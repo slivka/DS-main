@@ -50,7 +50,7 @@ export function RecordPanelShowcase() {
   const [narrow, setNarrow] = useState(false);
   const [zoom, setZoom] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [adjacent, setAdjacent] = useState(false);
+
   const [sourceUrl, setSourceUrl] = useState("");
   const [value, setValue] = useState(PURCHASE_INVOICE_HEADER);
   const [selected, setSelected] = useState<DemoRow[]>([]);
@@ -144,7 +144,11 @@ export function RecordPanelShowcase() {
             size={size}
             defaultSize={384}
             onSizeChange={setSize}
-            onOpenInAdjacentPane={() => setAdjacent(!adjacent)}
+            onOpenInAdjacentPane={() =>
+              document
+                .querySelector('[data-testid="linked-list-showcase"]')
+                ?.scrollIntoView({ block: "start" })
+            }
           >
             <div ref={form} className="min-w-0 p-3" data-testid="document-panel-form">
               <DocumentForm
@@ -195,15 +199,6 @@ export function RecordPanelShowcase() {
           </RecordSidePanel>
         </div>
       </div>
-      {adjacent ? (
-        <section className="border-l border-border p-3" data-testid="adjacent-panel-example">
-          <PageHeader title="FP 2026/0142 – panel" />
-          <p className="pb-2 text-xs text-muted-foreground">
-            Navázané okno s celým panelem – sekce si okno pamatuje, zdroj hlásí stav „panel jinde“.
-          </p>
-          {content.tabs.find((item) => item.id === tab)?.content}
-        </section>
-      ) : null}
       <section data-testid="grid-panel-example">
         <PageHeader title="Doklady" />
         <RecordSidePanel
