@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
+import { useGridLayoutChange } from "./use-grid-layout-change";
 
 const keepVisibleState = <Id extends string>(value: Record<Id, boolean>) => value;
 
@@ -20,7 +22,7 @@ export type ColumnViewsApi = {
 
 /**
  * Pojmenované pohledy (uložené sestavy sloupců) pro jeden grid.
- * Ukládá se do prohlížeče pod `columnViews:<storageKey>`.
+ * Ukládá se do úložiště rozložení gridů (`updateGridLayout`).
  */
 export function useColumnViews<Id extends string>(
   storageKey: string,
@@ -32,24 +34,25 @@ export function useColumnViews<Id extends string>(
   const [views, setViews] = useState<ColumnView[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const storedViews = useCallback(
+    () => (getGridLayout(storageKey).views as ColumnView[] | undefined) ?? [],
+    [storageKey],
+  );
+
   useEffect(() => {
     setActiveId(null);
-    try {
-      const raw = localStorage.getItem(`columnViews:${storageKey}`);
-      setViews(raw ? (JSON.parse(raw) as ColumnView[]) : []);
-    } catch {
-      setViews([]);
-    }
-  }, [storageKey]);
+    setViews(storedViews());
+  }, [storageKey, storedViews]);
+
+  useGridLayoutChange(storageKey, () => {
+    const next = storedViews();
+    setViews((cur) => (JSON.stringify(cur) === JSON.stringify(next) ? cur : next));
+  });
 
   const persistViews = useCallback(
     (next: ColumnView[]) => {
       setViews(next);
-      try {
-        localStorage.setItem(`columnViews:${storageKey}`, JSON.stringify(next));
-      } catch {
-        /* úložiště není dostupné */
-      }
+      updateGridLayout(storageKey, { views: next });
     },
     [storageKey],
   );
