@@ -70,7 +70,9 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
     readOnly,
     currencyControl,
     field,
+    lockReason,
   } = p;
+  const amountLocked = lockReason?.("amountTotal");
   return (
     <Fragment>
       <SectionHeading>{t.amountOnlySection}</SectionHeading>
