@@ -10,6 +10,7 @@
 - `AdvanceRegisterGrid` beze změny (zpětně kompatibilní).
 - Texty CS/SK v `advances` (záložky, filtry, sloupce, kontrolní řádek, součty).
 - Ukázka: poskytnuté zálohy (314.100, 314.200, 3 partneři, EUR, nenulový rozdíl u 314.200, přepínač neplátce a neúplných práv) a přijaté zálohy (324.100).
+- Ověření: check:full --harness 1 216/1 216 testů ve 133 souborech, lint/formát/audit částek OK, katalog 475 → 476 komponent / 1 131 → 1 183 props, 0 odebrání; Chromium `advance-register-view.spec.ts` 1/1. Nevydáno, release Claude.
 - Testy: unit `advance-register-view.test.tsx` (záložky a sdílené datum, filtry podle záložky, skupiny a součtové řádky, řazení uvnitř skupiny, varování rozdílu, vatPayer=false, scopeIncomplete); E2E Chromium `advance-register-view.spec.ts` (záložky se zachovaným datem, varování, lišta bez zalomení při zoomu 0,7 / 1,5).
 
 ## 2.130.0 – Drobné opravy 3
