@@ -94,11 +94,10 @@ test("ColumnPicker formát, výběr, klávesnice, tmavý vzhled a zoom", async (
   const columnsButton = demo.getByRole("button", { name: "Sloupce", exact: true });
   if (!(await columnsButton.isVisible())) {
     await demo.locator(".grid-toolbar-overflow-menu").click();
+    await page.locator('[data-slot="popover-content"]').getByRole("button", { name: "Sloupce", exact: true }).click();
+  } else {
+    await columnsButton.click();
   }
-  await page
-    .getByRole("button", { name: "Sloupce", exact: true })
-    .filter({ visible: true })
-    .click();
   await page.getByRole("button", { name: "Formát sloupce Zbývá", exact: true }).click();
   const narrowEditor = page.locator('[data-slot="column-format-editor"]');
   await expect(narrowEditor).toBeVisible();
