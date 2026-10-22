@@ -100,7 +100,7 @@ describe("JournalLinesEditor – odečty záloh", () => {
   it("vykreslí odečty pod položkami, první oddělený čarou", () => {
     const { container } = renderEditor({ deductions: deductions() });
     const grid = container.querySelector('table[role="grid"] tbody');
-    const rows = [...(grid?.querySelectorAll("tr") ?? [])].map((row) =>
+    const rows = [...(grid?.querySelectorAll("tr:not([hidden])") ?? [])].map((row) =>
       row.getAttribute("data-slot"),
     );
     expect(rows[0]).not.toBe("journal-deduction-row");
