@@ -153,7 +153,7 @@ export const StandaloneShell = forwardRef<HTMLDivElement, StandaloneShellProps>(
                 data-sidebar-tone="panel"
                 data-slot="standalone-sidebar"
                 className={cn(
-                  "shell-sidebar flex shrink-0 flex-col gap-2 border-sidebar-border bg-sidebar p-2 text-sidebar-foreground",
+                  "shell-sidebar flex shrink-0 flex-col gap-3 border-sidebar-border bg-sidebar p-3 text-sidebar-foreground",
                   isMobile
                     ? "border-b"
                     : "w-[var(--standalone-menu-width)] overflow-y-auto border-r",

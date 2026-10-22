@@ -9,7 +9,18 @@ async function setRootZoom(page: Page, zoom: number) {
     document.documentElement.style.fontSize = `${16 * z}px`;
     window.dispatchEvent(new Event("app:zoom-change"));
   }, zoom);
-  await page.waitForTimeout(200);
+  // Počkej, až se rozvržení ustálí (dva snímky po sobě beze změny výšky dokumentu).
+  await page.waitForFunction(
+    () => {
+      const w: Window & { __lastH?: number } = window;
+      const h = document.documentElement.scrollHeight;
+      const stable = w.__lastH === h;
+      w.__lastH = h;
+      return stable;
+    },
+    undefined,
+    { polling: 100 },
+  );
 }
 
 test("název období je celý při zoomu min / 100 % / max", async ({ page }) => {
@@ -44,10 +55,18 @@ test("tečka neuložených změn má střed štítku ±1 px při zoomu min / max
   await demo.scrollIntoViewIfNeeded();
   for (const zoom of [0.7, 2]) {
     await setRootZoom(page, zoom);
-    const header = demo.locator("header, [data-slot=page-header]").first();
-    const scope = (await header.count()) ? header : demo;
+    // Tečka i štítek ze stejného nadpisu (ten, který štítek má).
+    const scope = demo
+      .locator(".page-title-line")
+      .filter({ has: page.locator('[data-slot="page-title-dirty"]') })
+      .filter({ has: page.locator(".page-title-badge:not([data-slot=page-title-dirty])") })
+      .first();
+    await scope.scrollIntoViewIfNeeded();
     const dot = scope.locator('[data-slot="page-title-dirty"]').first();
-    const badge = scope.locator(".page-title-badge-slot .page-title-badge").first();
+    const badge = scope
+      .locator(".page-title-badge-slot:not([data-slot=page-title-dirty-slot]) .page-title-badge")
+      .first();
+    await expect(dot).toBeVisible();
     const dotBox = await dot.boundingBox();
     const badgeBox = await badge.boundingBox();
     if (!dotBox || !badgeBox) throw new Error("Chybí tečka nebo štítek");

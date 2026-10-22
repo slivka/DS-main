@@ -1,6 +1,10 @@
 ## DS 2.130.0 (nevydáno)
 
-- [ ] Zatím bez úkolů.
+- [x] D1 patička RecordDialog vpravo v jednom řádku, pod sebou až pod 24 rem
+- [x] D2 FieldGrid v sm dialogu od 24 rem (kontext dialogu)
+- [x] D3 viditelný popis dialogu
+- [x] D4 ContextSwitcher bez pevné výšky, StandaloneShell p-3
+- [x] Ukázky, unit + E2E, zpevnění small-edits-one
 
 ## DS 2.129.0
 
@@ -8,7 +12,7 @@
 - [x] Čitelné zakázané primární tlačítko a důvod u RecordDialog
 - [x] Opravy po kontrole Clauda: jediné K úhradě z dat APP, Součet položek nad odečty, kód DPH a „Celkem po odečtu záloh“ v rekapitulaci, povinné total, částky v měně firmy, přetečení lišty, role group, fokus po odebrání, testy
 - [ ] Odečty v tisku a exportu gridu – editor řádků vlastní tisk/export nemá; čeká na rozhodnutí, zda je doplnit do tiskové sestavy dokladu (APP) nebo do DS
-- [ ] 2.130.0: RecordDialog (500 řádků) rozdělit – patička a tělo do vlastních modulů bez změny API
+- [x] 2.130.0: RecordDialog (500 řádků) rozdělit – patička a tělo do vlastních modulů bez změny API
 
 ## DS 2.128.0
 
