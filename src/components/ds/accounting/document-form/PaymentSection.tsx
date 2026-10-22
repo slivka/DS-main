@@ -153,7 +153,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 derivedValue={p.vsLink?.derivedValue}
                 pendingText={p.vsPendingText}
                 warning={p.vsLink?.warning}
-              />,
+              />),
               vsItem.span,
               vsItem.mobileHalf,
               vsItem.className,
