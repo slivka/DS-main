@@ -31,11 +31,24 @@ export function useCurrencyControl({
   readOnly,
   identityVariant,
   currencyDisabledReason,
+  lockedReason,
   currencyOptions,
   currenciesPresent,
   t,
 }: Args) {
   const currencyReasonId = useId();
+  // Obecný zámek (2.128.0): hodnota jen pro čtení se zámkem a důvodem v bublině.
+  if (lockedReason) {
+    return (
+      <FieldValue
+        id="document-currency"
+        lockedReason={lockedReason}
+        className="w-[6.5rem] tabular-nums"
+      >
+        {value.currency}
+      </FieldValue>
+    );
+  }
   const currencyFixed =
     currencyLocked ||
     readOnly ||
