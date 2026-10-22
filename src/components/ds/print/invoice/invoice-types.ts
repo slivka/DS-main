@@ -62,9 +62,9 @@ export interface InvoicePrintPayment {
 /** Položka s hotovým základem a daňovým režimem. */
 export interface InvoicePrintLine {
   /** Popis. */ description: string;
-  /** Množství. */ quantity: number;
+  /** Množství; null vytiskne prázdnou buňku. */ quantity: number | null;
   /** MJ. */ unit?: string | null;
-  /** Cena za MJ. */ unit_price: number;
+  /** Cena za MJ; null vytiskne prázdnou buňku. */ unit_price: number | null;
   /** Kód DPH. */ vat_code?: string | null;
   /** Sazba, null pro textový režim. */ vat_rate?: number | null;
   /** Text režimu. */ regime_text?: string | null;

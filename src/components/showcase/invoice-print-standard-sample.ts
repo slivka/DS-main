@@ -84,9 +84,9 @@ export const SAMPLE_STANDARD: InvoicePrintData = {
     },
     {
       description: "Doprava technika",
-      quantity: 1,
-      unit: "paušál",
-      unit_price: 690,
+      quantity: null,
+      unit: null,
+      unit_price: null,
       vat_code: "21",
       vat_rate: 21,
       regime_text: "",
