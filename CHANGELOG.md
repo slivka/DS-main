@@ -8,6 +8,7 @@
 - Opravy po cestě: seznam předpon měl `page:` místo `page-size:` a chyběl `columnVisibilityOverrides:` – `resetGridPrefs` je nyní maže všechny.
 - Ukázka na stránce Datová mřížka: přepínač „Úložiště: Prohlížeč / Simulovaný server“ (zpoždění 500 ms).
 - Testy: unit `grid-prefs.test.ts` (rychlý start ze zrcadla, přepsání po loadAll, debounce a flush, pagehide, chyba uložení a opakování, přechod všech starých předpon, oddělení scope, resetGridPrefs, synchronizace dvou gridů se stejným klíčem, chování bez store). Setup testů uklízí i paměť úložiště gridů.
+- Ověření: check:full --harness 1 227/1 227 testů ve 134 souborech, lint/formát/audit částek OK, katalog 476 → 476 komponent / 1 146 → 1 146 props, 0 odebrání. E2E dávky nespouštěny (plná sada v GitHub CI). Nevydáno, release Claude.
 
 ## 2.131.0 – Evidence záloh se záložkami
 
