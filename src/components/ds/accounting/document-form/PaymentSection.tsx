@@ -9,6 +9,7 @@ import { Fragment, useId } from "react";
 import { Input } from "../../../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { OptionSelect } from "../../form/option-select";
+import { FieldValue } from "../../form/field-value";
 import { VsField } from "../vs-field";
 import { SectionHeading } from "../../layout/section-heading";
 import type { DocumentFields } from "../document-fields";
@@ -39,6 +40,8 @@ export interface DocumentPaymentSectionProps {
   issuedBankAccountAbove: boolean;
   /** Důvod prázdných zakázaných KS/SS; uložené hodnoty se nemění. */
   symbolsDisabledReason?: string;
+  /** Obecný důvod uzamčení pole (2.128.0); pole se vykreslí jen pro čtení se zámkem. */
+  lockReason?: (key: DocumentHeaderField) => string | undefined;
   constantSymbolOptions?: Array<{ value: string; label: string }>;
   paymentMethodOptions?: Array<{ value: string; label: string }>;
   companyBankAccountOptions?: Array<{
