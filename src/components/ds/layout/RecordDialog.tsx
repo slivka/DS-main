@@ -100,6 +100,8 @@ export interface RecordDialogProps {
   onSubmit?: () => void;
   /** Zakáže uložení i klávesou; neruší možnost zavřít dialog. */
   submitDisabled?: boolean;
+  /** Důvod zákazu Uložit; tlačítko zůstane zaměřitelné a důvod ukáže bublina. */
+  submitDisabledReason?: string;
   /** Text tlačítka Uložit. */
   submitLabel?: string;
   /** Text tlačítka Zavřít v režimu jen pro čtení. */
@@ -203,6 +205,7 @@ export function RecordDialog({
   description,
   onSubmit,
   submitDisabled = false,
+  submitDisabledReason,
   submitLabel,
   closeLabel,
   busy = false,
@@ -403,6 +406,7 @@ export function RecordDialog({
                   label={submitText}
                   busy={busy}
                   disabled={submitDisabled}
+                  disabledReason={submitDisabledReason}
                 />
               ) : null}
             </div>
