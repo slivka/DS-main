@@ -5,7 +5,7 @@
  * panel filtrů, štítky filtrů a pruh výběru – jednou pro DataGrid i TreeGrid.
  * Nesmí: držet stav gridu ani znát data – vše dostává hotové od gridu přes props.
  */
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../../../lib/utils";
 import { ColumnPicker } from "./column-picker";
@@ -127,6 +127,8 @@ export function GridFrame({
   selection,
 }: GridFrameProps) {
   const { zoom, setZoom, density, setDensity, isAuto } = zoomState;
+  // Jedinečné id panelu filtrů – na stránce může být víc gridů najednou.
+  const filterPanelId = useId();
   const viewToggle = view ? (
     <ViewModeToggle mode={view.mode} onChange={view.onChange} texts={texts} />
   ) : null;
@@ -210,6 +212,7 @@ export function GridFrame({
                   <GridFilterToggle
                     open={filters.open}
                     onOpenChange={filters.onOpenChange}
+                    panelId={filterPanelId}
                     {...(filters.onClear ? { onClear: filters.onClear } : {})}
                     activeCount={filters.activeCount}
                     activeFilters={filters.activeLabels}
@@ -289,7 +292,7 @@ export function GridFrame({
         />
       ) : null}
       {filters ? (
-        <GridFilterPanel open={filters.open} zoom={zoom} density={density}>
+        <GridFilterPanel open={filters.open} zoom={zoom} density={density} id={filterPanelId}>
           {filters.content}
         </GridFilterPanel>
       ) : null}

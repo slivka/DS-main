@@ -14,9 +14,12 @@ export function GridFilterToggle({
   defaultFilters = [],
   zoom = 1,
   texts: textOverrides,
+  panelId = "grid-filter-panel",
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Id ovládaného panelu filtrů; GridFrame předává jedinečné id, výchozí hodnota pro samostatné použití. */
+  panelId?: string;
   /** Zruší aktivní filtry ikonou uvnitř tlačítka. */
   onClear?: () => void;
   activeCount?: number;
@@ -47,7 +50,7 @@ export function GridFilterToggle({
               variant="outline"
               size="sm"
               aria-expanded={open}
-              aria-controls="grid-filter-panel"
+              aria-controls={panelId}
               aria-label={tooltipLabel}
               onClick={() => onOpenChange(!open)}
               className={`grid-toolbar-control relative ${!active ? "grid-toolbar-icon-control" : ""} ${
@@ -135,8 +138,11 @@ export function GridFilterPanel({
   zoom = 1,
   density = "normal",
   children,
+  id = "grid-filter-panel",
 }: {
   open: boolean;
+  /** Id panelu pro aria-controls přepínače; GridFrame předává jedinečné id. */
+  id?: string;
   /** @deprecated Zrušení filtrů patří do GridFilterToggle. */
   onClear?: () => void;
   /** Měřítko panelu shodné s řádkem akcí. */
@@ -147,7 +153,7 @@ export function GridFilterPanel({
   if (!open) return null;
   return (
     <div
-      id="grid-filter-panel"
+      id={id}
       data-density={density}
       className="zoom-filters grid-filter-panel flex w-full flex-wrap items-center border-b bg-card"
       style={{ fontSize: gridFontSize(zoom) }}
