@@ -1,6 +1,18 @@
 /** Součty faktury · vlastní pouze zobrazení dodaných součtů · nikdy je neodvozuje z položek. */
-import { invoiceFont, invoiceTextHeight, invoiceWrap, type InvoiceCanvas } from "./invoice-canvas";
-import { formatInvoiceAmount as money, invoiceUsesTotal } from "./invoice-format";
+import {
+  invoiceEnsure,
+  invoiceFont,
+  invoiceText,
+  invoiceTextHeight,
+  invoiceWrap,
+  type InvoiceCanvas,
+} from "./invoice-canvas";
+import {
+  formatInvoiceAmount as money,
+  formatInvoiceRate,
+  invoiceUsesTotal,
+} from "./invoice-format";
+import { invoiceHomeCurrency } from "./invoice-options";
 import { INVOICE_THEME as T } from "./invoice-theme";
 /** Součtový řádek. */
 export interface InvoiceTotalRow {
@@ -16,22 +28,18 @@ export function invoiceTotalRows(c: InvoiceCanvas): InvoiceTotalRow[] {
     s = d.totals,
     t = c.texts,
     currency = d.payment.currency_code;
+  const home = invoiceHomeCurrency(c.opts);
   const rows: InvoiceTotalRow[] = [];
   if (s.base_total != null) rows.push({ label: t.baseTotal, value: money(s.base_total) });
   if (s.vat_total != null || s.vat_total_text)
     rows.push({ label: t.vatTotal, value: s.vat_total_text || money(s.vat_total) });
   if (s.rounding) rows.push({ label: t.rounding, value: money(s.rounding) });
   rows.push({ label: `${t.total} ${currency}`, value: money(s.total_before_advances), bold: true });
-  if (
-    s.total_home != null &&
-    s.rate &&
-    c.opts.homeCurrency &&
-    currency !== c.opts.homeCurrency.code
-  ) {
+  if (s.total_home != null && currency !== home.code) {
     rows.push({
       label: t.totalHome
-        .replace("{home}", c.opts.homeCurrency.symbol)
-        .replace("{rate}", String(s.rate)),
+        .replace("{home}", home.symbol)
+        .replace("{rate}", formatInvoiceRate(s.rate, c.opts.locale)),
       value: money(s.total_home),
       muted: true,
     });
@@ -57,10 +65,14 @@ export function invoiceTotalsHeight(c: InvoiceCanvas): number {
 }
 /** Součty 79 mm napravo, text vlevo. */
 export function drawInvoiceTotals(c: InvoiceCanvas) {
+  const oversized = invoiceTotalsHeight(c) > T.bottom - T.continuationTop;
+  if (oversized) invoiceText(c, c.data.print.footer_text ?? "");
+  const height = oversized ? invoiceTotalRows(c).length * 5 + 8 : invoiceTotalsHeight(c);
+  invoiceEnsure(c, height);
   const start = c.y + 3,
     rows = invoiceTotalRows(c);
   let y = start;
-  if (c.data.print.footer_text) {
+  if (!oversized && c.data.print.footer_text) {
     const lines = invoiceWrap(c, c.data.print.footer_text, 99);
     invoiceFont(c);
     c.doc.text(lines, T.margin, start + 3);
@@ -84,5 +96,5 @@ export function drawInvoiceTotals(c: InvoiceCanvas) {
     c.doc.text(row.value, 195, y + 4, { align: "right", maxWidth: 46 });
     y += 5;
   });
-  c.y += invoiceTotalsHeight(c);
+  c.y += height;
 }

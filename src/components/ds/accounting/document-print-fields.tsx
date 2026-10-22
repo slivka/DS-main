@@ -6,8 +6,9 @@ import { Field, FieldGrid } from "../layout/RecordDialog";
 import { CheckboxField, CheckboxGroup } from "../form/checkbox-field";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { resolveInvoiceOptions, INVOICE_OPTION_DEFAULTS } from "../print/invoice/invoice-options";
 import type { InvoicePrintOptions } from "../print/invoice/invoice-types";
-/** Nové úplné volby faktury; staré přepínače jsou odstraněné. */
+/** Volitelné volby faktury; zastaralé klíče se ignorují do 3.0.0. */
 export type DocumentPrintOptions = InvoicePrintOptions;
 /** Řízená tisková hodnota formuláře. */
 export interface DocumentPrintValue {
@@ -36,7 +37,7 @@ export const BookPrintTemplateFields = forwardRef<HTMLDivElement, BookPrintTempl
   ) {
     const t = useDsTexts().invoicePrint;
     const patch = (next: Partial<DocumentPrintValue>) => onChange({ ...value, ...next });
-    const options: Array<keyof DocumentPrintOptions> = [
+    const options: Array<keyof typeof INVOICE_OPTION_DEFAULTS> = [
       "showPaymentSchedule",
       "showAdvanceDetail",
       "showQr",
@@ -50,7 +51,7 @@ export const BookPrintTemplateFields = forwardRef<HTMLDivElement, BookPrintTempl
             <CheckboxField
               key={key}
               label={t[key]}
-              checked={value.options[key]}
+              checked={resolveInvoiceOptions(value.options)[key]}
               disabled={readOnly}
               onCheckedChange={(checked) =>
                 patch({ options: { ...value.options, [key]: checked } })

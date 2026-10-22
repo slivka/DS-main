@@ -1,12 +1,24 @@
 /** Faktura z APP · vlastní datový kontrakt · nesmí počítat daně ani platby. */
 import type { InvoicePrintTexts } from "../../../../ds-texts/invoice-print-texts";
-/** Pět úplných voleb předlohy tisku. */
+/** Pět volitelných voleb předlohy tisku se společnými výchozími hodnotami. */
 export interface InvoicePrintOptions {
-  /** Platební kalendář. */ showPaymentSchedule: boolean;
-  /** Podrobný seznam záloh. */ showAdvanceDetail: boolean;
-  /** QR Platba. */ showQr: boolean;
-  /** Převzetí a razítko. */ showSignature: boolean;
-  /** Vystavující osoba v zápatí. */ showIssuedBy: boolean;
+  /** Platební kalendář. */ showPaymentSchedule?: boolean;
+  /** Podrobný seznam záloh. */ showAdvanceDetail?: boolean;
+  /** QR Platba. */ showQr?: boolean;
+  /** Převzetí a razítko. */ showSignature?: boolean;
+  /** Vystavující osoba v zápatí. */ showIssuedBy?: boolean;
+  /** @deprecated Od 2.133.0 ignorováno; sekce určuje obsah dat. Odstranění v 3.0.0. */
+  showHeader?: boolean;
+  /** @deprecated Od 2.133.0 ignorováno; sekce určuje obsah dat. Odstranění v 3.0.0. */
+  showFooter?: boolean;
+  /** @deprecated Od 2.133.0 ignorováno; sekce určuje obsah dat. Odstranění v 3.0.0. */
+  showVatRecap?: boolean;
+  /** @deprecated Od 2.133.0 ignorováno; sekce určuje obsah dat. Odstranění v 3.0.0. */
+  showNote?: boolean;
+  /** @deprecated Od 2.133.0 ignorováno; sekce určuje obsah dat. Odstranění v 3.0.0. */
+  showColumnHeadings?: boolean;
+  /** @deprecated Od 2.133.0 ignorováno; sekce určuje obsah dat. Odstranění v 3.0.0. */
+  showTotalsRow?: boolean;
 }
 /** Poštovní údaje snímku záznamu. */
 export interface InvoicePrintAddress {

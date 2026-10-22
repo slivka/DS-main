@@ -89,6 +89,12 @@ export function enrichInvoicePrintCatalog(components: PanelCatalogComponent[]) {
     c.props ??= [];
     for (const prop of spec.props)
       if (!c.props.some((p) => p.name === prop.name)) c.props.push(prop);
+    if (spec.name === "BookPrintTemplateFields") {
+      const rule =
+        "Tiskové volby jsou volitelné: kalendář false, podrobné zálohy true, QR true, podpis false, vystavil true. Staré showHeader/showFooter/showVatRecap/showNote/showColumnHeadings/showTotalsRow jsou ignorované @deprecated do 3.0.0.";
+      c.antipatterns ??= [];
+      if (!c.antipatterns.includes(rule)) c.antipatterns.push(rule);
+    }
     if (!c.usage?.includes(spec.usage)) c.usage = (c.usage ? c.usage + " " : "") + spec.usage;
     c.examples ??= [];
     const label = "Tisk faktury návrh C";

@@ -1,6 +1,7 @@
 /** Hlavička a zápatí C · vlastní firemní snímek a pevné sloupce · bez generování loga. */
 import type { InvoiceCanvas } from "./invoice-canvas";
 import { invoiceFont, invoiceWrap } from "./invoice-canvas";
+import { resolveInvoiceOptions } from "./invoice-options";
 import { formatInvoiceDate } from "./invoice-format";
 import { INVOICE_THEME as T } from "./invoice-theme";
 /** Vyřešený nahraný obrázek se skutečnými rozměry. */
@@ -108,7 +109,7 @@ export function drawInvoiceContinuation(c: InvoiceCanvas) {
 export function invoiceFooterColumns(c: InvoiceCanvas): [string, string, string] {
   const d = c.data;
   return [
-    d.print.options.showIssuedBy
+    resolveInvoiceOptions(d.print.options).showIssuedBy && d.print.issued_by_name?.trim()
       ? [
           `${c.texts.issuedBy}: ${d.print.issued_by_name ?? ""}`,
           d.print.issued_by_phone,

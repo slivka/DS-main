@@ -45,6 +45,8 @@ afterEach(() => {
   jest.useRealTimers();
   jest.restoreAllMocks();
   window.matchMedia = pristine.matchMedia;
+  window.innerWidth = 1440;
+  window.innerHeight = 1000;
   restoreNavigator();
   // Radix při otevřeném modálu zamyká tělo; zbytky by blokovaly klik a fokus v dalším souboru.
   document.body.innerHTML = "";

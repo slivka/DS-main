@@ -28,3 +28,14 @@ export function invoicePdfFilename(data: InvoicePrintData): string {
     ? `koncept-${slug(data.title)}.pdf`
     : `${slug(data.title)}-${slug(data.number ?? "")}.pdf`;
 }
+
+/** Množství bez zbytečných nul; zachová až čtyři desetinná místa. */
+export function formatInvoiceQuantity(value: number, locale: "cs" | "sk" = "cs"): string {
+  return value.toLocaleString(locale === "sk" ? "sk-SK" : "cs-CZ", { maximumFractionDigits: 4 });
+}
+/** Kurz má v obou tiskových sekcích stejný místní formát. */
+export function formatInvoiceRate(value?: number | null, locale: "cs" | "sk" = "cs"): string {
+  return value == null
+    ? ""
+    : value.toLocaleString(locale === "sk" ? "sk-SK" : "cs-CZ", { maximumFractionDigits: 6 });
+}

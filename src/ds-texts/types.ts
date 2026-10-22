@@ -457,11 +457,17 @@ export interface DsTexts {
     printGeneral: string;
     printItems: string;
     issuedBy: string;
+    /** @deprecated Od 2.133.0 nepoužíváno; sekce určuje obsah dat. Odstranění v 3.0.0. */
     printHeader: string;
+    /** @deprecated Od 2.133.0 nepoužíváno; sekce určuje obsah dat. Odstranění v 3.0.0. */
     printFooter: string;
+    /** @deprecated Od 2.133.0 nepoužíváno; sekce určuje obsah dat. Odstranění v 3.0.0. */
     printVatRecap: string;
+    /** @deprecated Od 2.133.0 nepoužíváno; sekce určuje obsah dat. Odstranění v 3.0.0. */
     printNote: string;
+    /** @deprecated Od 2.133.0 nepoužíváno; sekce určuje obsah dat. Odstranění v 3.0.0. */
     printColumnHeadings: string;
+    /** @deprecated Od 2.133.0 nepoužíváno; sekce určuje obsah dat. Odstranění v 3.0.0. */
     printTotalsRow: string;
     printPaymentSchedule: string;
     headerText: string;

@@ -32,6 +32,8 @@ for (const reset of [
   "resetGridPrefs()",
   "localStorage.clear()",
   "restoreNavigator()",
+  "window.innerWidth = 1440",
+  "window.innerHeight = 1000",
 ])
   if (!setup.includes(reset)) problems.push(`tests/setup.ts: chybí globální úklid ${reset}`);
 

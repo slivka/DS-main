@@ -5,6 +5,7 @@ import {
   formatInvoiceDate,
   invoiceUsesTotal,
 } from "./invoice-format";
+import { resolveInvoiceOptions } from "./invoice-options";
 import { canPrintInvoiceQr, invoiceQrModules } from "./invoice-spayd";
 import { INVOICE_THEME as T } from "./invoice-theme";
 /** Kreslí QR obdélníky se čtyřmodulovým klidovým okrajem. */
@@ -26,7 +27,9 @@ function drawQr(c: InvoiceCanvas, x: number, y: number) {
 export function invoicePaymentHeight(c: InvoiceCanvas): number {
   const p = c.data.payment;
   const schedule =
-    p.uses_bank_account && c.data.print.options.showPaymentSchedule ? c.data.schedule : [];
+    p.uses_bank_account && resolveInvoiceOptions(c.data.print.options).showPaymentSchedule
+      ? c.data.schedule
+      : [];
   return (
     29 +
     (p.uses_bank_account ? 4 : 0) +
@@ -98,7 +101,7 @@ export function drawInvoicePayment(c: InvoiceCanvas) {
       { maxWidth: 178 },
     );
     lineY += 5;
-    if (d.print.options.showPaymentSchedule && d.schedule.length) {
+    if (resolveInvoiceOptions(d.print.options).showPaymentSchedule && d.schedule.length) {
       invoiceFont(c, 7, false, T.gray);
       c.doc.text(t.schedule.toUpperCase(), T.margin + 3, lineY);
       lineY += 5;

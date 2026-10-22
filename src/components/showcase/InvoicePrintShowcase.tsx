@@ -18,6 +18,7 @@ import { useDsTexts } from "../../ds-texts";
 import { INVOICE_PRINT_SAMPLES } from "./invoice-print-samples";
 import { ShowcaseSection } from "./ShowcaseLayout";
 import type { InvoicePrintOptions } from "../ds/print/invoice/invoice-types";
+import { resolveInvoiceOptions } from "../ds/print/invoice/invoice-options";
 const PDF_OPTIONS = { homeCurrency: { code: "CZK", symbol: "Kč" } };
 const EMPTY_PRINT: DocumentPrintValue = {
   options: {
@@ -147,7 +148,7 @@ export function InvoicePrintShowcase() {
             ).map((key) => (
               <CheckboxField
                 key={key}
-                checked={options[key]}
+                checked={resolveInvoiceOptions(options)[key]}
                 onCheckedChange={(checked) => setOptions((prev) => ({ ...prev, [key]: checked }))}
                 label={t[key]}
               />

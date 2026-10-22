@@ -1,5 +1,5 @@
 /** Náhled faktury · skládá PrintPreviewDialog · APP vlastní data a otevření. */
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { PrintPreviewDialog } from "../print-preview-dialog";
 import { buildInvoicePdf } from "./invoice-pdf";
 import { invoicePdfFilename } from "./invoice-format";
@@ -23,7 +23,20 @@ export function InvoicePrintDialog({
   settings,
   onError,
 }: InvoicePrintDialogProps) {
-  const t = useDsTexts().invoicePrint;
+  const ds = useDsTexts();
+  const t = ds.invoicePrint;
+  const latest = useRef({ opts, onError });
+  latest.current = { opts, onError };
+  const content = {
+    locale: opts?.locale ?? ds.locale,
+    homeCurrency: opts?.homeCurrency,
+    logoImage: opts?.logoImage,
+    texts: { ...t, ...opts?.texts },
+  };
+  const signature = JSON.stringify({
+    ...content,
+    texts: Object.fromEntries(Object.entries(content.texts).sort(([a], [b]) => a.localeCompare(b))),
+  });
   const [blob, setBlob] = useState<Blob | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -31,20 +44,24 @@ export function InvoicePrintDialog({
     let active = true;
     setBlob(null);
     setFailed(false);
-    void buildInvoicePdf(data, { ...opts, texts: { ...t, ...opts?.texts } })
+    const options: BuildInvoicePdfOptions = JSON.parse(signature);
+    void buildInvoicePdf(data, {
+      ...options,
+      onPageCount: (pages) => latest.current.opts?.onPageCount?.(pages),
+    })
       .then((result) => {
         if (active) setBlob(result);
       })
       .catch((error) => {
         if (active) {
           setFailed(true);
-          onError?.(error);
+          latest.current.onError?.(error);
         }
       });
     return () => {
       active = false;
     };
-  }, [open, data, opts, t, onError]);
+  }, [open, data, signature]);
   return (
     <PrintPreviewDialog
       open={open}
