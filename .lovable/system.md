@@ -42,6 +42,7 @@
 - AdvanceAllocationDialog dostává kandidáty a výchozí částku minimum zbývající platby a cíle z APP; kontroluje jen nezáporné částky a překročení. APP znovu ověří návrh při zápisu a zavře až po úspěchu. Důvody DD nebude dodává APP do AdvanceReasonDialog.
 - AdvanceDeductionsSection připojte do DocumentForm.linesEditorProps.afterVatRecap, nikdy do kopie formuláře. APP rozhoduje o viditelnosti; u ZL slot nepředává. advanceDeduction v patičce zůstává samostatný údaj APP.
 - AdvanceRegisterGrid je preset DataGridu; jeho filtry a asOf předají změnu APP, která dodá odpovídající historické zůstatky. Nesčítejte částky různých měn.
+- Evidenci záloh se záložkami skládejte z AdvanceRegisterView: jeden společný Stav k datu, filtry a stránkování řízené APP; součtové a kontrolní řádky (row_kind) dodává DB, DS je jen zobrazí u jejich skupiny a nikdy je nepočítá.
 - AdvanceCorrectionDialog přijímá náhled z APP; onDecision rozlišuje vytvoření a nevytvoření, obyčejné zavření neznamená odmítnutí.
 - APP mapuje auto_kind do JournalLine.autoKind a DocumentPostingEntry.auto; advance a advance_fx zobrazí společné překlady štítků. DS nikdy nevytváří automatické účetní řádky. Ověřte použití vydaných i přijatých FV/FP, ZFV/ZFP, DDPZ/DDPOZ a BA/PO bez duplikace formulářů.
 
