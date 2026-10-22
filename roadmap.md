@@ -1,4 +1,8 @@
-## DS 2.129.0 (nevydáno)
+## DS 2.130.0 (nevydáno)
+
+- [ ] Zatím bez úkolů.
+
+## DS 2.129.0
 
 - [x] Odečty záloh jako řádky dokladu (FV, FP, PO), split akce, tři součty, rekapitulace
 - [x] Čitelné zakázané primární tlačítko a důvod u RecordDialog
