@@ -112,6 +112,7 @@ export function AdvancesShowcase() {
       <AdvanceFormsShowcase />
       <ShowcaseSection title={t.register}>
         <AdvanceRegisterGrid
+          data-testid="advance-register-example"
           storageKey="advance-register-example"
           rows={ADVANCE_REGISTER.filter(
             (row) => (!filters.overdue || row.overdue) && (!filters.withoutDD || row.withoutDD),

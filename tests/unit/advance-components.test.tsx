@@ -191,6 +191,20 @@ describe("AdvanceCorrectionDialog", () => {
   });
 });
 describe("AdvanceRegisterGrid", () => {
+  it("nemá viditelný nadpisový pruh, tabulka nese přístupný název", () => {
+    render(
+      <AdvanceRegisterGrid
+        storageKey="register-name-unit"
+        rows={[]}
+        filters={{ overdue: false, withoutDD: false }}
+        onFiltersChange={() => {}}
+        asOf={{ enabled: false, onEnabledChange: () => {}, value: "2026-10-20", onChange: () => {} }}
+      />,
+    );
+    expect(screen.queryByRole("heading", { name: "Evidence záloh" })).toBeNull();
+    expect(screen.queryByText("Evidence záloh")).toBeNull();
+    expect(screen.getByRole("table", { name: "Evidence záloh" }).getAttribute("aria-label")).toBe("Evidence záloh");
+  });
   it("filtry pouze předají APP, neodvozují historické zůstatky", () => {
     const changes: string[] = [];
     render(

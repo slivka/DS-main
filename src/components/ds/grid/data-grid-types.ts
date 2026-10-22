@@ -99,7 +99,7 @@ export type DataGridProps<Row> = GridBaseProps<Row> & {
   autoZoom?: boolean;
   /** Nadpis gridu (může být ReactNode s vlastní hlavičkou). Když chybí, hlavička se nezobrazí. */
   title?: ReactNode;
-  /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
+  /** Zobrazí nadpis sekčního gridu nad lištou. Výchozí false; title zůstává pro export a přístupný název. Samostatný grid bez nadpisového pruhu. */
   showTitle?: boolean;
   /** Skryje ozdobný pruh pred nadpisom (napr. pri vlastnej hlavičke s mesiacom). */
   hideTitleMark?: boolean;
