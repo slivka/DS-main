@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.133.0 (nevydáno)
+## 2.134.0 (nevydáno)
+
+## 2.133.0
 
 - Opravné kolo Clauda S1–S4 / N5–N13: QR jen pro kladné K úhradě a mimo `advance_tax`; SPAYD používá název dokladu APP (CS/SK/ZFV), zprávu do 60 znaků a pouze platné číselné VS/SS do 10 a KS do 4 znaků. Domácí měna má výchozí CZK/Kč, dodané domácí součty se neztrácejí bez `homeCurrency`; kurz v obou sekcích cs-CZ/sk-SK, množství až čtyři desetinná místa bez zbytečných nul. Prázdné jméno netiskne „Vystavil:“.
 - Náhled ignoruje změny identity ekvivalentních `opts` a callbacků, ale přegeneruje se při změně dat nebo skutečných tiskových voleb; callbacky čte z aktuálního ref. Extrémní záhlaví/zápatí se rozdělují po stránkách bez ztráty textu, součty se při nedostatku místa přesunou. SK názvy log přeloženy, staré veřejné texty označeny jako zastaralé; texty tisku/exportu i editoru řádků odděleny z hlavních CS/SK katalogů (496/498 řádků). Referenční HTML výslovně v `.dsignore`.
