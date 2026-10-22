@@ -1,4 +1,8 @@
-## DS 2.130.0 (nevydáno)
+## DS 2.131.0 (nevydáno)
+
+- [ ] Zatím bez úkolů.
+
+## DS 2.130.0
 
 - [x] D1 patička RecordDialog vpravo v jednom řádku, pod sebou až pod 24 rem
 - [x] D2 FieldGrid v sm dialogu od 24 rem (kontext dialogu)

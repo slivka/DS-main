@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.130.0 (nevydáno) – Drobné opravy 3
+## 2.131.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.130.0 – Drobné opravy 3
 
 - RecordDialog (dialog i panel): Zrušit / Uložit vždy v jednom řádku vpravo; levá skupina (Odstranit, doplňkové, životní cyklus) vlevo, při nedostatku místa se zalomí nad pravou. Pod sebou přes celou šířku až pod 24 rem šířky dialogu (Uložit nahoře). Pruh chyb beze změny.
 - RecordDialog size="sm": FieldGrid a `Field span` se řadí do sloupců od 24 rem přes nový `FieldGridBreakpointContext` (`"default" | "compact"`); jinde zůstává 40 rem. `fieldSpanClass(span, breakpoint?)` má nepovinný druhý parametr.
