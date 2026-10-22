@@ -16,7 +16,7 @@ function dialog(size: "sm" | "md", description?: string) {
       title="Nové účetní období"
       {...(description ? { description } : {})}
       onSubmit={() => {}}
-      deleteAction={{ onDelete: () => {} } as never}
+      deleteAction={{ onClick: () => {}, confirm: { title: "Odstranit?" } }}
     >
       <FieldGrid cols={12}>
         <Field label="Od" span={6}>

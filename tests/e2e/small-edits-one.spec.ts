@@ -12,7 +12,7 @@ async function setRootZoom(page: Page, zoom: number) {
   // Počkej, až se rozvržení ustálí (dva snímky po sobě beze změny výšky dokumentu).
   await page.waitForFunction(
     () => {
-      const w = window as unknown as { __lastH?: number };
+      const w: Window & { __lastH?: number } = window;
       const h = document.documentElement.scrollHeight;
       const stable = w.__lastH === h;
       w.__lastH = h;
