@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.131.0 (nevydáno) – Evidence záloh se záložkami
+## 2.132.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.131.0 – Evidence záloh se záložkami
 
 - Nový preset `AdvanceRegisterView` (typy `AdvanceRegisterTab`, `AdvanceRegisterRowKind`, `AdvanceRegisterViewRow`, `AdvanceRegisterData`, `AdvanceRegisterViewFilters`, `AdvanceRegisterPagination`, `AdvanceRegisterAccountOption`, `AdvancePaymentsFilter`, `AdvanceSettlementsFilter`) pro evidenci poskytnutých i přijatých záloh: řízené záložky Zůstatek · Platby záloh · Vyúčtování záloh (PageTabs jako stránka Banka), jeden společný „Stav k datu“ nad záložkami, gridy bez nadpisového pruhu.
 - Řízené filtry: Platby záloh Vše · Nevyúčtováno · Bez daňového dokladu · Po lhůtě; Vyúčtování záloh Vše · Nespárované; ve všech záložkách výběr více účtů a sloupec Účet. `vatPayer={false}` skryje Bez daňového dokladu, Po lhůtě a sloupce DD (Pokryto DD, Stav DD, Lhůta).

@@ -1,4 +1,8 @@
-## DS 2.131.0 (nevydáno)
+## DS 2.132.0 (nevydáno)
+
+- [ ] Zatím bez úkolů.
+
+## DS 2.131.0
 
 - [x] AdvanceRegisterView – záložky Zůstatek / Platby / Vyúčtování, společný Stav k datu
 - [x] Filtry podle záložky, filtr účtů, vatPayer, scopeIncomplete, stránkování podle total_count
