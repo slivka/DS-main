@@ -6,7 +6,7 @@ import { fmtAmount, formatDate } from "../../../../lib/format";
 import { formatAccountCode } from "../account-code";
 import type { DataGridColumn } from "../../grid/DataGrid";
 import { StatusBadge } from "../../data-display/status-badge";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../ui/tooltip";
 import type {
   AdvanceRegisterRowKind,
   AdvanceRegisterTab,
@@ -91,20 +91,22 @@ function ControlCell({ row, t }: { row: AdvanceRegisterDisplayRow; t: AdvanceTex
   return (
     <span className="inline-flex items-center gap-2 whitespace-nowrap" data-slot="advance-control">
       {warn && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span
-              tabIndex={0}
-              role="img"
-              aria-label={t.differenceWarning}
-              data-slot="advance-difference-warning"
-              className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <AlertTriangle className="h-4 w-4" aria-hidden />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{t.differenceWarning}</TooltipContent>
-        </Tooltip>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span
+                tabIndex={0}
+                role="img"
+                aria-label={t.differenceWarning}
+                data-slot="advance-difference-warning"
+                className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <AlertTriangle className="h-4 w-4" aria-hidden />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>{t.differenceWarning}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
       <span>{labelOf(row, t)}</span>
       <span className="font-normal tabular-nums">
