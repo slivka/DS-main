@@ -53,8 +53,17 @@ describe("RecordSidePanel záložky", () => {
         ? "|"
         : node.getAttribute("aria-label"),
     );
-    expect(items).toEqual(["Zdroj", "Poznámky", "Přílohy: 2", "|", "Propojené doklady", "Historie"]);
-    expect(view.container.querySelector('[data-slot="record-panel-tab-count"]')?.textContent).toBe("2");
+    expect(items).toEqual([
+      "Zdroj",
+      "Poznámky",
+      "Přílohy: 2",
+      "|",
+      "Propojené doklady",
+      "Historie",
+    ]);
+    expect(view.container.querySelector('[data-slot="record-panel-tab-count"]')?.textContent).toBe(
+      "2",
+    );
   });
   it("tablist je vodorovný s roving tabindex (šipky ověřuje Chromium E2E)", () => {
     const view = render(<Panel />);

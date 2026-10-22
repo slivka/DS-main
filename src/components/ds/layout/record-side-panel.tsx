@@ -271,4 +271,3 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
     );
   },
 );
-
