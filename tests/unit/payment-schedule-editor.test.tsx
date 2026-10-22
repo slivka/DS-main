@@ -25,7 +25,9 @@ describe("PaymentScheduleEditor", () => {
         <PaymentScheduleEditor items={[]} onChange={() => {}} totalToPay={100} zoom={1.2} />
       </GridZoomContext.Provider>,
     );
-    expect(Number.parseFloat(toolbar?.style.fontSize ?? "")).toBe(Number.parseFloat(gridFontSize(1.2)));
+    expect(Number.parseFloat(toolbar?.style.fontSize ?? "")).toBe(
+      Number.parseFloat(gridFontSize(1.2)),
+    );
   });
   it("uložení je v liště, volá APP a disabled/busy brání dalšímu uložení", () => {
     let saved = 0;

@@ -5011,11 +5011,11 @@ _Vypnutý příkaz_
 
 ### PaymentScheduleEditor
 
-```ts
-import { PaymentScheduleEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```tsx
+import { PaymentScheduleEditor } from "@/design-system/{slug}";
 ```
 
-Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozepsat, rozložením na splátky a uvolněním pozastávky. Komponenta nic neukládá; aplikace uloží celé pole items jedním voláním.
+Platební kalendář se sdílenou GridToolbar, standardním Přidat a vedlejšími akcemi v nabídce při zúžení. Zoom převezme z okolního GridZoomContext, explicitní zoom má přednost. saveAction vykreslí uložení v liště; disabled/busy blokují opakovaný klik, data a zápis vlastní APP.
 
 **Props:**
 
@@ -5036,18 +5036,22 @@ Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozeps
 | `onGenerate` | function | `—` |
 | `texts` | any | `—` |
 | `className` | string | `zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2` |
+| `zoom` | number | `GridZoomContext / 1` |
+| `saveAction` | PaymentScheduleSaveAction: { label?, onSave, disabled?, busy?, disabledReason? } | `—` |
 
 **Examples:**
 
-_Kalendář faktury_
+**Kalendář faktury:**
+
 ```tsx
-<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />
+<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: "Uložit kalendář", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />
 ```
 
 **Avoid:**
 
 - Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.
 - Neukládejte jednotlivé řádky zvlášť.
+- Nekreslete vlastní Uložit kalendář pod gridem ani vlastní pevnou velikost tlačítek; použijte saveAction a zoom.
 
 ### PeriodFilter
 
