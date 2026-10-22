@@ -127,6 +127,9 @@ export function DocumentForm(props: DocumentFormProps) {
   const formRef = useDocumentFormStickyTop();
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
+  // Obecný zámek pole (2.128.0): jen pole mimo editableFields s dodaným důvodem aplikace.
+  const lockReason = (key: DocumentHeaderField) =>
+    !can(key) ? props.fieldLockedReasons?.[key] : undefined;
   const {
     receivedDocument,
     issuedDocument,
@@ -245,6 +248,7 @@ export function DocumentForm(props: DocumentFormProps) {
     // Neaktivní validace skrývá jen klientské chyby; projekce ponechá server i varování.
     fieldErrors: { ...(validationActive === false ? {} : fieldErrors), ...issueFieldErrors },
     fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
+    lockReason,
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
   });
