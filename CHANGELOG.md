@@ -2,6 +2,10 @@
 
 ## 2.128.0 (nevydáno)
 
+- Opravy zámků: paymentReference používá FieldValue. V IBAN režimu důvod bankIban předchází bankAccount a bankSwift předchází bankCode; obecné bankAccount/bankCode tak zamykají oba režimy. Pro domácí účet platí bankAccount/bankCode. Datum issueDate (BA: Datum pohybu), accountingDate, taxDate, vatDate, dueDate používají společnou šířku DateField.
+- Priorita u needitovatelných polí: fieldLockedReasons.amountTotal před nuceným součtem Σ (sumLocked), currency před currencyDisabledReason; ruční protistrana counterpartyName → partnerId → dosavadní counterpartyInputLockedReason (poslední zamyká jen přepnutí režimu). U upravitelného pole se obecný důvod nepoužije, původní zámky zůstávají. Klik na odkaz chyby zamčeného pole zaměří jeho tlačítko zámku. Společná cesta pro faktury i zálohové listy.
+- DocumentForm a jeho ukázky rozděleny na logické části pod 300 řádků bez změny veřejného použití. Zachována původní stránka dalších dokladů; doplněna zahraniční BA ukázka. Katalog dokumentuje fieldLockedReasons, menuActions a tvar RecordMoreAction.
+
 - MultiSelect / ChipMultiSelect: možnosti používají CommandItem s aktivní a zaškrtnutou hodnotou; šipky při hledání, Enter/mezerník přepínají bez zavření, Tab prochází Vybrat vše / Vymazat, Escape zavře a vrátí fokus. Jednotlivé výběry a jejich Tab beze změny. Sdílené akce zůstávají samostatně dosažitelné; ukázka filtru firmy a Chromium spec jen s klávesnicí.
 - Ověření doplnění klávesnice: check:full --harness OK, 1 174/1 174 testů ve 128 souborech; Chromium multi-select-keyboard 1/1 (hledání, Enter/mezerník, Vybrat vše/Vymazat přes Tab, Escape). Katalog proti vydané 2.127.0: 475 → 475 komponent / 1 123 → 1 157 props, 0 odebrání. Automatické sestavení OK, bez vydání; release Claude.
 - DocumentForm.fieldLockedReasons: obecný důvod uzamčení pole mimo editableFields – pole se vykreslí jen pro čtení přes FieldValue se zámkem a důvodem v bublině (aria-label). Platí pro částku, měnu, data, protiúčet (číslo účtu, IBAN, SWIFT, kód banky) a VS/KS/SS; texty dodává aplikace. Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason, sumLocked) zůstávají funkční.

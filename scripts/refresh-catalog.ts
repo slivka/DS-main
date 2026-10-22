@@ -7,6 +7,8 @@ import { enrichAdvanceCatalog } from "./advance-catalog";
 import { enrichLinkedPanelCatalog } from "./linked-panel-catalog";
 import { enrichFileImportCatalog } from "./file-import-catalog";
 
+import { enrichDocumentLocks } from "./document-lock-catalog";
+
 interface CatalogProp {
   name: string;
   type: string;
@@ -155,6 +157,7 @@ export function refreshCatalog() {
       "Navázanou záložku nevážete na pozici panelu ani ji neotvírejte vlastní cestou; vždy přes openLinkedTab.";
     if (!provider.antipatterns.includes(rule)) provider.antipatterns.push(rule);
   }
+  const documentLocks = enrichDocumentLocks(catalog.components);
   const panelComponents = enrichRecordPanelCatalog(catalog.components);
   const linkedPanelComponents = enrichLinkedPanelCatalog(catalog.components);
   const templateComponents = enrichTemplateCatalog(catalog.components);
@@ -171,6 +174,7 @@ export function refreshCatalog() {
     header,
     pill,
     provider,
+    ...documentLocks,
     ...catalog.components.filter((component) => searchable.has(component.name)),
   ]) {
     if (!component) continue;
