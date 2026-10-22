@@ -16,7 +16,11 @@ import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
 import { SectionHeading } from "../layout/section-heading";
-import { RecordActionBar, type RecordActionError } from "../layout/record-action-bar";
+import {
+  RecordActionBar,
+  type RecordActionError,
+  type RecordMoreAction,
+} from "../layout/record-action-bar";
 
 /** Editované údaje výpisu. */
 export interface BankStatementValue {
@@ -85,6 +89,8 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   onCheckedChange?: (checked: boolean) => void;
   /** Odstraní prázdný výpis. */
   onDelete?: () => void;
+  /** Další položky nabídky „…“ v hlavičce (2.128.0), připojené za stávající; disabledReason u položky. */
+  menuActions?: RecordMoreAction[];
   /** Chyba ve sdíleném pruhu akcí. */
   error?: RecordActionError;
   /** Upozornění ze společných NoticeBar. */
@@ -121,6 +127,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       onCheckedChange: _onCheckedChange,
       checkDisabledReason: _checkDisabledReason,
       onDelete,
+      menuActions,
       error,
       notices,
       items,
@@ -174,8 +181,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   ? { onSave, dirty, disabled: locked, disabledReason: lockedReason, busy }
                   : undefined
               }
-              moreActions={
-                onDelete
+              moreActions={[
+                ...(onDelete
                   ? [
                       {
                         id: "delete",
@@ -188,8 +195,9 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                         },
                       },
                     ]
-                  : []
-              }
+                  : []),
+                ...(menuActions ?? []),
+              ]}
               error={error}
               issues={
                 difference !== null

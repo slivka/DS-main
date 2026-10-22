@@ -2,6 +2,7 @@
 import { useId } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { OptionSelect } from "../../form/option-select";
+import { FieldValue } from "../../form/field-value";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
@@ -15,6 +16,8 @@ interface Args {
   readOnly: boolean;
   identityVariant: string;
   currencyDisabledReason?: string;
+  /** Obecný důvod uzamčení měny (2.128.0); má přednost a kreslí FieldValue se zámkem. */
+  lockedReason?: string;
   currencyOptions: { value: string; label: string; selectedLabel?: string }[];
   currenciesPresent: boolean;
   t: DocumentFormTexts;
@@ -28,11 +31,25 @@ export function useCurrencyControl({
   readOnly,
   identityVariant,
   currencyDisabledReason,
+  lockedReason,
   currencyOptions,
   currenciesPresent,
   t,
 }: Args) {
   const currencyReasonId = useId();
+  // Obecný zámek (2.128.0): hodnota jen pro čtení se zámkem a důvodem v bublině.
+  if (lockedReason) {
+    return (
+      <FieldValue
+        id="document-currency"
+        aria-labelledby="document-currency-label"
+        lockedReason={lockedReason}
+        className="w-[6.5rem] tabular-nums"
+      >
+        {value.currency}
+      </FieldValue>
+    );
+  }
   const currencyFixed =
     currencyLocked ||
     readOnly ||

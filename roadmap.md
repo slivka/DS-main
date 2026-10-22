@@ -1,6 +1,8 @@
 ## DS 2.128.0 (nevydáno)
 
-- [ ] Zatím bez úkolů.
+- [x] DocumentForm.fieldLockedReasons: obecný zámek pole jen pro čtení (FieldValue + důvod), hlavička i částka.
+- [x] BankStatementForm.menuActions: položky nabídky „…“ za stávajícími, disabledReason.
+- [x] Ukázky (BA s převzatými poli, výpis s „Import výpisu…“), testy, katalog bez ztrát, check:full.
 
 ## DS 2.127.0
 

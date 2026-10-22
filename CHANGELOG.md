@@ -2,7 +2,11 @@
 
 ## 2.128.0 (nevydáno)
 
-- Zatím bez změn.
+- DocumentForm.fieldLockedReasons: obecný důvod uzamčení pole mimo editableFields – pole se vykreslí jen pro čtení přes FieldValue se zámkem a důvodem v bublině (aria-label). Platí pro částku, měnu, data, protiúčet (číslo účtu, IBAN, SWIFT, kód banky) a VS/KS/SS; texty dodává aplikace. Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason, sumLocked) zůstávají funkční.
+- BankStatementForm.menuActions: veřejný slot položek nabídky „…“ v hlavičce výpisu, připojený za stávající položky; disabledReason u položky.
+- Ukázky: bankovní pohyb s převzatými poli („Převzato z banky“) a výpis s položkou „Import výpisu…“.
+
+- Ověření 2.128.0: check:full --harness OK: 1 168/1 168 testů ve 127 souborech, lint 0 chyb, formát i peněžní audit OK. Automatické typy/sestavení build OK. Katalog: 475 → 475 komponent / 1 123 → 1 157 props, 0 odebrání. Chromium proklik: 8 zámků „Převzato z banky“ s bublinou, nabídka výpisu Odstranit → Import výpisu… → Zopakovat import, bez pageerror. Plná E2E sada/FF/WebKit neběžely. Package/meta zůstávají 2.126.0; nevydáno, release Claude.
 
 ## 2.127.0
 

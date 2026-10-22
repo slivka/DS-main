@@ -51,6 +51,23 @@ export function DocumentFormShowcase() {
   const state = useDocumentFormShowcaseState();
   const [panelOpen, setPanelOpen] = useState(false);
   const [incomePanelOpen, setIncomePanelOpen] = useState(false);
+  const [bankLocked, setBankLocked] = useState<DocumentHeaderValue>({
+    bookId: "b-bv",
+    number: "BA/2026/041",
+    direction: "in",
+    issueDate: "2026-10-20",
+    accountingDate: "2026-10-20",
+    bankAccount: "19-2000145399",
+    bankCode: "0800",
+    variableSymbol: "20260123",
+    constantSymbol: "0308",
+    specificSymbol: "77",
+    currency: "CZK",
+    amountTotal: 1500,
+    totalMode: "entered",
+    mainAccountId: "221001",
+    description: "Příjem z banky",
+  });
   const [panelTab, setPanelTab] = useState("attachments");
   const panelContent = useRecordPanelContent("draft", "");
   const {
@@ -294,6 +311,42 @@ export function DocumentFormShowcase() {
           mainAccountLocked
           status="draft"
           vatRateField={{ value: cashEur.rate ?? null, onChange: () => {}, sameAsDocument: true }}
+        />
+      </ShowcaseSection>
+      <ShowcaseSection
+        title="Bankovní pohyb z importu výpisu"
+        description="Pole převzatá z banky jsou jen pro čtení se zámkem a důvodem v bublině (fieldLockedReasons)."
+      >
+        <DocumentForm
+          title="Bankovní pohyb"
+          identity={{
+            variant: "cashBank",
+            book: formatCodeName("BV", "Banka"),
+            period: "2026",
+            account: { side: "DAL", label: formatCodeName("221.001", "Běžný účet") },
+            number: bankLocked.number,
+          }}
+          directionBadge="in"
+          value={bankLocked}
+          onChange={setBankLocked}
+          lines={[]}
+          {...common}
+          books={MOCK_BOOKS.filter((b) => b.id === "b-bv")}
+          documentType="BA"
+          mainSide="D"
+          mainAccountLocked
+          status="draft"
+          editableFields={["description"]}
+          fieldLockedReasons={{
+            issueDate: "Převzato z banky",
+            bankAccount: "Převzato z banky",
+            bankCode: "Převzato z banky",
+            variableSymbol: "Převzato z banky",
+            constantSymbol: "Převzato z banky",
+            specificSymbol: "Převzato z banky",
+            amountTotal: "Převzato z banky",
+            currency: "Převzato z banky",
+          }}
         />
       </ShowcaseSection>
       <ShowcaseSection

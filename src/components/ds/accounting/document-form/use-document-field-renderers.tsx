@@ -7,8 +7,10 @@ import { Input } from "../../../ui/input";
 import { Textarea } from "../../../ui/textarea";
 import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
+import { FieldValue } from "../../form/field-value";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
+import { formatDate } from "../../../../lib/format";
 import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
 import type {
   DocumentAccountingDateLink,
@@ -25,6 +27,8 @@ export interface DocumentFieldRenderersArgs {
   accountingDateLink?: DocumentAccountingDateLink;
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
+  /** Obecný důvod uzamčení pole (2.128.0); pole se vykreslí jen pro čtení se zámkem. */
+  lockReason?: (key: DocumentHeaderField) => string | undefined;
   /** Oznámí neplatný zápis data; text patří i do chybového pruhu. */
   onInvalidDate?: (key: DocumentDateField, invalid: boolean) => void;
 }
@@ -42,6 +46,7 @@ export function useDocumentFieldRenderers({
   accountingDateLink,
   fieldErrors,
   fieldWarnings,
+  lockReason,
   onInvalidDate,
 }: DocumentFieldRenderersArgs) {
   const ds = useDsTexts();
@@ -77,6 +82,25 @@ export function useDocumentFieldRenderers({
     },
   ) => {
     const warning = options?.warning ?? dateWarnings?.[key];
+    const locked = lockReason?.(key);
+    if (locked) {
+      return field(
+        `document-${key}`,
+        label,
+        <FieldValue
+          id={`document-${key}`}
+          aria-labelledby={`document-${key}-label`}
+          lockedReason={locked}
+          className="tabular-nums"
+        >
+          {formatDate(value[key])}
+        </FieldValue>,
+        3,
+        false,
+        className,
+        options?.hint,
+      );
+    }
     return field(
       `document-${key}`,
       label,
@@ -194,6 +218,7 @@ export function useDocumentHeaderFields(a: DocumentHeaderFieldsArgs) {
     accountingDateLink: dateLink,
     fieldErrors: a.fieldErrors,
     fieldWarnings: a.fieldWarnings,
+    lockReason: a.lockReason,
     onInvalidDate: a.onInvalidDate,
   });
   const taxNumberField = a.showTaxNumber

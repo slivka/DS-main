@@ -51,3 +51,5 @@
 - Advance compositions live in advances and reuse linked records, settlement and DataGrid; APP supplies all domain data. Why: no duplicate allocation or pairing engine.
 - Embed deductions through JournalLinesEditor.afterVatRecap; APP omits it on advance lists and supplies advanceDeduction separately. Why: invoices share one recap without inferred visibility.
 - Map advance auto-kind labels through DsTexts.vatFive in journal and posting views. Why: advance_fx stays distinct from fxRounding without generating accounting rows.
+- Obecné zamčení polí dokladu jde přes `fieldLockedReasons` do FieldValue se zámkem; jednotlivé důvody (protistrana, účet, Σ) zůstávají. Why: import výpisů zamyká převzatá pole jednou cestou bez kopií ovládání.
+- Výpis skládá nabídku „…“ ze slotu `menuActions` za stávajícími položkami. Why: aplikace přidává akce (import) bez druhé nabídky.

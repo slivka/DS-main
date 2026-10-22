@@ -1,6 +1,7 @@
 /** Ukázky výpisů · vlastní náhledové hodnoty · nesmí být součástí spotřebitelské knihovny. */
 import { Sigma } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
+import { toast } from "sonner";
 import {
   BankStatementForm,
   FieldToggleButton,
@@ -68,6 +69,20 @@ function StatementExample({ scenario }: { scenario: string }) {
       dirty={dirty}
       onSave={() => setDirty(false)}
       onDelete={() => setValue({ ...value, number: "" })}
+      menuActions={[
+        {
+          id: "import",
+          label: "Import výpisu…",
+          onClick: () => toast.info("Import výpisu…"),
+        },
+        {
+          id: "reimport",
+          label: "Zopakovat import",
+          onClick: () => {},
+          disabled: status !== "open",
+          disabledReason: status !== "open" ? "Výpis je zaúčtován" : undefined,
+        },
+      ]}
       items={
         <>
           <output aria-label="Nový pohyb">
