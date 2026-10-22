@@ -1,8 +1,16 @@
 # Changelog – Slivka Design System
 
-## 2.131.0 (nevydáno)
+## 2.131.0 (nevydáno) – Evidence záloh se záložkami
 
-- Zatím bez změn.
+- Nový preset `AdvanceRegisterView` (typy `AdvanceRegisterTab`, `AdvanceRegisterRowKind`, `AdvanceRegisterViewRow`, `AdvanceRegisterData`, `AdvanceRegisterViewFilters`, `AdvanceRegisterPagination`, `AdvanceRegisterAccountOption`, `AdvancePaymentsFilter`, `AdvanceSettlementsFilter`) pro evidenci poskytnutých i přijatých záloh: řízené záložky Zůstatek · Platby záloh · Vyúčtování záloh (PageTabs jako stránka Banka), jeden společný „Stav k datu“ nad záložkami, gridy bez nadpisového pruhu.
+- Řízené filtry: Platby záloh Vše · Nevyúčtováno · Bez daňového dokladu · Po lhůtě; Vyúčtování záloh Vše · Nespárované; ve všech záložkách výběr více účtů a sloupec Účet. `vatPayer={false}` skryje Bez daňového dokladu, Po lhůtě a sloupce DD (Pokryto DD, Stav DD, Lhůta).
+- Seskupení podle pořadí z dat (obálka DB `rows` / `totals` / `total_count`, `row_kind` detail / partner_total / account_total / account_control): záhlaví „324.100 – název“, v Zůstatku i partner; mezisoučty, kontrolní řádek „Rozdíl proti účtu …“ (zůstatek účtu · součet evidence · rozdíl, nenulový rozdíl = barva a ikona s bublinou) a Celkem z `totals`. DS nic nesčítá ani nepáruje. Součtové řádky nejdou otevřít; klik na doklad volá `onOpen(row)`.
+- `scopeIncomplete` (text od APP): informační pruh nad gridem, kontrolní řádky se nezobrazí. Řízené stránkování podle `total_count` (`pagination.onPageChange` / `onPageSizeChange`).
+- DataGrid: nový nepovinný `sortSegment(row)` – řazení jen uvnitř úseků se stejným klíčem, řádky s `null` (součty, záhlaví) zůstávají na místě. Pomocná funkce `sortWithinSegments` v grid-sort. Bez prop beze změny.
+- `AdvanceRegisterGrid` beze změny (zpětně kompatibilní).
+- Texty CS/SK v `advances` (záložky, filtry, sloupce, kontrolní řádek, součty).
+- Ukázka: poskytnuté zálohy (314.100, 314.200, 3 partneři, EUR, nenulový rozdíl u 314.200, přepínač neplátce a neúplných práv) a přijaté zálohy (324.100).
+- Testy: unit `advance-register-view.test.tsx` (záložky a sdílené datum, filtry podle záložky, skupiny a součtové řádky, řazení uvnitř skupiny, varování rozdílu, vatPayer=false, scopeIncomplete); E2E Chromium `advance-register-view.spec.ts` (záložky se zachovaným datem, varování, lišta bez zalomení při zoomu 0,7 / 1,5).
 
 ## 2.130.0 – Drobné opravy 3
 

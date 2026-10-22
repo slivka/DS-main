@@ -1,6 +1,10 @@
 ## DS 2.131.0 (nevydáno)
 
-- [ ] Zatím bez úkolů.
+- [x] AdvanceRegisterView – záložky Zůstatek / Platby / Vyúčtování, společný Stav k datu
+- [x] Filtry podle záložky, filtr účtů, vatPayer, scopeIncomplete, stránkování podle total_count
+- [x] Skupiny účtu/partnera, součtové a kontrolní řádky z APP, řazení uvnitř skupiny (DataGrid.sortSegment)
+- [x] Ukázka 314/324, unit + E2E Chromium
+- [ ] APP: napojení obálky DB (rows / totals / total_count) – mimo DS
 
 ## DS 2.130.0
 
