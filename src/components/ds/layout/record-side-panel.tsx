@@ -142,14 +142,14 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
       </Tooltip>
     );
     return (
-      <div ref={ref} {...props} className={cn("min-w-0", className)}>
+      <div ref={ref} {...props} className={cn("h-full min-h-0 min-w-0", className)}>
         <div
           ref={host}
-          className="relative flex min-w-0 items-stretch"
+          className="relative flex h-full min-h-0 min-w-0 items-stretch"
           data-slot="record-panel-layout"
           data-overlay={(narrow && open) || undefined}
         >
-          <div className="min-w-0 flex-1" inert={narrow && open ? true : undefined}>
+          <div className="min-h-0 min-w-0 flex-1 overflow-auto" inert={narrow && open ? true : undefined}>
             {children}
           </div>
           {open ? (
@@ -251,7 +251,7 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
                     <TabsContent
                       key={tab.id}
                       value={tab.id}
-                      className="min-h-0 flex-1 overflow-auto p-3"
+                      className="flex min-h-0 flex-1 flex-col overflow-auto p-3"
                     >
                       {tab.content}
                     </TabsContent>
