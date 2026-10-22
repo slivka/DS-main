@@ -9,6 +9,7 @@ import { useFileDrop, validateFiles, type RejectedFile } from "../../../hooks/us
 import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
 import { PanelToolButton } from "../layout/record-panel-tools";
 import type { RecordAttachment } from "./attachment-types";
+import { SourcePdfPreview } from "./source-pdf-preview";
 /** Odkaz na záznam, ze kterého zdroj pochází. */
 export interface SourceInheritedFrom {
   /** Popisek zdrojového záznamu. */
@@ -71,7 +72,6 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   const dropHost = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
-  const [previewWidth, setPreviewWidth] = useState(0);
   const [failed, setFailed] = useState(false);
   const [rejected, setRejected] = useState<RejectedFile[]>([]);
   const reported = useRef(false);
@@ -79,16 +79,6 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
     setFailed(false);
     reported.current = false;
   }, [source?.id, source?.previewUrl, source?.url]);
-  useEffect(() => {
-    const element = viewport.current;
-    if (!element) return;
-    // Nativní PDF prohlížeč musí po změně šířky znovu použít FitH, nikoli staré přiblížení.
-    const observer = new ResizeObserver(() => {
-      setPreviewWidth(Math.round(element.clientWidth));
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [source?.id]);
   const expire = () => {
     setFailed(true);
     if (!reported.current) {
@@ -210,11 +200,9 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
         className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-border bg-muted/30"
       >
         {kind === "pdf" && url ? (
-          <iframe
-            key={previewWidth}
-            src={`${url.split("#")[0]}#view=FitH&zoom=page-width&toolbar=0&navpanes=0`}
+          <SourcePdfPreview
+            url={url}
             title={source.name}
-            className="absolute inset-0 h-full w-full border-0"
             onError={expire}
           />
         ) : kind === "image" && url ? (
