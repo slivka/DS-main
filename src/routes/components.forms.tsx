@@ -6,6 +6,7 @@ import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseL
 import { PartnerShowcase } from "@/components/showcase/PartnerShowcase";
 import { RecordDialogPatternsShowcase } from "../components/showcase/RecordDialogPatternsShowcase";
 import { RecordDialogShowcase } from "@/components/showcase/RecordDialogShowcase";
+import { SmallDialogShowcase } from "@/components/showcase/SmallDialogShowcase";
 import { FieldStatusShowcase } from "@/components/showcase/FieldStatusShowcase";
 import {
   AccountSelect,
@@ -85,6 +86,13 @@ function FormsPage() {
         description="Společná mřížka, stejné výšky polí, číselné řady a stálá výška záložek."
       >
         <RecordDialogShowcase />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Malý dialog a přepínač prostoru"
+        description="Zrušit a Uložit vpravo v jednom řádku, dvojice polí vedle sebe od 24 rem, viditelný popis a dlouhý název prostoru se třemi tečkami."
+      >
+        <SmallDialogShowcase />
       </ShowcaseSection>
 
       <ShowcaseSection

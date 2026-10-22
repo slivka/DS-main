@@ -158,3 +158,94 @@ export function RecordDialogSubmitButton({
     </TooltipProvider>
   );
 }
+
+/** Vlastnosti patičky dialogu záznamu. */
+export interface RecordDialogFooterProps {
+  /** Levá skupina: Odstranit, doplňkové akce, akce životního cyklu. */
+  start?: ReactNode;
+  /** Pravá skupina: Zrušit / Zavřít a Uložit (v tomto pořadí). */
+  children: ReactNode;
+}
+
+/**
+ * Patička: pravá skupina vždy v jednom řádku vpravo, levá vlevo; když se nevejde, zalomí se
+ * nad pravou. Pod 24 rem šířky dialogu jsou tlačítka pod sebou přes celou šířku (Uložit nahoře).
+ */
+export function RecordDialogFooter({ start, children }: RecordDialogFooterProps) {
+  return (
+    <div
+      data-slot="record-dialog-footer"
+      className="flex flex-col gap-2 pt-2 @min-[24rem]:flex-row-reverse @min-[24rem]:flex-wrap-reverse @min-[24rem]:items-center"
+    >
+      <div
+        data-slot="record-dialog-footer-end"
+        className="order-first flex flex-col-reverse gap-2 [&>*]:w-full @min-[24rem]:flex-row @min-[24rem]:items-center @min-[24rem]:[&>*]:w-auto"
+      >
+        {children}
+      </div>
+      {start ? (
+        <div
+          data-slot="record-dialog-footer-start"
+          className="flex flex-wrap items-center gap-2 @min-[24rem]:mr-auto"
+        >
+          {start}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** Akce s volitelným zákazem a důvodem pro levou skupinu patičky. */
+interface FooterStartAction {
+  label?: string;
+  disabled?: boolean | undefined;
+  disabledReason?: string | undefined;
+}
+
+/** Vlastnosti levé skupiny patičky. */
+export interface RecordDialogFooterStartProps {
+  /** Akce Odstranit; bez ní se tlačítko nevykreslí. */
+  deleteAction?: FooterStartAction | undefined;
+  /** Text tlačítka Odstranit. */
+  deleteLabel: string;
+  /** Spuštění odstranění. */
+  onDelete: () => void;
+  /** Akce životního cyklu. */
+  lifecycleAction?: (FooterStartAction & { label: string }) | undefined;
+  /** Spuštění akce životního cyklu. */
+  onLifecycle: () => void;
+  /** Probíhá ukládání. */
+  busy: boolean;
+  /** Doplňkové akce mezi Odstranit a akcí životního cyklu. */
+  children?: ReactNode;
+}
+
+/** Levá skupina patičky v pevném pořadí Odstranit → doplňkové → životní cyklus. */
+export function RecordDialogFooterStart(props: RecordDialogFooterStartProps) {
+  const { deleteAction, lifecycleAction, busy } = props;
+  return (
+    <>
+      {deleteAction ? (
+        <RecordDialogFooterAction
+          label={props.deleteLabel}
+          variant="outline-destructive"
+          slot="delete-action"
+          disabled={deleteAction.disabled || busy}
+          disabledReason={deleteAction.disabledReason}
+          onClick={props.onDelete}
+        />
+      ) : null}
+      {props.children}
+      {lifecycleAction ? (
+        <RecordDialogFooterAction
+          label={lifecycleAction.label}
+          variant="outline"
+          slot="lifecycle-action"
+          disabled={lifecycleAction.disabled || busy}
+          disabledReason={lifecycleAction.disabledReason}
+          onClick={props.onLifecycle}
+        />
+      ) : null}
+    </>
+  );
+}

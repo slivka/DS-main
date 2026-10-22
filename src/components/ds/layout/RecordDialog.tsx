@@ -3,11 +3,10 @@
  * režim jen pro čtení, pruh chyb a pořadí akcí patičky · nesmí sám ukládat ani zavírat po
  * uložení (to dělá aplikace po úspěchu).
  */
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import type { FieldErrorLink } from "../feedback/field-error-summary";
 
 import { usePane } from "../panes/pane-context";
-import { PanelRightClose, PanelRightOpen } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,14 +17,17 @@ import {
 import { Button } from "../../ui/button";
 import { SectionHeading } from "./section-heading";
 import { RecordDialogTabs } from "./record-dialog-tabs";
+import { RecordDialogPanelToggle } from "./record-dialog-panel-toggle";
 import { StatusBadge } from "../data-display/status-badge";
 import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { UnsavedChangesDialog } from "../panes/unsaved-changes-dialog";
 import { RecordReadOnlyProvider } from "../form/record-read-only";
+import { FieldGridBreakpointContext } from "./form-field-layout";
 import {
   RecordDialogErrorStrip,
-  RecordDialogFooterAction,
+  RecordDialogFooter,
+  RecordDialogFooterStart,
   RecordDialogSubmitButton,
 } from "./record-dialog-footer";
 import { RecordDialogPane } from "./record-dialog-pane";
@@ -162,6 +164,9 @@ const SIZE_CLASS: Record<RecordDialogSize, { dialog: string; pane: string }> = {
   lg: { dialog: "sm:max-w-4xl", pane: "max-w-4xl" },
   xl: { dialog: "sm:max-w-7xl", pane: "max-w-7xl" },
 };
+
+/** Viditelný popis pod nadpisem: zalamuje se, nezkracuje. */
+const DESCRIPTION_CLASS = "whitespace-normal break-words text-left text-sm text-muted-foreground";
 
 /** Čistý výpočet potvrzení akce životního cyklu; `null` = spustit hned bez dotazu. */
 export function resolveLifecycleConfirm(
@@ -320,26 +325,16 @@ export function RecordDialog({
   }, [controlledTab, localTab, tabs]);
   const panelVisible = Boolean(sidePanel) && panelOpen;
   const showDelete = Boolean(deleteAction) && !readOnly;
+  const descriptionId = useId();
   const inner = (
     <>
       {sidePanel ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="absolute right-12 top-3 gap-1.5"
-          onClick={() => setPanelOpen((v) => !v)}
-          title={
-            panelVisible ? dsTexts.recordDialog.hidePanel(panelLabel.toLowerCase()) : panelLabel
-          }
-        >
-          {panelVisible ? (
-            <PanelRightClose className="size-4" />
-          ) : (
-            <PanelRightOpen className="size-4" />
-          )}
-          {sidePanelTitle ?? panelLabel}
-        </Button>
+        <RecordDialogPanelToggle
+          visible={panelVisible}
+          label={panelLabel}
+          title={sidePanelTitle}
+          onToggle={() => setPanelOpen((v) => !v)}
+        />
       ) : null}
       {sidePanel && sidePanelExtra ? (
         <div className="absolute right-12 top-14 flex items-center justify-end">
@@ -358,56 +353,43 @@ export function RecordDialog({
           }}
         >
           <RecordReadOnlyProvider value={readOnly}>
-            {children}
-            {tabs?.length === 1 ? tabs[0]?.content : null}
-            {tabs && tabs.length > 1 ? (
-              <RecordDialogTabs tabs={tabs} value={activeTab} onValueChange={changeTab} />
-            ) : null}
+            <FieldGridBreakpointContext.Provider value={size === "sm" ? "compact" : "default"}>
+              {children}
+              {tabs?.length === 1 ? tabs[0]?.content : null}
+              {tabs && tabs.length > 1 ? (
+                <RecordDialogTabs tabs={tabs} value={activeTab} onValueChange={changeTab} />
+              ) : null}
+            </FieldGridBreakpointContext.Provider>
           </RecordReadOnlyProvider>
           <RecordDialogErrorStrip error={error} fieldErrors={fieldErrors} />
-          <div
-            data-slot="record-dialog-footer"
-            className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between"
-          >
-            {showDelete || extraActions || lifecycleAction ? (
-              <div className="flex items-center gap-2">
-                {showDelete && deleteAction ? (
-                  <RecordDialogFooterAction
-                    label={deleteText}
-                    variant="outline-destructive"
-                    slot="delete-action"
-                    disabled={deleteAction.disabled || busy}
-                    disabledReason={deleteAction.disabledReason}
-                    onClick={runDelete}
-                  />
-                ) : null}
-                {extraActions}
-                {lifecycleAction ? (
-                  <RecordDialogFooterAction
-                    label={lifecycleAction.label}
-                    variant="outline"
-                    slot="lifecycle-action"
-                    disabled={lifecycleAction.disabled || busy}
-                    disabledReason={lifecycleAction.disabledReason}
-                    onClick={runLifecycle}
-                  />
-                ) : null}
-              </div>
-            ) : null}
-            <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
-              <Button type="button" variant="outline" disabled={busy} onClick={requestClose}>
-                {readOnly ? closeText : cancelText}
-              </Button>
-              {!readOnly ? (
-                <RecordDialogSubmitButton
-                  label={submitText}
+          <RecordDialogFooter
+            start={
+              showDelete || extraActions || lifecycleAction ? (
+                <RecordDialogFooterStart
+                  deleteAction={showDelete ? deleteAction : undefined}
+                  deleteLabel={deleteText}
+                  onDelete={runDelete}
+                  lifecycleAction={lifecycleAction}
+                  onLifecycle={runLifecycle}
                   busy={busy}
-                  disabled={submitDisabled}
-                  disabledReason={submitDisabledReason}
-                />
-              ) : null}
-            </div>
-          </div>
+                >
+                  {extraActions}
+                </RecordDialogFooterStart>
+              ) : null
+            }
+          >
+            <Button type="button" variant="outline" disabled={busy} onClick={requestClose}>
+              {readOnly ? closeText : cancelText}
+            </Button>
+            {!readOnly ? (
+              <RecordDialogSubmitButton
+                label={submitText}
+                busy={busy}
+                disabled={submitDisabled}
+                disabledReason={submitDisabledReason}
+              />
+            ) : null}
+          </RecordDialogFooter>
         </form>
         {panelVisible ? <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside> : null}
       </div>
@@ -459,12 +441,21 @@ export function RecordDialog({
         sizeClassName={SIZE_CLASS[size].pane}
         contentClassName={contentClassName}
         onRequestClose={requestClose}
+        descriptionId={description ? descriptionId : undefined}
         header={
           <>
             <h2 className="flex min-w-0 flex-nowrap items-center gap-2 text-lg font-semibold">
               {titleContent}
             </h2>
-            {description ? <p className="sr-only">{description}</p> : null}
+            {description ? (
+              <p
+                id={descriptionId}
+                data-slot="record-dialog-description"
+                className={DESCRIPTION_CLASS}
+              >
+                {description}
+              </p>
+            ) : null}
             {extraLine}
           </>
         }
@@ -489,7 +480,9 @@ export function RecordDialog({
             {titleContent}
           </DialogTitle>
           {description ? (
-            <DialogDescription className="sr-only">{description}</DialogDescription>
+            <DialogDescription data-slot="record-dialog-description" className={DESCRIPTION_CLASS}>
+              {description}
+            </DialogDescription>
           ) : null}
           {extraLine}
         </DialogHeader>

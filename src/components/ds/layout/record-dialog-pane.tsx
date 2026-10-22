@@ -21,6 +21,8 @@ export interface RecordDialogPaneProps {
   header: ReactNode;
   /** Obsah dialogu. */
   children: ReactNode;
+  /** Id viditelného popisu pro aria-describedby. */
+  descriptionId?: string | undefined;
   /** Uživatel žádá zavření (Esc, klik mimo). */
   onRequestClose: () => void;
 }
@@ -58,6 +60,7 @@ export function RecordDialogPane(props: RecordDialogPaneProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        aria-describedby={props.descriptionId}
         tabIndex={-1}
         className={cn(
           "@container relative w-full rounded-lg border bg-background p-6 shadow-lg outline-none",
