@@ -26,6 +26,10 @@ for (const name of readdirSync(dir, { recursive: true }).map(String)) {
   }
 }
 
+const setup = readFileSync("tests/setup.ts", "utf8");
+for (const reset of ["resetAppZoomCacheForTests()", "resetGridPrefs()", "localStorage.clear()"])
+  if (!setup.includes(reset)) problems.push(`tests/setup.ts: chybí globální úklid ${reset}`);
+
 if (problems.length) {
   console.error(`Izolace testů: ${problems.length} problém(ů)\n  ${problems.join("\n  ")}`);
   process.exit(1);
