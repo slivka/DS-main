@@ -23,7 +23,8 @@ function RegisterExample({ side, title }: { side: "provided" | "received"; title
     settlements: "all",
     accounts: [],
   });
-  const state = tab === "payments" ? filters.payments : tab === "settlements" ? filters.settlements : "all";
+  const state =
+    tab === "payments" ? filters.payments : tab === "settlements" ? filters.settlements : "all";
   return (
     <ShowcaseSection title={title}>
       <div className="flex flex-wrap gap-2">
@@ -49,7 +50,12 @@ function RegisterExample({ side, title }: { side: "provided" | "received"; title
         }}
         accountOptions={advanceAccounts(side)}
         vatPayer={vatPayer}
-        {...(scope ? { scopeIncomplete: "Nemáte přístup ke všem střediskům, kontrola proti účtům se nezobrazí." } : {})}
+        {...(scope
+          ? {
+              scopeIncomplete:
+                "Nemáte přístup ke všem střediskům, kontrola proti účtům se nezobrazí.",
+            }
+          : {})}
         pagination={{ page, pageSize, onPageChange: setPage, onPageSizeChange: setPageSize }}
         onOpen={(row) => toast(row.document ?? row.partner ?? row.id)}
       />

@@ -173,7 +173,10 @@ export const AdvanceRegisterView = forwardRef<HTMLDivElement, AdvanceRegisterVie
                     value={filters.settlements}
                     defaultValue="all"
                     onChange={(value) =>
-                      onFiltersChange({ ...filters, settlements: value as AdvanceSettlementsFilter })
+                      onFiltersChange({
+                        ...filters,
+                        settlements: value as AdvanceSettlementsFilter,
+                      })
                     }
                   />
                 )}
