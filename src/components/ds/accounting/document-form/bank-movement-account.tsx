@@ -80,28 +80,38 @@ export function BankMovementAccount({
           error={iban ? (fieldErrors?.bankIban ?? invalidIban) : fieldErrors?.bankAccount}
           warning={iban ? fieldWarnings?.bankIban : fieldWarnings?.bankAccount}
         >
-          <div className="relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]">
-            <Input
+          {accountLocked ? (
+            <FieldValue
               id="document-movement-account"
-              value={iban ? (value.bankIban ?? "") : (value.bankAccount ?? "")}
-              formatPattern={iban ? undefined : t.accountPattern}
-              disabled={disabled}
-              className="pr-[calc(var(--field-toggle-space)+3.5rem)]"
-              onChange={(event) => changeAccount(event.target.value)}
-            />
-            <span className="absolute right-[var(--field-toggle-space)] top-0 flex h-[var(--control-h)] items-center text-xs text-muted-foreground pointer-events-none">
-              {iban ? t.iban : t.domesticAccountShort}
-            </span>
-            <FieldToggleButton
-              icon={Landmark}
-              pressed={iban}
-              label={t.accountKind}
-              pressedTooltip={t.iban}
-              unpressedTooltip={t.domesticAccountShort}
-              disabled={disabled}
-              onPressedChange={(next) => patch({ bankAccountKind: next ? "iban" : "domestic" })}
-            />
-          </div>
+              lockedReason={accountLocked}
+              className="font-mono tabular-nums"
+            >
+              {iban ? (value.bankIban ?? "") : (value.bankAccount ?? "")}
+            </FieldValue>
+          ) : (
+            <div className="relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]">
+              <Input
+                id="document-movement-account"
+                value={iban ? (value.bankIban ?? "") : (value.bankAccount ?? "")}
+                formatPattern={iban ? undefined : t.accountPattern}
+                disabled={disabled}
+                className="pr-[calc(var(--field-toggle-space)+3.5rem)]"
+                onChange={(event) => changeAccount(event.target.value)}
+              />
+              <span className="absolute right-[var(--field-toggle-space)] top-0 flex h-[var(--control-h)] items-center text-xs text-muted-foreground pointer-events-none">
+                {iban ? t.iban : t.domesticAccountShort}
+              </span>
+              <FieldToggleButton
+                icon={Landmark}
+                pressed={iban}
+                label={t.accountKind}
+                pressedTooltip={t.iban}
+                unpressedTooltip={t.domesticAccountShort}
+                disabled={disabled}
+                onPressedChange={(next) => patch({ bankAccountKind: next ? "iban" : "domestic" })}
+              />
+            </div>
+          )}
         </Field>
         <Field
           label={iban ? t.swift : t.bankCode}
