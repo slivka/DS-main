@@ -4,6 +4,8 @@
 
 - Testy: společný úklid po každém testu nově resetuje i paměť zoomu aplikace a kontrola izolace hlídá, že tento úklid nechybí (náhodné pořadí, seed 2488739314).
 
+- Ukázka Datová mřížka: přepínač úložiště rozložení přesunut z lišty gridu do řádku filtrů (lišta při 1 440 px opět bez přetečení) a ukázka Formát sloupců posunuta za filtr firmy, aby nepřidávala zastávky Tabu před ním.
+
 - Kolo 2: `GridColumnStyle` / `ColumnTone` (osm odstínů soft/strong), tokeny `--col-tone-*` v obou režimech, `pickReadableText`. Kontrast ověřovaný převodem skutečných CSS tokenů OKLCH → sRGB: podklad/text nejméně 4,5:1 a červené záporné na soft nejméně 3:1. ARGB světlé palety exportu ověřuje stejný test.
 - `useGridColumns.styles`, `setColumnStyle(id, style|null)`, `clearColumnStyles()`; formát je součástí pohledů a vlastního výchozího. `defaultStyle`, `styleable`; výběr, Akce, record-indicators a transient se neformátují ani neukládají. Neznámý tón se ignoruje, prázdný formát výslovně potlačí výchozí.
 - ColumnPicker: štětec, jediný rozbalený formát, Tučně a dvě řady vzorků, B/tečka u názvu, hromadné zrušení. CS/SK, bubliny, šipky/Enter/mezerník; první Escape zavře jen formát. GridFrame předává všechny možnosti i do zúžené nabídky.

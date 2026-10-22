@@ -208,9 +208,9 @@ function GridPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}>
-      <ColumnFormatShowcase />
       <PrimaryActionsShowcase />
       <CompanyFilterShowcase />
+      <ColumnFormatShowcase />
       <div className="mb-3">
         <PageTabs
           value={pageSection}
@@ -295,6 +295,19 @@ function GridPage() {
               defaultValue="all"
               ariaLabel="Směr dokladu"
             />
+            <GridSegmentedToggle
+              label="Úložiště:"
+              options={[
+                { value: "browser", label: "Prohlížeč" },
+                { value: "server", label: "Simulovaný server" },
+              ]}
+              value={prefsStorage}
+              onChange={(value) => {
+                if (value === "browser" || value === "server") setPrefsStorage(value);
+              }}
+              defaultValue="browser"
+              ariaLabel="Úložiště rozložení gridu"
+            />
           </>
         }
         defaultFilters={["Rok 2026"]}
@@ -372,18 +385,6 @@ function GridPage() {
             >
               Podle partnera
             </GridToggleButton>
-            <GridSegmentedToggle
-              options={[
-                { value: "browser", label: "Prohlížeč" },
-                { value: "server", label: "Simulovaný server" },
-              ]}
-              value={prefsStorage}
-              onChange={(value) => {
-                if (value === "browser" || value === "server") setPrefsStorage(value);
-              }}
-              defaultValue="browser"
-              ariaLabel="Úložiště rozložení gridu"
-            />
           </>
         }
         onEditRow={(r) => toast.info(`Otevřít doklad ${r.document}`)}
