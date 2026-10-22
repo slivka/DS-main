@@ -168,7 +168,7 @@ export interface RecordDialogFooterProps {
 }
 
 /**
- * Patička: pravá skupina vždy v jednom řádku vpravo, levá vlevo; když se nevejde, zalomí se
+ * Patička: pravá skupina vždy v jednom řádku vpravo (v DOM až za levou, kvůli pořadí Tab), levá vlevo; když se nevejde, zalomí se
  * nad pravou. Pod 24 rem šířky dialogu jsou tlačítka pod sebou přes celou šířku (Uložit nahoře).
  */
 export function RecordDialogFooter({ start, children }: RecordDialogFooterProps) {
@@ -177,12 +177,6 @@ export function RecordDialogFooter({ start, children }: RecordDialogFooterProps)
       data-slot="record-dialog-footer"
       className="flex flex-col gap-2 pt-2 @min-[24rem]:flex-row-reverse @min-[24rem]:flex-wrap-reverse @min-[24rem]:items-center"
     >
-      <div
-        data-slot="record-dialog-footer-end"
-        className="order-first flex flex-col-reverse gap-2 [&>*]:w-full @min-[24rem]:flex-row @min-[24rem]:items-center @min-[24rem]:[&>*]:w-auto"
-      >
-        {children}
-      </div>
       {start ? (
         <div
           data-slot="record-dialog-footer-start"
@@ -191,6 +185,12 @@ export function RecordDialogFooter({ start, children }: RecordDialogFooterProps)
           {start}
         </div>
       ) : null}
+      <div
+        data-slot="record-dialog-footer-end"
+        className="order-first flex flex-col-reverse gap-2 [&>*]:w-full @min-[24rem]:flex-row @min-[24rem]:items-center @min-[24rem]:[&>*]:w-auto"
+      >
+        {children}
+      </div>
     </div>
   );
 }
