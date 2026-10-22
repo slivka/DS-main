@@ -204,7 +204,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   />
                 ),
                 "document-constantSymbol",
-              )),
+              ),
               symbolItem.span,
               symbolItem.mobileHalf,
               symbolItem.className,
@@ -224,7 +224,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   className="h-[var(--control-h)] font-mono tabular-nums"
                 />,
                 "document-specificSymbol",
-              )),
+              ),
               grid ? 8 : 3,
               false,
               symbolItem.className,
