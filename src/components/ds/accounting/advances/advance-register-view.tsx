@@ -148,7 +148,7 @@ export const AdvanceRegisterView = forwardRef<HTMLDivElement, AdvanceRegisterVie
                 (row.rowKind === "partner_total" || row.rowKind === "account_total") &&
                   "bg-muted/40",
                 row.rowKind === "grand_total" && "bg-muted font-bold",
-                hasAdvanceDifference(row) && "text-warning-foreground",
+                hasAdvanceDifference(row) && "bg-warning/15 text-warning-strong",
               )
             }
             toolbarLeft={
