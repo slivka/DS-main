@@ -18,8 +18,6 @@ import { INVOICE_HEADER, INVOICE_LINES, CURRENCIES } from "./document-form-showc
 import { DEDUCTION_ROWS, MANUAL_DEDUCTION, ADVANCE_CURRENCY } from "./advance-showcase-data";
 import type { JournalDeductions } from "../ds/accounting/journal-deductions-types";
 
-/** Ukázkový součet položek (APP jej bere z DB). */
-const ITEMS_TOTAL = 12100;
 const round = (value: number) => Math.round(value * 100) / 100;
 import { ShowcaseSection } from "./ShowcaseLayout";
 type ShowcaseType = "FV" | "FP" | "ZFV" | "ZFP" | "PO";
@@ -37,9 +35,11 @@ function AdvanceForm({ type }: { type: ShowcaseType }) {
   const [adding, setAdding] = useState(false);
   const [allocation, setAllocation] = useState<AdvanceAllocation[]>([]);
   const [rows, setRows] = useState(INITIAL[type]);
+  // Součty dodává APP z DB; ukázka je skládá z řádků.
+  const itemsTotal = round(lines.reduce((sum, line) => sum + (line.amount ?? 0), 0));
   const deducted = round(rows.reduce((sum, row) => sum + row.base + row.vat, 0));
   const byCode = new Map<string, { base: number; vat: number }>([
-    ["Z 21 %", { base: 10000, vat: 2100 }],
+    ["Z 21 %", { base: itemsTotal, vat: round(itemsTotal * 0.21) }],
   ]);
   for (const row of rows) {
     const code = row.vatCode ?? "";
@@ -68,7 +68,7 @@ function AdvanceForm({ type }: { type: ShowcaseType }) {
           item.id === row.id ? { ...item, base, vat: round(base * 0.21) } : item,
         ),
       ),
-    totals: { items: ITEMS_TOTAL, deducted, toPay: round(ITEMS_TOTAL + deducted) },
+    totals: { items: itemsTotal, deducted, toPay: round(itemsTotal + deducted) },
     recap: {
       deductionRows: rows.map((row) => ({
         id: row.id,
