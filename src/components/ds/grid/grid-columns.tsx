@@ -533,6 +533,16 @@ export function useGridColumns<Id extends string>(
     return 0;
   }, [orderedColumns, effectiveVisible]);
 
+  // Synchronizace mezi instancemi gridu se stejným klíčem (událost grid-layout-change).
+  useGridLayoutChange(storageKey, () => {
+    applyStoredVisible();
+    applyStoredOverrides();
+    applyStoredOrder();
+    applyStoredWidths();
+    applyStoredDefault();
+    applyStoredSections();
+  });
+
   return {
     columns: orderedColumns,
     visible: effectiveVisible,
