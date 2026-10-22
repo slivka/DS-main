@@ -44,20 +44,20 @@ export function JournalSumRow({ itemsOnly = false }: { itemsOnly?: boolean }) {
       data-items-only={itemsOnly || undefined}
       className={cn(itemsOnly && "border-t bg-muted/50 font-medium hover:bg-muted/50")}
     >
-        {editor.layout.visibleColumns.map((column) => (
-          <TableCell
-            key={column.id}
-            data-slot={TOTAL_SLOTS[column.id]}
-            data-pin-right={column.id === "actions" || undefined}
-            className={cn(
-              column.id === "row" && "journal-row-cell",
-              column.align === "right" && "text-right",
-              column.id === "actions" && "grid-actions-footer sticky right-0 z-10 bg-muted",
-            )}
-          >
-            {value(column.id)}
-          </TableCell>
-        ))}
+      {editor.layout.visibleColumns.map((column) => (
+        <TableCell
+          key={column.id}
+          data-slot={TOTAL_SLOTS[column.id]}
+          data-pin-right={column.id === "actions" || undefined}
+          className={cn(
+            column.id === "row" && "journal-row-cell",
+            column.align === "right" && "text-right",
+            column.id === "actions" && "grid-actions-footer sticky right-0 z-10 bg-muted",
+          )}
+        >
+          {value(column.id)}
+        </TableCell>
+      ))}
     </TableRow>
   );
 }

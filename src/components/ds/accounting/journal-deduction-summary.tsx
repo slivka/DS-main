@@ -56,7 +56,12 @@ export function JournalDeductionAdd() {
     );
   if (overflow >= 3)
     return (
-      <div className="inline-flex shrink-0" data-slot="journal-deduction-split" data-toolbar-overflow-item="" data-compact="">
+      <div
+        className="inline-flex shrink-0"
+        data-slot="journal-deduction-split"
+        data-toolbar-overflow-item=""
+        data-compact=""
+      >
         <DropdownMenu>
           {tip(
             <DropdownMenuTrigger asChild disabled={blocked}>
@@ -159,7 +164,10 @@ export function JournalDeductionTotals() {
   );
 }
 
-type RecapValues = Pick<JournalDeductionRecapRow, "base" | "vat" | "total" | "homeBase" | "homeVat">;
+type RecapValues = Pick<
+  JournalDeductionRecapRow,
+  "base" | "vat" | "total" | "homeBase" | "homeVat"
+>;
 
 /** Řádky odečtů a „Celkem po odečtu záloh“ v rekapitulaci DPH (tbody); vše z dat APP. */
 export function JournalDeductionRecapBody({ homeOn }: { homeOn: boolean }) {
@@ -171,7 +179,10 @@ export function JournalDeductionRecapBody({ homeOn }: { homeOn: boolean }) {
   const values = (row: RecapValues) =>
     [row.base, row.vat, row.total, ...(homeOn ? [row.homeBase, row.homeVat] : [])].map(
       (value, index) => (
-        <td key={index} className={cn(cell, value !== undefined && value < 0 && "text-destructive")}>
+        <td
+          key={index}
+          className={cn(cell, value !== undefined && value < 0 && "text-destructive")}
+        >
           {value === undefined ? "" : money(value)}
         </td>
       ),

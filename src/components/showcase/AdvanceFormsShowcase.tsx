@@ -15,7 +15,12 @@ import {
   MOCK_VAT_CODES_IN,
 } from "../../lib/mock/accounting";
 import { INVOICE_HEADER, INVOICE_LINES, CURRENCIES } from "./document-form-showcase-data";
-import { DEDUCTION_ROWS, MANUAL_DEDUCTION, ADVANCE_CURRENCY, SHOWCASE_ITEMS } from "./advance-showcase-data";
+import {
+  DEDUCTION_ROWS,
+  MANUAL_DEDUCTION,
+  ADVANCE_CURRENCY,
+  SHOWCASE_ITEMS,
+} from "./advance-showcase-data";
 import type { JournalDeductions } from "../ds/accounting/journal-deductions-types";
 
 /** Součet v celých haléřích (APP čte hotové částky z DB). */

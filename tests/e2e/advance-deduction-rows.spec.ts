@@ -43,7 +43,8 @@ test("FV: odečty pod položkami, split akce a tři součty", async ({ page }) =
   await page.setViewportSize({ width: 420, height: 1200 });
   const toolbar = fv.locator('[data-slot="grid-toolbar"]');
   const zoomIn = toolbar.getByRole("button", { name: "Zvětšit tabulku" });
-  for (let step = 0; step < 6; step++) await zoomIn.evaluate((button: HTMLElement) => button.click());
+  for (let step = 0; step < 6; step++)
+    await zoomIn.evaluate((button: HTMLElement) => button.click());
   await expect(fv.locator('[data-slot="journal-deduction-split"][data-compact]')).toBeVisible();
   expect(await toolbar.evaluate((node) => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
 });
