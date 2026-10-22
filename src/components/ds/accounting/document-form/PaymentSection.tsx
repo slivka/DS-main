@@ -142,6 +142,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-variableSymbol",
               t.variableSymbol,
+              lockedValue("variableSymbol", "document-variableSymbol", value.variableSymbol ?? "") ?? (
               <VsField
                 id="document-variableSymbol"
                 value={value.variableSymbol ?? ""}
