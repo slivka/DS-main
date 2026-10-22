@@ -13,7 +13,10 @@ import {
   invoicePdfFilename,
   invoiceUsesTotal,
 } from "../../src/components/ds/print/invoice/invoice-format";
-import { planInvoiceItemPages } from "../../src/components/ds/print/invoice/invoice-items";
+import {
+  drawInvoiceItems,
+  planInvoiceItemPages,
+} from "../../src/components/ds/print/invoice/invoice-items";
 import {
   invoiceFooterColumns,
   drawInvoiceHeader,
@@ -43,6 +46,26 @@ function canvas(data = sample()): InvoiceCanvas {
   };
 }
 describe("InvoicePrint – formát a platební pravidla", () => {
+  it.each([
+    { quantity: null, unit_price: null, expected: ["", ""] },
+    { quantity: null, unit_price: 1250, expected: ["", "1 250,00"] },
+    { quantity: 0.125, unit_price: null, expected: ["0,125", ""] },
+    { quantity: 0, unit_price: 0, expected: ["0", "0,00"] },
+  ])("prázdné množství/cena se nepletou s nulou: %j", ({ quantity, unit_price, expected }) => {
+    const c = canvas();
+    c.data.lines = [{ description: "Doprava", quantity, unit_price, unit: null, vat_rate: 21, base: 690 }];
+    const text = mock(c.doc.text.bind(c.doc));
+    c.doc.text = text;
+    drawInvoiceItems(c);
+    const start = text.mock.calls.findIndex(
+      ([value]) => Array.isArray(value) && value[0] === "Doprava",
+    );
+    expect(start).toBeGreaterThanOrEqual(0);
+    const cells = text.mock.calls.slice(start, start + 6).map(([value]) =>
+      Array.isArray(value) ? value.join("") : value,
+    );
+    expect(cells).toEqual(["Doprava", expected[0], "", expected[1], "21 %", "690,00"]);
+  });
   it("datum bez mezer a bez změny časového pásma", () =>
     expect(formatInvoiceDate("2020-12-31T23:00:00Z")).toBe("31.12.2020"));
   it("dvě desetinná místa, tisíce a pravé mínus", () =>

@@ -2,6 +2,8 @@
 
 ## 2.134.0 (nevydáno)
 
+- Tisk faktury: `InvoicePrintLine.quantity` a `unit_price` přijímají `number | null`; null se tiskne jako prázdná buňka, skutečná nula zůstává „0“ / „0,00“. `unit` již přijímá `string | null`. Základ a DPH se nemění a nadále je dodává APP. Standardní ukázka má dopravu pouze s částkou, bez množství/MJ/jednotkové ceny. Zpětně kompatibilní rozšíření typů; release Claude.
+
 - Úložiště rozložení: hydratace kontroluje generaci konfigurace po loadAll (i chybě); přepnutí účtu a clear aktivního scope zneplatní staré načítání. Debounce se při přepnutí zahodí, rozběhnutý zápis doběhne do zachyceného původního store bez přenosu chyb do nového účtu.
 - `clearGridPrefsCache(scope?)` umí vyčistit odcházející účet i při aktivním local, aniž by vymazal aktivní rozložení jiného scope. `resetGridPrefs()` nyní vrací Promise: lokální reset a oznámení známým gridům jsou okamžité, chyba removeAll se propaguje (APP použije await/try-catch). `flushGridPrefs({ timeoutMs? })` omezí čekání, zachová zrcadlo a další flush bez limitu počká i na již běžící zápisy.
 - Ověření úložiště: 10 nových regresních testů, cíleně 21/21; `check:full --harness` prošel 1 368/1 368 testů ve 141 souborech, lint/formát/audity OK. Katalog proti vydané 2.133.0: 480 → 480 komponent / 1 187 → 1 187 props, 0 odebrání. Automatické typy/sestavení zajišťuje Lovable; samostatně je harness nespouští. Globální testový úklid čeká na reset. Nevydáno, release Claude.
