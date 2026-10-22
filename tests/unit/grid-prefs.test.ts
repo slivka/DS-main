@@ -2,7 +2,7 @@
  * Jedno úložiště rozložení gridů (2.132.0): zrcadlo, store, debounce, flush,
  * přechod ze starých klíčů, scope a chování bez store.
  */
-import { describe, expect, it, jest } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import {
   clearGridPrefsCache,
   configureGridPrefsStore,
