@@ -21,6 +21,19 @@ Object.defineProperties(globalThis, {
 const pristine = {
   matchMedia: window.matchMedia,
 };
+// Testy mění platformu (Mac / Windows); vlastní vlastnost na navigator se po testu odstraní nebo vrátí.
+const NAVIGATOR_KEYS = ["platform", "userAgentData"] as const;
+const navigatorOwn = new Map(
+  NAVIGATOR_KEYS.map((key) => [key, Object.getOwnPropertyDescriptor(navigator, key)]),
+);
+function restoreNavigator() {
+  for (const key of NAVIGATOR_KEYS) {
+    const original = navigatorOwn.get(key);
+    if (original) Object.defineProperty(navigator, key, original);
+    else if (Object.prototype.hasOwnProperty.call(navigator, key))
+      delete (navigator as unknown as Record<string, unknown>)[key];
+  }
+}
 
 const { cleanup } = await import("@testing-library/react");
 const { configureGridPrefsStore, resetGridPrefs } = await import("../src/lib/grid-prefs");
@@ -32,6 +45,7 @@ afterEach(() => {
   jest.useRealTimers();
   jest.restoreAllMocks();
   window.matchMedia = pristine.matchMedia;
+  restoreNavigator();
   // Radix při otevřeném modálu zamyká tělo; zbytky by blokovaly klik a fokus v dalším souboru.
   document.body.innerHTML = "";
   document.body.removeAttribute("style");
