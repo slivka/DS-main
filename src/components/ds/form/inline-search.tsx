@@ -3,7 +3,13 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { Popover, PopoverTrigger, PopoverContent } from "../../ui/popover";
 import { CommandInput } from "../../ui/command";
-import { moveMultipleFocus, moveSingleFocus, toggleMultipleActive, triggerName, multipleContentKey } from "./inline-search-multiple";
+import {
+  moveMultipleFocus,
+  moveSingleFocus,
+  toggleMultipleActive,
+  triggerName,
+  multipleContentKey,
+} from "./inline-search-multiple";
 
 interface SearchContextValue {
   multiple: boolean;
@@ -162,7 +168,9 @@ export const InlineSearchContent = React.forwardRef<
       onKeyDownCapture={(event) => {
         onKeyDownCapture?.(event);
         if (!context?.multiple || event.defaultPrevented) return;
-        multipleContentKey(event, context.target, context.contentRef.current, () => context.changeOpen(false));
+        multipleContentKey(event, context.target, context.contentRef.current, () =>
+          context.changeOpen(false),
+        );
       }}
       onBlurCapture={(event) => {
         onBlurCapture?.(event);

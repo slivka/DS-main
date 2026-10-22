@@ -1,7 +1,12 @@
 /** Vícenásobné hledání · vlastní průchod fokusu a potvrzení · nemění jednotlivé výběry. */
 import type { KeyboardEvent } from "react";
 /** Klávesnice akcí v nabídce; jednotlivé výběry tuto cestu nepoužívají. */
-export function multipleContentKey(event: KeyboardEvent, target: HTMLElement | null, content: HTMLElement | null, close: () => void) {
+export function multipleContentKey(
+  event: KeyboardEvent,
+  target: HTMLElement | null,
+  content: HTMLElement | null,
+  close: () => void,
+) {
   if (event.key !== "Tab" && event.key !== "Escape") return;
   event.preventDefault();
   event.stopPropagation();
