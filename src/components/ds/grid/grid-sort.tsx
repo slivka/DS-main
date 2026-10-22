@@ -90,6 +90,42 @@ export function useSortedRows<T, Id extends string>(
   }, [rows, sort.key, sort.dir]);
 }
 
+/**
+ * Seřadí řádky jen uvnitř souvislých úseků se stejným klíčem `segment`.
+ * Řádky s klíčem `null` (např. součty skupin z aplikace) zůstanou na svém místě
+ * a oddělují úseky, takže skupiny i jejich součtové řádky drží pořadí z dat.
+ */
+export function sortWithinSegments<T>(
+  rows: T[],
+  sorted: T[],
+  segment: (row: T) => string | null,
+): T[] {
+  const rank = new Map<T, number>();
+  sorted.forEach((row, index) => rank.set(row, index));
+  const result: T[] = [];
+  let run: T[] = [];
+  let runKey: string | null = null;
+  const flush = () => {
+    run.sort((a, b) => (rank.get(a) ?? 0) - (rank.get(b) ?? 0));
+    result.push(...run);
+    run = [];
+  };
+  for (const row of rows) {
+    const key = segment(row);
+    if (key === null) {
+      flush();
+      runKey = null;
+      result.push(row);
+      continue;
+    }
+    if (key !== runKey) flush();
+    runKey = key;
+    run.push(row);
+  }
+  flush();
+  return result;
+}
+
 type SortHeadProps<Id extends string> = {
   id: Id;
   label: string;

@@ -89,6 +89,11 @@ export type DataGridFilterChip = { id: string; label: string; onRemove?: () => v
 
 /** Props DataGrid; společné props s TreeGrid jsou v {@link GridBaseProps}. */
 export type DataGridProps<Row> = GridBaseProps<Row> & {
+  /**
+   * Řazení jen uvnitř skupin z dat: řádky se stejným klíčem tvoří úsek, `null` řádek
+   * (součet, záhlaví) zůstane na svém místě. Bez hodnoty se řadí celá množina.
+   */
+  sortSegment?: ((row: Row) => string | null) | undefined;
   /** Dvojklik / Enter otevře záznam nezávisle na oprávnění editace, i při výběru řádků. */
   onRowOpen?: (row: Row) => void;
   /** Klik indikátoru nevybere ani neotevře řádek. */
