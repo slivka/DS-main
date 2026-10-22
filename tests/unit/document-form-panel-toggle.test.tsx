@@ -35,14 +35,24 @@ it("DocumentForm předaný ovladač panelu volá APP", () => {
   fireEvent.click(ui.getByRole("button", { name: "Panel" }));
   expect(toggle).toHaveBeenCalledTimes(1);
   const actions = ui.container.querySelector('[data-slot="record-action-buttons"]');
-  expect(Array.from(actions?.querySelectorAll("button") ?? []).map(button => button.getAttribute("aria-label") ?? button.textContent)).toEqual([
-    "Zařadit", "Uložit", DS_TEXTS_CS.recordAction.moreActions, "Panel",
-  ]);
-  expect(ui.getByRole("button", { name: "Panel" }).closest('[data-slot="document-action-bar"]')).toBeTruthy();
+  expect(
+    Array.from(actions?.querySelectorAll("button") ?? []).map(
+      (button) => button.getAttribute("aria-label") ?? button.textContent,
+    ),
+  ).toEqual(["Zařadit", "Uložit", DS_TEXTS_CS.recordAction.moreActions, "Panel"]);
+  expect(
+    ui.getByRole("button", { name: "Panel" }).closest('[data-slot="document-action-bar"]'),
+  ).toBeTruthy();
   expect(ui.getByRole("button", { name: "Panel" }).closest('[data-slot="page-header"]')).toBeNull();
 });
 
 it("RecordActionBar zachová samostatný panel i bez uložení", () => {
-  const ui = render(<TooltipProvider><RecordActionBar panelToggle={<button>Panel</button>} /></TooltipProvider>);
-  expect(ui.getByRole("button", { name: "Panel" }).closest('[data-slot="record-action-buttons"]')).toBeTruthy();
+  const ui = render(
+    <TooltipProvider>
+      <RecordActionBar panelToggle={<button>Panel</button>} />
+    </TooltipProvider>,
+  );
+  expect(
+    ui.getByRole("button", { name: "Panel" }).closest('[data-slot="record-action-buttons"]'),
+  ).toBeTruthy();
 });

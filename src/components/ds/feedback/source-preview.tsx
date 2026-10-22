@@ -200,11 +200,7 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
         className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-border bg-muted/30"
       >
         {kind === "pdf" && url ? (
-          <SourcePdfPreview
-            url={url}
-            title={source.name}
-            onError={expire}
-          />
+          <SourcePdfPreview url={url} title={source.name} onError={expire} />
         ) : kind === "image" && url ? (
           <img
             src={url}

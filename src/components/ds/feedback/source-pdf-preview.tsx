@@ -35,7 +35,9 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?url");
         pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
         const task = pdfjs.getDocument(url);
-        dispose = () => { void task.destroy(); };
+        dispose = () => {
+          void task.destroy();
+        };
         const pdf = await task.promise;
         const render = async () => {
           const current = ++generation;
@@ -56,14 +58,21 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
             canvas.height = Math.ceil(viewport.height * density);
             canvas.style.width = "100%";
             canvas.style.display = "block";
-            await page.render({ canvas, canvasContext: context, viewport,
+            await page.render({
+              canvas,
+              canvasContext: context,
+              viewport,
               transform: density === 1 ? undefined : [density, 0, 0, density, 0, 0],
             }).promise;
             pages.append(canvas);
           }
           if (!stopped && current === generation) document.body.replaceChildren(pages);
         };
-        const refresh = () => { void render().catch(() => { if (!stopped) error.current(); }); };
+        const refresh = () => {
+          void render().catch(() => {
+            if (!stopped) error.current();
+          });
+        };
         observer = new ResizeObserver(() => {
           clearTimeout(timer);
           timer = setTimeout(refresh, 80);
@@ -85,9 +94,16 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
       dispose();
     };
   }, [url]);
-  return <iframe ref={frame} title={title} onError={onError}
-    data-slot="source-pdf-preview"
-    className="absolute inset-0 h-full w-full border-0"
-    srcDoc={'<!doctype html><html><head><style>html,body{margin:0;width:100%;}html{overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable;}canvas{max-width:100%;}</style></head><body></body></html>'}
-  />;
+  return (
+    <iframe
+      ref={frame}
+      title={title}
+      onError={onError}
+      data-slot="source-pdf-preview"
+      className="absolute inset-0 h-full w-full border-0"
+      srcDoc={
+        "<!doctype html><html><head><style>html,body{margin:0;width:100%;}html{overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable;}canvas{max-width:100%;}</style></head><body></body></html>"
+      }
+    />
+  );
 }
