@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+/** Platební kalendář · vlastní řádky a akce · nesmí persistovat data APP. */
+import { useState } from "react";
 import { Trash2, Unlock, Lock } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -21,134 +21,9 @@ import { amountClass, formatAmount, formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import {
-  generatePaymentSchedule,
   sumPaymentSchedule,
-  type PaymentScheduleInterval,
   type PaymentScheduleItem,
-  type PaymentScheduleParams,
 } from "./payment-schedule";
-
-export type PaymentScheduleUser = { id: string; name: string };
-
-export interface PaymentScheduleEditorTexts {
-  dueDate: string;
-  kind: string;
-  amount: string;
-  description: string;
-  responsible: string;
-  releasedDate: string;
-  releasedBy: string;
-  actions: string;
-  installment: string;
-  retention: string;
-  total: string;
-  unallocated: string;
-  paid: string;
-  remaining: string;
-  add: string;
-  remove: string;
-  fillRest: string;
-  generate: string;
-  release: string;
-  unrelease: string;
-  empty: string;
-  generateTitle: string;
-  count: string;
-  firstDueDate: string;
-  interval: string;
-  intervalMonth: string;
-  intervalQuarter: string;
-  intervalDays: string;
-  days: string;
-  retentionMode: string;
-  retentionNone: string;
-  retentionPercent: string;
-  retentionAmount: string;
-  retentionValue: string;
-  retentionDueDate: string;
-  preview: string;
-  apply: string;
-  cancel: string;
-  overwriteTitle: string;
-  overwriteText: string;
-  overwriteConfirm: string;
-  releaseTitle: string;
-  releaseDateLabel: string;
-  releaseConfirm: string;
-  unreleaseTitle: string;
-  unreleaseConfirm: string;
-}
-
-export const DEFAULT_PAYMENT_SCHEDULE_TEXTS: PaymentScheduleEditorTexts = {
-  dueDate: "Datum platby",
-  kind: "Typ",
-  amount: "Částka",
-  description: "Popis",
-  responsible: "Odpovědná osoba",
-  releasedDate: "Datum uvolnění",
-  releasedBy: "Uvolnil",
-  actions: "Akce",
-  installment: "Splátka",
-  retention: "Pozastávka",
-  total: "Celkem",
-  unallocated: "Zbývá rozepsat",
-  paid: "Uhrazeno",
-  remaining: "Zbývá",
-  add: "Přidat",
-  remove: "Smazat",
-  fillRest: "Doplnit zbytek",
-  generate: "Rozložit…",
-  release: "Uvolnit pozastávku",
-  unrelease: "Zrušit uvolnění",
-  empty: "Platební kalendář je prázdný",
-  generateTitle: "Rozložit na splátky",
-  count: "Počet splátek",
-  firstDueDate: "První splatnost",
-  interval: "Interval",
-  intervalMonth: "Měsíc",
-  intervalQuarter: "Čtvrtletí",
-  intervalDays: "Vlastní počet dní",
-  days: "Počet dní",
-  retentionMode: "Pozastávka",
-  retentionNone: "Bez pozastávky",
-  retentionPercent: "V procentech",
-  retentionAmount: "Částkou",
-  retentionValue: "Výše pozastávky",
-  retentionDueDate: "Datum uvolnění pozastávky",
-  preview: "Náhled",
-  apply: "Použít",
-  cancel: "Zrušit",
-  overwriteTitle: "Přepsat platební kalendář?",
-  overwriteText: "Neuvolněné položky budou nahrazeny vygenerovanými. Uvolněné pozastávky zůstanou.",
-  overwriteConfirm: "Přepsat",
-  releaseTitle: "Uvolnit pozastávku",
-  releaseDateLabel: "Datum uvolnění",
-  releaseConfirm: "Uvolnit",
-  unreleaseTitle: "Zrušit uvolnění pozastávky?",
-  unreleaseConfirm: "Zrušit uvolnění",
-};
-
-export interface PaymentScheduleEditorProps {
-  items: PaymentScheduleItem[];
-  onChange: (items: PaymentScheduleItem[]) => void;
-  /** Částka k úhradě dokladu. */
-  totalToPay: number;
-  /** Uhrazeno – dodává aplikace, jen zobrazení. */
-  paid?: number;
-  /** Zbývá uhradit – dodává aplikace, jen zobrazení. */
-  remaining?: number;
-  users?: PaymentScheduleUser[];
-  currencySymbol?: string;
-  readOnly?: boolean;
-  canRelease?: boolean;
-  canUnrelease?: boolean;
-  onRelease?: (itemId: string, date: string) => void;
-  onUnrelease?: (itemId: string) => void;
-  /** Volá se s parametry dialogu Rozložit (např. pro audit). Řádky editor vygeneruje sám. */
-  onGenerate?: (params: PaymentScheduleParams) => void;
-  texts?: Partial<PaymentScheduleEditorTexts>;
-  className?: string;
-}
 
 const today = () => new Date().toISOString().slice(0, 10);
 /** Zaokrouhlení polovinou od nuly jako DB. */
@@ -159,6 +34,14 @@ const isReleased = (item: PaymentScheduleItem) => item.kind === "retention" && !
  * Platební kalendář dokladu – splátky a pozastávky. Komponenta nic neukládá;
  * aplikace uloží celé pole `items` jedním voláním.
  */
+import { DEFAULT_PAYMENT_SCHEDULE_TEXTS, type PaymentScheduleEditorProps } from "./payment-schedule-editor-types";
+export { DEFAULT_PAYMENT_SCHEDULE_TEXTS } from "./payment-schedule-editor-types";
+export type { PaymentScheduleEditorProps, PaymentScheduleEditorTexts, PaymentScheduleUser } from "./payment-schedule-editor-types";
+export type { PaymentScheduleSaveAction } from "./payment-schedule-toolbar";
+import { PaymentScheduleToolbar } from "./payment-schedule-toolbar";
+import { GenerateDialog } from "./payment-schedule-generate-dialog";
+import { useGridZoomContext } from "../grid/grid-zoom";
+
 export function PaymentScheduleEditor({
   items,
   onChange,
@@ -174,9 +57,13 @@ export function PaymentScheduleEditor({
   onUnrelease,
   onGenerate,
   texts,
+  zoom: zoomProp,
+  saveAction,
   className,
 }: PaymentScheduleEditorProps) {
   const t = { ...DEFAULT_PAYMENT_SCHEDULE_TEXTS, ...texts };
+  const gridZoom = useGridZoomContext();
+  const zoom = zoomProp ?? gridZoom?.zoom ?? 1;
   const { confirm, confirmDialog } = useConfirmDialog();
   const [selected, setSelected] = useState<number | null>(null);
   const [generateOpen, setGenerateOpen] = useState(false);
@@ -216,76 +103,21 @@ export function PaymentScheduleEditor({
 
   return (
     <div className={cn("@container overflow-hidden rounded-lg border bg-card", className)}>
-      <div className="zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2">
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="grid-toolbar-control"
-          onClick={add}
-          disabled={readOnly}
-        >
-          {t.add}
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="grid-toolbar-control"
-          onClick={() => selected != null && remove(selected)}
-          disabled={readOnly || !selectedItem || isReleased(selectedItem)}
-        >
-          {t.remove}
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="grid-toolbar-control"
-          onClick={fillRest}
-          disabled={readOnly || unallocated === 0}
-        >
-          {t.fillRest}
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="grid-toolbar-control"
-          onClick={() => setGenerateOpen(true)}
-          disabled={readOnly}
-        >
-          {t.generate}
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="grid-toolbar-control"
-          disabled={
-            !canRelease ||
-            !selectedItem ||
-            selectedItem.kind !== "retention" ||
-            isReleased(selectedItem)
-          }
-          onClick={() => {
-            setReleaseDate(today());
-            setReleaseIndex(selected);
-          }}
-        >
-          {t.release}
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="grid-toolbar-control"
-          disabled={!canUnrelease || !selectedItem || !isReleased(selectedItem)}
-          onClick={() => selected != null && askUnrelease(selected)}
-        >
-          {t.unrelease}
-        </Button>
-      </div>
+      <PaymentScheduleToolbar
+        zoom={zoom}
+        density={gridZoom?.density ?? "normal"}
+        addLabel={t.add}
+        onAdd={add}
+        readOnly={readOnly}
+        saveAction={saveAction}
+        actions={[
+          { label: t.remove, disabled: readOnly || !selectedItem || isReleased(selectedItem), onSelect: () => { if (selected != null) remove(selected); } },
+          { label: t.fillRest, disabled: readOnly || unallocated === 0, onSelect: fillRest },
+          { label: t.generate, disabled: readOnly, onSelect: () => setGenerateOpen(true) },
+          { label: t.release, disabled: !canRelease || !selectedItem || selectedItem.kind !== "retention" || isReleased(selectedItem), onSelect: () => { setReleaseDate(today()); setReleaseIndex(selected); } },
+          { label: t.unrelease, disabled: !canUnrelease || !selectedItem || !isReleased(selectedItem), onSelect: () => { if (selected != null) askUnrelease(selected); } },
+        ]}
+      />
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[56rem] text-sm">
@@ -572,159 +404,3 @@ function RowIcon({
   );
 }
 
-function GenerateDialog({
-  open,
-  onOpenChange,
-  total,
-  texts: t,
-  onApply,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  total: number;
-  texts: PaymentScheduleEditorTexts;
-  onApply: (params: PaymentScheduleParams, items: PaymentScheduleItem[]) => void;
-}) {
-  const [count, setCount] = useState("3");
-  const [firstDueDate, setFirstDueDate] = useState(today());
-  const [interval, setInterval] = useState<PaymentScheduleInterval>("month");
-  const [intervalDays, setIntervalDays] = useState("30");
-  const [retentionMode, setRetentionMode] = useState<"none" | "percent" | "amount">("none");
-  const [retentionValue, setRetentionValue] = useState("10");
-  const [retentionDueDate, setRetentionDueDate] = useState("");
-
-  const params: PaymentScheduleParams = {
-    count: Math.max(1, Number(count) || 1),
-    firstDueDate: firstDueDate || today(),
-    interval,
-    intervalDays: Number(intervalDays) || 30,
-    retentionPercent: retentionMode === "percent" ? Number(retentionValue) || 0 : null,
-    retentionAmount: retentionMode === "amount" ? Number(retentionValue) || 0 : null,
-    retentionDueDate: retentionDueDate || null,
-    installmentDescription: undefined,
-    retentionDescription: t.retention,
-  };
-  const preview = useMemo(
-    () => generatePaymentSchedule(total, params),
-    [total, JSON.stringify(params)],
-  ); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{t.generateTitle}</DialogTitle>
-          <DialogDescription>{`${t.total}: ${formatAmount(total, 2)}`}</DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="ps-count">{t.count}</Label>
-            <DecimalInput id="ps-count" decimals={0} value={count} onChange={setCount} />
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="ps-first">{t.firstDueDate}</Label>
-            <DateField
-              id="ps-first"
-              value={firstDueDate}
-              onChange={(v) => setFirstDueDate(v ?? "")}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="ps-interval">{t.interval}</Label>
-            <OptionSelect
-              id="ps-interval"
-              allowEmpty={false}
-              value={interval}
-              onChange={(v) => setInterval(v as PaymentScheduleInterval)}
-              options={[
-                { value: "month", label: t.intervalMonth },
-                { value: "quarter", label: t.intervalQuarter },
-                { value: "days", label: t.intervalDays },
-              ]}
-            />
-          </div>
-          {interval === "days" ? (
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="ps-days">{t.days}</Label>
-              <DecimalInput
-                id="ps-days"
-                decimals={0}
-                value={intervalDays}
-                onChange={setIntervalDays}
-              />
-            </div>
-          ) : (
-            <div />
-          )}
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="ps-ret-mode">{t.retentionMode}</Label>
-            <OptionSelect
-              id="ps-ret-mode"
-              allowEmpty={false}
-              value={retentionMode}
-              onChange={(v) => setRetentionMode(v as typeof retentionMode)}
-              options={[
-                { value: "none", label: t.retentionNone },
-                { value: "percent", label: t.retentionPercent },
-                { value: "amount", label: t.retentionAmount },
-              ]}
-            />
-          </div>
-          {retentionMode !== "none" ? (
-            <>
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="ps-ret-value">
-                  {retentionMode === "percent" ? `${t.retentionValue} (%)` : t.retentionValue}
-                </Label>
-                <DecimalInput
-                  id="ps-ret-value"
-                  value={retentionValue}
-                  onChange={setRetentionValue}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="ps-ret-date">{t.retentionDueDate}</Label>
-                <DateField
-                  id="ps-ret-date"
-                  value={retentionDueDate}
-                  onChange={(v) => setRetentionDueDate(v ?? "")}
-                />
-              </div>
-            </>
-          ) : null}
-        </div>
-        <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {t.preview}
-          </p>
-          <div className="max-h-56 overflow-auto rounded-md border">
-            <table className="w-full text-sm">
-              <tbody>
-                {preview.map((item, i) => (
-                  <tr key={i} className="border-t first:border-t-0">
-                    <td className="px-2 py-1 tabular-nums">{formatDate(item.dueDate)}</td>
-                    <td className="px-2 py-1">
-                      {item.kind === "retention" ? t.retention : t.installment}
-                    </td>
-                    <td className="px-2 py-1">{item.description}</td>
-                    <td className="px-2 py-1 text-right tabular-nums">
-                      {formatAmount(item.amount, 2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-            {t.cancel}
-          </Button>
-          <Button type="button" onClick={() => onApply(params, preview)}>
-            {t.apply}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
