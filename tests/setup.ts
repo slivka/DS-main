@@ -20,8 +20,6 @@ Object.defineProperties(globalThis, {
 // Výchozí stav globálů, které jednotlivé testy smějí dočasně přepsat.
 const pristine = {
   matchMedia: window.matchMedia,
-  innerWidth: window.innerWidth,
-  innerHeight: window.innerHeight,
 };
 
 const { cleanup } = await import("@testing-library/react");
@@ -32,12 +30,6 @@ afterEach(() => {
   jest.useRealTimers();
   jest.restoreAllMocks();
   window.matchMedia = pristine.matchMedia;
-  if (window.innerWidth !== pristine.innerWidth || window.innerHeight !== pristine.innerHeight)
-    GlobalRegistrator.isRegistered &&
-      (window as unknown as { happyDOM?: { setViewport(v: object): void } }).happyDOM?.setViewport({
-        width: pristine.innerWidth,
-        height: pristine.innerHeight,
-      });
   // Radix při otevřeném modálu zamyká tělo; zbytky by blokovaly klik a fokus v dalším souboru.
   document.body.innerHTML = "";
   document.body.removeAttribute("style");
