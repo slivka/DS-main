@@ -139,7 +139,7 @@ describe("BankStatementForm menuActions (2.128.0)", () => {
         />
       </DsTextsProvider>,
     );
-    fireEvent.click(view.getByRole("button", { name: "Další akce" }));
+    fireEvent.keyDown(view.getByRole("button", { name: "Další akce" }), { key: "Enter" });
     const items = await view.findAllByRole("menuitem");
     // Stávající Odstranit je první, položky aplikace následují.
     expect(items[0].textContent).toContain("Odstranit");
@@ -166,7 +166,7 @@ describe("BankStatementForm menuActions (2.128.0)", () => {
         />
       </DsTextsProvider>,
     );
-    fireEvent.click(view.getByRole("button", { name: "Další akce" }));
+    fireEvent.keyDown(view.getByRole("button", { name: "Další akce" }), { key: "Enter" });
     const item = await view.findByRole("menuitem", { name: /Import výpisu…/ });
     expect(item.getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(item);
