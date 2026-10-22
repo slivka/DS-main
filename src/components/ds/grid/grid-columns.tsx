@@ -165,61 +165,44 @@ export function useGridColumns<Id extends string>(
   );
 
   const [visible, setVisible] = useState<Record<Id, boolean>>(defaults);
-  const visibilityOverridesKey = `columnVisibilityOverrides:${storageKey}`;
   const [explicitVisibility, setExplicitVisibility] = useState<Id[]>([]);
 
-  useEffect(() => {
-    try {
-      // Aktuální stav; pokud chybí, použijeme uložené vlastní výchozí nastavení.
-      let raw = localStorage.getItem(`columns:${storageKey}`);
-      if (!raw) {
-        const defRaw = localStorage.getItem(`columnsDefault:${storageKey}`);
-        if (defRaw) {
-          const def = JSON.parse(defRaw) as { visible?: Partial<Record<Id, boolean>> };
-          raw = def.visible ? JSON.stringify(def.visible) : null;
-        }
-      }
-      if (!raw) return;
-      const saved = JSON.parse(raw) as Partial<Record<Id, boolean>>;
-      setVisible(() => {
-        const next = { ...defaults };
+  // Aktuální stav; pokud chybí, použijeme uložené vlastní výchozí nastavení.
+  const applyStoredVisible = useCallback(() => {
+    const layout = getGridLayout(storageKey);
+    const saved = layout.visible ?? layout.customDefault?.visible;
+    setVisible((cur) => {
+      const next = { ...cur };
+      if (saved) {
         for (const c of columns) {
           if (typeof saved[c.id] === "boolean") next[c.id] = c.locked ? true : saved[c.id]!;
         }
-        return normalizeVisible(next);
-      });
-    } catch {
-      /* poškozené nastavení ignorujeme */
-    }
+      }
+      const normalized = normalizeVisible(next);
+      return JSON.stringify(normalized) === JSON.stringify(cur) ? cur : normalized;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, normalizeVisible]);
 
   useEffect(() => {
-    let saved: Id[] = [];
-    try {
-      const raw = localStorage.getItem(visibilityOverridesKey);
-      saved = raw ? (JSON.parse(raw) as Id[]).filter((id) => persistentIds.has(id)) : [];
-    } catch {
-      saved = [];
-    }
+    applyStoredVisible();
+  }, [applyStoredVisible]);
+
+  const applyStoredOverrides = useCallback(() => {
+    const saved = (getGridLayout(storageKey).visibilityOverrides ?? []).filter((id) =>
+      persistentIds.has(id as Id),
+    ) as Id[];
     // Stav nastavíme jen při skutečné změně obsahu – jinak by nestabilní
     // identita `persistentIds` (inline `columns` u volajícího) způsobila
     // nekonečný cyklus render → efekt → setState.
     setExplicitVisibility((cur) =>
       cur.length === saved.length && cur.every((id, i) => id === saved[i]) ? cur : saved,
     );
-  }, [visibilityOverridesKey, persistentIds]);
+  }, [storageKey, persistentIds]);
 
   useEffect(() => {
-    const sync = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey: string; visible: Record<Id, boolean> }>)
-        .detail;
-      if (detail?.storageKey === storageKey && detail.visible)
-        setVisible(normalizeVisible(detail.visible));
-    };
-    window.addEventListener("grid-columns-change", sync);
-    return () => window.removeEventListener("grid-columns-change", sync);
-  }, [storageKey, normalizeVisible]);
+    applyStoredOverrides();
+  }, [applyStoredOverrides]);
 
   /** Nové (dynamické) sloupce doplníme do stavu s výchozí viditelností. */
   useEffect(() => {
@@ -236,14 +219,7 @@ export function useGridColumns<Id extends string>(
     (next: Record<Id, boolean>) => {
       const safe = normalizeVisible(next);
       setVisible(safe);
-      try {
-        localStorage.setItem(`columns:${storageKey}`, JSON.stringify(persistentRecord(safe)));
-      } catch {
-        /* úložiště není dostupné */
-      }
-      window.dispatchEvent(
-        new CustomEvent("grid-columns-change", { detail: { storageKey, visible: safe } }),
-      );
+      updateGridLayout(storageKey, { visible: persistentRecord(safe) });
     },
     [storageKey, persistentRecord, normalizeVisible],
   );
@@ -253,15 +229,11 @@ export function useGridColumns<Id extends string>(
       persist({ ...visible, [id]: !visible[id] });
       setExplicitVisibility((current) => {
         const next = current.includes(id) ? current : [...current, id];
-        try {
-          localStorage.setItem(visibilityOverridesKey, JSON.stringify(next));
-        } catch {
-          /* úložiště není dostupné */
-        }
+        updateGridLayout(storageKey, { visibilityOverrides: next });
         return next;
       });
     },
-    [persist, visible, visibilityOverridesKey],
+    [persist, visible, storageKey],
   );
 
   // --- pořadí sloupců ---------------------------------------------------
