@@ -20,13 +20,15 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
     const element = frame.current;
     if (!element) return;
     let stopped = false;
+    let loaded = false;
     let generation = 0;
     let dispose = () => {};
     let observer: ResizeObserver | undefined;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const load = async () => {
       const document = element.contentDocument;
-      if (!document || stopped) return;
+      if (!document || stopped || loaded) return;
+      loaded = true;
       try {
         // Import jen v efektu: PDF.js potřebuje prohlížeč, nikoli SSR runtime.
         const pdfjs = await import("pdfjs-dist");
