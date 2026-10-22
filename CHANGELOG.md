@@ -1,13 +1,15 @@
 # Changelog – Slivka Design System
 
-## 2.129.0 (nevydáno)
+## 2.128.0 (nevydáno)
+
+### Kolo 2.129.0
 
 - JournalLinesEditor: nový nepovinný prop `deductions` (typy `JournalDeductions`, `JournalDeductionRow`, `JournalDeductionRecapRow`, `JournalDeductionTotalByCode`). Odečty záloh (vybraná i ruční) se vykreslují jako řádky gridu Řádky pod položkami, oddělené čarou; popis, kód DPH, záporný základ/DPH a účet, stav/platba/daňový doklad jen v rozbalení a bublině; upravit jde jen základ ručního odečtu (`onAmountChange`); odebrání s potvrzením a důvodem (`onRemove`, `confirmRemove`, `removeReason`). Split akce „Odečet zálohy ▾“ (Vybrat zálohu… / Ruční odečet…, `onAdd(kind)`, `addDisabledReason`), tři součty Položky celkem · Odečteno záloh · K úhradě (`totals`) a řádky odečtů a součty podle kódu v rekapitulaci DPH (`recap`). Všechna data dodává APP; platí pro FV, FP i PO přes DocumentForm.linesEditorProps.
 - `AdvanceDeductionsSection` je @deprecated od 2.129.0 (odstraní se ve 3.0.0). Migrace: místo sekce v `afterVatRecap` předejte `deductions={{ rows, onAdd, onRemove, totals, recap }}`.
 - RecordDialog: nový `submitDisabledReason` – zakázané Uložit/Pokračovat zůstane zaměřitelné s bublinou důvodu. Zakázaná primární tlačítka mají čitelný text (kontrast AA).
 - Ověření: unit `journal-deductions.test.tsx` 9/9, E2E Chromium `advance-deduction-rows.spec.ts` 2/2. Nevydáno, release Claude.
 
-## 2.128.0 (nevydáno)
+### Kolo 2.128.0
 
 - Opravy po CI (bez změny API): GridFrame předává přepínači a panelu filtrů jedinečné id z `useId` (nové nepovinné props `panelId` / `id`, výchozí dosavadní konstanta) – na stránce s více gridy už nevzniká duplicitní `grid-filter-panel`. Chromium má na CI stejné delší čekání 20 s jako Firefox/WebKit: těžké ukázkové stránky se na dev serveru hydratují ~10 s. Úklid v `tests/setup.ts` nově po každém testu čistí i localStorage/sessionStorage (náhodné pořadí, seed 3475711926).
 - Ověření oprav CI: check:full --harness OK, 1 190/1 190 ve 130 souborech, katalog bez ztrát; unit `--randomize --seed=3475711926` 1 190/1 190; Chromium lokálně 39/39 (grid-toolbar-232, document-field-ids, document-field-locks, payment-schedule, record-panel, design-three). Nestabilní IdentityLine v design-three nesouvisí. Nevydáno, release Claude.
