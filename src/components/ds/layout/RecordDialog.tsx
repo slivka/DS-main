@@ -318,10 +318,8 @@ export function RecordDialog({
     if (controlledTab === undefined && tabs?.length && !tabs.some((tab) => tab.value === localTab))
       setLocalTab(tabs[0]?.value ?? "");
   }, [controlledTab, localTab, tabs]);
-
   const panelVisible = Boolean(sidePanel) && panelOpen;
   const showDelete = Boolean(deleteAction) && !readOnly;
-
   const inner = (
     <>
       {sidePanel ? (
@@ -348,7 +346,6 @@ export function RecordDialog({
           {sidePanelExtra}
         </div>
       ) : null}
-
       <div className="flex min-w-0 items-start gap-4">
         <form
           className="min-w-0 flex-1 space-y-4"
@@ -412,7 +409,6 @@ export function RecordDialog({
             </div>
           </div>
         </form>
-
         {panelVisible ? <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside> : null}
       </div>
       {confirmDialog}
