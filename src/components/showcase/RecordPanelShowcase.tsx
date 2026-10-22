@@ -80,9 +80,7 @@ export function RecordPanelShowcase() {
     // PDF ukázky je v paměti, URL se při odpojení vždy uvolní.
     const pdf = new jsPDF();
     pdf.setTextColor(18, 48, 74);
-    pdf.setFontSize(20);
     pdf.text("FAKTURA 2026/0142", 20, 25);
-    pdf.setFontSize(12);
     pdf.text("Kancelarske potreby", 20, 50);
     pdf.text("Celkem: 12 100,00", 20, 65);
     const url = URL.createObjectURL(pdf.output("blob"));
@@ -174,6 +172,7 @@ export function RecordPanelShowcase() {
                   period: "2026",
                   number: "FP 2026/0142",
                 }}
+                actionBarContent={trigger}
                 saveAction={{ dirty: false, onSave: () => undefined }}
                 notices={
                   content.pinnedNote ? (
