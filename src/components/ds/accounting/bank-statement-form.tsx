@@ -181,8 +181,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   ? { onSave, dirty, disabled: locked, disabledReason: lockedReason, busy }
                   : undefined
               }
-              moreActions={
-                onDelete
+              moreActions={[
+                ...(onDelete
                   ? [
                       {
                         id: "delete",
@@ -195,8 +195,9 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                         },
                       },
                     ]
-                  : []
-              }
+                  : []),
+                ...(menuActions ?? []),
+              ]}
               error={error}
               issues={
                 difference !== null
