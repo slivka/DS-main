@@ -46,6 +46,7 @@ export function useDocumentFieldRenderers({
   accountingDateLink,
   fieldErrors,
   fieldWarnings,
+  lockReason,
   onInvalidDate,
 }: DocumentFieldRenderersArgs) {
   const ds = useDsTexts();
@@ -81,6 +82,20 @@ export function useDocumentFieldRenderers({
     },
   ) => {
     const warning = options?.warning ?? dateWarnings?.[key];
+    const locked = lockReason?.(key);
+    if (locked) {
+      return field(
+        `document-${key}`,
+        label,
+        <FieldValue id={`document-${key}`} lockedReason={locked} className="tabular-nums">
+          {formatDate(value[key])}
+        </FieldValue>,
+        3,
+        false,
+        className,
+        options?.hint,
+      );
+    }
     return field(
       `document-${key}`,
       label,
