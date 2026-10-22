@@ -18,7 +18,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
   error.current = onError;
   useEffect(() => {
     const element = frame.current;
-    if (!element) return;
+    if (!element) return; console.log("PDF EFFECT",url);
     let stopped = false;
     let loaded = false;
     let generation = 0;
@@ -26,7 +26,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
     let observer: ResizeObserver | undefined;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const load = async () => {
-      const document = element.contentDocument;
+      const document = element.contentDocument; console.log("PDF LOAD",document?.URL);
       if (!document || stopped || loaded) return;
       loaded = true;
       try {
@@ -38,7 +38,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         dispose = () => {
           void task.destroy();
         };
-        const pdf = await task.promise;
+        const pdf = await task.promise; console.log("PDF PAGES",pdf.numPages);
         const render = async () => {
           const current = ++generation;
           const width = document.body.clientWidth;
