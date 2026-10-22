@@ -1,13 +1,17 @@
 /** Ukotvený sloupec Akce má viditelnou svislou čáru v záhlaví, těle i patičce i po rolování doprava. */
 import { expect, test, type Page } from "@playwright/test";
 
-async function checkDivider(page: Page, zoom: number) {
+async function checkDivider(
+  page: Page,
+  zoom: number,
+  scope = '.zoom-grid table:has([data-slot="grid-actions"])',
+) {
   await page.evaluate((z) => {
     document.documentElement.style.fontSize = `${16 * z}px`;
     window.dispatchEvent(new Event("app:zoom-change"));
   }, zoom);
   await page.waitForTimeout(300);
-  const table = page.locator('.zoom-grid table:has([data-slot="grid-actions"])').first();
+  const table = page.locator(scope).first();
   await expect(table).toBeVisible();
   await table.scrollIntoViewIfNeeded();
   await table.evaluate((t) => {
@@ -29,7 +33,9 @@ async function checkDivider(page: Page, zoom: number) {
       })
     ).toString("base64");
     const diff = await page.evaluate(async (b64) => {
-      const img = await createImageBitmap(await (await fetch(`data:image/png;base64,${b64}`)).blob());
+      const img = await createImageBitmap(
+        await (await fetch(`data:image/png;base64,${b64}`)).blob(),
+      );
       const c = new OffscreenCanvas(img.width, img.height);
       const g = c.getContext("2d")!;
       g.drawImage(img, 0, 0);
@@ -48,4 +54,10 @@ test("čára u sloupce Akce zůstane při rolování a zoomu", async ({ page }) 
   await page.setViewportSize({ width: 900, height: 1400 });
   await page.goto("/components/grid", { waitUntil: "networkidle" });
   for (const zoom of [0.7, 1, 1.5]) await checkDivider(page, zoom);
+});
+
+test("čára u sloupce Akce v editoru řádků dokladu", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1400 });
+  await page.goto("/components/accounting-lines", { waitUntil: "networkidle" });
+  for (const zoom of [0.7, 1, 1.5]) await checkDivider(page, zoom, ".journal-lines-grid table");
 });
