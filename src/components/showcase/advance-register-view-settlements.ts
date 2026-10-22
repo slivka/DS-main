@@ -1,6 +1,6 @@
 /** Fiktivní vyúčtování záloh · hotové hodnoty jako z DB · nepatří do knihovny. */
 import type { AdvanceRegisterViewRow } from "../ds/accounting/advances/advance-register-view-types";
-import { ACC, d, s, type Side } from "./advance-register-view-data";
+import { ACC, d, s, type Side } from "./advance-register-view-base";
 
 export const SETTLEMENTS: Record<Side, AdvanceRegisterViewRow[]> = {
   provided: [
