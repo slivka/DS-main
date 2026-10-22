@@ -9,7 +9,7 @@ import { useFileDrop, validateFiles, type RejectedFile } from "../../../hooks/us
 import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
 import { PanelToolButton } from "../layout/record-panel-tools";
 import type { RecordAttachment } from "./attachment-types";
-import { SourcePdfPreview } from "./source-pdf-preview";
+import { SourcePdfPreview } from "./source-pdf-frame";
 /** Odkaz na záznam, ze kterého zdroj pochází. */
 export interface SourceInheritedFrom {
   /** Popisek zdrojového záznamu. */
