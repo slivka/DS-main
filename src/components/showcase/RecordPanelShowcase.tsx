@@ -142,6 +142,7 @@ export function RecordPanelShowcase() {
             pinned={pinned}
             onPinnedChange={setPinned}
             size={size}
+            defaultSize={384}
             onSizeChange={setSize}
             onOpenInAdjacentPane={() => setAdjacent(!adjacent)}
           >
@@ -173,7 +174,6 @@ export function RecordPanelShowcase() {
                   period: "2026",
                   number: "FP 2026/0142",
                 }}
-                actionBarContent={trigger}
                 saveAction={{ dirty: false, onSave: () => undefined }}
                 notices={
                   content.pinnedNote ? (
