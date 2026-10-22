@@ -1,129 +1,35 @@
-/** Formulář dokladu · vlastní skládání sekcí · nesmí ukládat data aplikace. */
+/** Model dokladu · vlastní zpětnou vazbu, pole a záložky · nesmí ukládat data aplikace. */
 import { useState } from "react";
-import { useDocumentDateLinks } from "./use-document-date-links";
 import { toggleInvalidDate, useDocumentCounterpartyWarnings } from "./document-validation-feedback";
-import {
-  reportingLinesChange,
-  reportingPatch,
-  useDocumentFormFeedback,
-} from "./use-document-form-issues";
-import { documentFieldsForType } from "../document-fields";
-import { useDsTexts } from "../../../../ds-texts";
-import {
-  DEFAULT_DOCUMENT_FORM_TEXTS,
-  type DocumentDateField,
-  type DocumentFormProps,
-  type DocumentHeaderField,
-  type DocumentHeaderValue,
-} from "./document-form-types";
+import { reportingLinesChange, useDocumentFormFeedback } from "./use-document-form-issues";
+import type { DocumentFormProps, DocumentDateField } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
 import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { useVariableSymbolLink } from "./use-variable-symbol-link";
-import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentHeaderFields } from "./use-document-field-renderers";
 import { buildDocumentTabs } from "./build-document-tabs";
-import { useDetailTab } from "./document-form-top";
-import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
-import { useIdentityAccountSelection } from "./use-identity-account-selection";
-import { buildDocumentActionMenu } from "./document-action-menu";
-import { documentFormInputs } from "./document-form-inputs";
-/** Kompletní formulář účetního dokladu. */
+import { changeDocumentRounding } from "./use-document-form-layout";
+import { useDocumentFormBase } from "./use-document-form-base";
+/** Společný model faktur, zálohových listů a ostatních dokladů. */
 export function useDocumentFormModel(props: DocumentFormProps) {
-  const inputs = documentFormInputs(props);
+  const base = useDocumentFormBase(props);
   const {
-    title,
-    identity,
-    value,
-    onChange,
-    lines,
-    onLinesChange,
-    books,
-    accounts,
-    mainAccountOptions,
-    partners,
-    dimensions,
-    currencies,
-    constantSymbolOptions,
-    paymentMethodOptions,
-    counterpartyInput,
-    onCounterpartyInputChange,
-    counterpartyInputLockedReason,
-    counterpartyTab,
-    printTab,
-    documentType,
-    fields,
-    editableFields,
-    mainSide,
-    mainAccountLocked,
-    rateAmount,
-    homeCurrency,
-    homeCurrencySymbol,
-    currencyLocked,
-    currencyDisabledReason,
-    onCreatePartner,
-    onEditCounterparty,
-    icoLinkTarget,
-    handedOverBySuggest,
-    descriptionSuggest,
-    accountingDateLink,
-    accountingDateLinked,
-    onAccountingDateLinkedChange,
-    taxDocumentNumberWarning,
-    fieldErrors,
-    dateWarnings,
-    vat,
-    vatRateField,
-    linesEditorProps,
-    roundingLimit,
-    roundingLabel,
-    tabs,
-    activeDetailTab,
-    changedBy,
-    changedAt,
-    moreActions,
-    error,
-    appIssues,
-    validationActive,
-    onFieldChange,
-    notices,
-    readOnly,
-    texts,
-    className,
-  } = inputs;
-  const dsTexts = useDsTexts();
-  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
-  const code = documentType.toUpperCase();
-  const bankMovement = code === "BA";
-  const internal = code === "ID";
-  const f = {
-    ...documentFieldsForType(documentType),
-    ...fields,
-    ...(internal ? { partner: true, taxDate: true } : {}),
-  };
-  const {
-    patch: datePatch,
-    effectiveValue,
-    link: effectiveAccountingLink,
-  } = useDocumentDateLinks({
+    inputs,
+    dsTexts,
+    t,
     code,
-    value,
-    onChange,
-    accountingDateLink,
-    accountingDateLinked,
-    onAccountingDateLinkedChange,
-    onFieldChange: (fieldId) => onFieldChange?.(fieldId),
-    readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
-  });
-  const patch = reportingPatch(datePatch, onFieldChange);
-  const [tab, setTab] = useDetailTab(activeDetailTab, props.onActiveDetailTabChange);
-  const formRef = useDocumentFormStickyTop();
-  const can = (key: DocumentHeaderField) =>
-    !readOnly && (!editableFields || editableFields.includes(key));
-  // Obecný zámek pole (2.128.0): jen pole mimo editableFields s dodaným důvodem aplikace.
-  const lockReason = (key: DocumentHeaderField) =>
-    !can(key) ? props.fieldLockedReasons?.[key] : undefined;
-  const {
+    bankMovement,
+    internal,
+    f,
+    effectiveValue,
+    effectiveAccountingLink,
+    patch,
+    tab,
+    setTab,
+    formRef,
+    can,
+    lockReason,
     receivedDocument,
     issuedDocument,
     forcedSum,
@@ -141,31 +47,39 @@ export function useDocumentFormModel(props: DocumentFormProps) {
     identityVariant,
     effectiveIdentity,
     canEditIdentityAccount,
-  } = deriveDocumentForm({
-    documentType,
+    identityAccount,
+    actionMenu,
+  } = base;
+  const {
     value,
     lines,
-    linesEditorProps,
-    readOnly,
-    f,
+    onLinesChange,
+    accounts,
+    dimensions,
+    partners,
     mainSide,
     homeCurrency,
+    homeCurrencySymbol,
     rateAmount,
-    partners,
-    accounts,
-    mainAccountOptions,
+    vatRateField,
+    fieldErrors,
+    taxDocumentNumberWarning,
+    readOnly,
+    dateWarnings,
+    notices,
+    linesEditorProps,
+    appIssues,
+    error,
+    validationActive,
+    counterpartyInput,
+    onFieldChange,
+    roundingLabel,
+    roundingLimit,
     currencies,
-    books,
-    identity,
-    can,
-    mainAccountLocked,
-  });
-  const identityAccount = useIdentityAccountSelection(
-    value.mainAccountId,
-    effectiveIdentity.account?.label,
-    sameAccount,
-  );
-  const actionMenu = buildDocumentActionMenu(moreActions, props.settings, t.settings);
+    tabs,
+    counterpartyTab,
+    printTab,
+  } = inputs;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { counterpartyIco, counterpartyDic, icoWarning, effectiveFieldWarnings } =
     useDocumentCounterpartyWarnings({
@@ -316,6 +230,7 @@ export function useDocumentFormModel(props: DocumentFormProps) {
   });
   return {
     ...inputs,
+    ...base,
     formRef,
     bankMovement,
     dsTexts,
