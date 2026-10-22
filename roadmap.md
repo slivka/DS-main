@@ -1,5 +1,7 @@
 ## DS 2.128.0 (nevydáno)
 
+- [x] MultiSelect / ChipMultiSelect: šipky, Enter/mezerník, Tab akcí, Escape; unit a Chromium filtr firmy; závěrečná kontrola níže.
+- Ověření doplnění: check:quick --harness průběžně; cíleně multi-select-keyboard, inline-search-select a inline-search-mouse. check:full --harness OK: 1 174/1 174 testů ve 128 souborech; lint, formát i peněžní audit OK. Chromium multi-select-keyboard 1/1; vizuálně filtr Beta → pouze FV-002, Escape vrací fokus, bez pageerror. Katalog proti vydané 2.127.0: 475 → 475 komponent / 1 123 → 1 157 props, 0 odebrání. Automatické sestavení OK; plná E2E sada/FF/WebKit neběžely. Inline-search má 307 řádků: zůstává společným vlastníkem portálu a kontextu, čisté pomocné funkce jsou oddělené; bez druhé implementace. Nevydáno, release Claude.
 - [x] DocumentForm.fieldLockedReasons: obecný zámek pole jen pro čtení (FieldValue + důvod), hlavička i částka.
 - [x] BankStatementForm.menuActions: položky nabídky „…“ za stávajícími, disabledReason.
 - [x] Ukázky (BA s převzatými poli, výpis s „Import výpisu…“), testy, katalog bez ztrát, check:full.

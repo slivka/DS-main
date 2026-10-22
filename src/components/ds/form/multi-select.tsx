@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+/** Vícenásobný výběr · vlastní zaškrtnutí a klávesnici · nemění data aplikace. */
+import { forwardRef, useMemo, useState, type ComponentPropsWithoutRef } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
-import { Command } from "../../ui/command";
+import { Command, CommandItem, CommandList } from "../../ui/command";
 import {
   InlineSearchPopover as Popover,
   InlineSearchContent as PopoverContent,
@@ -15,23 +16,11 @@ import { ComboboxResizeHandle } from "./resizable-combobox";
 
 export type MultiSelectOption = { value: string; label: string };
 
-/**
- * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
- * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
- */
-export function MultiSelect({
-  options,
-  selected,
-  onChange,
-  allLabel,
-  itemsLabel,
-  placeholder,
-  className = "",
-  zoom,
-  showSearch = true,
-  showSelectAll = true,
-  clearLabel,
-}: {
+/** Vlastnosti vícenásobného výběru. */
+export interface MultiSelectProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange" | "placeholder"
+> {
   options: MultiSelectOption[];
   selected: string[];
   onChange: (next: string[]) => void;
@@ -49,7 +38,29 @@ export function MultiSelect({
   showSelectAll?: boolean;
   /** Text tlačítka pro vymazání výběru. */
   clearLabel?: string;
-}) {
+}
+
+/**
+ * Vícenásobný výběr do filtrů gridu – trigger vypadá jako Select,
+ * obsah je zaškrtávací seznam s hledáním. Prázdný výběr = „vše“.
+ */
+export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function MultiSelect(
+  {
+    options,
+    selected,
+    onChange,
+    allLabel,
+    itemsLabel,
+    placeholder,
+    className = "",
+    zoom,
+    showSearch = true,
+    showSelectAll = true,
+    clearLabel,
+    ...props
+  }: MultiSelectProps,
+  ref,
+) {
   const dsTexts = useDsTexts();
   const resolvedClearLabel = clearLabel ?? dsTexts.grid.clear;
   const [search, setSearch] = useState("");
@@ -76,10 +87,12 @@ export function MultiSelect({
 
   return (
     <div
+      ref={ref}
+      {...props}
       className="relative inline-flex max-w-full"
       style={resize.width ? { width: resize.width } : undefined}
     >
-      <Popover open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
+      <Popover multiple open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -114,28 +127,41 @@ export function MultiSelect({
           <Command shouldFilter={false}>
             {showSearch ? <InlineSearchInput value={search} onValueChange={setSearch} /> : null}
             {showSelectAll || resolvedClearLabel ? (
-              <div className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]">
+              <div
+                onKeyDown={(event) => {
+                  if (
+                    event.target instanceof HTMLButtonElement &&
+                    (event.key === "Enter" || event.key === " ")
+                  )
+                    event.stopPropagation();
+                }}
+                className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]"
+              >
                 {showSelectAll ? (
-                  <button
+                  <Button
+                    variant="link"
+                    size="sm"
                     type="button"
                     className="typo-action text-primary hover:underline"
                     onClick={() => onChange(options.map((o) => o.value))}
                   >
                     {dsTexts.multiSelect.selectAll}
-                  </button>
+                  </Button>
                 ) : (
                   <span />
                 )}
-                <button
+                <Button
+                  variant="link"
+                  size="sm"
                   type="button"
                   className="typo-action text-muted-foreground hover:underline"
                   onClick={() => onChange([])}
                 >
                   {resolvedClearLabel}
-                </button>
+                </Button>
               </div>
             ) : null}
-            <div className="max-h-[20em] overflow-auto py-1">
+            <CommandList aria-multiselectable className="max-h-[20em] overflow-auto py-1">
               {filtered.length === 0 ? (
                 <p className="px-3 py-2 text-[0.9em] text-muted-foreground">
                   {dsTexts.multiSelect.noValues}
@@ -144,11 +170,12 @@ export function MultiSelect({
                 filtered.map((opt) => {
                   const checked = selected.includes(opt.value);
                   return (
-                    <button
+                    <CommandItem
                       key={opt.value}
-                      type="button"
+                      value={opt.value}
+                      aria-checked={checked}
                       className="flex w-full items-center gap-[0.5em] px-[0.6em] py-[0.35em] text-left text-[0.95em] hover-surface"
-                      onClick={() => toggle(opt.value)}
+                      onSelect={() => toggle(opt.value)}
                     >
                       <span
                         className={`flex size-[1.1em] shrink-0 items-center justify-center rounded border ${
@@ -160,15 +187,15 @@ export function MultiSelect({
                         {checked && <Check className="size-[0.8em]" />}
                       </span>
                       <span className="truncate">{opt.label || "—"}</span>
-                    </button>
+                    </CommandItem>
                   );
                 })
               )}
-            </div>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
       <ComboboxResizeHandle onPointerDown={resize.onHandlePointerDown} />
     </div>
   );
-}
+});

@@ -1229,7 +1229,7 @@ _Role_
 import { ChipMultiSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.
+Vícenásobný výběr hodnot aplikace. Hledání přímo v poli; šipky mění aktivní položku, Enter/mezerník přepíná zaškrtnutí bez zavření. Tab prochází Vybrat vše a Vymazat; Escape zavře a vrátí fokus na pole.
 
 **Examples:**
 
@@ -4364,7 +4364,7 @@ _Běžné použití_
 import { MultiSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.
+Vícenásobný výběr hodnot aplikace. Hledání přímo v poli; šipky mění aktivní položku, Enter/mezerník přepíná zaškrtnutí bez zavření. Tab prochází Vybrat vše a Vymazat; Escape zavře a vrátí fokus na pole.
 
 **Examples:**
 

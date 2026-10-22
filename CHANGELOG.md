@@ -2,6 +2,8 @@
 
 ## 2.128.0 (nevydáno)
 
+- MultiSelect / ChipMultiSelect: možnosti používají CommandItem s aktivní a zaškrtnutou hodnotou; šipky při hledání, Enter/mezerník přepínají bez zavření, Tab prochází Vybrat vše / Vymazat, Escape zavře a vrátí fokus. Jednotlivé výběry a jejich Tab beze změny. Sdílené akce zůstávají samostatně dosažitelné; ukázka filtru firmy a Chromium spec jen s klávesnicí.
+- Ověření doplnění klávesnice: check:full --harness OK, 1 174/1 174 testů ve 128 souborech; Chromium multi-select-keyboard 1/1 (hledání, Enter/mezerník, Vybrat vše/Vymazat přes Tab, Escape). Katalog proti vydané 2.127.0: 475 → 475 komponent / 1 123 → 1 157 props, 0 odebrání. Automatické sestavení OK, bez vydání; release Claude.
 - DocumentForm.fieldLockedReasons: obecný důvod uzamčení pole mimo editableFields – pole se vykreslí jen pro čtení přes FieldValue se zámkem a důvodem v bublině (aria-label). Platí pro částku, měnu, data, protiúčet (číslo účtu, IBAN, SWIFT, kód banky) a VS/KS/SS; texty dodává aplikace. Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason, sumLocked) zůstávají funkční.
 - BankStatementForm.menuActions: veřejný slot položek nabídky „…“ v hlavičce výpisu, připojený za stávající položky; disabledReason u položky.
 - Ukázky: bankovní pohyb s převzatými poli („Převzato z banky“) a výpis s položkou „Import výpisu…“.

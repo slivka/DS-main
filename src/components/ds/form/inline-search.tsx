@@ -3,8 +3,17 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { Popover, PopoverTrigger, PopoverContent } from "../../ui/popover";
 import { CommandInput } from "../../ui/command";
+import {
+  moveMultipleFocus,
+  moveSingleFocus,
+  toggleMultipleActive,
+  triggerName,
+  multipleContentKey,
+  forwardSaveKey,
+} from "./inline-search-multiple";
 
 interface SearchContextValue {
+  multiple: boolean;
   open: boolean;
   changeOpen: (open: boolean) => void;
   changeQuery?: (query: string) => void;
@@ -24,6 +33,8 @@ const SearchContext = React.createContext<SearchContextValue | null>(null);
 
 /** Vlastnosti vnitřní obálky hledatelného výběru. */
 interface InlineSearchPopoverProps extends React.ComponentProps<typeof Popover> {
+  /** Vícenásobný výběr ponechá nabídku otevřenou při Tab mezi akcemi. */
+  multiple?: boolean;
   /** Změna dotazu při psaní do zavřeného pole. */
   onSearchChange?: (query: string) => void;
 }
@@ -32,6 +43,7 @@ export function InlineSearchPopover({
   open = false,
   onOpenChange,
   onSearchChange,
+  multiple = false,
   children,
   ...props
 }: InlineSearchPopoverProps) {
@@ -40,6 +52,7 @@ export function InlineSearchPopover({
   return (
     <SearchContext.Provider
       value={{
+        multiple,
         open,
         changeOpen: (next) => {
           if (next !== open) {
@@ -133,7 +146,15 @@ export const InlineSearchContent = React.forwardRef<
   React.ElementRef<typeof PopoverContent>,
   React.ComponentProps<typeof PopoverContent>
 >(function InlineSearchContent(
-  { onOpenAutoFocus, onCloseAutoFocus, onInteractOutside, onMouseDown, ...props },
+  {
+    onOpenAutoFocus,
+    onCloseAutoFocus,
+    onInteractOutside,
+    onMouseDown,
+    onKeyDownCapture,
+    onBlurCapture,
+    ...props
+  },
   ref,
 ) {
   const context = React.useContext(SearchContext);
@@ -145,12 +166,30 @@ export const InlineSearchContent = React.forwardRef<
         else if (ref) ref.current = node;
       }}
       {...props}
+      onKeyDownCapture={(event) => {
+        onKeyDownCapture?.(event);
+        if (!context?.multiple || event.defaultPrevented) return;
+        multipleContentKey(event, context.target, context.contentRef.current, () =>
+          context.changeOpen(false),
+        );
+      }}
+      onBlurCapture={(event) => {
+        onBlurCapture?.(event);
+        if (context?.multiple && event.relatedTarget && !insideSearch(context, event.relatedTarget))
+          context.changeOpen(false);
+      }}
       onMouseDown={(event) => {
         onMouseDown?.(event);
         // Standardní combobox: klik do nabídky nebere fokus vstupu, jinak by blur nabídku zavřel
         // dřív, než klik doběhne. Výjimkou jsou prvky, které fokus potřebují.
         const element = event.target instanceof Element ? event.target : null;
-        if (!element?.closest("input, textarea, select, [contenteditable=true]"))
+        if (
+          !element?.closest(
+            context?.multiple
+              ? "button, input, textarea, select, [contenteditable=true]"
+              : "input, textarea, select, [contenteditable=true]",
+          )
+        )
           event.preventDefault();
       }}
       onInteractOutside={(event) => {
@@ -209,6 +248,12 @@ export const InlineSearchInput = React.forwardRef<
         else if (forwardedRef) forwardedRef.current = node;
       }}
       onKeyDown={(event) => {
+        if (context.multiple && !event.nativeEvent.isComposing && event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          toggleMultipleActive(event.currentTarget);
+          return;
+        }
         if (
           event.key === "Enter" &&
           (event.ctrlKey || event.metaKey) &&
@@ -216,20 +261,7 @@ export const InlineSearchInput = React.forwardRef<
         ) {
           // cmdk každý Enter potvrzuje a blokuje. Zkratku předáme z pole mimo jeho strom,
           // aby ji formulář dostal bez potvrzení právě zvýrazněné položky.
-          event.stopPropagation();
-          const unhandled = context.target?.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: event.key,
-              code: event.code,
-              ctrlKey: event.ctrlKey,
-              metaKey: event.metaKey,
-              shiftKey: event.shiftKey,
-              altKey: event.altKey,
-              bubbles: true,
-              cancelable: true,
-            }),
-          );
-          if (unhandled === false) event.preventDefault();
+          forwardSaveKey(event, context.target);
           return;
         }
         if (event.nativeEvent.isComposing) {
@@ -248,29 +280,19 @@ export const InlineSearchInput = React.forwardRef<
           // jinak Tab hodnotu nepotvrzuje a jen přesune fokus (2.122.0).
           onKeyDown?.(event);
           if (event.defaultPrevented) return;
+          if (context.multiple) {
+            event.preventDefault();
+            event.stopPropagation();
+            moveMultipleFocus(context.target, context.contentRef.current, event.shiftKey, () =>
+              context.changeOpen(false),
+            );
+            return;
+          }
           event.preventDefault();
           event.stopPropagation();
-          const focusable = Array.from(
-            document.querySelectorAll<HTMLElement>(
-              'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
-            ),
-          ).filter((node) => !insideSearch(context, node) && node.getClientRects().length > 0);
-          const trigger = context.target?.querySelector('button[role="combobox"]');
-          const next = event.shiftKey
-            ? focusable
-                .filter(
-                  (node) =>
-                    trigger &&
-                    node.compareDocumentPosition(trigger) & Node.DOCUMENT_POSITION_FOLLOWING,
-                )
-                .at(-1)
-            : focusable.find(
-                (node) =>
-                  trigger &&
-                  trigger.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING,
-              );
-          context.changeOpen(false);
-          next?.focus();
+          moveSingleFocus(context.target, context.contentRef.current, event.shiftKey, () =>
+            context.changeOpen(false),
+          );
           return;
         }
         onKeyDown?.(event);
@@ -283,16 +305,3 @@ export const InlineSearchInput = React.forwardRef<
     context.target,
   );
 });
-
-/** Přístupný název tlačítka (aria-label nebo <label for>) převzatý vstupem hledání. */
-function triggerName(target: HTMLDivElement): string | undefined {
-  const button = target.querySelector<HTMLButtonElement>("button[role=combobox], button");
-  if (!button) return undefined;
-  const label = button.getAttribute("aria-label");
-  if (label) return label;
-  const text = Array.from(button.labels ?? [])
-    .map((node) => node.textContent?.trim())
-    .filter(Boolean)
-    .join(" ");
-  return text || undefined;
-}

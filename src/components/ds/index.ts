@@ -233,3 +233,6 @@ export { Button, buttonVariants, type ButtonProps } from "../ui/button";
 export { Badge, badgeVariants, type BadgeProps } from "../ui/badge";
 export { Input, type InputProps } from "../ui/input";
 export * from "./form/record-read-only";
+
+export * from "./form/multi-select";
+export * from "./form/chip-multi-select";
