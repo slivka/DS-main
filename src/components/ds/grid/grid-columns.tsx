@@ -241,23 +241,11 @@ export function useGridColumns<Id extends string>(
   const orderKey = defaultOrder.join("|");
   const [order, setOrder] = useState<Id[]>(defaultOrder);
 
-  useEffect(() => {
+  // Bez uloženého pořadí použijeme pořadí z vlastního výchozího nastavení.
+  const applyStoredOrder = useCallback(() => {
     const base = orderKey.split("|") as Id[];
-    let saved: Id[] = [];
-    try {
-      let raw = localStorage.getItem(`columnOrder:${storageKey}`);
-      if (!raw) {
-        // Bez uloženého pořadí použijeme pořadí z vlastního výchozího nastavení.
-        const defRaw = localStorage.getItem(`columnsDefault:${storageKey}`);
-        if (defRaw) {
-          const def = JSON.parse(defRaw) as { order?: Id[] };
-          if (def.order?.length) raw = JSON.stringify(def.order);
-        }
-      }
-      if (raw) saved = JSON.parse(raw) as Id[];
-    } catch {
-      saved = [];
-    }
+    const layout = getGridLayout(storageKey);
+    const saved = (layout.order ?? layout.customDefault?.order ?? []) as Id[];
     // zachováme uložené pořadí, nové sloupce doplníme na jejich původní místa
     const kept = saved.filter((id) => base.includes(id));
     const next = kept.length ? [...kept] : [...base];
@@ -265,28 +253,17 @@ export function useGridColumns<Id extends string>(
       if (!next.includes(id)) next.splice(Math.min(i, next.length), 0, id);
     });
     setOrder((cur) => (cur.join("|") === next.join("|") ? cur : next));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, orderKey]);
 
   useEffect(() => {
-    const sync = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey: string; order: Id[] }>).detail;
-      if (detail?.storageKey === storageKey && detail.order) setOrder(detail.order);
-    };
-    window.addEventListener("grid-column-order-change", sync);
-    return () => window.removeEventListener("grid-column-order-change", sync);
-  }, [storageKey]);
+    applyStoredOrder();
+  }, [applyStoredOrder]);
 
   const persistOrder = useCallback(
     (next: Id[]) => {
       setOrder(next);
-      try {
-        localStorage.setItem(`columnOrder:${storageKey}`, JSON.stringify(persistentOrder(next)));
-      } catch {
-        /* úložiště není dostupné */
-      }
-      window.dispatchEvent(
-        new CustomEvent("grid-column-order-change", { detail: { storageKey, order: next } }),
-      );
+      updateGridLayout(storageKey, { order: persistentOrder(next) });
     },
     [storageKey, persistentOrder],
   );
@@ -324,42 +301,23 @@ export function useGridColumns<Id extends string>(
   // --- šířky sloupců -----------------------------------------------------
   // Šířky se sdílejí mezi všemi instancemi gridu se stejným storageKey
   // (např. vnořené podgridy ve stromovém zobrazení) – změna na jednom
-  // se okamžitě projeví na všech.
-  const widthsKey = `columnWidths:${storageKey}`;
+  // se okamžitě projeví na všech (událost `grid-layout-change`).
   const [widths, setWidths] = useState<Partial<Record<Id, number>>>({});
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`columnWidths:${storageKey}`);
-      setWidths(raw ? (JSON.parse(raw) as Partial<Record<Id, number>>) : {});
-    } catch {
-      setWidths({});
-    }
+  const applyStoredWidths = useCallback(() => {
+    const saved = (getGridLayout(storageKey).widths ?? {}) as Partial<Record<Id, number>>;
+    setWidths((cur) => (JSON.stringify(cur) === JSON.stringify(saved) ? cur : saved));
   }, [storageKey]);
 
   useEffect(() => {
-    const onShared = (e: Event) => {
-      const detail = (e as CustomEvent<{ key: string; widths: Partial<Record<Id, number>> }>)
-        .detail;
-      if (!detail || detail.key !== widthsKey) return;
-      setWidths(detail.widths);
-    };
-    window.addEventListener("grid-column-widths", onShared);
-    return () => window.removeEventListener("grid-column-widths", onShared);
-  }, [widthsKey]);
+    applyStoredWidths();
+  }, [applyStoredWidths]);
 
   const storeWidths = useCallback(
     (next: Partial<Record<Id, number>>) => {
-      try {
-        localStorage.setItem(widthsKey, JSON.stringify(persistentRecord(next)));
-      } catch {
-        /* úložiště není dostupné */
-      }
-      window.dispatchEvent(
-        new CustomEvent("grid-column-widths", { detail: { key: widthsKey, widths: next } }),
-      );
+      updateGridLayout(storageKey, { widths: persistentRecord(next) });
     },
-    [widthsKey, persistentRecord],
+    [storageKey, persistentRecord],
   );
 
   const persistWidths = useCallback(
