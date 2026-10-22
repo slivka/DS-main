@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
-import { Command } from "../../ui/command";
+import { Command, CommandItem, CommandList } from "../../ui/command";
 import {
   InlineSearchPopover as Popover,
   InlineSearchContent as PopoverContent,
@@ -79,7 +79,7 @@ export function MultiSelect({
       className="relative inline-flex max-w-full"
       style={resize.width ? { width: resize.width } : undefined}
     >
-      <Popover open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
+      <Popover multiple open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -116,26 +116,26 @@ export function MultiSelect({
             {showSelectAll || resolvedClearLabel ? (
               <div className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]">
                 {showSelectAll ? (
-                  <button
+                  <Button variant="link" size="sm"
                     type="button"
                     className="typo-action text-primary hover:underline"
                     onClick={() => onChange(options.map((o) => o.value))}
                   >
                     {dsTexts.multiSelect.selectAll}
-                  </button>
+                  </Button>
                 ) : (
                   <span />
                 )}
-                <button
+                <Button variant="link" size="sm"
                   type="button"
                   className="typo-action text-muted-foreground hover:underline"
                   onClick={() => onChange([])}
                 >
                   {resolvedClearLabel}
-                </button>
+                </Button>
               </div>
             ) : null}
-            <div className="max-h-[20em] overflow-auto py-1">
+            <CommandList aria-multiselectable className="max-h-[20em] overflow-auto py-1">
               {filtered.length === 0 ? (
                 <p className="px-3 py-2 text-[0.9em] text-muted-foreground">
                   {dsTexts.multiSelect.noValues}
@@ -144,11 +144,12 @@ export function MultiSelect({
                 filtered.map((opt) => {
                   const checked = selected.includes(opt.value);
                   return (
-                    <button
+                    <CommandItem
                       key={opt.value}
-                      type="button"
+                      value={opt.value}
+                      aria-checked={checked}
                       className="flex w-full items-center gap-[0.5em] px-[0.6em] py-[0.35em] text-left text-[0.95em] hover-surface"
-                      onClick={() => toggle(opt.value)}
+                      onSelect={() => toggle(opt.value)}
                     >
                       <span
                         className={`flex size-[1.1em] shrink-0 items-center justify-center rounded border ${
@@ -160,11 +161,11 @@ export function MultiSelect({
                         {checked && <Check className="size-[0.8em]" />}
                       </span>
                       <span className="truncate">{opt.label || "—"}</span>
-                    </button>
+                    </CommandItem>
                   );
                 })
               )}
-            </div>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Check, Plus, X } from "lucide-react";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
-import { Command } from "../../ui/command";
+import { Command, CommandItem, CommandList } from "../../ui/command";
 import {
   InlineSearchPopover as Popover,
   InlineSearchContent as PopoverContent,
@@ -70,7 +70,7 @@ export function ChipMultiSelect({
           </Badge>
         ))}
 
-      <Popover open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
+      <Popover multiple open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
         <PopoverTrigger asChild>
           <Button type="button" variant="outline" size="sm" role="combobox">
             <Plus className="size-3.5" />
@@ -86,32 +86,33 @@ export function ChipMultiSelect({
               className="h-8"
             />
             <div className="flex items-center justify-between border-b border-border pb-1 text-xs">
-              <button
+              <Button variant="link" size="sm"
                 type="button"
                 className="font-medium text-primary hover:underline"
                 onClick={() => onChange(options.map((o) => o.value))}
               >
                 {allLabel}
-              </button>
-              <button
+              </Button>
+              <Button variant="link" size="sm"
                 type="button"
                 className="text-muted-foreground hover:underline"
                 onClick={() => onChange([])}
               >
                 {clearLabel}
-              </button>
+              </Button>
             </div>
-            <div className="max-h-56 space-y-1 overflow-y-auto">
+            <CommandList aria-multiselectable className="max-h-56 space-y-1 overflow-y-auto">
               {filtered.length === 0 ? (
                 <p className="px-1 py-1 text-sm text-muted-foreground">{emptyLabel}</p>
               ) : (
                 filtered.map((o) => {
                   const checked = value.includes(o.value);
                   return (
-                    <button
+                    <CommandItem
                       key={o.value}
-                      type="button"
-                      onClick={() => toggle(o.value)}
+                      value={o.value}
+                      aria-checked={checked}
+                      onSelect={() => toggle(o.value)}
                       className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover-surface"
                     >
                       <span
@@ -124,11 +125,11 @@ export function ChipMultiSelect({
                         {checked ? <Check className="size-3" /> : null}
                       </span>
                       <span className="truncate">{o.label}</span>
-                    </button>
+                    </CommandItem>
                   );
                 })
               )}
-            </div>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
