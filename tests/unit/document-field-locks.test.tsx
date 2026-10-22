@@ -73,7 +73,7 @@ describe("DocumentForm fieldLockedReasons (2.128.0)", () => {
       ["Variabilní symbol", "123"],
       ["Konstantní symbol", "0308"],
       ["Specifický symbol", "77"],
-      ["Celkem za doklad", "1 500,00"],
+      ["Celkem za doklad", "1 500,00"],
       ["Měna", "CZK"],
     ];
     for (const [label, text] of expected) {
@@ -109,9 +109,9 @@ describe("DocumentForm fieldLockedReasons (2.128.0)", () => {
     const view = render(
       <BaForm editableFields={["variableSymbol"]} fieldLockedReasons={lockedReasons} />,
     );
-    expect(view.getByLabelText("Variabilní symbol")).toBeTruthy();
-    const vs = view.getByRole("group", { name: "Variabilní symbol" });
-    expect(vs.getAttribute("data-slot")).not.toBe("field-value");
+    const vs = view.getByLabelText("Variabilní symbol");
+    expect(vs).toHaveProperty("disabled", false);
+    expect(view.queryByRole("group", { name: "Variabilní symbol" })).toBeNull();
   });
 });
 
