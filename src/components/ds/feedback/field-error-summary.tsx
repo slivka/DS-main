@@ -27,9 +27,9 @@ const FOCUSABLE = "input, textarea, button, [role=combobox], [tabindex]";
 /** Zaměří ovládání uvnitř prvku nebo prvek sám. */
 function focusWithin(element: Element | null): boolean {
   if (!(element instanceof HTMLElement)) return false;
-  const target = element.matches(FOCUSABLE)
+  const target = element.querySelector<HTMLElement>('[data-slot="field-value-lock"]') ?? (element.matches(FOCUSABLE)
     ? element
-    : element.querySelector<HTMLElement>(FOCUSABLE);
+    : element.querySelector<HTMLElement>(FOCUSABLE));
   element.scrollIntoView?.({ behavior: "smooth", block: "center" });
   (target ?? element).focus();
   return true;

@@ -157,7 +157,10 @@ export interface DocumentFormProps {
    * Obecný důvod uzamčení pole mimo editableFields (2.128.0): pole se vykreslí jen pro čtení
    * přes FieldValue se zámkem a důvodem v bublině. Texty dodává aplikace (např. „Převzato
    * z banky“). Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason,
-   * sumLocked) zůstávají funkční; tento prop je obecná cesta.
+   * sumLocked) zůstávají funkční; obecný důvod má u needitovatelného pole přednost.
+   * V IBAN režimu bankIban / bankSwift předcházejí aliasům bankAccount / bankCode;
+   * paymentReference zamyká zahraniční platební referenci. Protistrana: partnerId,
+   * v ručním režimu counterpartyName (přednost před partnerId).
    */
   fieldLockedReasons?: Partial<Record<DocumentHeaderField, string>>;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;

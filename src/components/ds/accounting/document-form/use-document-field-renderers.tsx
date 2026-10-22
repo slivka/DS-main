@@ -7,10 +7,9 @@ import { Input } from "../../../ui/input";
 import { Textarea } from "../../../ui/textarea";
 import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
-import { FieldValue } from "../../form/field-value";
+import { LockedDocumentDate } from "./locked-document-date";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
-import { formatDate } from "../../../../lib/format";
 import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
 import type {
   DocumentAccountingDateLink,
@@ -87,14 +86,11 @@ export function useDocumentFieldRenderers({
       return field(
         `document-${key}`,
         label,
-        <FieldValue
+        <LockedDocumentDate
           id={`document-${key}`}
-          aria-labelledby={`document-${key}-label`}
-          lockedReason={locked}
-          className="tabular-nums"
-        >
-          {formatDate(value[key])}
-        </FieldValue>,
+          reason={locked}
+          value={value[key]}
+        />,
         3,
         false,
         className,

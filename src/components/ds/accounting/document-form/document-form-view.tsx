@@ -186,6 +186,7 @@ export function DocumentFormView({ props, model }: DocumentFormViewProps) {
                     internal,
                     cashDocument: code === "PO",
                     counterpartyInputLockedReason,
+                    lockReason,
                   }
                 : undefined
             }

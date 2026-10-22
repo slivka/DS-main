@@ -426,6 +426,13 @@ body {
 .document-dates-compact button {
   font-size: inherit;
 }
+.document-dates-compact [data-document-date-locked] {
+  font-size: inherit;
+  width: 0;
+  min-width: 100%;
+  padding-left: var(--document-date-left-padding);
+  padding-right: var(--document-date-icon-offset);
+}
 .document-dates-compact label {
   font-size: calc(var(--text-xs) * var(--document-date-scale, 1));
   max-width: none;

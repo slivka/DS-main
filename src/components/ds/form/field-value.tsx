@@ -43,6 +43,7 @@ export const FieldValue = React.forwardRef<HTMLDivElement, FieldValueProps>(func
             type="button"
             variant="ghost"
             size="icon"
+            data-slot="field-value-lock"
             aria-label={lockedReason}
             className="size-4 shrink-0 p-0 text-muted-foreground"
           >
