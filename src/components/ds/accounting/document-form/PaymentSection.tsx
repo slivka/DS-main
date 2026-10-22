@@ -214,6 +214,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-specificSymbol",
               t.specificSymbol,
+              lockedValue("specificSymbol", "document-specificSymbol", value.specificSymbol ?? "") ??
               symbolControl(
                 <Input
                   id="document-specificSymbol"
@@ -223,7 +224,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   className="h-[var(--control-h)] font-mono tabular-nums"
                 />,
                 "document-specificSymbol",
-              ),
+              )),
               grid ? 8 : 3,
               false,
               symbolItem.className,
