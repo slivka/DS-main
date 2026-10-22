@@ -1,8 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CompanyFilterShowcase } from "@/components/showcase/CompanyFilterShowcase";
 import { PrimaryActionsShowcase } from "@/components/showcase/PrimaryActionsShowcase";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Building2 } from "lucide-react";
+import {
+  configureGridPrefsStore,
+  hydrateGridPrefs,
+  type GridLayout,
+  type GridPrefsStore,
+} from "@/lib/grid-prefs";
 
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { Button } from "@/components/ui/button";
@@ -64,6 +70,37 @@ function GridPage() {
   const [asOfDate, setAsOfDate] = useState("2026-09-24");
   const [analytic, setAnalytic] = useState(true);
   const [byPartner, setByPartner] = useState(true);
+  const [prefsStorage, setPrefsStorage] = useState<"browser" | "server">("browser");
+  // Simulovaný server pro ukázku úložiště rozložení gridů (zpoždění 500 ms).
+  const demoServerStore = useMemo<GridPrefsStore>(() => {
+    const data = new Map<string, GridLayout>();
+    const delay = () => new Promise<void>((resolve) => setTimeout(resolve, 500));
+    return {
+      loadAll: async () => {
+        await delay();
+        return Object.fromEntries(data);
+      },
+      save: async (key, layout) => {
+        await delay();
+        data.set(key, layout);
+      },
+      remove: async (key) => {
+        await delay();
+        data.delete(key);
+      },
+      removeAll: async () => {
+        await delay();
+        data.clear();
+      },
+    };
+  }, []);
+  useEffect(() => {
+    configureGridPrefsStore(prefsStorage === "server" ? demoServerStore : null, {
+      scope: "showcase",
+    });
+    void hydrateGridPrefs();
+    return () => configureGridPrefsStore(null);
+  }, [prefsStorage, demoServerStore]);
   const [activeFilter, setActiveFilter] = useState(true);
   const [statusFilter, setStatusFilter] = useState("posted");
   const [partnerFilter, setPartnerFilter] = useState("all");
@@ -333,6 +370,18 @@ function GridPage() {
             >
               Podle partnera
             </GridToggleButton>
+            <GridSegmentedToggle
+              options={[
+                { value: "browser", label: "Prohlížeč" },
+                { value: "server", label: "Simulovaný server" },
+              ]}
+              value={prefsStorage}
+              onChange={(value) => {
+                if (value === "browser" || value === "server") setPrefsStorage(value);
+              }}
+              defaultValue="browser"
+              ariaLabel="Úložiště rozložení gridu"
+            />
           </>
         }
         onEditRow={(r) => toast.info(`Otevřít doklad ${r.document}`)}
