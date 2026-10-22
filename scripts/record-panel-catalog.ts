@@ -32,7 +32,7 @@ const definitions = [
     name: "SourcePreview",
     file: "src/components/ds/feedback/source-preview.tsx",
     usage:
-      "Záložka Zdroj panelu záznamu: vyplní zbývající výšku pod nástroji v hostiteli s určenou výškou, PDF iframe FitH/page-width se obnoví při změně šířky, obrázek contain přes celou plochu, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy.",
+      "Záložka Zdroj panelu záznamu: vyplní zbývající výšku pod nástroji v hostiteli s určenou výškou, PDF.js v iframe vykreslí stránky podle šířky a přepočítá je při tažení; svisle roluje jen náhled. Obrázek contain přes celou plochu, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy. PDF.js a jeho worker se načítají jen v klientském efektu.",
     code: "<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />",
     avoid:
       "Nevracejte náhled zdroje do AttachmentList (source je deprecated) a negenerujte adresy v DS – dodává je APP.",

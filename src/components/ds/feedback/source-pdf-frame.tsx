@@ -19,6 +19,8 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
   useEffect(() => {
     const element = frame.current;
     if (!element) return;
+    const reportError = () => error.current();
+    element.addEventListener("error", reportError);
     let stopped = false;
     let loaded = false;
     let generation = 0;
@@ -39,6 +41,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
           void task.destroy();
         };
         const pdf = await task.promise;
+        if (stopped) { dispose(); return; }
         const render = async () => {
           const current = ++generation;
           const width = document.body.clientWidth;
@@ -58,6 +61,9 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
             canvas.height = Math.ceil(viewport.height * density);
             canvas.style.width = "100%";
             canvas.style.display = "block";
+            const text = await page.getTextContent();
+            canvas.setAttribute("role", "img");
+            canvas.setAttribute("aria-label", text.items.map(item => "str" in item ? item.str : "").join(" "));
             await page.render({
               canvas,
               canvasContext: context,
@@ -91,6 +97,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
       )
         return;
       window.clearInterval(check);
+      element.removeEventListener("error", reportError);
       void load();
     }, 20);
     return () => {
@@ -106,7 +113,6 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
     <iframe
       ref={frame}
       title={title}
-      onError={onError}
       data-slot="source-pdf-preview"
       className="absolute inset-0 h-full w-full border-0"
       srcDoc={
