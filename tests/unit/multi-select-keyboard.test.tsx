@@ -101,7 +101,9 @@ for (const chips of [false, true]) {
     const input = view.container.querySelector<HTMLInputElement>("[cmdk-input]");
     if (!input) throw new Error("Chybí hledání");
     fireEvent.keyDown(input, { key: "Tab" });
-    fireEvent.blur(view.getByRole("button", { name: "Vybrat vše" }), { relatedTarget: view.getByRole("button", { name: "After" }) });
+    fireEvent.blur(view.getByRole("button", { name: "Vybrat vše" }), {
+      relatedTarget: view.getByRole("button", { name: "After" }),
+    });
     await waitFor(() => expect(view.queryByRole("listbox")).toBeNull());
     expect(view.getByRole("status").textContent).toBe("");
   });
