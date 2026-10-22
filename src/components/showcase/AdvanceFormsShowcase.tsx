@@ -25,7 +25,7 @@ import { ShowcaseSection } from "./ShowcaseLayout";
 type ShowcaseType = "FV" | "FP" | "ZFV" | "ZFP" | "PO";
 const INITIAL: Record<ShowcaseType, typeof DEDUCTION_ROWS> = {
   FV: DEDUCTION_ROWS,
-  FP: [DEDUCTION_ROWS[1]!, MANUAL_DEDUCTION].filter(Boolean),
+  FP: [...DEDUCTION_ROWS.slice(1, 2), MANUAL_DEDUCTION],
   PO: [MANUAL_DEDUCTION],
   ZFV: [],
   ZFP: [],

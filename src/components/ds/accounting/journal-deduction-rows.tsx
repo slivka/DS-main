@@ -30,7 +30,10 @@ const totalOf = (row: { base: number; vat: number; total?: number }) =>
 const AMOUNT = "text-right font-mono tabular-nums";
 
 /** Text detailu (stav · platba · DD) pro bublinu i rozbalení. */
-function detailItems(row: JournalDeductionRow, t: { status: string; payment: string; taxDocument: string }) {
+function detailItems(
+  row: JournalDeductionRow,
+  t: { status: string; payment: string; taxDocument: string },
+) {
   return [
     [t.status, row.status],
     [t.payment, row.payment],
@@ -39,11 +42,21 @@ function detailItems(row: JournalDeductionRow, t: { status: string; payment: str
 }
 
 /** Obsah jedné buňky řádku odečtu. */
-function DeductionCell({ row, columnId, accountId }: { row: JournalDeductionRow; columnId: string; accountId?: string }) {
+function DeductionCell({
+  row,
+  columnId,
+  accountId,
+}: {
+  row: JournalDeductionRow;
+  columnId: string;
+  accountId?: string;
+}) {
   const { editor } = useJournalEditor();
   const deductions = editor.props.deductions;
   const t = editor.dsTexts.advances;
-  const amount = (value: number) => <span className={cn(value < 0 && "text-destructive")}>{money(value)}</span>;
+  const amount = (value: number) => (
+    <span className={cn(value < 0 && "text-destructive")}>{money(value)}</span>
+  );
   if (columnId === "text") {
     const items = detailItems(row, t);
     if (items.length === 0) return <span className="truncate">{row.text}</span>;
@@ -52,7 +65,9 @@ function DeductionCell({ row, columnId, accountId }: { row: JournalDeductionRow;
         <TooltipTrigger asChild>
           <span className="block truncate">{row.text}</span>
         </TooltipTrigger>
-        <TooltipContent>{items.map(([label, value]) => `${label}: ${value}`).join(" · ")}</TooltipContent>
+        <TooltipContent>
+          {items.map(([label, value]) => `${label}: ${value}`).join(" · ")}
+        </TooltipContent>
       </Tooltip>
     );
   }
@@ -79,7 +94,15 @@ function DeductionCell({ row, columnId, accountId }: { row: JournalDeductionRow;
 }
 
 /** Jeden řádek odečtu s rozbalitelným detailem. */
-function DeductionRow({ row, first, onRemove }: { row: JournalDeductionRow; first: boolean; onRemove: (row: JournalDeductionRow) => void }) {
+function DeductionRow({
+  row,
+  first,
+  onRemove,
+}: {
+  row: JournalDeductionRow;
+  first: boolean;
+  onRemove: (row: JournalDeductionRow) => void;
+}) {
   const { editor } = useJournalEditor();
   const t = editor.dsTexts.advances;
   const [open, setOpen] = React.useState(false);
@@ -88,7 +111,11 @@ function DeductionRow({ row, first, onRemove }: { row: JournalDeductionRow; firs
   const items = detailItems(row, t);
   return (
     <>
-      <TableRow data-slot="journal-deduction-row" data-kind={row.kind} className={cn("bg-muted/20", first && "border-t-2 border-t-border")}>
+      <TableRow
+        data-slot="journal-deduction-row"
+        data-kind={row.kind}
+        className={cn("bg-muted/20", first && "border-t-2 border-t-border")}
+      >
         {columns.map((column) => (
           <TableCell
             key={column.id}
@@ -108,7 +135,11 @@ function DeductionRow({ row, first, onRemove }: { row: JournalDeductionRow; firs
                 onClick={() => setOpen((value) => !value)}
                 className="inline-flex size-[1.4em] items-center justify-center rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               >
-                {open ? <ChevronDown className="size-[1em]" /> : <ChevronRight className="size-[1em]" />}
+                {open ? (
+                  <ChevronDown className="size-[1em]" />
+                ) : (
+                  <ChevronRight className="size-[1em]" />
+                )}
               </button>
             ) : column.id === "actions" && row.remove ? (
               <GridActions>
@@ -161,7 +192,11 @@ export function JournalDeductionRows() {
       confirmLabel: t.remove,
       destructive: true,
       reason: reason
-        ? { label: reason.label ?? t.removeReason, required: reason.required, placeholder: reason.placeholder }
+        ? {
+            label: reason.label ?? t.removeReason,
+            required: reason.required,
+            placeholder: reason.placeholder,
+          }
         : undefined,
       onConfirm: (text) => deductions.onRemove?.(row, text),
     });
@@ -203,7 +238,13 @@ export function JournalDeductionAdd() {
   );
   return (
     <div className="inline-flex shrink-0" data-slot="journal-deduction-split">
-      {blocked ? <DisabledReasonTooltip blocked content={reason}>{main}</DisabledReasonTooltip> : main}
+      {blocked ? (
+        <DisabledReasonTooltip blocked content={reason}>
+          {main}
+        </DisabledReasonTooltip>
+      ) : (
+        main
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild disabled={blocked}>
           <Button
@@ -244,7 +285,13 @@ export function JournalDeductionTotals() {
       {items.map(([slot, label, value]) => (
         <span key={slot} data-slot={slot} className="inline-flex items-baseline gap-1.5">
           <span className="text-muted-foreground">{label}</span>
-          <span className={cn("font-mono tabular-nums", value < 0 && "text-destructive", slot.endsWith("pay") && "font-semibold")}>
+          <span
+            className={cn(
+              "font-mono tabular-nums",
+              value < 0 && "text-destructive",
+              slot.endsWith("pay") && "font-semibold",
+            )}
+          >
             {`${money(value)} ${editor.documentMark}`}
           </span>
         </span>
@@ -270,7 +317,11 @@ export function JournalDeductionRecapBody({ span }: { span: number }) {
   return (
     <tbody data-slot="journal-vat-deductions">
       {recap.deductionRows.map((row) => (
-        <tr key={row.id} data-slot="journal-vat-deduction-row" className="h-[var(--control-h)] border-t">
+        <tr
+          key={row.id}
+          data-slot="journal-vat-deduction-row"
+          className="h-[var(--control-h)] border-t"
+        >
           <td className="truncate px-2 py-1">{row.label}</td>
           {values(row)}
           <td colSpan={tail} />
@@ -280,7 +331,10 @@ export function JournalDeductionRecapBody({ span }: { span: number }) {
         <tr
           key={row.vatCode}
           data-slot="journal-vat-total-by-code"
-          className={cn("h-[var(--control-h)] font-semibold", index === 0 ? "border-t-2" : "border-t")}
+          className={cn(
+            "h-[var(--control-h)] font-semibold",
+            index === 0 ? "border-t-2" : "border-t",
+          )}
         >
           <td className="truncate px-2 py-1">{`${t.totalByCode} ${row.vatCode}`}</td>
           {values(row)}
