@@ -31,7 +31,7 @@ function restoreNavigator() {
     const original = navigatorOwn.get(key);
     if (original) Object.defineProperty(navigator, key, original);
     else if (Object.prototype.hasOwnProperty.call(navigator, key))
-      delete (navigator as unknown as Record<string, unknown>)[key];
+      Reflect.deleteProperty(navigator, key);
   }
 }
 
