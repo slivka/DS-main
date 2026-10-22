@@ -7,11 +7,11 @@ import {
   advanceRegisterSegment,
   buildAdvanceRegisterRows,
 } from "../../src/components/ds/accounting/advances/advance-register-view-columns";
-import type {
-  AdvanceRegisterTab,
-  AdvanceRegisterViewProps,
-} from "../../src/index";
-import { advanceAccounts, advanceRegisterData } from "../../src/components/showcase/advance-register-view-data";
+import type { AdvanceRegisterTab, AdvanceRegisterViewProps } from "../../src/index";
+import {
+  advanceAccounts,
+  advanceRegisterData,
+} from "../../src/components/showcase/advance-register-view-data";
 
 function setup(tab: AdvanceRegisterTab, extra: Partial<AdvanceRegisterViewProps> = {}) {
   const calls = { tab: [] as string[], open: [] as string[], filters: [] as unknown[] };
@@ -39,7 +39,13 @@ describe("AdvanceRegisterView", () => {
     expect(tabs).toEqual(["Zůstatek", "Platby záloh", "Vyúčtování záloh"]);
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Platby záloh" }));
     expect(calls.tab).toEqual(["payments"]);
-    view.rerender(<AdvanceRegisterView {...props} activeTab="payments" data={advanceRegisterData("provided", "payments", [], "all")} />);
+    view.rerender(
+      <AdvanceRegisterView
+        {...props}
+        activeTab="payments"
+        data={advanceRegisterData("provided", "payments", [], "all")}
+      />,
+    );
     expect(screen.getAllByRole("button", { name: /Stav k datu/ })).toHaveLength(1);
     expect(view.container.querySelectorAll('[data-slot="advance-register-as-of"]')).toHaveLength(1);
   });
@@ -77,7 +83,17 @@ describe("AdvanceRegisterView", () => {
     );
     const byAmountDesc = [...rows].sort((a, b) => (b.amountHome ?? 0) - (a.amountHome ?? 0));
     const result = sortWithinSegments(rows, byAmountDesc, advanceRegisterSegment).map((r) => r.id);
-    expect(result).toEqual(["account:314100", "p2", "p1", "pa1", "pc1", "account:314200", "p3", "pa2", "pc2"]);
+    expect(result).toEqual([
+      "account:314100",
+      "p2",
+      "p1",
+      "pa1",
+      "pc1",
+      "account:314200",
+      "p3",
+      "pa2",
+      "pc2",
+    ]);
   });
 
   it("nenulový rozdíl proti účtu varuje ikonou s bublinou", () => {
@@ -86,7 +102,9 @@ describe("AdvanceRegisterView", () => {
     expect(controls.length).toBe(2);
     const warnings = view.container.querySelectorAll('[data-slot="advance-difference-warning"]');
     expect(warnings.length).toBe(1);
-    expect(warnings[0]!.getAttribute("aria-label")).toBe("Evidence nesouhlasí se zůstatkem účtu v deníku.");
+    expect(warnings[0]!.getAttribute("aria-label")).toBe(
+      "Evidence nesouhlasí se zůstatkem účtu v deníku.",
+    );
     expect(within(controls[1] as HTMLElement).getByText(/Rozdíl proti účtu 314.200/)).toBeTruthy();
   });
 
