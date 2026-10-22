@@ -1,3 +1,4 @@
+import { INVOICE_PRINT_SK } from "./invoice-print-texts";
 /**
  * Slovenské texty design systému.
  * Vlastní: hodnoty DS_TEXTS_SK (chybějící klíče doplní čeština).
@@ -27,6 +28,7 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  invoicePrint: INVOICE_PRINT_SK,
   fileImport: FILE_IMPORT_SK,
   advances: ADVANCES_SK,
   templates: TEMPLATES_SK,

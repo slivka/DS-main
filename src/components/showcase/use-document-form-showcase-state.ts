@@ -244,12 +244,10 @@ export function useDocumentFormShowcaseState() {
   });
   const [printData, setPrintData] = useState<DocumentPrintValue>({
     options: {
-      showHeader: true,
-      showFooter: true,
-      showVatRecap: true,
-      showNote: true,
-      showColumnHeadings: true,
-      showTotalsRow: true,
+      showAdvanceDetail: true,
+      showQr: true,
+      showSignature: false,
+      showIssuedBy: true,
       showPaymentSchedule: false,
     },
     headerText: "Děkujeme za objednávku.",

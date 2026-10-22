@@ -9,6 +9,7 @@ import { enrichFileImportCatalog } from "./file-import-catalog";
 
 import { enrichDocumentLocks } from "./document-lock-catalog";
 import { enrichPaymentScheduleCatalog } from "./payment-schedule-catalog";
+import { enrichInvoicePrintCatalog } from "./invoice-print-catalog";
 import { enrichColumnFormatCatalog } from "./column-format-catalog";
 
 interface CatalogProp {
@@ -174,6 +175,14 @@ export function refreshCatalog() {
   const templateComponents = enrichTemplateCatalog(catalog.components);
   const advanceComponents = enrichAdvanceCatalog(catalog.components);
   const fileImportComponents = enrichFileImportCatalog(catalog.components);
+  const invoicePrintComponents = enrichInvoicePrintCatalog(catalog.components);
+  if (catalog.meta) {
+    catalog.meta.stack_dependencies ??= {};
+    for (const name of ["jspdf", "qrcode-generator", "dompurify"]) {
+      const version = packages.dependencies[name];
+      if (version) catalog.meta.stack_dependencies[name] = version;
+    }
+  }
   const columnFormatComponents = enrichColumnFormatCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
@@ -233,6 +242,7 @@ export function refreshCatalog() {
       ...advanceComponents,
       ...fileImportComponents,
       ...columnFormatComponents,
+      ...invoicePrintComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";

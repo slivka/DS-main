@@ -46,7 +46,12 @@ import type { VatFiveTexts } from "./vat-five-texts";
 export type { VatFiveTexts } from "./vat-five-texts";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
+import type { InvoicePrintTexts } from "./invoice-print-texts";
+export type { InvoicePrintTexts, InvoicePrintTextKey } from "./invoice-print-texts";
+
 export interface DsTexts {
+  /** Tisk vydané faktury a jeho pole. */
+  invoicePrint: InvoicePrintTexts;
   /** Obecné importní prvky. */
   fileImport: FileImportTexts;
   /** Texty záloh a odečtů. */

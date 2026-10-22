@@ -9,3 +9,6 @@ src/routeTree.gen.ts
 src/tailwind.config.lov.json
 src/routes/\[__component\].preview.$.tsx
 src/routes/\[__mockup\].preview.$.tsx
+
+# Autorský vizuální vzor; zachovat Claudeovu předlohu beze změny.
+docs/print/invoice-c-reference.html

@@ -33,6 +33,8 @@ export type DocumentHeaderValue = {
   vatRelevant?: boolean;
   dueDate?: string | null;
   externalNumber?: string | null;
+  /** Objednávka odběratele vydané faktury/zálohového listu. */
+  customerOrderRef?: string | null;
   /** Vlastní číslo daňového dokladu při vypnuté vazbě. */
   taxDocumentNumber?: string | null;
   /** Číslo daňového dokladu sleduje číslo dokladu; výchozí true. */

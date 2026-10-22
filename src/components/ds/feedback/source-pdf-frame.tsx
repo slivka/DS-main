@@ -36,7 +36,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         const pdfjs = await import("pdfjs-dist");
         const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?url");
         pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-        const task = pdfjs.getDocument(url);
+        const task = pdfjs.getDocument({ url, ownerDocument: document });
         dispose = () => {
           void task.destroy();
         };
