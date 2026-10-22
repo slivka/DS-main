@@ -1,5 +1,5 @@
 /** Ukázka malého dialogu „Nové účetní období“ a přepínače prostoru s dlouhým názvem · jen náhled. */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ContextSwitcher, DateField, Field, FieldGrid, RecordDialog } from "../ds";
 import { Button } from "../ui/button";
@@ -16,6 +16,9 @@ export function SmallDialogShowcase() {
   const [space, setSpace] = useState("long");
   const [from, setFrom] = useState<string | null>("2027-01-01");
   const [to, setTo] = useState<string | null>("2027-12-31");
+  const [ready, setReady] = useState(false);
+  // Synchronizace s hydratací: testy čekají, až ukázka reaguje na kliknutí.
+  useEffect(() => setReady(true), []);
   const fields = (prefix: string) => (
     <FieldGrid>
       <Field label="Kód" htmlFor={`${prefix}-code`} span={2}>
@@ -30,7 +33,11 @@ export function SmallDialogShowcase() {
     </FieldGrid>
   );
   return (
-    <div data-testid="small-dialog-showcase" className="flex flex-wrap items-start gap-4">
+    <div
+      data-testid="small-dialog-showcase"
+      data-ready={ready ? "true" : "false"}
+      className="flex flex-wrap items-start gap-4"
+    >
       <Button type="button" variant="outline" onClick={() => setOpen(true)}>
         Nové účetní období
       </Button>

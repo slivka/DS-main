@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 test("malý dialog: Zrušit a Uložit vpravo v řádku, Od a Do na stejné výšce", async ({ page }) => {
   await page.goto("/components/forms", { waitUntil: "networkidle" });
   const demo = page.getByTestId("small-dialog-showcase");
+  await expect(demo).toHaveAttribute("data-ready", "true", { timeout: 20_000 });
   await demo.scrollIntoViewIfNeeded();
   await demo.getByRole("button", { name: "Nové účetní období" }).click();
   const dialog = page.getByRole("dialog", { name: /Nové účetní období/ });
@@ -26,6 +27,7 @@ test("úzký panel bez sm dialogu: pole zůstávají pod sebou pod 40 rem", asyn
   await page.setViewportSize({ width: 560, height: 1200 });
   await page.goto("/components/forms", { waitUntil: "networkidle" });
   const demo = page.getByTestId("small-dialog-showcase");
+  await expect(demo).toHaveAttribute("data-ready", "true", { timeout: 20_000 });
   await demo.getByRole("button", { name: "Stejná pole ve středním dialogu" }).click();
   const dialog = page.getByRole("dialog");
   const from = await dialog.locator("#md-from").boundingBox();

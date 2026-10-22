@@ -57,12 +57,15 @@ test("tečka neuložených změn má střed štítku ±1 px při zoomu min / max
     await setRootZoom(page, zoom);
     // Tečka i štítek ze stejného nadpisu (ten, který štítek má).
     const scope = demo
-      .locator("h1, h2, [data-slot=page-title]")
-      .filter({ has: page.locator(".page-title-badge-slot .page-title-badge") })
+      .locator(".page-title-line")
+      .filter({ has: page.locator('[data-slot="page-title-dirty"]') })
+      .filter({ has: page.locator(".page-title-badge:not([data-slot=page-title-dirty])") })
       .first();
     await scope.scrollIntoViewIfNeeded();
     const dot = scope.locator('[data-slot="page-title-dirty"]').first();
-    const badge = scope.locator(".page-title-badge-slot .page-title-badge").first();
+    const badge = scope
+      .locator(".page-title-badge-slot:not([data-slot=page-title-dirty-slot]) .page-title-badge")
+      .first();
     await expect(dot).toBeVisible();
     const dotBox = await dot.boundingBox();
     const badgeBox = await badge.boundingBox();
