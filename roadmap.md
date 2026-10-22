@@ -1,6 +1,6 @@
 ## DS 2.134.0 (nevydáno)
 
-- [ ] Tisk faktury: nullable množství a jednotková cena, prázdné buňky bez změny základu/DPH, ukázka a unit testy; check:full --harness.
+- [x] Tisk faktury: nullable množství a jednotková cena, prázdné buňky bez změny základu/DPH, ukázka a čtyři regresní testy; cíleně 76/76, check:full --harness 1 372/1 372 ve 141 souborech, katalog bez ztrát. Nevydáno, release Claude.
 
 - [x] Úložiště gridů: izolace hydratace/zápisů při změně účtu, clearGridPrefsCache(scope), reset s propagací chyby a oznámením gridům, flush s timeoutem; 10 nových testů, cíleně 21/21, check:full --harness 1 368/1 368 ve 141 souborech, katalog bez ztrát.
 
