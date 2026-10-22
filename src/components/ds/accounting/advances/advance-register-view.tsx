@@ -23,7 +23,9 @@ import {
   type AdvanceRegisterDisplayRow,
 } from "./advance-register-view-columns";
 import type {
+  AdvancePaymentsFilter,
   AdvanceRegisterAccountOption,
+  AdvanceSettlementsFilter,
   AdvanceRegisterData,
   AdvanceRegisterPagination,
   AdvanceRegisterTab,
@@ -156,7 +158,9 @@ export const AdvanceRegisterView = forwardRef<HTMLDivElement, AdvanceRegisterVie
                     options={paymentOptions}
                     value={filters.payments}
                     defaultValue="all"
-                    onChange={(payments) => onFiltersChange({ ...filters, payments })}
+                    onChange={(value) =>
+                      onFiltersChange({ ...filters, payments: value as AdvancePaymentsFilter })
+                    }
                   />
                 )}
                 {tab === "settlements" && (
@@ -168,7 +172,9 @@ export const AdvanceRegisterView = forwardRef<HTMLDivElement, AdvanceRegisterVie
                     ]}
                     value={filters.settlements}
                     defaultValue="all"
-                    onChange={(settlements) => onFiltersChange({ ...filters, settlements })}
+                    onChange={(value) =>
+                      onFiltersChange({ ...filters, settlements: value as AdvanceSettlementsFilter })
+                    }
                   />
                 )}
                 <MultiSelect
