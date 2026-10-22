@@ -16,7 +16,11 @@ import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
 import { SectionHeading } from "../layout/section-heading";
-import { RecordActionBar, type RecordActionError } from "../layout/record-action-bar";
+import {
+  RecordActionBar,
+  type RecordActionError,
+  type RecordMoreAction,
+} from "../layout/record-action-bar";
 
 /** Editované údaje výpisu. */
 export interface BankStatementValue {

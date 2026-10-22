@@ -153,6 +153,13 @@ export interface DocumentFormProps {
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   /** Výstrahy jednotlivých polí; společně se zobrazí nad formulářem. */
   fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
+  /**
+   * Obecný důvod uzamčení pole mimo editableFields (2.128.0): pole se vykreslí jen pro čtení
+   * přes FieldValue se zámkem a důvodem v bublině. Texty dodává aplikace (např. „Převzato
+   * z banky“). Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason,
+   * sumLocked) zůstávají funkční; tento prop je obecná cesta.
+   */
+  fieldLockedReasons?: Partial<Record<DocumentHeaderField, string>>;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;
   vat?: DocumentVatConfig;
   /** Kurz DPH pod kurzem dokladu (jen u cizí měny, jen když jej aplikace předá). */
