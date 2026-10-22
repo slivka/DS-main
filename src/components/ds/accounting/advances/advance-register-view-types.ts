@@ -4,7 +4,11 @@ import type { AdvanceTaxStatus } from "./advance-types";
 /** Záložky evidence. */
 export type AdvanceRegisterTab = "balance" | "payments" | "settlements";
 /** Druh řádku z DB: položka, mezisoučet partnera, mezisoučet účtu, kontrola účtu. */
-export type AdvanceRegisterRowKind = "detail" | "partner_total" | "account_total" | "account_control";
+export type AdvanceRegisterRowKind =
+  | "detail"
+  | "partner_total"
+  | "account_total"
+  | "account_control";
 /** Filtr stavu záložky Platby záloh. */
 export type AdvancePaymentsFilter = "all" | "unsettled" | "withoutTaxDocument" | "overdue";
 /** Filtr stavu záložky Vyúčtování záloh. */

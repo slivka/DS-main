@@ -148,7 +148,11 @@ export function advanceRegisterColumns(
     label: title,
     value: (row: AdvanceRegisterDisplayRow) => labelOf(row, t) ?? row[id],
     render: (row: AdvanceRegisterDisplayRow) =>
-      row.rowKind === "account_control" ? <ControlCell row={row} t={t} /> : (labelOf(row, t) ?? row[id]),
+      row.rowKind === "account_control" ? (
+        <ControlCell row={row} t={t} />
+      ) : (
+        (labelOf(row, t) ?? row[id])
+      ),
   });
   const account: DataGridColumn<AdvanceRegisterDisplayRow> = {
     id: "account",
