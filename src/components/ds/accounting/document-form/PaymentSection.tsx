@@ -147,18 +147,23 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-variableSymbol",
               t.variableSymbol,
-              lockedValue("variableSymbol", "document-variableSymbol", value.variableSymbol ?? "") ?? (
-              <VsField
-                id="document-variableSymbol"
-                value={value.variableSymbol ?? ""}
-                onChange={(variableSymbol) => patch({ variableSymbol })}
-                disabled={!can("variableSymbol")}
-                linked={p.vsLink?.supported ? p.vsLink.linked : undefined}
-                onLinkedChange={p.vsLink?.onLinkedChange}
-                derivedValue={p.vsLink?.derivedValue}
-                pendingText={p.vsPendingText}
-                warning={p.vsLink?.warning}
-              />),
+              lockedValue(
+                "variableSymbol",
+                "document-variableSymbol",
+                value.variableSymbol ?? "",
+              ) ?? (
+                <VsField
+                  id="document-variableSymbol"
+                  value={value.variableSymbol ?? ""}
+                  onChange={(variableSymbol) => patch({ variableSymbol })}
+                  disabled={!can("variableSymbol")}
+                  linked={p.vsLink?.supported ? p.vsLink.linked : undefined}
+                  onLinkedChange={p.vsLink?.onLinkedChange}
+                  derivedValue={p.vsLink?.derivedValue}
+                  pendingText={p.vsPendingText}
+                  warning={p.vsLink?.warning}
+                />
+              ),
               vsItem.span,
               vsItem.mobileHalf,
               vsItem.className,
@@ -183,33 +188,37 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-constantSymbol",
               t.constantSymbol,
-              lockedValue("constantSymbol", "document-constantSymbol", value.constantSymbol ?? "") ??
-              symbolControl(
-                constantSymbolOptions && !symbolsDisabledReason ? (
-                  <OptionSelect
-                    id="document-constantSymbol"
-                    value={value.constantSymbol}
-                    onChange={(constantSymbol) => patch({ constantSymbol })}
-                    disabled={!can("constantSymbol")}
-                    options={constantSymbolOptions.map((option) => ({
-                      ...option,
-                      selectedLabel: option.value,
-                      searchText: option.label,
-                    }))}
-                    searchable
-                    selectedLabel={(option) => option.value}
-                  />
-                ) : (
-                  <Input
-                    id="document-constantSymbol"
-                    value={symbolsDisabledReason ? "" : (value.constantSymbol ?? "")}
-                    onChange={(event) => patch({ constantSymbol: event.target.value })}
-                    disabled={Boolean(symbolsDisabledReason) || !can("constantSymbol")}
-                    className="font-mono tabular-nums"
-                  />
-                ),
+              lockedValue(
+                "constantSymbol",
                 "document-constantSymbol",
-              ),
+                value.constantSymbol ?? "",
+              ) ??
+                symbolControl(
+                  constantSymbolOptions && !symbolsDisabledReason ? (
+                    <OptionSelect
+                      id="document-constantSymbol"
+                      value={value.constantSymbol}
+                      onChange={(constantSymbol) => patch({ constantSymbol })}
+                      disabled={!can("constantSymbol")}
+                      options={constantSymbolOptions.map((option) => ({
+                        ...option,
+                        selectedLabel: option.value,
+                        searchText: option.label,
+                      }))}
+                      searchable
+                      selectedLabel={(option) => option.value}
+                    />
+                  ) : (
+                    <Input
+                      id="document-constantSymbol"
+                      value={symbolsDisabledReason ? "" : (value.constantSymbol ?? "")}
+                      onChange={(event) => patch({ constantSymbol: event.target.value })}
+                      disabled={Boolean(symbolsDisabledReason) || !can("constantSymbol")}
+                      className="font-mono tabular-nums"
+                    />
+                  ),
+                  "document-constantSymbol",
+                ),
               symbolItem.span,
               symbolItem.mobileHalf,
               symbolItem.className,
@@ -219,17 +228,21 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           ? field(
               "document-specificSymbol",
               t.specificSymbol,
-              lockedValue("specificSymbol", "document-specificSymbol", value.specificSymbol ?? "") ??
-              symbolControl(
-                <Input
-                  id="document-specificSymbol"
-                  value={symbolsDisabledReason ? "" : (value.specificSymbol ?? "")}
-                  onChange={(event) => patch({ specificSymbol: event.target.value })}
-                  disabled={Boolean(symbolsDisabledReason) || !can("specificSymbol")}
-                  className="h-[var(--control-h)] font-mono tabular-nums"
-                />,
+              lockedValue(
+                "specificSymbol",
                 "document-specificSymbol",
-              ),
+                value.specificSymbol ?? "",
+              ) ??
+                symbolControl(
+                  <Input
+                    id="document-specificSymbol"
+                    value={symbolsDisabledReason ? "" : (value.specificSymbol ?? "")}
+                    onChange={(event) => patch({ specificSymbol: event.target.value })}
+                    disabled={Boolean(symbolsDisabledReason) || !can("specificSymbol")}
+                    className="h-[var(--control-h)] font-mono tabular-nums"
+                  />,
+                  "document-specificSymbol",
+                ),
               grid ? 8 : 3,
               false,
               symbolItem.className,

@@ -90,9 +90,9 @@ describe("DocumentForm fieldLockedReasons (2.128.0)", () => {
   it("zámek vysvětlí důvod v bublině", async () => {
     const view = render(<BaForm fieldLockedReasons={lockedReasons} />);
     fireEvent.click(view.getAllByRole("button", { name: REASON })[0]);
-    expect(
-      (await view.findAllByRole("tooltip")).some((node) => node.textContent === REASON),
-    ).toBe(true);
+    expect((await view.findAllByRole("tooltip")).some((node) => node.textContent === REASON)).toBe(
+      true,
+    );
   });
 
   it("pole bez důvodu zůstane obyčejné zakázané ovládání", () => {
