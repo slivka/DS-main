@@ -250,6 +250,7 @@ export function RecordPanelShowcase() {
             columns={columns}
             rowKey={(row) => row.id}
             storageKey="record-panel-demo"
+            onRefresh={() => undefined}
             panelToggle={
               <PanelToggleButton
                 open={gridOpen}
