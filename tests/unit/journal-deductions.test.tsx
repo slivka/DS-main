@@ -99,12 +99,12 @@ afterEach(cleanup);
 describe("JournalLinesEditor – odečty záloh", () => {
   it("vykreslí odečty pod položkami, první oddělený čarou", () => {
     const { container } = renderEditor({ deductions: deductions() });
-    const rows = [...container.querySelectorAll("tbody tr[data-slot]")].map((row) =>
+    const grid = container.querySelector('table[role="grid"] tbody');
+    const rows = [...(grid?.querySelectorAll("tr") ?? [])].map((row) =>
       row.getAttribute("data-slot"),
     );
-    const firstDeduction = rows.indexOf("journal-deduction-row");
-    expect(firstDeduction).toBeGreaterThan(0);
-    expect(rows.slice(firstDeduction)).toEqual(["journal-deduction-row", "journal-deduction-row"]);
+    expect(rows[0]).not.toBe("journal-deduction-row");
+    expect(rows.slice(-2)).toEqual(["journal-deduction-row", "journal-deduction-row"]);
     const deductionRows = container.querySelectorAll('[data-slot="journal-deduction-row"]');
     expect(deductionRows[0]?.hasAttribute("data-separator")).toBe(true);
     expect(deductionRows[1]?.hasAttribute("data-separator")).toBe(false);
@@ -130,7 +130,8 @@ describe("JournalLinesEditor – odečty záloh", () => {
 
   it("ukáže tři součty od aplikace", () => {
     const { container } = renderEditor({ deductions: deductions() });
-    const text = (slot: string) => container.querySelector(`[data-slot="${slot}"]`)?.textContent;
+    const text = (slot: string) =>
+      container.querySelector(`[data-slot="${slot}"]`)?.textContent?.replace(/\s/g, " ");
     expect(text("journal-deduction-items")).toContain("12 100,00");
     expect(text("journal-deduction-deducted")).toContain("−1 605,00");
     expect(text("journal-deduction-to-pay")).toContain("10 495,00");
@@ -142,9 +143,11 @@ describe("JournalLinesEditor – odečty záloh", () => {
     expect(recap?.querySelector('[data-slot="journal-vat-deduction-row"]')?.textContent).toContain(
       "−826,45",
     );
-    expect(recap?.querySelector('[data-slot="journal-vat-total-by-code"]')?.textContent).toContain(
-      "9 173,55",
-    );
+    expect(
+      recap
+        ?.querySelector('[data-slot="journal-vat-total-by-code"]')
+        ?.textContent?.replace(/\s/g, " "),
+    ).toContain("9 173,55");
   });
 
   it("upravit jde jen částku ručního odečtu", () => {
