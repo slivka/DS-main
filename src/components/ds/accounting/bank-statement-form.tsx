@@ -89,6 +89,8 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   onCheckedChange?: (checked: boolean) => void;
   /** Odstraní prázdný výpis. */
   onDelete?: () => void;
+  /** Další položky nabídky „…“ v hlavičce (2.128.0), připojené za stávající; disabledReason u položky. */
+  menuActions?: RecordMoreAction[];
   /** Chyba ve sdíleném pruhu akcí. */
   error?: RecordActionError;
   /** Upozornění ze společných NoticeBar. */
@@ -125,6 +127,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       onCheckedChange: _onCheckedChange,
       checkDisabledReason: _checkDisabledReason,
       onDelete,
+      menuActions,
       error,
       notices,
       items,
