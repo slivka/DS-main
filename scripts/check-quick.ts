@@ -33,6 +33,7 @@ const changed = [
 if (process.argv.includes("--harness")) results.push("– typecheck: automatická kontrola Lovable");
 else run("typecheck", "bunx", ["tsgo", "--noEmit"]);
 run("money-rounding", "bun", ["./scripts/check-money-rounding.ts"]);
+run("test-isolation", "bun", ["./scripts/check-test-isolation.ts"]);
 
 const lintable = changed.filter((f) => /\.(ts|tsx|js|jsx|mjs|cjs)$/.test(f));
 if (lintable.length)

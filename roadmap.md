@@ -1,4 +1,5 @@
 ## DS 2.128.0 (nevydáno)
+- [x] Izolace unit testů: odstraněna globální náhrada bubliny, globální úklid v setup, kontrola test-isolation; `--randomize` (seed 1714420083 + 2 náhodné) 1 190/1 190.
 - [x] Panel záznamu: skupiny záložek, vzhled tablistu, rostoucí pole poznámek
 
 - [x] Platební kalendář: sdílená zoomovaná lišta, standardní Přidat, vedlejší akce v „…“ a saveAction v liště. check:quick --harness + cílené payment-schedule-editor 3/3; check:full --harness 1 186/1 186 ve 129 souborech. Katalog 475 → 475 / 1 123 → 1 162 props, 0 odebrání; automatické sestavení OK. Chromium: uložení kalendáře, velikost tlačítka při změně zoomového písma lišty a dostupné vedlejší akce při 360 px. Plná E2E sada neběžela. Editor 426 řádků zůstává společným vlastníkem výběru/řádků/potvrzení; kontrakt, generovací dialog a lišta oddělené. Nevydáno, release Claude.

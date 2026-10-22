@@ -1,15 +1,5 @@
-import { afterEach, describe, expect, it, mock } from "bun:test";
-import type { ReactNode } from "react";
-// Popper bublin v happy-dom při programovém fokusu padá; chování tablistu na bublině nezávisí.
-mock.module("../../src/components/ui/tooltip", () => {
-  const Pass = ({ children }: { children?: ReactNode }) => <>{children}</>;
-  return {
-    TooltipProvider: Pass,
-    Tooltip: Pass,
-    TooltipTrigger: Pass,
-    TooltipContent: () => null,
-  };
-});
+/** Záložky RecordSidePanel a pole poznámek · pořadí, tablist, auto-grow · bez mock.module (globální pro celý běh). */
+import { afterEach, describe, expect, it } from "bun:test";
 import { useState } from "react";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { FileText, History, Link2, MessageSquare, Paperclip } from "lucide-react";

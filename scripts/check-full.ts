@@ -7,6 +7,7 @@ import { spawnSync } from "node:child_process";
 const steps: [string, string[]][] = [
   ["typecheck", ["bunx", "tsgo", "--noEmit"]],
   ["money-rounding", ["bun", "./scripts/check-money-rounding.ts"]],
+  ["test-isolation", ["bun", "./scripts/check-test-isolation.ts"]],
   ["lint", ["bunx", "eslint", ".", "--cache", "--cache-location", "node_modules/.cache/eslint/"]],
   ["unit", ["bun", "test", "tests/unit"]],
   ["format:check", ["bunx", "prettier", "--check", "."]],
