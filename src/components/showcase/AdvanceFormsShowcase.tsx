@@ -3,7 +3,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { DocumentForm } from "../ds/accounting/document-form";
 import { DocumentPostingGrid } from "../ds/accounting/document-posting-grid";
-import { AdvanceDeductionsSection } from "../ds/accounting/advances/advance-deductions-section";
 import { AdvanceAllocationDialog } from "../ds/accounting/advances/advance-allocation-dialog";
 import type { AdvanceAllocation } from "../ds/accounting/advances/advance-types";
 import { advanceListVariant } from "../ds/accounting/advance-list-variant";
@@ -16,14 +15,70 @@ import {
   MOCK_VAT_CODES_IN,
 } from "../../lib/mock/accounting";
 import { INVOICE_HEADER, INVOICE_LINES, CURRENCIES } from "./document-form-showcase-data";
-import { ADVANCE_DEDUCTIONS, ADVANCE_CURRENCY } from "./advance-showcase-data";
+import { DEDUCTION_ROWS, MANUAL_DEDUCTION, ADVANCE_CURRENCY } from "./advance-showcase-data";
+import type { JournalDeductions } from "../ds/accounting/journal-deductions-types";
+
+/** Ukázkový součet položek (APP jej bere z DB). */
+const ITEMS_TOTAL = 12100;
+const round = (value: number) => Math.round(value * 100) / 100;
 import { ShowcaseSection } from "./ShowcaseLayout";
-function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
+type ShowcaseType = "FV" | "FP" | "ZFV" | "ZFP" | "PO";
+const INITIAL: Record<ShowcaseType, typeof DEDUCTION_ROWS> = {
+  FV: DEDUCTION_ROWS,
+  FP: [DEDUCTION_ROWS[1]!, MANUAL_DEDUCTION].filter(Boolean),
+  PO: [MANUAL_DEDUCTION],
+  ZFV: [],
+  ZFP: [],
+};
+function AdvanceForm({ type }: { type: ShowcaseType }) {
   const t = useDsTexts();
   const [value, setValue] = useState({ ...INVOICE_HEADER, recordKey: type });
   const [lines, setLines] = useState(INVOICE_LINES);
   const [adding, setAdding] = useState(false);
   const [allocation, setAllocation] = useState<AdvanceAllocation[]>([]);
+  const [rows, setRows] = useState(INITIAL[type]);
+  const deducted = round(rows.reduce((sum, row) => sum + row.base + row.vat, 0));
+  const byCode = new Map<string, { base: number; vat: number }>([
+    ["Z 21 %", { base: 10000, vat: 2100 }],
+  ]);
+  for (const row of rows) {
+    const code = row.vatCode ?? "";
+    const prev = byCode.get(code) ?? { base: 0, vat: 0 };
+    byCode.set(code, { base: round(prev.base + row.base), vat: round(prev.vat + row.vat) });
+  }
+  const deductions: JournalDeductions = {
+    rows,
+    onAdd: (kind) => {
+      if (kind === "manual") {
+        if (!rows.some((row) => row.id === MANUAL_DEDUCTION.id))
+          setRows([...rows, MANUAL_DEDUCTION]);
+        return;
+      }
+      setAllocation([]);
+      setAdding(true);
+    },
+    onRemove: (row, reason) => {
+      setRows(rows.filter((item) => item.id !== row.id));
+      toast(`${t.advances.remove}: ${row.text}${reason ? ` (${reason})` : ""}`);
+    },
+    removeReason: type === "FP" ? { required: true } : undefined,
+    onAmountChange: (row, base) =>
+      setRows(
+        rows.map((item) =>
+          item.id === row.id ? { ...item, base, vat: round(base * 0.21) } : item,
+        ),
+      ),
+    totals: { items: ITEMS_TOTAL, deducted, toPay: round(ITEMS_TOTAL + deducted) },
+    recap: {
+      deductionRows: rows.map((row) => ({
+        id: row.id,
+        label: row.text,
+        base: row.base,
+        vat: row.vat,
+      })),
+      totalsByCode: [...byCode].map(([vatCode, value]) => ({ vatCode, ...value })),
+    },
+  };
   const zl =
     type === "ZFV" || type === "ZFP"
       ? advanceListVariant({ type, vatPayer: true, recapNote: t.vatFive.notTaxDocument })
@@ -52,23 +107,7 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
             defaultDirection: type === "FP" || type === "ZFP" ? "in" : "out",
             codes: type === "FP" || type === "ZFP" ? MOCK_VAT_CODES_IN : MOCK_VAT_CODES_OUT,
           },
-          advanceDeduction: zl ? undefined : 1500,
-          afterVatRecap: zl ? undefined : (
-            <AdvanceDeductionsSection
-              rows={ADVANCE_DEDUCTIONS}
-              storageKey={`advance-deductions-${type}`}
-              addAction={{
-                can: true,
-                onClick: () => {
-                  setAllocation([]);
-                  setAdding(true);
-                },
-              }}
-              manualAction={{ can: true, onClick: () => toast(t.advances.manualDeduction) }}
-              onAction={(action) => toast(t.advances[action])}
-              onOpenTaxDocument={(row) => toast(row.taxDocument)}
-            />
-          ),
+          deductions: zl ? undefined : deductions,
         }}
       />
       <AdvanceAllocationDialog
@@ -103,7 +142,7 @@ export function AdvanceFormsShowcase() {
   return (
     <ShowcaseSection title={t.advances.deductions}>
       <div className="space-y-6">
-        {(["FV", "FP", "ZFV", "ZFP"] as const).map((type) => (
+        {(["FV", "FP", "PO", "ZFV", "ZFP"] as const).map((type) => (
           <AdvanceForm key={type} type={type} />
         ))}
       </div>
