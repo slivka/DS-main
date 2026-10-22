@@ -123,6 +123,9 @@ export function FileImportShowcase() {
         description="Ukázkový import s fiktivními výpisy."
         submitLabel={step === 1 ? "Pokračovat" : `Importovat ${checked.length} výpisů`}
         submitDisabled={!files.length || (step === 2 && !checked.length)}
+        submitDisabledReason={
+          !files.length ? "Nejdříve vyberte soubory" : "Vyberte alespoň jeden výpis"
+        }
         onSubmit={() => {
           if (step === 1) {
             setStep(2);
