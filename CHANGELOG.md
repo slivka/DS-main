@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.127.0 (nevydáno)
+## 2.128.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.127.0
 
 - Vnitřní refaktoring: podokna rozdělena na stavový provider, akce otevření/zavření a sestavení API; rozložení na registraci, geometrii, sloupec a vnitřní skládání. DataGrid odděluje jeden model, nástroje a tělo; typy dokladu hodnoty, props a texty. Původní veřejné vstupy i chování zachovány, faktury i zálohové listy sdílejí stejný kontrakt.
 - FileDropZone: přístupný název tlačítka odpovídá viditelnému popisku (včetně chooseLabel), bez nadbytečného role; skupina neopakuje název ani hint tlačítka. Ve velikosti md jsou children pod ikonou a nadpisem, mimo tlačítko.

@@ -1,4 +1,8 @@
-## DS 2.127.0 (nevydáno)
+## DS 2.128.0 (nevydáno)
+
+- [ ] Zatím bez úkolů.
+
+## DS 2.127.0
 
 - [x] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
 - [x] FileDropZone: přístupný název obsahuje viditelný text „Vybrat soubory…“ (WCAG 2.5.3), neopakovat aria-label skupiny a tlačítka.
