@@ -27,9 +27,21 @@ test("přepnutí záložek zachová Stav k datu, rozdíl varuje, lišta se nezal
   const before = await date.inputValue();
   expect(before).not.toBe("");
 
-  await expect(view.locator('[data-slot="advance-difference-warning"]')).toHaveCount(1);
-  await view.locator('[data-slot="advance-difference-warning"]').focus();
-  await expect(page.getByRole("tooltip").first()).toContainText("nesouhlasí");
+  const warning = view.locator('[data-slot="advance-difference-warning"]');
+  await expect(warning).toHaveCount(1);
+  await expect(warning).toHaveAttribute("tabindex", "0");
+  // Skutečný Tab znovu vstoupí do spouštěče i po oživení/rolování gridu;
+  // samotný focus() nebo hover před přestavbou řádku může zaniknout.
+  await expect(async () => {
+    await warning.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect(warning).toBeFocused();
+    // Opakujeme skutečný vstup, pokud přepočet gridu nahradí spouštěč.
+    await page.mouse.move(0, 0);
+    await warning.hover();
+    await expect(page.getByRole("tooltip")).toContainText("nesouhlasí", { timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
 
   for (const name of ["Platby záloh", "Vyúčtování záloh", "Zůstatek"]) {
     await view.getByRole("tab", { name }).click();

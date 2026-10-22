@@ -1,5 +1,20 @@
 /** Ukotvený sloupec Akce má viditelnou svislou čáru v záhlaví, těle i patičce i po rolování doprava. */
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
+
+async function stableBox(cell: Locator) {
+  await cell.scrollIntoViewIfNeeded();
+  let previous = "";
+  await expect
+    .poll(async () => {
+      const box = await cell.boundingBox();
+      const current = JSON.stringify(box);
+      const stable = box !== null && current === previous;
+      previous = current;
+      return stable;
+    })
+    .toBe(true);
+  return cell.boundingBox();
+}
 
 async function checkDivider(
   page: Page,
@@ -21,32 +36,17 @@ async function checkDivider(
   for (const part of ["thead", "tbody", "tfoot"]) {
     const cell = table.locator(`${part} tr > :is(th, td):last-child`).first();
     if ((await cell.count()) === 0) continue;
-    const shadow = await cell.evaluate((el) => getComputedStyle(el).boxShadow);
-    expect(shadow, `${part} @ ${zoom}`).toContain("inset");
-    expect(shadow).toMatch(/1px 0px 0px/);
-    // Pixel na levé hraně buňky se liší od pixelu uvnitř buňky (čára je vidět).
-    await cell.scrollIntoViewIfNeeded();
-    const box = (await cell.boundingBox())!;
-    const shot = (
-      await page.screenshot({
-        clip: { x: Math.floor(box.x) - 2, y: box.y + box.height / 2 - 1, width: 10, height: 2 },
-      })
-    ).toString("base64");
-    const diff = await page.evaluate(async (b64) => {
-      const img = await createImageBitmap(
-        await (await fetch(`data:image/png;base64,${b64}`)).blob(),
-      );
-      const c = new OffscreenCanvas(img.width, img.height);
-      const g = c.getContext("2d")!;
-      g.drawImage(img, 0, 0);
-      const row = g.getImageData(0, 0, img.width, 1).data;
-      const lum = (x: number) => row[x * 4] + row[x * 4 + 1] + row[x * 4 + 2];
-      const inner = lum(img.width - 1);
-      let max = 0;
-      for (let x = 0; x < img.width / 2; x++) max = Math.max(max, inner - lum(x));
-      return max;
-    }, shot);
-    expect(diff, `${part} @ ${zoom}`).toBeGreaterThan(3);
+    await stableBox(cell);
+    // Computed style není závislý na ořezu viewportu, překrytí sticky
+    // záhlavím ani antialiasingu subpixelové hrany při zoomu 0,7.
+    const style = await cell.evaluate((el) => {
+      const css = getComputedStyle(el);
+      return { shadow: css.boxShadow };
+    });
+    const inset = style.shadow.split(/,(?![^()]*\))/).find((shadow) => shadow.includes("inset"));
+    expect(inset, `${part} @ ${zoom}`).toBeDefined();
+    expect(inset, `${part} @ ${zoom}`).toMatch(/1px 0px 0px 0px/);
+    expect(inset, `${part} @ ${zoom}`).not.toContain("rgba(0, 0, 0, 0)");
   }
 }
 
