@@ -45,7 +45,10 @@ test("přepnutí záložek zachová Stav k datu, rozdíl varuje, lišta se nezal
       const tops = [...node.querySelectorAll<HTMLElement>("button, input")]
         .filter((el) => el.offsetParent !== null && !el.closest(".grid-toolbar-measure-copy"))
         .map((el) => Math.round(el.getBoundingClientRect().top + el.offsetHeight / 2));
-      return { spread: Math.max(...tops) - Math.min(...tops), overflow: node.scrollWidth - node.clientWidth };
+      return {
+        spread: Math.max(...tops) - Math.min(...tops),
+        overflow: node.scrollWidth - node.clientWidth,
+      };
     });
     expect(metrics.spread, `lišta při zoomu ${zoom}`).toBeLessThanOrEqual(4);
     expect(metrics.overflow, `přetečení při zoomu ${zoom}`).toBeLessThanOrEqual(1);
