@@ -153,7 +153,7 @@ export function ColumnPicker<Id extends string>({
 
       <PopoverContent
         align="end"
-        className="w-[min(26em,calc(100vw-2rem))] min-w-[17rem] overflow-hidden p-0"
+        className="w-[min(26em,calc(100vw-2rem))] min-w-0 max-w-[calc(100vw-2rem)] overflow-hidden p-0"
         style={{ fontSize }}
         onEscapeKeyDown={(event) => {
           if (formatId !== null) {
