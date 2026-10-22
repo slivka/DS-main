@@ -206,9 +206,15 @@ export function RecordActionBar({
   const closeText = closeErrorLabel ?? dsTexts.recordAction.closeError;
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
   const { barRef, leftRef, measureRef, level } = useRecordActionWidth(
-    [saveText, primaryAction?.label, moreText, Boolean(saveAction), moreActions.length, busy, Boolean(panelToggle)].join(
-      "|",
-    ),
+    [
+      saveText,
+      primaryAction?.label,
+      moreText,
+      Boolean(saveAction),
+      moreActions.length,
+      busy,
+      Boolean(panelToggle),
+    ].join("|"),
   );
   const compact = level > 0;
 

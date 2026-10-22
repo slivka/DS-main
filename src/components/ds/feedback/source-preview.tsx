@@ -108,7 +108,11 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   });
   if (!source) {
     return (
-      <div ref={ref} {...props} className={cn("flex h-full min-h-0 flex-1 flex-col gap-2", className)}>
+      <div
+        ref={ref}
+        {...props}
+        className={cn("flex h-full min-h-0 flex-1 flex-col gap-2", className)}
+      >
         <div
           ref={dropHost}
           className={cn(
@@ -148,7 +152,12 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
   const readOnly = Boolean(inheritedFrom);
   const replaceBlock = !canReplace ? (replaceDisabledReason ?? t.attachments.denied) : undefined;
   return (
-    <div ref={ref} {...props} data-slot="source-preview" className={cn("flex h-full min-h-0 flex-1 flex-col gap-2", className)}>
+    <div
+      ref={ref}
+      {...props}
+      data-slot="source-preview"
+      className={cn("flex h-full min-h-0 flex-1 flex-col gap-2", className)}
+    >
       <RecordPanelToolbar
         start={
           <span className="min-w-0 truncate text-sm font-medium" title={source.name}>
@@ -195,7 +204,11 @@ export const SourcePreview = forwardRef<HTMLDivElement, SourcePreviewProps>(func
           {t.sourcePreview.expired}
         </p>
       ) : null}
-      <div ref={viewport} data-slot="source-preview-viewport" className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-border bg-muted/30">
+      <div
+        ref={viewport}
+        data-slot="source-preview-viewport"
+        className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-border bg-muted/30"
+      >
         {kind === "pdf" && url ? (
           <iframe
             key={previewWidth}

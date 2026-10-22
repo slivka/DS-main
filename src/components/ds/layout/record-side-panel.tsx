@@ -149,7 +149,10 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
           data-slot="record-panel-layout"
           data-overlay={(narrow && open) || undefined}
         >
-          <div className="min-h-0 min-w-0 flex-1 overflow-auto" inert={narrow && open ? true : undefined}>
+          <div
+            className="min-h-0 min-w-0 flex-1 overflow-auto"
+            inert={narrow && open ? true : undefined}
+          >
             {children}
           </div>
           {open ? (

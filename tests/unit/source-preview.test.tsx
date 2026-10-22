@@ -23,7 +23,9 @@ describe("SourcePreview", () => {
       wrap(<SourcePreview source={pdf} accept={ACCEPT} maxSize={LIMIT} />),
     );
     const frame = container.querySelector("iframe");
-    expect(frame?.getAttribute("src")).toBe("data:application/pdf,test#view=FitH&zoom=page-width&toolbar=0&navpanes=0");
+    expect(frame?.getAttribute("src")).toBe(
+      "data:application/pdf,test#view=FitH&zoom=page-width&toolbar=0&navpanes=0",
+    );
     expect(frame?.getAttribute("title")).toBe("Faktura.pdf");
     expect(getByText("Faktura.pdf")).toBeTruthy();
   });

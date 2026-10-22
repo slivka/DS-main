@@ -227,13 +227,18 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     actionBar.props ??= [];
     if (!actionBar.props.some((item) => item.name === "panelToggle"))
       actionBar.props.push({ name: "panelToggle", type: "ReactNode" });
-    const rule = " panelToggle je poslední za nabídkou, nikdy se neslučuje do nabídky ani nezmizí při zkrácení akcí.";
+    const rule =
+      " panelToggle je poslední za nabídkou, nikdy se neslučuje do nabídky ani nezmizí při zkrácení akcí.";
     if (!actionBar.usage?.includes("panelToggle")) actionBar.usage = (actionBar.usage ?? "") + rule;
     actionBar.examples ??= [];
     if (!actionBar.examples.some((item) => item.label === "Panel za nabídkou"))
-      actionBar.examples.push({ label: "Panel za nabídkou", code: "<RecordActionBar saveAction={save} moreActions={actions} panelToggle={<PanelToggleButton open={open} onToggle={toggle} tooltip={summary} />} />" });
+      actionBar.examples.push({
+        label: "Panel za nabídkou",
+        code: "<RecordActionBar saveAction={save} moreActions={actions} panelToggle={<PanelToggleButton open={open} onToggle={toggle} tooltip={summary} />} />",
+      });
     actionBar.antipatterns ??= [];
-    const avoid = "Ve formuláři nevkládejte ovladač panelu do PageHeader; použijte RecordActionBar.panelToggle.";
+    const avoid =
+      "Ve formuláři nevkládejte ovladač panelu do PageHeader; použijte RecordActionBar.panelToggle.";
     if (!actionBar.antipatterns.includes(avoid)) actionBar.antipatterns.push(avoid);
     touched.push(actionBar);
   }
