@@ -21,16 +21,23 @@ async function checkDivider(page: Page, zoom: number) {
     expect(shadow, `${part} @ ${zoom}`).toContain("inset");
     expect(shadow).toMatch(/1px 0px 0px/);
     // Pixel na levé hraně buňky se liší od pixelu uvnitř buňky (čára je vidět).
-    const shot = (await cell.screenshot()).toString("base64");
+    const box = (await cell.boundingBox())!;
+    const shot = (
+      await page.screenshot({
+        clip: { x: Math.floor(box.x) - 2, y: box.y + box.height / 2 - 1, width: 10, height: 2 },
+      })
+    ).toString("base64");
     const diff = await page.evaluate(async (b64) => {
       const img = await createImageBitmap(await (await fetch(`data:image/png;base64,${b64}`)).blob());
       const c = new OffscreenCanvas(img.width, img.height);
       const g = c.getContext("2d")!;
       g.drawImage(img, 0, 0);
-      const y = Math.floor(img.height / 2);
-      const e = g.getImageData(0, y, 1, 1).data;
-      const i = g.getImageData(Math.min(4, img.width - 1), y, 1, 1).data;
-      return Math.abs(e[0] - i[0]) + Math.abs(e[1] - i[1]) + Math.abs(e[2] - i[2]);
+      const row = g.getImageData(0, 0, img.width, 1).data;
+      const lum = (x: number) => row[x * 4] + row[x * 4 + 1] + row[x * 4 + 2];
+      const inner = lum(img.width - 1);
+      let max = 0;
+      for (let x = 0; x < img.width / 2; x++) max = Math.max(max, inner - lum(x));
+      return max;
     }, shot);
     expect(diff, `${part} @ ${zoom}`).toBeGreaterThan(3);
   }
