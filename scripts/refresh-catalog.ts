@@ -8,6 +8,7 @@ import { enrichLinkedPanelCatalog } from "./linked-panel-catalog";
 import { enrichFileImportCatalog } from "./file-import-catalog";
 
 import { enrichDocumentLocks } from "./document-lock-catalog";
+import { enrichPaymentScheduleCatalog } from "./payment-schedule-catalog";
 
 interface CatalogProp {
   name: string;
@@ -166,6 +167,7 @@ export function refreshCatalog() {
     if (!provider.antipatterns.includes(rule)) provider.antipatterns.push(rule);
   }
   const documentLocks = enrichDocumentLocks(catalog.components);
+  const paymentScheduleComponents = enrichPaymentScheduleCatalog(catalog.components);
   const panelComponents = enrichRecordPanelCatalog(catalog.components);
   const linkedPanelComponents = enrichLinkedPanelCatalog(catalog.components);
   const templateComponents = enrichTemplateCatalog(catalog.components);
@@ -223,6 +225,7 @@ export function refreshCatalog() {
     reference,
     renderPanelCatalogSections(markdown, [
       ...panelComponents,
+      ...paymentScheduleComponents,
       ...linkedPanelComponents,
       ...templateComponents,
       ...advanceComponents,

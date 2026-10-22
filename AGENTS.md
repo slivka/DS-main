@@ -68,6 +68,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
 - Linked-tabs owns follow/pin/orphan rules; panel context uses reducers/provider guards; PaneLayout has an optional renderer with renderTab fallback. Why: APP content, shared state.
 - Templates/advances reuse grids/dialogs and afterVatRecap. Why: APP owns data/writes.
+- PaymentScheduleEditor composes GridToolbar/GridAddActions and keeps its contracts and generation dialog in internal modules. Why: shared zoom/overflow without changing consumer imports or persistence ownership.
 
 - Multi-selection uses cmdk items and the opt-in inline-search multiple focus contract; single-selection Tab remains non-confirming. Why: portaled search and actions share one keyboard owner.
 
