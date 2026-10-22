@@ -83,6 +83,24 @@ describe("FileDropZone", () => {
     expect(received).toBe(0);
     expect(clicks).toBe(2);
   });
+  it("vlastní název výběru zpřístupní bez opakování skupiny a zachová akce children", () => {
+    const view = render(
+      <FileDropZone
+        accept={[]}
+        maxSizeBytes={10}
+        chooseLabel="Vybrat XML"
+        hint="Limit 10 B"
+        onFiles={() => {}}
+      >
+        <button type="button">Odebrat soubor</button>
+      </FileDropZone>,
+    );
+    const choose = view.getByRole("button", { name: "Vybrat XML" });
+    expect(choose.tabIndex).toBe(0);
+    expect(choose.getAttribute("role")).toBeNull();
+    expect(view.getByRole("group").getAttribute("aria-describedby")).toBeNull();
+    expect(view.getByRole("button", { name: "Odebrat soubor" }).closest("button")).not.toBe(choose);
+  });
 });
 describe("PaneDropOverlay", () => {
   it("drop po odpojení taženého prvku obnoví přijímání externích souborů", () => {

@@ -73,6 +73,18 @@ export function enrichFileImportCatalog(components: PanelCatalogComponent[]) {
               name: member.name.getText(source),
               type: member.type.getText(source),
               required: !member.questionToken,
+              ...(ts.isUnionTypeNode(member.type) &&
+              member.type.types.every(
+                (type) => ts.isLiteralTypeNode(type) && ts.isStringLiteral(type.literal),
+              )
+                ? {
+                    values: member.type.types.flatMap((type) =>
+                      ts.isLiteralTypeNode(type) && ts.isStringLiteral(type.literal)
+                        ? [type.literal.text]
+                        : [],
+                    ),
+                  }
+                : {}),
             },
           ]
         : [],
