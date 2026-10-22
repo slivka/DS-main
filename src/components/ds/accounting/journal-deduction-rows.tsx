@@ -254,13 +254,13 @@ export function JournalDeductionTotals() {
 }
 
 /** Řádky odečtů a součty podle kódu v rekapitulaci DPH (tbody). */
-export function JournalDeductionRecapBody({ span, homeOn }: { span: number; homeOn: boolean }) {
+export function JournalDeductionRecapBody({ span }: { span: number }) {
   const { editor } = useJournalEditor();
   const recap = editor.props.deductions?.recap;
   const t = editor.dsTexts.advances;
   if (!recap) return null;
   const cell = "px-2 py-1 text-right font-mono tabular-nums whitespace-nowrap";
-  const tail = span - 4 - (homeOn ? 0 : 0);
+  const tail = span - 4;
   const values = (row: { base: number; vat: number; total?: number }) =>
     [row.base, row.vat, totalOf(row)].map((value, index) => (
       <td key={index} className={cn(cell, value < 0 && "text-destructive")}>
