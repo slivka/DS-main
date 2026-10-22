@@ -51,6 +51,10 @@ const deductions = (over: Partial<Deductions> = {}): Deductions => ({
       vatCode: "U21",
       base: -826.45,
       vat: -173.55,
+      total: -1000,
+      homeBase: -20000.5,
+      homeVat: -4200.1,
+      homeTotal: -24200.6,
       account: "324.001",
       status: "Uzavřený",
       payment: "Spárováno",
@@ -63,13 +67,25 @@ const deductions = (over: Partial<Deductions> = {}): Deductions => ({
       vatCode: "U21",
       base: -500,
       vat: -105,
+      total: -605,
       remove: { can: true },
     },
   ],
-  totals: { items: 12100, deducted: -1605, toPay: 10495 },
+  totals: { itemsGross: 12100, deductionsGross: -1605, payable: 10495 },
   recap: {
-    deductionRows: [{ id: "zfv", label: "Odečet zálohy ZFV 1", base: -826.45, vat: -173.55 }],
-    totalsByCode: [{ vatCode: "U21", base: 9173.55, vat: 1926.45 }],
+    deductionRows: [
+      {
+        id: "zfv",
+        vatCode: "U21",
+        label: "Odečet zálohy ZFV 1",
+        base: -826.45,
+        vat: -173.55,
+        total: -1000,
+        homeBase: -20000.5,
+        homeVat: -4200.1,
+      },
+    ],
+    totalsByCode: [{ vatCode: "U21", base: 9173.55, vat: 1926.45, total: 11000 }],
   },
   ...over,
 });
@@ -99,12 +115,16 @@ afterEach(cleanup);
 describe("JournalLinesEditor – odečty záloh", () => {
   it("vykreslí odečty pod položkami, první oddělený čarou", () => {
     const { container } = renderEditor({ deductions: deductions() });
-    const grid = container.querySelector('table[role="grid"] tbody');
-    const rows = [...(grid?.querySelectorAll("tr:not([hidden])") ?? [])].map((row) =>
+    const grid = container.querySelector('table[role="grid"]');
+    const rows = [...(grid?.querySelectorAll("tbody > tr:not([hidden])") ?? [])].map((row) =>
       row.getAttribute("data-slot"),
     );
     expect(rows[0]).not.toBe("journal-deduction-row");
-    expect(rows.slice(-2)).toEqual(["journal-deduction-row", "journal-deduction-row"]);
+    expect(rows.slice(-3)).toEqual([
+      "journal-footer-sum",
+      "journal-deduction-row",
+      "journal-deduction-row",
+    ]);
     const deductionRows = container.querySelectorAll('[data-slot="journal-deduction-row"]');
     expect(deductionRows[0]?.hasAttribute("data-separator")).toBe(true);
     expect(deductionRows[1]?.hasAttribute("data-separator")).toBe(false);
@@ -132,22 +152,110 @@ describe("JournalLinesEditor – odečty záloh", () => {
     const { container } = renderEditor({ deductions: deductions() });
     const text = (slot: string) =>
       container.querySelector(`[data-slot="${slot}"]`)?.textContent?.replace(/\s/g, " ");
+    expect(container.querySelector('[data-slot="journal-deduction-rounding"]')).toBeNull();
     expect(text("journal-deduction-items")).toContain("12 100,00");
     expect(text("journal-deduction-deducted")).toContain("−1 605,00");
     expect(text("journal-deduction-to-pay")).toContain("10 495,00");
   });
 
-  it("rekapitulace DPH obsahuje řádek odečtu a součet podle kódu", () => {
+  it("rekapitulace: odečet s kódem DPH a „Celkem po odečtu záloh“ z dat APP", () => {
     const { container } = renderEditor({ deductions: deductions() });
     const recap = container.querySelector('[data-slot="journal-vat-recap"]');
-    expect(recap?.querySelector('[data-slot="journal-vat-deduction-row"]')?.textContent).toContain(
-      "−826,45",
-    );
-    expect(
-      recap
-        ?.querySelector('[data-slot="journal-vat-total-by-code"]')
-        ?.textContent?.replace(/\s/g, " "),
-    ).toContain("9 173,55");
+    const row = recap?.querySelector('[data-slot="journal-vat-deduction-row"]');
+    expect(row?.querySelector("td")?.firstChild?.textContent).toBe("U21");
+    expect(row?.textContent).toContain("−826,45");
+    const total = recap?.querySelector('[data-slot="journal-vat-total-by-code"]');
+    const text = total?.textContent?.replace(/\s/g, " ");
+    expect(text).toContain("Celkem po odečtu záloh U21");
+    // APP posílá 11 000 (base + vat by dalo 11 100) – DS zobrazí hodnotu APP.
+    expect(text).toContain("11 000,00");
+    expect(text).not.toContain("11 100,00");
+  });
+
+  it("celkem řádku odečtu bere DS z dat APP, nic nesčítá", () => {
+    const base = deductions();
+    const recap = base.recap && {
+      ...base.recap,
+      deductionRows: base.recap.deductionRows.map((row) => ({ ...row, total: -999.99 })),
+    };
+    const { container } = renderEditor({ deductions: { ...base, recap } });
+    const row = container.querySelector('[data-slot="journal-vat-deduction-row"]');
+    expect(row?.textContent?.replace(/\s/g, " ")).toContain("−999,99");
+  });
+
+  it("s odečty není druhé K úhradě ani stará lišta Součet · Zaokrouhlení", () => {
+    const { container } = renderEditor({
+      deductions: deductions({
+        totals: { itemsGross: 12100, deductionsGross: -1605, rounding: 0.4, payable: 10495.4 },
+      }),
+      rounding: { value: 0.4 },
+    } as Partial<EditorProps>);
+    expect(container.querySelector('[data-slot="journal-difference-bar"]')).toBeNull();
+    expect(container.querySelector('[data-slot="journal-footer-to-pay"]')).toBeNull();
+    expect(container.querySelectorAll('[data-slot="journal-deduction-to-pay"]').length).toBe(1);
+    const rounding = container.querySelector('[data-slot="journal-deduction-rounding"]');
+    expect(rounding?.textContent?.replace(/\s/g, " ")).toContain("0,40");
+  });
+
+  it("Součet položek je nad odečty a má stejnou hodnotu jako bez odečtů", () => {
+    const gross = (container: HTMLElement) =>
+      container.querySelector('[data-slot="journal-lines-total-base"]')?.textContent;
+    const plain = renderEditor({});
+    const before = gross(plain.container);
+    cleanup();
+    const { container } = renderEditor({ deductions: deductions() });
+    const sum = container.querySelector('[data-slot="journal-footer-sum"]');
+    expect(sum?.textContent).toContain("Součet položek");
+    expect(before).toBeTruthy();
+    expect(gross(container)).toBe(before);
+    expect(container.querySelector('table[role="grid"] tfoot')).toBeNull();
+  });
+
+  it("cizí měna: odečet v rekapitulaci ukáže částky v měně firmy", () => {
+    const { container } = renderEditor({
+      deductions: deductions(),
+      documentCurrency: "EUR",
+      exchangeRate: 25,
+      recap: { vatHomeOpen: true, onVatHomeOpenChange: () => {} },
+    } as Partial<EditorProps>);
+    const row = container.querySelector('[data-slot="journal-vat-deduction-row"]');
+    const text = row?.textContent?.replace(/\s/g, " ");
+    expect(text).toContain("−20 000,50");
+    expect(text).toContain("−4 200,10");
+  });
+
+  it("odebrání s potvrzením v DS a povinným důvodem", async () => {
+    const removed: string[] = [];
+    renderEditor({
+      deductions: deductions({
+        onRemove: (row, reason) => removed.push(`${row.id}:${reason}`),
+        removeReason: { required: true },
+      }),
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Odebrat: Ruční odečet zálohy" }));
+    const dialog = await screen.findByRole("alertdialog").catch(() => screen.findByRole("dialog"));
+    const confirmButton = [...dialog.querySelectorAll("button")].find(
+      (button) => button.textContent === "Odebrat",
+    ) as HTMLButtonElement;
+    fireEvent.click(confirmButton);
+    expect(removed).toEqual([]);
+    fireEvent.change(dialog.querySelector("textarea, input") as HTMLElement, {
+      target: { value: "Chyba" },
+    });
+    fireEvent.click(confirmButton);
+    expect(removed).toEqual(["manual:Chyba"]);
+  });
+
+  it("split tlačítko je skupina a nabídka jde otevřít klávesnicí", async () => {
+    const kinds: string[] = [];
+    renderEditor({ deductions: deductions({ onAdd: (kind) => kinds.push(kind) }) });
+    expect(screen.getByRole("group", { name: "Odečet zálohy" })).toBeTruthy();
+    const trigger = screen.getByRole("button", { name: "Odečet zálohy – Akce" });
+    trigger.focus();
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    const manual = await screen.findByRole("menuitem", { name: "Ruční odečet…" });
+    fireEvent.keyDown(manual, { key: "Enter" });
+    expect(kinds).toEqual(["manual"]);
   });
 
   it("upravit jde jen částku ručního odečtu", () => {

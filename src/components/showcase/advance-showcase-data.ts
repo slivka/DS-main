@@ -91,6 +91,10 @@ export const DEDUCTION_ROWS: JournalDeductionRow[] = [
     vatCode: "Z 21 %",
     base: -41.32,
     vat: -8.68,
+    total: -50,
+    homeBase: -1003.46,
+    homeVat: -210.79,
+    homeTotal: -1214.25,
     account: "324.001",
     status: "Uzavřený",
     payment: "Spárováno",
@@ -104,6 +108,10 @@ export const DEDUCTION_ROWS: JournalDeductionRow[] = [
     vatCode: "Z 21 %",
     base: -20.66,
     vat: -4.34,
+    total: -25,
+    homeBase: -501.73,
+    homeVat: -105.4,
+    homeTotal: -607.13,
     account: "324.001",
     status: "Otevřený",
     payment: "Bez platby",
@@ -118,6 +126,20 @@ export const MANUAL_DEDUCTION: JournalDeductionRow = {
   vatCode: "Z 21 %",
   base: -20,
   vat: -4.2,
+  total: -24.2,
+  homeBase: -485.7,
+  homeVat: -102,
+  homeTotal: -587.7,
   account: "324.001",
   remove: { can: true },
+};
+
+/** Součty položek ukázkové faktury tak, jak je APP načte z DB (21 %, cizí měna). */
+export const SHOWCASE_ITEMS = {
+  base: 174.7,
+  vat: 36.69,
+  total: 211.39,
+  homeBase: 4242.6,
+  homeVat: 890.94,
+  homeTotal: 5133.54,
 };

@@ -32,6 +32,7 @@ function ToolbarLeft() {
             onClick={() => editor.addLine(true)}
             disabled={editor.editable.size === 0}
             aria-label={addLabel}
+            data-toolbar-add=""
             className="grid-toolbar-control grid-toolbar-primary shrink-0"
           >
             <Plus className="size-[1.2em]" />
@@ -49,8 +50,9 @@ function ToolbarRight() {
   const { editor } = useJournalEditor();
   const { layout, t } = editor;
   const { columns, zoom } = layout;
+  // Pravá část se měří jako pevný blok, aby lišta poznala přetečení (split „Odečet zálohy“ → „…“).
   return (
-    <>
+    <div data-toolbar-measure="refresh" className="contents">
       <GridSearch
         value={editor.search}
         onChange={editor.setSearch}
@@ -90,7 +92,7 @@ function ToolbarRight() {
         setDensity={layout.setDensity}
         auto={layout.isAuto}
       />
-    </>
+    </div>
   );
 }
 

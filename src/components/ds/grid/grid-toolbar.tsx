@@ -215,8 +215,12 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       const fontSize = Number.parseFloat(style.fontSize) || 13;
       const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
       const addCount = node.querySelectorAll("[data-toolbar-add]").length;
-      // Dvě a více akcí se v úrovni 3 slučují do jednoho tlačítka „+ ▾“.
-      const leftCompact = addCount > 1 ? measured.addMenuWidth : addCount ? controlSize : 0;
+      // Dvě a více akcí se v úrovni 3 slučují do jednoho tlačítka „+ ▾“; doplňky
+      // s `data-toolbar-overflow-item` se v úrovni 3 sbalí do jednoho ikonového tlačítka „…“.
+      const overflowItems = node.querySelectorAll("[data-toolbar-overflow-item]").length;
+      const leftCompact =
+        (addCount > 1 ? measured.addMenuWidth : addCount ? controlSize : 0) +
+        overflowItems * (controlSize + gap);
       // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
       const searchHasText = Boolean(
         node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim(),

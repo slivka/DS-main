@@ -27,8 +27,14 @@ export interface JournalDeductionRow {
   base: number;
   /** DPH (záporná). */
   vat: number;
-  /** Celkem; bez hodnoty se zobrazí součet základu a DPH. */
-  total?: number;
+  /** Celkem (záporné) od APP; DS nic nesčítá. */
+  total: number;
+  /** Základ v měně firmy (u dokladu v cizí měně). */
+  homeBase?: number;
+  /** DPH v měně firmy (u dokladu v cizí měně). */
+  homeVat?: number;
+  /** Celkem v měně firmy (u dokladu v cizí měně). */
+  homeTotal?: number;
   /** Formátovaný účet. */
   account?: string;
   /** Stav odečtu (jen v detailu a bublině). */
@@ -45,17 +51,25 @@ export interface JournalDeductionRow {
 export interface JournalDeductionRecapRow {
   /** Stálé id. */
   id: string;
-  /** Popis řádku. */
+  /** Formátovaný kód DPH (sloupec Kód). */
+  vatCode: string;
+  /** Popis řádku (bublina a přístupný název). */
   label: string;
   /** Základ. */
   base: number;
   /** DPH. */
   vat: number;
-  /** Celkem; bez hodnoty součet základu a DPH. */
-  total?: number;
+  /** Celkem od APP. */
+  total: number;
+  /** Základ v měně firmy. */
+  homeBase?: number;
+  /** DPH v měně firmy. */
+  homeVat?: number;
+  /** Celkem v měně firmy. */
+  homeTotal?: number;
 }
 
-/** Součet rekapitulace za kód DPH (položky i odečty) od APP. */
+/** Řádek „Celkem po odečtu záloh“ za kód DPH od APP (DS nic nesčítá). */
 export interface JournalDeductionTotalByCode {
   /** Formátovaný kód DPH. */
   vatCode: string;
@@ -63,8 +77,26 @@ export interface JournalDeductionTotalByCode {
   base: number;
   /** DPH. */
   vat: number;
-  /** Celkem; bez hodnoty součet základu a DPH. */
-  total?: number;
+  /** Celkem. */
+  total: number;
+  /** Základ v měně firmy. */
+  homeBase?: number;
+  /** DPH v měně firmy. */
+  homeVat?: number;
+  /** Celkem v měně firmy. */
+  homeTotal?: number;
+}
+
+/** Součty pod mřížkou od APP v měně dokladu. */
+export interface JournalDeductionTotals {
+  /** Položky celkem s DPH (bez odečtů). */
+  itemsGross: number;
+  /** Odečteno záloh s DPH (záporné). */
+  deductionsGross: number;
+  /** Zaokrouhlení dokladu; zobrazí se, je-li různé od nuly. */
+  rounding?: number;
+  /** K úhradě (po odečtech a zaokrouhlení). */
+  payable: number;
 }
 
 /** Konfigurace odečtů v editoru řádků (FV, FP, PO). */
@@ -83,13 +115,13 @@ export interface JournalDeductions {
   removeReason?: { label?: string; required?: boolean; placeholder?: string };
   /** Změna základu ručního odečtu. */
   onAmountChange?: (row: JournalDeductionRow, base: number) => void;
-  /** Tři součty pod mřížkou od APP. */
-  totals?: { items: number; deducted: number; toPay: number };
+  /** Součty pod mřížkou od APP; nahrazují lištu Součet · Zaokrouhlení · K úhradě. */
+  totals?: JournalDeductionTotals;
   /** Řádky odečtů a součty podle kódu v rekapitulaci DPH. */
   recap?: {
     /** Každý odečet vlastním řádkem. */
     deductionRows: JournalDeductionRecapRow[];
-    /** Součet podle kódu DPH. */
+    /** „Celkem po odečtu záloh“ podle kódu DPH. */
     totalsByCode: JournalDeductionTotalByCode[];
   };
 }

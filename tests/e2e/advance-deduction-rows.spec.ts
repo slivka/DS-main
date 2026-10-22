@@ -19,9 +19,33 @@ test("FV: odečty pod položkami, split akce a tři součty", async ({ page }) =
   await expect(bodyRows.last()).toHaveAttribute("data-slot", "journal-deduction-row");
   await expect(page.locator('[data-slot="journal-deduction-to-pay"]').first()).toBeVisible();
 
-  await page.getByRole("button", { name: "Odečet zálohy – Akce" }).first().click();
+  const fv = page.locator('[data-slot="journal-lines-editor"]').first();
+  await expect(fv.locator('[data-slot="journal-difference-bar"]')).toHaveCount(0);
+  await expect(fv.locator('[data-slot="journal-deduction-to-pay"]')).toHaveCount(1);
+  await expect(fv.locator('[data-slot="journal-footer-sum"]')).toContainText("Součet položek");
+
+  const trigger = fv.getByRole("button", { name: "Odečet zálohy – Akce" });
+  await trigger.focus();
+  await page.keyboard.press("Enter");
   await expect(page.getByRole("menuitem", { name: "Ruční odečet…" })).toBeVisible();
   await page.keyboard.press("Escape");
+
+  // Odebrání přes potvrzení v DS; fokus přejde na split „Odečet zálohy“.
+  const remove = fv.getByRole("button", { name: /^Odebrat: Odečet zálohy ZFV 2026002/ });
+  await remove.focus();
+  await page.keyboard.press("Enter");
+  await page.getByRole("alertdialog").getByRole("button", { name: "Odebrat" }).click();
+  await expect(fv.locator('[data-slot="journal-deduction-row"]')).toHaveCount(1);
+  await expect(fv.locator('[data-slot="journal-deduction-add"]')).toBeFocused();
+
+  // Plná šířka: split vedle „+“; úzká lišta se zvětšenou tabulkou: sbalí se do „…“ bez přetečení.
+  await expect(fv.locator('[data-slot="journal-deduction-split"][data-compact]')).toHaveCount(0);
+  await page.setViewportSize({ width: 420, height: 1200 });
+  const toolbar = fv.locator('[data-slot="grid-toolbar"]');
+  const zoomIn = toolbar.getByRole("button", { name: "Zvětšit tabulku" });
+  for (let step = 0; step < 6; step++) await zoomIn.evaluate((button: HTMLElement) => button.click());
+  await expect(fv.locator('[data-slot="journal-deduction-split"][data-compact]')).toBeVisible();
+  expect(await toolbar.evaluate((node) => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
 });
 
 test("zakázané Pokračovat má čitelný text (AA) a důvod", async ({ page }) => {
