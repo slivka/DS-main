@@ -131,7 +131,7 @@ export function DocumentFormSecondaryScenarios({
                   totalToPay={invoice.amountTotal}
                   saveAction={{
                     label: "Uložit kalendář",
-                    onSave: () => toast.success("Kalendář uložen"),
+                    onSave: () => { toast.success("Kalendář uložen"); },
                   }}
                   currencySymbol="Kč"
                   paid={3630}

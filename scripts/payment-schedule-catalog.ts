@@ -17,12 +17,17 @@ export function enrichPaymentScheduleCatalog(components: PanelCatalogComponent[]
   }
   component.usage =
     "Platební kalendář se sdílenou GridToolbar, standardním Přidat a vedlejšími akcemi v nabídce při zúžení. Zoom převezme z okolního GridZoomContext, explicitní zoom má přednost. saveAction vykreslí uložení v liště; disabled/busy blokují opakovaný klik, data a zápis vlastní APP.";
-  component.examples = [
+  component.examples ??= [
+    { label: "Kalendář faktury", code: "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />" },
+  ];
+  const label = "Uložení kalendáře v zoomované liště";
+  component.examples = component.examples.filter((example) => example.label !== label);
+  component.examples.push(
     {
-      label: "Kalendář faktury",
+      label,
       code: '<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: "Uložit kalendář", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />',
     },
-  ];
+  );
   component.antipatterns ??= [];
   const rule =
     "Nekreslete vlastní Uložit kalendář pod gridem ani vlastní pevnou velikost tlačítek; použijte saveAction a zoom.";
