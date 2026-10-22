@@ -7100,32 +7100,30 @@
       "name": "MultiSelect",
       "file": "src/components/ds/form/multi-select.tsx",
       "import_path": "",
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
+      "usage": "Vícenásobný výběr hodnot aplikace. Hledání přímo v poli; šipky mění aktivní položku, Enter/mezerník přepíná zaškrtnutí bez zavření. Tab prochází Vybrat vše a Vymazat; Escape zavře a vrátí fokus na pole.",
       "examples": [
         {
-          "label": "Použití společného stavu",
-          "code": "<MultiSelect {...props} />"
+          "label": "Výběr firem klávesnicí",
+          "code": "<MultiSelect options={companies} selected={companyIds} onChange={setCompanyIds} allLabel=\"Všechny firmy\" itemsLabel=\"firmy\" />"
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
-        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
+        "Nevkládejte obyčejná tlačítka místo CommandItem; Tab uvnitř vícenásobné nabídky ji nesmí zavřít ani vybrat položku."
       ]
     },
     {
       "name": "ChipMultiSelect",
       "file": "src/components/ds/form/chip-multi-select.tsx",
       "import_path": "",
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
+      "usage": "Vícenásobný výběr hodnot aplikace. Hledání přímo v poli; šipky mění aktivní položku, Enter/mezerník přepíná zaškrtnutí bez zavření. Tab prochází Vybrat vše a Vymazat; Escape zavře a vrátí fokus na pole.",
       "examples": [
         {
-          "label": "Použití společného stavu",
-          "code": "<ChipMultiSelect {...props} />"
+          "label": "Výběr firem klávesnicí",
+          "code": "<ChipMultiSelect options={companies} value={companyIds} onChange={setCompanyIds} allLabel=\"Vybrat vše\" clearLabel=\"Vymazat\" />"
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
-        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
+        "Nevkládejte obyčejná tlačítka místo CommandItem; Tab uvnitř vícenásobné nabídky ji nesmí zavřít ani vybrat položku."
       ]
     },
     {
