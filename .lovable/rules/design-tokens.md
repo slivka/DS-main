@@ -138,6 +138,7 @@ Box-shadow classes:
 | `shadow-panel` | `--shadow-panel` |
 | — | `--focus-ring-shadow` |
 | — | `--tw-ring-shadow` |
+| — | `--grid-actions-shadow` |
 
 ## Other
 
@@ -182,4 +183,5 @@ Reference via `var(--name)` in inline styles or CSS.
 | `--chip-pad-y` |
 | `--chip-icon` |
 | `--field-feedback-offset` |
+| `--grid-actions-divider` |
 
