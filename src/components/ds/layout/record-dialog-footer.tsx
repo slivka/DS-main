@@ -105,17 +105,30 @@ interface SubmitButtonProps {
   busy: boolean;
   /** Uložení není dostupné. */
   disabled?: boolean;
+  /** Důvod zákazu v bublině; tlačítko zůstane zaměřitelné (aria-disabled). */
+  disabledReason?: string | undefined;
 }
 
 /** Uložit s pevnou šířkou: během ukládání ukáže „Ukládám…“ bez poskočení. */
-export function RecordDialogSubmitButton({ label, busy, disabled }: SubmitButtonProps) {
+export function RecordDialogSubmitButton({
+  label,
+  busy,
+  disabled,
+  disabledReason,
+}: SubmitButtonProps) {
   const saving = useDsTexts().recordDialog.saving;
-  return (
+  const reasonId = useId();
+  const explained = Boolean(disabled && disabledReason && !busy);
+  const button = (
     <Button
-      type="submit"
-      disabled={busy || disabled}
+      type={explained ? "button" : "submit"}
+      disabled={busy || (disabled && !explained)}
+      aria-disabled={explained || undefined}
+      aria-describedby={explained ? reasonId : undefined}
       aria-busy={busy || undefined}
       data-slot="record-submit"
+      className={explained ? "cursor-not-allowed" : undefined}
+      onClick={explained ? (event) => event.preventDefault() : undefined}
     >
       <span className="grid">
         <span
@@ -132,5 +145,16 @@ export function RecordDialogSubmitButton({ label, busy, disabled }: SubmitButton
         </span>
       </span>
     </Button>
+  );
+  if (!explained) return button;
+  return (
+    <TooltipProvider>
+      <DisabledReasonTooltip content={disabledReason} blocked>
+        {button}
+      </DisabledReasonTooltip>
+      <span id={reasonId} className="sr-only">
+        {disabledReason}
+      </span>
+    </TooltipProvider>
   );
 }

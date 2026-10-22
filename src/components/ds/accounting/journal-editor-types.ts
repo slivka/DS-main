@@ -3,6 +3,7 @@
  * Vlastní: props `JournalLinesEditor` a jejich pomocné typy (DPH, zaokrouhlení, rekapitulace).
  * Nesmí: obsahovat logiku; změna tvaru props je změna veřejného API.
  */
+import type { JournalDeductions } from "./journal-deductions-types";
 import type * as React from "react";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
@@ -262,6 +263,11 @@ export interface JournalLinesEditorProps {
   withoutAccounts?: boolean;
   /** Odečtené zálohy v měně dokladu (z DB, 2.118.0); patička je ukáže jen při nenulové hodnotě. */
   advanceDeduction?: number;
+  /**
+   * Odečty záloh jako řádky pod položkami se split akcí, třemi součty a řádky rekapitulace
+   * (FV, FP, PO); data a částky dodává APP. Nahrazuje AdvanceDeductionsSection v afterVatRecap.
+   */
+  deductions?: JournalDeductions;
   /** Obsah pod rekapitulací; APP předá odečty faktury, u ZL slot nepředává. */
   afterVatRecap?: React.ReactNode;
   /** Závažnost rozdílu přepisu nad tolerancí (koncept varování, zařazení chyba); výchozí warning. */

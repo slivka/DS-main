@@ -47,6 +47,14 @@ export {
   type JournalColumnLayout,
   type JournalColumnLayoutInput,
 } from "./journal-column-layout";
+export type {
+  JournalDeductionKind,
+  JournalDeductionPermission,
+  JournalDeductionRecapRow,
+  JournalDeductionRow,
+  JournalDeductions,
+  JournalDeductionTotalByCode,
+} from "./journal-deductions-types";
 export { JournalLinesEditor } from "./JournalLinesEditor";
 
 /**

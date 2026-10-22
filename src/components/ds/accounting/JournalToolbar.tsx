@@ -13,6 +13,7 @@ import { GridSearch } from "../grid/grid-search";
 import { GridToolbar } from "../grid/grid-toolbar";
 import { ZoomControl } from "../grid/grid-zoom";
 import { useJournalEditor } from "./journal-editor-context";
+import { JournalDeductionAdd } from "./journal-deduction-summary";
 import { accountDataColumn, isAccountColumn, isAccountNameColumn } from "./journal-lines-model";
 
 /** Levá část lišty: přidat řádek. */
@@ -38,6 +39,7 @@ function ToolbarLeft() {
         </TooltipTrigger>
         <TooltipContent>{addLabel}</TooltipContent>
       </Tooltip>
+      <JournalDeductionAdd />
     </>
   );
 }

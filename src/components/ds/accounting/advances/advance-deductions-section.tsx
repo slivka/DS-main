@@ -25,7 +25,11 @@ export interface AdvanceDeductionsSectionProps extends ComponentPropsWithoutRef<
   /** Načítání. */ loading?: boolean;
   /** Chyba APP. */ error?: string;
 }
-/** Odečty sdílených faktur; patička dostává advanceDeduction samostatně z APP. */
+/**
+ * Odečty sdílených faktur; patička dostává advanceDeduction samostatně z APP.
+ * @deprecated Od 2.129.0; použijte `JournalLinesEditor.deductions` (řádky pod položkami).
+ * Odstraní se ve 3.0.0.
+ */
 export const AdvanceDeductionsSection = forwardRef<HTMLDivElement, AdvanceDeductionsSectionProps>(
   function AdvanceDeductionsSection(
     {

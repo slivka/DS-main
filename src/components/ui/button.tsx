@@ -9,15 +9,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Zakázaná plná tlačítka: bez výplně, tlumený text a slabší rámeček (kontrast AA).
         default:
-          "border border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "border border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/90 disabled:border-border disabled:bg-background disabled:shadow-none aria-disabled:border-border aria-disabled:bg-background aria-disabled:shadow-none",
         destructive:
-          "border border-transparent bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "border border-transparent bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 disabled:border-border disabled:bg-background disabled:shadow-none aria-disabled:border-border aria-disabled:bg-background aria-disabled:shadow-none",
         outline: "border border-input bg-background shadow-sm hover-surface",
         "outline-destructive":
           "border border-destructive bg-background text-destructive shadow-sm hover:bg-destructive/10",
         secondary:
-          "border border-transparent bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+          "border border-transparent bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 disabled:border-border disabled:bg-background aria-disabled:border-border aria-disabled:bg-background",
         ghost: "border border-transparent hover-surface",
         link: "text-primary underline-offset-4 hover:underline",
       },

@@ -19,6 +19,7 @@ import type { VatGroup } from "./journal-vat-groups";
 import { nonTaxVatBases, vatCodeMenuGroup } from "./vat-code-labels";
 import { CodeCell, OverrideMark } from "./journal-vat-recap-parts";
 import { vatGroupFieldId } from "./useJournalVatGroups";
+import { JournalDeductionRecapBody } from "./journal-deduction-summary";
 
 const amount = (value: number) => formatAmount(value, 2);
 /** Pevná daň v měně firmy jako DB round(x × kurz, 2); bez platného kurzu prázdné. */
@@ -223,6 +224,7 @@ export function JournalVatRecap() {
             </tr>
           ))}
         </tbody>
+        <JournalDeductionRecapBody span={span} />
         {outsideBases.length > 0 ? (
           <tbody
             data-slot="journal-vat-section-outside"
