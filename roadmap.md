@@ -1,6 +1,7 @@
 ## DS 2.132.0 (nevydáno)
 
-- [ ] Zatím bez úkolů.
+- [x] Kolo 1: jedno úložiště rozložení gridů (GridLayout, store od APP, debounce/flush, přechod starých klíčů, scope), hooky gridu na novém API, ukázka s přepínačem úložiště, unit testy
+- [ ] Kolo 2: formát sloupce (GridLayout.styles) – po kontrole
 
 ## DS 2.131.0
 

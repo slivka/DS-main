@@ -2,7 +2,12 @@
 
 ## 2.132.0 (nevydáno)
 
-- Zatím bez změn.
+- Jedno úložiště rozložení gridů (`src/lib/grid-prefs.ts`): typ `GridLayout` (verze 1) sdružuje viditelnost, přepsání viditelnosti, pořadí, šířky, sekce, pohledy, vlastní výchozí, řazení, seskupení a velikost stránky; `styles` připraveno pro kolo 2 (formát sloupce). Všechny hooky gridu (useGridColumns, useColumnViews, grid-sort, grid-grouping, grid-pagination) čtou a zapisují jen přes nové API – žádný přímý localStorage.
+- Nové API: `getGridLayout(key)` (synchronně z paměti, rychlý start ze zrcadla `gridLayout:<scope>:<key>`), `updateGridLayout(key, patch)` (paměť + zrcadlo hned, jedna událost `grid-layout-change` místo `grid-column-widths` / `grid-column-order-change` / `grid-columns-change`, uložení do store s debounce 600 ms), `configureGridPrefsStore(store | null, { scope })`, `hydrateGridPrefs()` (zrcadlo → loadAll() ze store jako zdroj pravdy → jednorázový idempotentní přechod ze starých klíčů; klíč ve store má přednost), `flushGridPrefs()` (samo při pagehide a visibilitychange → hidden), `resetGridPrefs()` (paměť + zrcadlo + store), `clearGridPrefsCache()` (jen paměť a zrcadlo aktuálního scope, odhlášení). Chyba uložení: hodnota zůstává v paměti i zrcadle, další změna klíče zkusí znovu, `store.onError` jednou za klíč.
+- Bez store beze změny chování (jen zrcadlo v localStorage). Přechod starých klíčů funguje i líně při prvním čtení klíče. Zoom a hustota gridu zůstávají ve stavu záložky (nejsou součástí GridLayout).
+- Opravy po cestě: seznam předpon měl `page:` místo `page-size:` a chyběl `columnVisibilityOverrides:` – `resetGridPrefs` je nyní maže všechny.
+- Ukázka na stránce Datová mřížka: přepínač „Úložiště: Prohlížeč / Simulovaný server“ (zpoždění 500 ms).
+- Testy: unit `grid-prefs.test.ts` (rychlý start ze zrcadla, přepsání po loadAll, debounce a flush, pagehide, chyba uložení a opakování, přechod všech starých předpon, oddělení scope, resetGridPrefs, synchronizace dvou gridů se stejným klíčem, chování bez store). Setup testů uklízí i paměť úložiště gridů.
 
 ## 2.131.0 – Evidence záloh se záložkami
 
