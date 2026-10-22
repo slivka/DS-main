@@ -355,57 +355,43 @@ export function useGridColumns<Id extends string>(
   );
 
   // --- vlastní výchozí nastavení ----------------------------------------
-  const defaultKey = `columnsDefault:${storageKey}`;
   const [hasCustomDefault, setHasCustomDefault] = useState(false);
 
+  const applyStoredDefault = useCallback(() => {
+    setHasCustomDefault(!!getGridLayout(storageKey).customDefault);
+  }, [storageKey]);
+
   useEffect(() => {
-    try {
-      setHasCustomDefault(!!localStorage.getItem(defaultKey));
-    } catch {
-      setHasCustomDefault(false);
-    }
-  }, [defaultKey]);
+    applyStoredDefault();
+  }, [applyStoredDefault]);
 
   /** Uloží aktuální viditelnost, pořadí i šířky jako výchozí zobrazení gridu. */
   const saveDefault = useCallback(() => {
-    try {
-      localStorage.setItem(
-        defaultKey,
-        JSON.stringify({
-          visible: persistentRecord(visible),
-          order: persistentOrder(order),
-          widths: persistentRecord(widths),
-        }),
-      );
-      setHasCustomDefault(true);
-    } catch {
-      /* úložiště není dostupné */
-    }
-  }, [defaultKey, visible, order, widths, persistentRecord, persistentOrder]);
+    updateGridLayout(storageKey, {
+      customDefault: {
+        visible: persistentRecord(visible),
+        order: persistentOrder(order),
+        widths: persistentRecord(widths),
+      },
+    });
+    setHasCustomDefault(true);
+  }, [storageKey, visible, order, widths, persistentRecord, persistentOrder]);
 
   /** Zruší vlastní výchozí zobrazení (vrátí tovární). */
   const clearDefault = useCallback(() => {
-    try {
-      localStorage.removeItem(defaultKey);
-    } catch {
-      /* úložiště není dostupné */
-    }
+    updateGridLayout(storageKey, { customDefault: undefined });
     setHasCustomDefault(false);
-  }, [defaultKey]);
+  }, [storageKey]);
 
   /** Obnoví výchozí zobrazení – vlastní, pokud je uložené, jinak tovární. */
   const reset = useCallback(() => {
-    let saved: {
-      visible?: Partial<Record<Id, boolean>>;
-      order?: Id[];
-      widths?: Partial<Record<Id, number>>;
-    } | null = null;
-    try {
-      const raw = localStorage.getItem(defaultKey);
-      saved = raw ? JSON.parse(raw) : null;
-    } catch {
-      saved = null;
-    }
+    const saved = getGridLayout(storageKey).customDefault as
+      | {
+          visible?: Partial<Record<Id, boolean>>;
+          order?: Id[];
+          widths?: Partial<Record<Id, number>>;
+        }
+      | undefined;
     if (saved?.visible) {
       const next = { ...defaults };
       for (const c of columns) {
@@ -428,21 +414,8 @@ export function useGridColumns<Id extends string>(
     }
     persistWidths(saved?.widths ?? {});
     setExplicitVisibility([]);
-    try {
-      localStorage.removeItem(visibilityOverridesKey);
-    } catch {
-      /* úložiště není dostupné */
-    }
-  }, [
-    defaultKey,
-    defaults,
-    columns,
-    persist,
-    persistOrder,
-    persistWidths,
-    defaultOrder,
-    visibilityOverridesKey,
-  ]);
+    updateGridLayout(storageKey, { visibilityOverrides: undefined });
+  }, [storageKey, defaults, columns, persist, persistOrder, persistWidths, defaultOrder]);
 
   const views = useColumnViews(
     storageKey,
@@ -457,29 +430,21 @@ export function useGridColumns<Id extends string>(
     () => Array.from(new Set(columns.map((c) => c.section).filter(Boolean))) as string[],
     [columns],
   );
-  const sectionsKey = `columnSections:${storageKey}`;
   const [hiddenSections, setHiddenSections] = useState<string[]>([]);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`columnSections:${storageKey}`);
-      const saved = raw ? (JSON.parse(raw) as string[]) : [];
-      const known = saved.filter((s) => sections.includes(s));
-      // Nikdy nesmí být skryté všechny sekce – grid by zůstal bez sloupců.
-      const safe = sections.length > 0 && known.length >= sections.length ? [] : known;
-      if (safe.length !== saved.length) {
-        try {
-          localStorage.setItem(`columnSections:${storageKey}`, JSON.stringify(safe));
-        } catch {
-          /* úložiště není dostupné */
-        }
-      }
-      setHiddenSections(safe);
-    } catch {
-      setHiddenSections([]);
-    }
+  const applyStoredSections = useCallback(() => {
+    const saved = getGridLayout(storageKey).sections ?? [];
+    const known = saved.filter((s) => sections.includes(s));
+    // Nikdy nesmí být skryté všechny sekce – grid by zůstal bez sloupců.
+    const safe = sections.length > 0 && known.length >= sections.length ? [] : known;
+    if (safe.length !== saved.length) updateGridLayout(storageKey, { sections: safe });
+    setHiddenSections((cur) => (cur.join("|") === safe.join("|") ? cur : safe));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, sections.join("|")]);
+
+  useEffect(() => {
+    applyStoredSections();
+  }, [applyStoredSections]);
 
   const toggleSection = useCallback(
     (section: string) => {
@@ -488,15 +453,11 @@ export function useGridColumns<Id extends string>(
         // poslední zapnutou sekci nelze vypnout
         if (hiding && cur.length + 1 >= sections.length) return cur;
         const next = hiding ? [...cur, section] : cur.filter((s) => s !== section);
-        try {
-          localStorage.setItem(sectionsKey, JSON.stringify(next));
-        } catch {
-          /* úložiště není dostupné */
-        }
+        updateGridLayout(storageKey, { sections: next });
         return next;
       });
     },
-    [sectionsKey, sections.length],
+    [storageKey, sections.length],
   );
 
   const sectionVisible = useCallback(
