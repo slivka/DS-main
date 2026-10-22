@@ -84,14 +84,13 @@ describe("grid-prefs úložiště rozložení", () => {
   });
 
   it("ukládání do store má debounce 600 ms a flush uloží hned", async () => {
-    jest.useFakeTimers();
     const { store, calls, data } = makeStore();
     configureGridPrefsStore(store);
     updateGridLayout("g2", { visible: { a: false } });
     updateGridLayout("g2", { pageSize: 50 });
     expect(calls.save).toBe(0);
-    jest.advanceTimersByTime(600);
-    await Promise.resolve();
+    // Bun neumí posouvat falešné časovače – počkáme skutečných 650 ms.
+    await new Promise((r) => setTimeout(r, 650));
     expect(calls.save).toBe(1);
     expect(data.get("g2")?.pageSize).toBe(50);
     updateGridLayout("g2", { sort: { key: "a", dir: "desc" } });
