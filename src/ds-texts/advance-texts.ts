@@ -149,4 +149,64 @@ export interface AdvanceTexts {
   allocationSummary: (assigned: string, total: string) => string;
   /** Lhůta dodaná aplikací. */
   deadlineDays: (days: number) => string;
+  /** Popisek seznamu záložek evidence. */
+  registerTabs: string;
+  /** Záložka Zůstatek. */
+  tabBalance: string;
+  /** Záložka Platby záloh. */
+  tabPayments: string;
+  /** Záložka Vyúčtování záloh. */
+  tabSettlements: string;
+  /** Sloupec Druh. */
+  kind: string;
+  /** Druh Platba. */
+  kindPayment: string;
+  /** Druh Odečet. */
+  kindDeduction: string;
+  /** Sloupec Datum. */
+  date: string;
+  /** Datum účetního případu. */
+  accountingDate: string;
+  /** Zůstatek v měně. */
+  balance: string;
+  /** Sloupec Účet. */
+  account: string;
+  /** Filtr účtů bez výběru. */
+  allAccounts: string;
+  /** Množné číslo účtů. */
+  accountsItems: string;
+  /** Filtr Vše. */
+  filterAll: string;
+  /** Popisek filtru stavu. */
+  filterState: string;
+  /** Filtr Nevyúčtováno. */
+  unsettled: string;
+  /** Filtr Bez daňového dokladu. */
+  withoutTaxDocumentFilter: string;
+  /** Filtr Nespárované. */
+  unmatchedFilter: string;
+  /** Sloupec Spárováno. */
+  matched: string;
+  /** Sloupec Nespárováno. */
+  unmatched: string;
+  /** Zůstatek účtu z deníku. */
+  ledgerBalance: string;
+  /** Součet evidence. */
+  registerSum: string;
+  /** Rozdíl. */
+  difference: string;
+  /** Bublina nenulového rozdílu. */
+  differenceWarning: string;
+  /** Celkový součet. */
+  grandTotal: string;
+  /** Sloupec částky v domácí měně. */
+  amountHome: (currency: string) => string;
+  /** Zůstatek v domácí měně. */
+  balanceHome: (currency: string) => string;
+  /** Kontrolní řádek účtu. */
+  controlLabel: (account: string) => string;
+  /** Mezisoučet partnera. */
+  partnerTotal: (partner: string) => string;
+  /** Mezisoučet účtu. */
+  accountTotal: (account: string) => string;
 }
