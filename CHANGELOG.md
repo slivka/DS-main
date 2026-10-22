@@ -10,6 +10,7 @@
 - `AdvanceRegisterGrid` beze změny (zpětně kompatibilní).
 - Texty CS/SK v `advances` (záložky, filtry, sloupce, kontrolní řádek, součty).
 - Ukázka: poskytnuté zálohy (314.100, 314.200, 3 partneři, EUR, nenulový rozdíl u 314.200, přepínač neplátce a neúplných práv) a přijaté zálohy (324.100).
+- Oprava gridů (bez změny API): ukotvený sloupec Akce má vždy viditelnou svislou čáru – kreslí se vnitřním stínem 1 px místo `border-left`, který se u `position: sticky` s `border-collapse` nevykresloval. Platí v záhlaví (i řádek skupin), těle (hover, výběr), patičce, řádcích odečtů v DataGrid, GridFrame/TreeGrid i v editoru řádků dokladu (také v režimu přetečení, kde je sloupec statický). Stín přetečení se skládá přes `--grid-actions-shadow`; barva shodná se svislými oddělovači záhlaví, bez zdvojení okraje. E2E `grid-actions-divider`.
 - Ověření: check:full --harness 1 216/1 216 testů ve 133 souborech, lint/formát/audit částek OK, katalog 475 → 476 komponent / 1 131 → 1 183 props, 0 odebrání; Chromium `advance-register-view.spec.ts` 1/1. Nevydáno, release Claude.
 - Testy: unit `advance-register-view.test.tsx` (záložky a sdílené datum, filtry podle záložky, skupiny a součtové řádky, řazení uvnitř skupiny, varování rozdílu, vatPayer=false, scopeIncomplete); E2E Chromium `advance-register-view.spec.ts` (záložky se zachovaným datem, varování, lišta bez zalomení při zoomu 0,7 / 1,5).
 
