@@ -3,13 +3,7 @@ import { useState } from "react";
 import { Trash2, Unlock, Lock } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
@@ -20,10 +14,7 @@ import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { amountClass, formatAmount, formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { roundHalfAwayFromZero } from "../../../lib/decimal-round";
-import {
-  sumPaymentSchedule,
-  type PaymentScheduleItem,
-} from "./payment-schedule";
+import { sumPaymentSchedule, type PaymentScheduleItem } from "./payment-schedule";
 
 const today = () => new Date().toISOString().slice(0, 10);
 /** Zaokrouhlení polovinou od nuly jako DB. */
@@ -34,9 +25,16 @@ const isReleased = (item: PaymentScheduleItem) => item.kind === "retention" && !
  * Platební kalendář dokladu – splátky a pozastávky. Komponenta nic neukládá;
  * aplikace uloží celé pole `items` jedním voláním.
  */
-import { DEFAULT_PAYMENT_SCHEDULE_TEXTS, type PaymentScheduleEditorProps } from "./payment-schedule-editor-types";
+import {
+  DEFAULT_PAYMENT_SCHEDULE_TEXTS,
+  type PaymentScheduleEditorProps,
+} from "./payment-schedule-editor-types";
 export { DEFAULT_PAYMENT_SCHEDULE_TEXTS } from "./payment-schedule-editor-types";
-export type { PaymentScheduleEditorProps, PaymentScheduleEditorTexts, PaymentScheduleUser } from "./payment-schedule-editor-types";
+export type {
+  PaymentScheduleEditorProps,
+  PaymentScheduleEditorTexts,
+  PaymentScheduleUser,
+} from "./payment-schedule-editor-types";
 export type { PaymentScheduleSaveAction } from "./payment-schedule-toolbar";
 import { PaymentScheduleToolbar } from "./payment-schedule-toolbar";
 import { GenerateDialog } from "./payment-schedule-generate-dialog";
@@ -111,11 +109,34 @@ export function PaymentScheduleEditor({
         readOnly={readOnly}
         saveAction={saveAction}
         actions={[
-          { label: t.remove, disabled: readOnly || !selectedItem || isReleased(selectedItem), onSelect: () => { if (selected != null) remove(selected); } },
+          {
+            label: t.remove,
+            disabled: readOnly || !selectedItem || isReleased(selectedItem),
+            onSelect: () => {
+              if (selected != null) remove(selected);
+            },
+          },
           { label: t.fillRest, disabled: readOnly || unallocated === 0, onSelect: fillRest },
           { label: t.generate, disabled: readOnly, onSelect: () => setGenerateOpen(true) },
-          { label: t.release, disabled: !canRelease || !selectedItem || selectedItem.kind !== "retention" || isReleased(selectedItem), onSelect: () => { setReleaseDate(today()); setReleaseIndex(selected); } },
-          { label: t.unrelease, disabled: !canUnrelease || !selectedItem || !isReleased(selectedItem), onSelect: () => { if (selected != null) askUnrelease(selected); } },
+          {
+            label: t.release,
+            disabled:
+              !canRelease ||
+              !selectedItem ||
+              selectedItem.kind !== "retention" ||
+              isReleased(selectedItem),
+            onSelect: () => {
+              setReleaseDate(today());
+              setReleaseIndex(selected);
+            },
+          },
+          {
+            label: t.unrelease,
+            disabled: !canUnrelease || !selectedItem || !isReleased(selectedItem),
+            onSelect: () => {
+              if (selected != null) askUnrelease(selected);
+            },
+          },
         ]}
       />
 
@@ -403,4 +424,3 @@ function RowIcon({
     </Tooltip>
   );
 }
-

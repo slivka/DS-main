@@ -129,7 +129,10 @@ export function DocumentFormSecondaryScenarios({
                   items={schedule}
                   onChange={setSchedule}
                   totalToPay={invoice.amountTotal}
-                  saveAction={{ label: "Uložit kalendář", onSave: () => toast.success("Kalendář uložen") }}
+                  saveAction={{
+                    label: "Uložit kalendář",
+                    onSave: () => toast.success("Kalendář uložen"),
+                  }}
                   currencySymbol="Kč"
                   paid={3630}
                   remaining={invoice.amountTotal - 3630}
@@ -267,7 +270,12 @@ export function DocumentFormSecondaryScenarios({
                   items={postedSchedule}
                   onChange={setPostedSchedule}
                   totalToPay={12100}
-                  saveAction={{ label: "Uložit kalendář", disabled: true, disabledReason: "Kalendář nemá změny", onSave: () => {} }}
+                  saveAction={{
+                    label: "Uložit kalendář",
+                    disabled: true,
+                    disabledReason: "Kalendář nemá změny",
+                    onSave: () => {},
+                  }}
                   currencySymbol="Kč"
                   paid={10890}
                   remaining={1210}

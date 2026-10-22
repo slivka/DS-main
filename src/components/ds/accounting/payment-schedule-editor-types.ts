@@ -126,4 +126,3 @@ export interface PaymentScheduleEditorProps {
   saveAction?: PaymentScheduleSaveAction;
   className?: string;
 }
-

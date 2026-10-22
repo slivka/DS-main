@@ -1,13 +1,25 @@
 /** Rozložení kalendáře · vlastní dialog parametrů a náhled · nesmí ukládat. */
 import { useMemo, useState } from "react";
 import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
 import { Label } from "../../ui/label";
 import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
 import { OptionSelect } from "../form/option-select";
 import { formatAmount, formatDate } from "../../../lib/format";
-import { generatePaymentSchedule, type PaymentScheduleInterval, type PaymentScheduleItem, type PaymentScheduleParams } from "./payment-schedule";
+import {
+  generatePaymentSchedule,
+  type PaymentScheduleInterval,
+  type PaymentScheduleItem,
+  type PaymentScheduleParams,
+} from "./payment-schedule";
 import type { PaymentScheduleEditorTexts } from "./payment-schedule-editor-types";
 const today = () => new Date().toISOString().slice(0, 10);
 export function GenerateDialog({

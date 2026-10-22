@@ -7,15 +7,25 @@ export function enrichPaymentScheduleCatalog(components: PanelCatalogComponent[]
   component.props ??= [];
   for (const prop of [
     { name: "zoom", type: "number", default: "GridZoomContext / 1" },
-    { name: "saveAction", type: "PaymentScheduleSaveAction: { label?, onSave, disabled?, busy?, disabledReason? }" },
+    {
+      name: "saveAction",
+      type: "PaymentScheduleSaveAction: { label?, onSave, disabled?, busy?, disabledReason? }",
+    },
   ]) {
     component.props = component.props.filter((item) => item.name !== prop.name);
     component.props.push(prop);
   }
-  component.usage = "Platební kalendář se sdílenou GridToolbar, standardním Přidat a vedlejšími akcemi v nabídce při zúžení. Zoom převezme z okolního GridZoomContext, explicitní zoom má přednost. saveAction vykreslí uložení v liště; disabled/busy blokují opakovaný klik, data a zápis vlastní APP.";
-  component.examples = [{ label: "Kalendář faktury", code: '<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: "Uložit kalendář", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />' }];
+  component.usage =
+    "Platební kalendář se sdílenou GridToolbar, standardním Přidat a vedlejšími akcemi v nabídce při zúžení. Zoom převezme z okolního GridZoomContext, explicitní zoom má přednost. saveAction vykreslí uložení v liště; disabled/busy blokují opakovaný klik, data a zápis vlastní APP.";
+  component.examples = [
+    {
+      label: "Kalendář faktury",
+      code: '<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: "Uložit kalendář", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />',
+    },
+  ];
   component.antipatterns ??= [];
-  const rule = "Nekreslete vlastní Uložit kalendář pod gridem ani vlastní pevnou velikost tlačítek; použijte saveAction a zoom.";
+  const rule =
+    "Nekreslete vlastní Uložit kalendář pod gridem ani vlastní pevnou velikost tlačítek; použijte saveAction a zoom.";
   if (!component.antipatterns.includes(rule)) component.antipatterns.push(rule);
   return [component];
 }
