@@ -8,6 +8,46 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 
 | Name | CSS variable |
 |---|---|
+| `col-tone-gray-soft` | `--col-tone-gray-soft` |
+| `col-tone-gray-soft-fg` | `--col-tone-gray-soft-fg` |
+| `col-tone-gray-strong` | `--col-tone-gray-strong` |
+| `col-tone-gray-strong-fg` | `--col-tone-gray-strong-fg` |
+| `col-tone-gray-mark` | `--col-tone-gray-mark` |
+| `col-tone-blue-soft` | `--col-tone-blue-soft` |
+| `col-tone-blue-soft-fg` | `--col-tone-blue-soft-fg` |
+| `col-tone-blue-strong` | `--col-tone-blue-strong` |
+| `col-tone-blue-strong-fg` | `--col-tone-blue-strong-fg` |
+| `col-tone-blue-mark` | `--col-tone-blue-mark` |
+| `col-tone-teal-soft` | `--col-tone-teal-soft` |
+| `col-tone-teal-soft-fg` | `--col-tone-teal-soft-fg` |
+| `col-tone-teal-strong` | `--col-tone-teal-strong` |
+| `col-tone-teal-strong-fg` | `--col-tone-teal-strong-fg` |
+| `col-tone-teal-mark` | `--col-tone-teal-mark` |
+| `col-tone-olive-soft` | `--col-tone-olive-soft` |
+| `col-tone-olive-soft-fg` | `--col-tone-olive-soft-fg` |
+| `col-tone-olive-strong` | `--col-tone-olive-strong` |
+| `col-tone-olive-strong-fg` | `--col-tone-olive-strong-fg` |
+| `col-tone-olive-mark` | `--col-tone-olive-mark` |
+| `col-tone-yellow-soft` | `--col-tone-yellow-soft` |
+| `col-tone-yellow-soft-fg` | `--col-tone-yellow-soft-fg` |
+| `col-tone-yellow-strong` | `--col-tone-yellow-strong` |
+| `col-tone-yellow-strong-fg` | `--col-tone-yellow-strong-fg` |
+| `col-tone-yellow-mark` | `--col-tone-yellow-mark` |
+| `col-tone-orange-soft` | `--col-tone-orange-soft` |
+| `col-tone-orange-soft-fg` | `--col-tone-orange-soft-fg` |
+| `col-tone-orange-strong` | `--col-tone-orange-strong` |
+| `col-tone-orange-strong-fg` | `--col-tone-orange-strong-fg` |
+| `col-tone-orange-mark` | `--col-tone-orange-mark` |
+| `col-tone-pink-soft` | `--col-tone-pink-soft` |
+| `col-tone-pink-soft-fg` | `--col-tone-pink-soft-fg` |
+| `col-tone-pink-strong` | `--col-tone-pink-strong` |
+| `col-tone-pink-strong-fg` | `--col-tone-pink-strong-fg` |
+| `col-tone-pink-mark` | `--col-tone-pink-mark` |
+| `col-tone-purple-soft` | `--col-tone-purple-soft` |
+| `col-tone-purple-soft-fg` | `--col-tone-purple-soft-fg` |
+| `col-tone-purple-strong` | `--col-tone-purple-strong` |
+| `col-tone-purple-strong-fg` | `--col-tone-purple-strong-fg` |
+| `col-tone-purple-mark` | `--col-tone-purple-mark` |
 | `pane-tabbar` | `--pane-tabbar` |
 | `border-strong` | `--border-strong` |
 | `surface-page` | `--surface-page` |
@@ -110,6 +150,7 @@ Apply with any spacing utility: `p-<name>`, `m-<name>`, `gap-<name>`, `space-<na
 
 | Name | CSS variable |
 |---|---|
+| — | `--col-format-gap` |
 | — | `--document-date-text-gap` |
 | — | `--document-date-left-padding` |
 | — | `--document-date-right-padding` |
@@ -146,6 +187,9 @@ Reference via `var(--name)` in inline styles or CSS.
 
 | CSS variable |
 |---|
+| `--col-format-strip` |
+| `--col-format-dot` |
+| `--col-format-swatch` |
 | `--record-panel-width` |
 | `--note-input-min` |
 | `--note-input-max` |
