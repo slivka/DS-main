@@ -3,6 +3,8 @@ export type DocumentFields = {
   taxDate: boolean;
   dueDate: boolean;
   externalNumber: boolean;
+  /** Objednávka odběratele v základních údajích. */
+  customerOrderRef?: boolean;
   partner: boolean;
   symbols: boolean;
   bankAccount: boolean;
@@ -89,6 +91,7 @@ const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
   KR: NONE,
   ZAP: NONE,
   FV: {
+    customerOrderRef: true,
     ...NONE,
     taxDate: true,
     dueDate: true,
@@ -111,6 +114,7 @@ const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
     paymentOrders: true,
   },
   ZFV: {
+    customerOrderRef: true,
     ...NONE,
     dueDate: true,
     partner: true,

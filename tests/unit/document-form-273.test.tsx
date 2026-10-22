@@ -104,12 +104,10 @@ describe("DocumentForm 2.73", () => {
     cleanup();
     const print = {
       options: {
-        showHeader: false,
-        showFooter: false,
-        showVatRecap: false,
-        showNote: false,
-        showColumnHeadings: false,
-        showTotalsRow: false,
+        showAdvanceDetail: false,
+        showQr: false,
+        showSignature: false,
+        showIssuedBy: false,
         showPaymentSchedule: false,
       },
       headerText: "",
@@ -123,8 +121,8 @@ describe("DocumentForm 2.73", () => {
     const printView = render(
       <DocumentPrintTab value={print} onChange={(next) => (changed = next)} />,
     );
-    fireEvent.click(printView.getByRole("checkbox", { name: "Tisknout záhlaví" }));
-    expect(changed).toEqual({ ...print, options: { ...print.options, showHeader: true } });
+    fireEvent.click(printView.getByRole("checkbox", { name: "QR Platba" }));
+    expect(changed).toEqual({ ...print, options: { ...print.options, showQr: true } });
   });
 
   it("odvodí VS jen z 1 až 10 číslic", () => {

@@ -1,0 +1,20 @@
+/** Návrh C · vlastní tiskové tokeny v mm/pt · žádná doménová logika. */
+export const INVOICE_THEME = {
+  blue: [31, 79, 143] as [number, number, number],
+  soft: [241, 245, 251] as [number, number, number],
+  text: [21, 21, 21] as [number, number, number],
+  gray: [90, 90, 90] as [number, number, number],
+  line: [217, 217, 217] as [number, number, number],
+  white: [255, 255, 255] as [number, number, number],
+  margin: 13,
+  width: 184,
+  bottom: 277,
+  continuationTop: 24,
+  headerHeight: 29,
+  bodySize: 9,
+  tableHeadHeight: 11,
+  draft: [190, 0, 0] as [number, number, number],
+  labelSize: 7,
+  lineHeight: 4.1,
+  rowPadding: 1,
+};

@@ -6,11 +6,16 @@ export const Route = createFileRoute("/components/print")({
   head: () => ({
     meta: [
       { title: "Tisk a PDF – Slivka Design System" },
-      { name: "description", content: "Firemní PDF sestavy, tiskový náhled a pokladní doklady." },
+      {
+        name: "description",
+        content:
+          "Vydané faktury podle návrhu C, QR Platba, firemní PDF sestavy a pokladní doklady.",
+      },
       { property: "og:title", content: "Tisk a PDF – Slivka Design System" },
       {
         property: "og:description",
-        content: "Firemní PDF sestavy, tiskový náhled a pokladní doklady.",
+        content:
+          "Vydané faktury podle návrhu C, QR Platba, firemní PDF sestavy a pokladní doklady.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

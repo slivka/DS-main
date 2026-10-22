@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useDsTexts } from "../../../ds-texts";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog";
 
@@ -13,6 +14,17 @@ export function printPdfFijename(title: string, company: string, date = new Date
   return `${slug(title)}-${slug(company)}-${date.toISOString().slice(0, 10)}.pdf`;
 }
 
+/** Sdílený náhled všech PDF sestav. */
+export interface PrintPreviewDialogProps {
+  /** Otevření. */ open: boolean;
+  /** Změna otevření. */ onOpenChange: (open: boolean) => void;
+  /** PDF. */ blob: Blob | null;
+  /** Nadpis. */ title: string;
+  /** Firma pro výchozí název. */ companyName: string;
+  /** Řízené volby. */ settings?: React.ReactNode;
+  /** Vlastní název souboru. */ filename?: string;
+  /** Chyba přípravy. */ error?: string;
+}
 export function PrintPreviewDialog({
   open,
   onOpenChange,
@@ -20,14 +32,10 @@ export function PrintPreviewDialog({
   title,
   companyName,
   settings,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  blob: Blob | null;
-  title: string;
-  companyName: string;
-  settings?: React.ReactNode;
-}) {
+  filename,
+  error,
+}: PrintPreviewDialogProps) {
+  const texts = useDsTexts().invoicePrint;
   const frame = useRef<HTMLIFrameElement>(null);
   const url = useMemo(() => (blob ? URL.createObjectURL(blob) : null), [blob]);
   useEffect(
@@ -40,7 +48,7 @@ export function PrintPreviewDialog({
     if (!url) return;
     const link = document.createElement("a");
     link.href = url;
-    link.download = printPdfFijename(title, companyName);
+    link.download = filename ?? printPdfFijename(title, companyName);
     link.click();
   };
   return (
@@ -57,23 +65,23 @@ export function PrintPreviewDialog({
               disabled={!url}
               onClick={() => frame.current?.contentWindow?.print()}
             >
-              Tisk
+              {texts.print}
             </Button>
             <Button disabled={!url} onClick={download}>
-              Stáhnout PDF
+              {texts.download}
             </Button>
           </div>
         </div>
         {url ? (
           <iframe
             ref={frame}
-            title={`Náhled ${title}`}
+            title={`${texts.preview} ${title}`}
             src={url}
             className="h-full w-full border bg-muted"
           />
         ) : (
           <div className="grid place-items-center text-sm text-muted-foreground">
-            Připravuji náhled…
+            {error ?? texts.preparing}
           </div>
         )}
       </DialogContent>

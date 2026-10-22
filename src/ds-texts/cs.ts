@@ -1,3 +1,4 @@
+import { INVOICE_PRINT_CS } from "./invoice-print-texts";
 /**
  * České texty design systému (výchozí jazyk knihovny).
  * Vlastní: hodnoty DS_TEXTS_CS.
@@ -25,6 +26,7 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  invoicePrint: INVOICE_PRINT_CS,
   fileImport: FILE_IMPORT_CS,
   advances: ADVANCES_CS,
   templates: TEMPLATES_CS,

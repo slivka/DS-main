@@ -4,6 +4,7 @@
  * Nesmí: spravovat identitu dokladu nebo ostatní sekce.
  */
 import type { ReactNode } from "react";
+import { useDsTexts } from "../../../../ds-texts";
 import { Input } from "../../../ui/input";
 import { counterpartyCreateSeed, type CounterpartySeed } from "../counterparty-field";
 import { CounterpartyInputField } from "../counterparty-input-field";
@@ -105,6 +106,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
     onCounterpartyInputChange,
     counterpartyInputLockedReason,
   } = p;
+  const printTexts = useDsTexts().invoicePrint;
   const generalPartnerReason =
     (counterpartyInput === "manual" ? p.lockReason?.("counterpartyName") : undefined) ??
     p.lockReason?.("partnerId");
@@ -263,6 +265,29 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
             !p.cashDocument && (receivedDocument || p.taxNumberField) ? 14 : 20,
             receivedDocument ? "@min-[40rem]:col-start-1 @min-[40rem]:pr-3" : undefined,
           )}
+          {f.customerOrderRef
+            ? field(
+                "document-customerOrderRef",
+                printTexts.order,
+                p.lockReason?.("customerOrderRef") ? (
+                  <FieldValue
+                    id="document-customerOrderRef"
+                    lockedReason={p.lockReason("customerOrderRef")}
+                  >
+                    {value.customerOrderRef ?? ""}
+                  </FieldValue>
+                ) : (
+                  <Input
+                    id="document-customerOrderRef"
+                    value={value.customerOrderRef ?? ""}
+                    disabled={!can("customerOrderRef")}
+                    readOnly={readOnly}
+                    onChange={(event) => patch({ customerOrderRef: event.target.value })}
+                  />
+                ),
+                20,
+              )
+            : null}
           {p.taxNumberField}
           {receivedDocument && f.externalNumber ? externalNumberField : null}
         </div>

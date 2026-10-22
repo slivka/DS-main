@@ -1,6 +1,11 @@
 ## DS 2.133.0 (nevydáno)
 
-- [ ] Zatím bez úkolů.
+- [x] B1: PDF faktury podle návrhu C, typy APP, sekce a stránkování.
+- [x] B2–B3: SPAYD/QR, dialog tisku a názvy PDF.
+- [x] B4–B5: tiskové údaje, předloha knihy, objednávka a dodací adresa.
+- [x] B6: čtyři ukázky, testy, katalog, úplná kontrola; nevydávat.
+
+- Ověření 2.133.0: check:full --harness 1 320/1 320 ve 139 souborech, lint/formát/audity/katalog OK; cíleně 53/53; Chromium invoice-print 1/1, čtyři skutečné PDF snímky 2/1/1/1 stran, Roboto vizuálně čitelné. Katalog 477 → 480 / 1 166 → 1 223 props, 0 odebrání. Nevydáno; plná E2E sada mimo kolo.
 
 ## DS 2.132.0
 

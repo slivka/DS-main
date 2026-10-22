@@ -2,7 +2,14 @@
 
 ## 2.133.0 (nevydáno)
 
-- Zatím bez změn.
+- `buildInvoicePdf`, veřejné `InvoicePrintData` a tiskové typy: návrh C nad společným `createPrintDocument` / Roboto, rozdělený podle sekcí. DS pouze vykresluje hotové částky, DPH, zálohy, splátky a měny od APP; hotové `base_total`, `vat_total`, `vat_total_text`, `vat_home` jsou volitelné doplňky APP, nikoli výpočty DS.
+- Záhlaví, dodavatel/dodání/odběratel, platební pás, položky, součty, zálohy, rekapitulace, texty, podpis a zápatí každé strany; krátké vzory na jedné straně, rozsáhlý vzor na dvou. Logo jen nahrané, bez monogramu; Koncept bez čísla/QR, s vodoznakem.
+- `buildSpayd` a vektorová QR Platba přes qrcode-generator; `InvoicePrintDialog` používá sdílený `PrintPreviewDialog`, vlastní názvy PDF a hlášení chyby. SourcePreview předává PDF.js `ownerDocument` iframe, aby načtené Roboto bylo dostupné při kreslení do jeho canvasu (odstraněny čtverečky v náhledu).
+- `DocumentPrintTab` / `BookPrintTemplateFields`: pět voleb, tiskové texty a kontakty; Načíst z knihy po jediném potvrzení. `DocumentForm.customerOrderRef` platí shodně pro FV i ZFV. `DocumentCounterpartyValue.delivery` / `DocumentDeliveryFields`: přepnutí na jinou dodací adresu, vypnutí ji vymaže; Mapa je akce APP za Zemí.
+- **Migrace tiskových voleb:** `DocumentPrintOptions` nyní obsahuje `showPaymentSchedule`, `showAdvanceDetail`, `showQr`, `showSignature`, `showIssuedBy`. Odstraňte staré přepínače showHeader/showFooter/showVatRecap/showNote/showColumnHeadings/showTotalsRow; texty se tisknou pouze vyplněné, sekce podle dat a nových voleb. Textová pole `DocumentPrintValue` se nemění.
+- CS/SK a čtyři hotové fiktivní vzory z vizuální předlohy. Dodané HTML se nepřeformátovává ani nedistribuuje; výpočty jeho ukázky nepřešly do knihovny.
+- Bezpečnost: zranitelná vnořená DOMPurify nahrazena 3.4.17 pomocí override, jsPDF 4.2.1 zachován; kontrola závislostí již upozornění DOMPurify/jsPDF nevrací. Ostatní nálezy kontroly závislostí tímto nejsou prohlášeny za vyřešené.
+- Ověření: průběžný `check:quick --harness`, cíleně 53/53 testů ve třech souborech. Chromium `invoice-print.spec.ts` 1/1 (čtyři vzory, Koncept, skutečný PDF náhled, stažení); vizuální kontrola Roboto a počtu stran 2/1/1/1. Katalog proti vydané 2.132.0: 477 → 480 komponent, 1 166 → 1 223 props, 0 odebrání. `check:full --harness` prošel: 1 320/1 320 testů ve 139 souborech, lint/formát/audity/katalog OK; automatické sestavení ověřeno samostatně; plná E2E sada/Firefox/WebKit neběžely. Nevydáno, release Claude.
 
 ## 2.132.0
 

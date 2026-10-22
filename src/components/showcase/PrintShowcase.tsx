@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { InvoicePrintShowcase } from "./InvoicePrintShowcase";
 import { Button } from "@/components/ui/button";
 import {
   CashReceiptPrintDialog,
@@ -341,6 +342,7 @@ export function PrintShowcase() {
   };
   return (
     <>
+      <InvoicePrintShowcase />
       <GridPrintShowcase />
       <ShowcaseSection
         title="Obratová sestava"

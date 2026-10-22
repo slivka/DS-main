@@ -1,5 +1,11 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Tisk vydané faktury
+
+- `buildInvoicePdf(InvoicePrintData, opts)` pouze vykreslí hotový výstup APP (document_print_data); daně, zálohy, součty a domácí měnu dodává APP. Volitelné base_total/vat_total/vat_total_text/vat_home doplní APP, DS je neodvozuje z položek.
+- Používejte společný createPrintDocument/Roboto a InvoicePrintDialog nad PrintPreviewDialog. QR moduly vytváří qrcode-generator, buildSpayd je čistý převod. Nahrané logo musí mít aplikací vyřešenou URL; nikdy monogram.
+- DocumentPrintTab a BookPrintTemplateFields mají pouze pět voleb, texty a kontakty; onReloadFromBook běží až po potvrzení. Objednávka customerOrderRef a řízená delivery adresa platí pro FV i ZFV. Vypnutí adresy předává null.
+
 ## Import souborů
 
 - FileDropZone a FileChipBar sdílejí useFileDrop/validateFiles pro výběr i přetažení; accept, maxSizeBytes a zbývající maxFiles dodává APP. onReject vrací type/size/count. Žádné parsování banky ani nahrávání v DS.
