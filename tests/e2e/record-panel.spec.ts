@@ -14,6 +14,10 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
     "true",
   );
   await panel.getByRole("tab", { name: "Zdroj", exact: true }).click();
+  await page.keyboard.press("ArrowRight");
+  await expect(panel.getByRole("tab", { name: /^Poznámky/ })).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(panel.getByRole("tab", { name: "Zdroj", exact: true })).toBeFocused();
   await expect(panel.locator("iframe")).toBeVisible();
   await expect(panel.getByRole("button", { name: "Nahradit", exact: true })).toBeVisible();
   const verifyPdf = async (host: typeof panel) => {
