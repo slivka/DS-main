@@ -84,7 +84,8 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
       }
     };
     element.addEventListener("load", load);
-    if (element.contentDocument?.readyState === "complete") void load();
+    if (element.contentDocument?.URL === "about:srcdoc" &&
+        element.contentDocument.readyState === "complete") void load();
     return () => {
       stopped = true;
       generation++;
