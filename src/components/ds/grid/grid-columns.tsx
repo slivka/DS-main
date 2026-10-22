@@ -131,7 +131,7 @@ export type GridColumnGroup = { section: string; span: number };
 
 /**
  * Sdílená správa viditelnosti sloupců pro všechny gridy.
- * Nastavení se ukládá do prohlížeče pod `columns:<storageKey>`.
+ * Nastavení se ukládá do úložiště rozložení gridů (`updateGridLayout`).
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
 export function useGridColumns<Id extends string>(

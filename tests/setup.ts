@@ -23,6 +23,7 @@ const pristine = {
 };
 
 const { cleanup } = await import("@testing-library/react");
+const { configureGridPrefsStore, resetGridPrefs } = await import("../src/lib/grid-prefs");
 
 afterEach(() => {
   // Odpojí všechny vykreslené stromy včetně Radix portálů (bubliny, nabídky, dialogy).
@@ -39,6 +40,9 @@ afterEach(() => {
   // Úložiště sdílí celý běh; zbytky (zoom, panely, preference) by ovlivnily další soubor.
   window.localStorage.clear();
   window.sessionStorage.clear();
+  // Paměť rozložení gridů je modulová – bez resetu by přežila mezi soubory.
+  configureGridPrefsStore(null);
+  resetGridPrefs();
   const active = document.activeElement as HTMLElement | null;
   if (active && active !== document.body) active.blur?.();
 });
