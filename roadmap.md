@@ -1,6 +1,6 @@
 ## DS 2.133.0 (nevydáno)
 
-- [ ] Opravy kontroly Clauda S1–S4 / N5–N13: QR, domácí měna, kompatibilita, izolace rozměrů, překlady, náhled a dlouhé texty; seed 2051416494 a úplná kontrola.
+- [x] Opravy kontroly Clauda S1–S4 / N5–N13: QR, domácí měna, kompatibilita, izolace rozměrů, překlady, náhled a dlouhé texty; seed 2051416494 a úplná kontrola (1 358/1 358 ve 140 souborech), cíleně 72/72, Chromium 1/1, katalog bez ztrát katalogových komponent/props. Nevydáno.
 
 - [x] B1: PDF faktury podle návrhu C, typy APP, sekce a stránkování.
 - [x] B2–B3: SPAYD/QR, dialog tisku a názvy PDF.
