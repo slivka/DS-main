@@ -43,7 +43,7 @@ export function useIdentityLayout() {
         for (const node of copy.querySelectorAll<HTMLElement>("[id], [data-slot]")) {
           node.removeAttribute("id");
           // Kopie nesmějí soupeřit s živými selektory formuláře.
-          if (node.dataset.slot?.startsWith("identity-line")) node.removeAttribute("data-slot");
+          node.removeAttribute("data-slot");
         }
         target.replaceChildren(copy);
       }

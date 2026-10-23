@@ -75,6 +75,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
             <span
               key={index}
               data-slot="identity-line-item"
+              data-identity-first={index === 0 ? "true" : undefined}
               className={cn("ds-identity-item flex items-center", index === last ? "min-w-0" : "shrink-0")}
             >
               {index > 0 || leading ? (
@@ -94,7 +95,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
         >
           {status}
         </div>
-        <div aria-hidden="true" inert className="ds-identity-measure absolute invisible pointer-events-none" data-identity-measure>
+        <div aria-hidden="true" inert className="ds-identity-measure absolute invisible pointer-events-none">
           <div data-slot="identity-measure-full" data-identity-measure />
           <div data-slot="identity-measure-minimum" data-identity-measure />
           <span data-slot="identity-measure-status" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{typeof fullStatus === "string" ? fullStatus : null}</span>
