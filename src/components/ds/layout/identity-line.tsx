@@ -38,6 +38,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
 ) {
   const rowRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
+  const numberRef = useRef<HTMLDivElement>(null);
   const [stacked, setStacked] = useState(false);
   const stackedAt = useRef(0);
   const check = () => {
@@ -50,7 +51,16 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
       if (width > stackedAt.current + 1) setStacked(false);
       return;
     }
-    if (left.scrollWidth > left.clientWidth + 1) {
+    // Stav se smí zkrátit jen do čitelné šířky (8 rem); pevné položky vlevo se zkrátit nesmí.
+    const numberEl = numberRef.current;
+    const inner = numberEl?.firstElementChild ?? numberEl;
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const statusCut =
+      !!numberEl &&
+      !!inner &&
+      inner.scrollWidth > numberEl.clientWidth + 1 &&
+      numberEl.clientWidth < rem * 8;
+    if (left.scrollWidth > left.clientWidth + 1 || statusCut) {
       stackedAt.current = width;
       setStacked(true);
     }
@@ -109,10 +119,11 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
           ))}
         </div>
         <div
+          ref={numberRef}
           id={numberId}
           data-slot="identity-line-number"
           className={cn(
-            "flex min-h-[var(--control-h)] min-w-0 items-center self-center whitespace-nowrap font-mono text-xl font-bold tabular-nums",
+            "flex min-h-[var(--control-h)] min-w-0 items-center overflow-hidden self-center whitespace-nowrap font-mono text-xl font-bold tabular-nums",
             stacked ? "justify-start text-left" : "justify-end text-right",
             pending && "font-sans text-sm font-normal italic text-muted-foreground",
             pending && !stacked && "max-w-48",
