@@ -6,6 +6,7 @@
 import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
 import { useContext, type ReactNode, type RefObject } from "react";
 import { IdentityLine } from "../../layout/identity-line";
+import { TruncatedText } from "../../data-display/truncated-text";
 import { FieldSuggestionContext } from "../../form/field-suggestion-context";
 import { FieldFeedbackContext, FieldSuggestionIndicator } from "../../form/field-feedback";
 import { useDsTexts } from "../../../../ds-texts";
@@ -86,8 +87,8 @@ export function DocumentIdentityLine({
   // Interní doklad účet nikdy nezobrazuje, i když jej aplikace pošle.
   const account = identity.variant === "internal" ? undefined : identity.account;
   const items: ReactNode[] = [
-    <span key="book" className="whitespace-nowrap">
-      {identity.book}
+    <span key="book" className="ds-identity-book min-w-0">
+      <TruncatedText text={identity.book} />
     </span>,
     <span key="period" className="whitespace-nowrap">
       {identity.period}
@@ -141,7 +142,7 @@ export function DocumentIdentityLine({
         key="account"
         className="document-identity-account inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap"
       >
-        <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">
+        <span className="inline-flex shrink-0 h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">
           {account.side}
         </span>
         <FieldFeedbackContext.Provider value={{ suggestion }}>
@@ -191,7 +192,7 @@ export function DocumentIdentityLine({
                     {accountName ? (
                       <>
                         <span className="shrink-0 whitespace-pre">{CODE_SEPARATOR}</span>
-                        <span className="min-w-0 truncate">{accountName}</span>
+                        <TruncatedText text={accountName} className="ds-identity-account-name min-w-0" />
                       </>
                     ) : null}
                   </span>
@@ -218,6 +219,7 @@ export function DocumentIdentityLine({
       number={number}
       numberId="document-number"
       fallback={identity.numberPending ?? fallback}
+      fallbackShort={identity.fallbackShort ?? dsTexts.documentForm.fallbackShort}
       leading={
         direction ? (
           <span id="document-direction" className="inline-flex">

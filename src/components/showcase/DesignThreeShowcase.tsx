@@ -128,10 +128,10 @@ export function DesignThreeShowcase() {
             variant: "cashBank",
             book: "Banka",
             period: "2026",
-            number: "BA2026000019",
+            number: undefined,
             account: { side: "MD", label: "221.001 – Běžný bankovní účet" },
           }}
-          fallback=""
+          fallback="Koncept – číslo při zařazení"
           direction="in"
           texts={DEFAULT_DOCUMENT_FORM_TEXTS}
           accountLabel={
