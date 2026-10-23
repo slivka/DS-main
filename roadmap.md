@@ -1,4 +1,6 @@
-## DS 2.135.0 (nevydáno)
+## DS 2.136.0 (nevydáno)
+
+## DS 2.135.0
 
 - [x] Oprava kontroly Clauda: podklad návrhu jen pro ovládání hodnoty (input/select/textarea, spouštěč s role="combobox" a data-slot="select-trigger"), ikonová tlačítka v poli beze změny; nový unit test na skutečné prvky (padá po návratu ke starému pravidle). check:quick + check:full --harness 1 393/1 393 ve 144 souborech, katalog bez ztrát, E2E nespouštěny. Nevydáno, release Claude.
 

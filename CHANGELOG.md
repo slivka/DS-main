@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.135.0 (nevydáno)
+## 2.136.0 (nevydáno)
+
+## 2.135.0
 
 - Vytěžování souborů (E1): nový stav pole `suggestion?: FieldSuggestion` na `Field` i `Input` (a přes kontext na všech polích formuláře). „Navrženo“ = jemný podklad z nového tokenu `--suggestion-soft` (světlý i tmavý režim, nesplývá se zakázaným polem); „ke kontrole“ = žlutý rámeček, ikona a bublina se zprávou stejným vzorem jako varování – výška pole ani řádku se nemění. Chyba a varování mají přednost; stav po první ruční změně ruší rodič, DS jen vykresluje.
 - Nové komponenty bez domény: `ExtractionStatus` (Vytěžuji… / Hotovo · metoda / Nepodařilo se – Zkusit znovu / Duplicitní soubor – Otevřít původní doklad; callbacky `onCancel`/`onRetry`/`onOpenOriginal`), `SuggestionSummary` (jednořádkový souhrn se skloňovaným počtem polí ke kontrole, odkazem na řádky a akcemi „Další ke kontrole“ – klávesa F8 cyklicky obchází pole `data-suggestion="uncertain"` – a „Zahodit návrh“), `ExtractionOverwriteDialog` („Doklad už má vyplněné hodnoty“: Přepsat vše / Doplnit jen prázdná pole / Zrušit) a `ExtractedItemsTable` (grid jen pro čtení se souhrnným řádkem od aplikace, výchozí sbalený, pod náhled zdroje). Texty v DsTexts (CS i SK), žádné pevné řetězce.
