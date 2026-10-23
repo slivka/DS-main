@@ -14,6 +14,7 @@ import { useDocumentFormStickyTop } from "./use-document-form-layout";
 import { useIdentityAccountSelection } from "./use-identity-account-selection";
 import { buildDocumentActionMenu } from "./document-action-menu";
 import { documentFormInputs } from "./document-form-inputs";
+import { clearChangedHeaderSuggestions, useSuggestionClear } from "./document-suggestions";
 /** Kompletní formulář účetního dokladu. */
 export function useDocumentFormBase(props: DocumentFormProps) {
   const inputs = documentFormInputs(props);
@@ -68,7 +69,11 @@ export function useDocumentFormBase(props: DocumentFormProps) {
     onFieldChange: (fieldId) => onFieldChange?.(fieldId),
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
-  const patch = reportingPatch(datePatch, onFieldChange);
+  const clearSuggestion = useSuggestionClear(props.fieldSuggestions, props.onSuggestionCleared);
+  const patch = reportingPatch((next) => {
+    datePatch(next);
+    clearChangedHeaderSuggestions(value, next, clearSuggestion);
+  }, onFieldChange);
   const [tab, setTab] = useDetailTab(activeDetailTab, props.onActiveDetailTabChange);
   const formRef = useDocumentFormStickyTop();
   const can = (key: DocumentHeaderField) =>

@@ -200,6 +200,8 @@ export function useDocumentFormModel(props: DocumentFormProps) {
     rateAmount,
     linesEditorProps: {
       ...linesEditorProps,
+      rowSuggestions: props.rowSuggestions ?? linesEditorProps?.rowSuggestions,
+      onSuggestionCleared: props.onSuggestionCleared ?? linesEditorProps?.onSuggestionCleared,
       onValidationChange,
       cellIssues,
     },

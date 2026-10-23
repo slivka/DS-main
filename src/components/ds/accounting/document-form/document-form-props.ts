@@ -4,6 +4,8 @@
  * Nesmí: vykreslovat UI ani obsahovat stav formuláře.
  */
 import type { FormIssue } from "../../../../lib/form-issues";
+import type { FieldSuggestion } from "../../form/field-feedback";
+import type { JournalRowSuggestions } from "../journal-suggestions";
 
 import type { ReactNode } from "react";
 
@@ -153,6 +155,12 @@ export interface DocumentFormProps {
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   /** Výstrahy jednotlivých polí; společně se zobrazí nad formulářem. */
   fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
+  /** Návrhy hlavičky; klíče odpovídají hodnotám formuláře, stav vlastní APP. */
+  fieldSuggestions?: Partial<Record<string, FieldSuggestion>>;
+  /** Návrhy buněk podle id řádku, společné pro všechny varianty dokladu. */
+  rowSuggestions?: JournalRowSuggestions;
+  /** První ruční změna navržené hodnoty; rodič příslušný návrh odebere. */
+  onSuggestionCleared?: (key: string, rowId?: string) => void;
   /**
    * Obecný důvod uzamčení pole mimo editableFields (2.128.0): pole se vykreslí jen pro čtení
    * přes FieldValue se zámkem a důvodem v bublině. Texty dodává aplikace (např. „Převzato

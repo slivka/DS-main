@@ -15,6 +15,7 @@ import {
   type FieldSuggestion,
 } from "../form/field-feedback";
 import { useDsTexts } from "../../../ds-texts";
+import { FieldSuggestionContext } from "../form/field-suggestion-context";
 
 const FIELD_SPAN_CLASSES = {
   1: "@min-[40rem]:col-span-1",
@@ -124,8 +125,10 @@ export function Field({
 }: FieldProps) {
   const breakpoint = useContext(FieldGridBreakpointContext);
   const texts = useDsTexts();
+  const resolveSuggestion = useContext(FieldSuggestionContext);
+  const inheritedSuggestion = htmlFor ? resolveSuggestion?.(htmlFor) : undefined;
   // Chyba a varování mají přednost; návrh se vykreslí jen u čistého pole.
-  const activeSuggestion = !error && !warning ? suggestion : undefined;
+  const activeSuggestion = !error && !warning ? suggestion ?? inheritedSuggestion : undefined;
   const suggestionClass = activeSuggestion
     ? activeSuggestion.uncertain
       ? "[&_.border-input]:border-warning [&_input]:border-warning [&_select]:border-warning [&_textarea]:border-warning"

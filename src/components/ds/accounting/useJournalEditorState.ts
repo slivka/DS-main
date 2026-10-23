@@ -52,6 +52,7 @@ import { fillInitialVatCode } from "./journal-vat";
 import { useJournalVatGroups } from "./useJournalVatGroups";
 import { inheritedLineValues, useJournalPins } from "./useJournalPins";
 import { vatCodeCellLabel } from "./vat-code-labels";
+import { useJournalSuggestionClear } from "./journal-suggestions";
 
 /** Celý stav a akce editoru; sdílí jej všechny části přes `JournalEditorContext`. */
 export function useJournalEditorState(
@@ -215,9 +216,11 @@ export function useJournalEditorState(
     [normalizedLines, search],
   );
   const pins = useJournalPins();
+  const clearSuggestions = useJournalSuggestionClear(props.rowSuggestions, props.onSuggestionCleared);
   const patch = (id: string, values: Partial<JournalLine>) => {
     touchedRows.current.add(id);
     const current = lines.find((line) => line.id === id);
+    if (current) clearSuggestions(current, values);
     if (current) pins.releaseInherited(current, values);
     onChange(lines.map((line) => (line.id === id ? { ...line, ...values, isBlank: false } : line)));
   };
