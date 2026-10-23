@@ -99,7 +99,8 @@ export function enrichInvoicePrintCatalog(components: PanelCatalogComponent[]) {
           code: "<DocumentCounterpartyTab value={customer} onChange={setCustomer} counterpartyLocked deliveryReadOnly={false} />",
         });
       c.antipatterns ??= [];
-      const rule = "Neodemykejte odběratele kvůli dodání; použijte deliveryReadOnly=false. Celkové readOnly nelze touto volbou obejít.";
+      const rule =
+        "Neodemykejte odběratele kvůli dodání; použijte deliveryReadOnly=false. Celkové readOnly nelze touto volbou obejít.";
       if (!c.antipatterns.includes(rule)) c.antipatterns.push(rule);
     }
     for (const prop of spec.props)

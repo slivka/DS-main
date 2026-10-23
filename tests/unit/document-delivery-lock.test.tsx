@@ -69,12 +69,7 @@ describe("DocumentCounterpartyTab – zámek dodání", () => {
   it("celkové readOnly má přednost před false", () => {
     const change = mock();
     const view = render(
-      <DocumentCounterpartyTab
-        value={value}
-        onChange={change}
-        readOnly
-        deliveryReadOnly={false}
-      />,
+      <DocumentCounterpartyTab value={value} onChange={change} readOnly deliveryReadOnly={false} />,
     );
     expect((view.getByDisplayValue("Sklad") as HTMLInputElement).readOnly).toBe(true);
     fireEvent.click(view.getByRole("checkbox"));
