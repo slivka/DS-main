@@ -55,9 +55,12 @@ export function enrichInvoicePrintCatalog(components: PanelCatalogComponent[]) {
     {
       name: "DocumentCounterpartyTab",
       file: "src/components/ds/accounting/document-detail-tabs.tsx",
-      props: [{ name: "deliveryMapAction", type: "AddressMapAction" }],
+      props: [
+        { name: "deliveryMapAction", type: "AddressMapAction" },
+        { name: "deliveryReadOnly", type: "boolean" },
+      ],
       usage:
-        "Údaje odběratele doplňuje řízená delivery adresa; platí pro FV i ZFV. Stávající zamčení/obnovení údajů z partnera beze změny.",
+        "Údaje odběratele doplňuje řízená delivery adresa; platí pro FV i ZFV. deliveryReadOnly=false odemkne dodání při counterpartyLocked; bez prop přebírá jeho zámek, celkové readOnly má přednost.",
       code: "<DocumentCounterpartyTab value={{ ...customer, delivery }} onChange={setCustomer} deliveryMapAction={{ label: texts.map, onClick: openMap }} />",
     },
     {
@@ -87,6 +90,19 @@ export function enrichInvoicePrintCatalog(components: PanelCatalogComponent[]) {
       components.push(c);
     }
     c.props ??= [];
+    if (spec.name === "DocumentCounterpartyTab") {
+      c.examples ??= [];
+      const label = "Dodání při zamčeném odběrateli";
+      if (!c.examples.some((e) => e.label === label))
+        c.examples.push({
+          label,
+          code: "<DocumentCounterpartyTab value={customer} onChange={setCustomer} counterpartyLocked deliveryReadOnly={false} />",
+        });
+      c.antipatterns ??= [];
+      const rule =
+        "Neodemykejte odběratele kvůli dodání; použijte deliveryReadOnly=false. Celkové readOnly nelze touto volbou obejít.";
+      if (!c.antipatterns.includes(rule)) c.antipatterns.push(rule);
+    }
     for (const prop of spec.props)
       if (!c.props.some((p) => p.name === prop.name)) c.props.push(prop);
     if (spec.name === "BookPrintTemplateFields") {

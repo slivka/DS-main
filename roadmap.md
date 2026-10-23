@@ -1,5 +1,7 @@
 ## DS 2.134.0 (nevydáno)
 
+- [x] Samostatné deliveryReadOnly pro dodací adresu (FV i ZFV), zpětně kompatibilní výchozí zámek a přednost celkového readOnly. Čtyři unit regrese, cíleně 14/14; check:full --harness 1 379/1 379 ve 143 souborech, katalog 480 → 480 / 1 187 → 1 227, 0 odebrání. Nevydáno, release Claude.
+
 - [x] Před vydáním: rušení PDF zachyceno v jedné životnosti, abortovatelný fetch bajtů před PDF.js, tři unit regrese; společný E2E pomocník ve všech osmi souborech bublin. Devět dotčených scénářů má 20/20 (hlavní běh 177/180 + po doplnění Tab/hover dva zbývající 40/40); úplná kontrola 1 375/1 375, katalog beze ztrát. Výsledky v CHANGELOGu, nevydáno, release Claude.
 - Celá sada Chromium provedena: 148 prošlo / 2 nesouvisející selhání / 3 vynecháno; ND baseline odchylka šířky 0,71875 px proti 0,5 a PageHeader data-ready po 10 s. Sada není zelená; nesouvisející komponenty/tolerance se v tomto zadání neměnily. Poslední doplnění Tab + hover následně ověřeno 40/40, nikoli novou celou sadou.
 

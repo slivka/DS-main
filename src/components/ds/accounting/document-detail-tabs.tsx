@@ -51,6 +51,8 @@ export interface DocumentCounterpartyTabProps extends Omit<
   readOnly?: boolean;
   /** Aplikace zamkla údaje protistrany, typicky po zařazení. */
   counterpartyLocked?: boolean;
+  /** Zamkne dodací adresu; výchozí counterpartyLocked. readOnly má vždy přednost. */
+  deliveryReadOnly?: boolean;
   /** Důvod zamčení všech údajů protistrany. */
   counterpartyLockedReason?: string;
   /** Názvy polí, která uživatel upravil ručně. */
@@ -77,6 +79,7 @@ export const DocumentCounterpartyTab = forwardRef<HTMLDivElement, DocumentCounte
       onReloadFromPartner,
       readOnly = false,
       counterpartyLocked = false,
+      deliveryReadOnly = counterpartyLocked,
       counterpartyLockedReason,
       counterpartyManualFields = [],
       onRefreshCounterparty,
@@ -220,7 +223,7 @@ export const DocumentCounterpartyTab = forwardRef<HTMLDivElement, DocumentCounte
           value={value.delivery ?? null}
           onChange={(delivery) => patch({ delivery })}
           countries={countries}
-          readOnly={locked}
+          readOnly={readOnly || deliveryReadOnly}
           mapAction={deliveryMapAction}
         />
         {confirmDialog}
