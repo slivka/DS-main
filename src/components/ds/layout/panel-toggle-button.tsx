@@ -16,8 +16,8 @@ export interface PanelToggleButtonProps extends Omit<
   onToggle: () => void;
   /** Tečka upozornění dodaná aplikací. */
   indicator?: boolean;
-  /** Úplná informace z aplikace. */
-  tooltip: string;
+  /** Doplňující informace z aplikace pod akcí bubliny (např. počty příloh). */
+  tooltip?: string;
   /** Umístění panelu; bez hodnoty se použije open. */
   state?: "closed" | "open" | "elsewhere";
   /** Zaměření panelu v sousedním okně. */
@@ -30,19 +30,23 @@ export const PanelToggleButton = forwardRef<HTMLButtonElement, PanelToggleButton
     ref,
   ) {
     const active = state ? state !== "closed" : open;
+    // Zavřený panel: šipka k obsahu (←, „Otevřít panel“); otevřený: šipka ven (→, „Zavřít panel“).
     const Icon = active ? PanelRightClose : PanelRightOpen;
     const t = useDsTexts().recordPanel;
+    const action = active && state !== "elsewhere" ? t.close : t.open;
+    const extra = tooltip && tooltip !== t.panel ? tooltip : undefined;
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             ref={ref}
             type="button"
-            variant={active ? "outline" : "ghost"}
+            variant="outline"
             size="icon"
             {...props}
             className={cn("relative h-[var(--control-h)] w-[var(--control-h)] shrink-0", className)}
-            aria-label={t.panel}
+            aria-label={action}
+            data-direction={active ? "close" : "open"}
             aria-pressed={active}
             onClick={() => (state === "elsewhere" ? onFocusElsewhere?.() : onToggle())}
           >
@@ -55,7 +59,12 @@ export const PanelToggleButton = forwardRef<HTMLButtonElement, PanelToggleButton
             ) : null}
           </Button>
         </TooltipTrigger>
-        <TooltipContent>{tooltip}</TooltipContent>
+        <TooltipContent>
+          <span className="flex flex-col gap-0.5">
+            <span>{action}</span>
+            {extra ? <span className="opacity-80">{extra}</span> : null}
+          </span>
+        </TooltipContent>
       </Tooltip>
     );
   },

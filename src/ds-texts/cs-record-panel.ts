@@ -9,6 +9,7 @@ import type {
 /** Panel záznamu. */
 export const RECORD_PANEL_CS: RecordPanelTexts = {
   panel: "Panel",
+  open: "Otevřít panel",
   resize: "Změnit šířku panelu",
   close: "Zavřít panel",
   pin: "Připnout k záznamu",
