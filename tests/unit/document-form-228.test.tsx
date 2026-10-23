@@ -54,7 +54,8 @@ describe("DocumentForm 2.31.0", () => {
     expect(html.indexOf("document-direction-badge")).toBeGreaterThan(
       html.indexOf('data-slot="document-identity"'),
     );
-    expect(html.indexOf("document-direction-badge")).toBeLessThan(html.indexOf("PO - Pokladna"));
+    const body = html.slice(html.indexOf('data-slot="identity-line-items"'));
+    expect(body.indexOf("document-direction-badge")).toBeLessThan(body.indexOf("PO - Pokladna"));
   });
   it("vykreslí výchozí i vlastní text čekajícího čísla", () => {
     expect(
