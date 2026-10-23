@@ -32,8 +32,8 @@ export function useIdentityLayout() {
     const row = rowRef.current;
     if (!row) return;
     const items = row.querySelector<HTMLElement>('[data-slot="identity-line-items"]');
-    const full = row.querySelector<HTMLElement>('[data-slot="identity-measure-full"]');
-    const minimum = row.querySelector<HTMLElement>('[data-slot="identity-measure-minimum"]');
+    const full = row.parentElement?.querySelector<HTMLElement>('[data-slot="identity-measure-full"]');
+    const minimum = row.parentElement?.querySelector<HTMLElement>('[data-slot="identity-measure-minimum"]');
     if (!items || !full || !minimum) return;
     const copyItems = () => {
       for (const target of [full, minimum]) {
@@ -50,10 +50,8 @@ export function useIdentityLayout() {
     };
     copyItems();
     const measure = () => {
-      const full = row.querySelector<HTMLElement>('[data-slot="identity-measure-full"]');
-      const minimum = row.querySelector<HTMLElement>('[data-slot="identity-measure-minimum"]');
-      const status = row.querySelector<HTMLElement>('[data-slot="identity-measure-status"]');
-      const short = row.querySelector<HTMLElement>('[data-slot="identity-measure-short"]');
+      const status = row.parentElement?.querySelector<HTMLElement>('[data-slot="identity-measure-status"]');
+      const short = row.parentElement?.querySelector<HTMLElement>('[data-slot="identity-measure-short"]');
       if (!full || !minimum || !status || !short) return;
       setLevel((previous) => resolveIdentityLevel({
         available: row.clientWidth,
@@ -67,7 +65,7 @@ export function useIdentityLayout() {
     if (typeof ResizeObserver === "undefined") return;
     const resize = new ResizeObserver(measure);
     resize.observe(row);
-    for (const child of row.querySelectorAll<HTMLElement>("[data-identity-measure]"))
+    for (const child of row.parentElement?.querySelectorAll<HTMLElement>("[data-identity-measure]") ?? [])
       resize.observe(child);
     const mutation = new MutationObserver(() => { copyItems(); measure(); });
     mutation.observe(items, { childList: true, subtree: true, characterData: true });

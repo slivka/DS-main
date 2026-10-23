@@ -95,13 +95,13 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
         >
           {status}
         </div>
+      </div>
         <div aria-hidden="true" inert className="ds-identity-measure absolute invisible pointer-events-none">
           <div data-slot="identity-measure-full" data-identity-measure />
           <div data-slot="identity-measure-minimum" data-identity-measure />
           <span data-slot="identity-measure-status" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{typeof fullStatus === "string" ? fullStatus : null}</span>
           <span data-slot="identity-measure-short" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{fallbackShort ?? (typeof fullStatus === "string" ? fullStatus : null)}</span>
         </div>
-      </div>
     </div>
   );
 });
