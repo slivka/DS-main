@@ -88,6 +88,7 @@ export function JournalDeductionAdd() {
       </div>
     );
   return (
+    <div className="inline-flex shrink-0" data-slot="journal-deduction-split" data-toolbar-overflow-item="">
     <SplitButton
       variant="outline"
       label={t.deductionAdd}
@@ -95,7 +96,6 @@ export function JournalDeductionAdd() {
       onClick={() => add("advance")}
       disabled={blocked}
       disabledReason={blocked ? reason : undefined}
-      className="journal-deduction-split"
       mainProps={{
         "data-slot": "journal-deduction-add",
         className: "grid-toolbar-control h-[var(--control-h)] px-[0.75em]",
@@ -106,6 +106,7 @@ export function JournalDeductionAdd() {
       } as PartAttrs}
       menu={<DeductionMenuItems add={add} />}
     />
+    </div>
   );
 }
 
