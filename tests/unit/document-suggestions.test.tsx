@@ -227,10 +227,13 @@ describe("návrhy buněk řádků", () => {
             text: "Služby",
             debitAccount: "518001",
             creditAccount: "321001",
+            vatCodeId: "v21",
           },
         ]}
         rowSuggestions={{ r1: { account: suggestion, dimension: suggestion, vatCode: suggestion } }}
-        vat={{ enabled: true, codes: [] }}
+        vat={{ enabled: true, codes: [{ id: "v21", code: "Z", name: "Tuzemsko", rate: 21,
+          direction: "in", hasTax: true, selfAssessment: false, requiresPdpSubject: false,
+          taxInAccount: "343021" }] }}
       />,
     );
     for (const key of ["debitAccount", "creditAccount", "dimensionId", "vatCodeId"]) {

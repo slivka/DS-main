@@ -27,10 +27,10 @@ export function useJournalSuggestionClear(
   suggestions: JournalRowSuggestions | undefined,
   onCleared: ((key: string, rowId?: string) => void) | undefined,
 ) {
-  const cleared = useRef(new Map<string, FieldSuggestion>());
-  for (const [id, suggestion] of cleared.current) {
+  const cleared = useRef(new Map<string, string>());
+  for (const [id, signature] of cleared.current) {
     const [rowId, key] = JSON.parse(id) as [string, JournalSuggestionKey];
-    if (suggestions?.[rowId]?.[key] !== suggestion) cleared.current.delete(id);
+    if (JSON.stringify(suggestions?.[rowId]?.[key]) !== signature) cleared.current.delete(id);
   }
   return (line: JournalLine, values: Partial<JournalLine>) => {
     for (const column of Object.keys(values) as (keyof JournalLine)[]) {
@@ -38,8 +38,9 @@ export function useJournalSuggestionClear(
       const suggestion = key ? suggestions?.[line.id]?.[key] : undefined;
       if (!key || !suggestion || values[column] === line[column]) continue;
       const id = JSON.stringify([line.id, key]);
-      if (cleared.current.get(id) === suggestion) continue;
-      cleared.current.set(id, suggestion);
+      const signature = JSON.stringify(suggestion);
+      if (cleared.current.get(id) === signature) continue;
+      cleared.current.set(id, signature);
       onCleared?.(key, line.id);
     }
   };

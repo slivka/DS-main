@@ -4,6 +4,15 @@ import type { FieldSuggestion } from "../../form/field-feedback";
 import { headerFieldKeyFromId } from "./document-validation-feedback";
 import type { DocumentFormProps, DocumentHeaderValue } from "./document-form-types";
 
+/** Sdílené ovládání zruší i návrh svého druhého hodnotového klíče. */
+const SHARED_SUGGESTION_KEYS = [
+  ["bankAccount", "partnerBankAccountId", "manualBankAccount"],
+  ["amountTotal", "totalMode"],
+  ["variableSymbol", "variableSymbolLinked"],
+  ["taxDocumentNumber", "taxDocumentNumberLinked"],
+  ["rate", "rateManual"],
+] as const;
+
 /** Návrh ovládání; sdílené id účtů a partnera respektují aktivní režim. */
 export function documentFieldSuggestion(props: DocumentFormProps, id: string) {
   const { value, fieldSuggestions: suggestions } = props;
@@ -32,13 +41,14 @@ export function useSuggestionClear(
   suggestions: Partial<Record<string, FieldSuggestion>> | undefined,
   onCleared: ((key: string, rowId?: string) => void) | undefined,
 ) {
-  const cleared = useRef(new Map<string, FieldSuggestion>());
-  for (const [key, suggestion] of cleared.current)
-    if (suggestions?.[key] !== suggestion) cleared.current.delete(key);
+  const cleared = useRef(new Map<string, string>());
+  for (const [key, signature] of cleared.current)
+    if (JSON.stringify(suggestions?.[key]) !== signature) cleared.current.delete(key);
   return (key: string) => {
     const suggestion = suggestions?.[key];
-    if (!suggestion || cleared.current.get(key) === suggestion) return;
-    cleared.current.set(key, suggestion);
+    const signature = JSON.stringify(suggestion);
+    if (!suggestion || cleared.current.get(key) === signature) return;
+    cleared.current.set(key, signature);
     onCleared?.(key);
   };
 }
@@ -52,6 +62,7 @@ export function clearChangedHeaderSuggestions(
   for (const key of Object.keys(next) as (keyof DocumentHeaderValue)[]) {
     if (value[key] === next[key]) continue;
     clear(key);
-    if (key === "partnerBankAccountId" || key === "manualBankAccount") clear("bankAccount");
+    const aliases = SHARED_SUGGESTION_KEYS.find((keys) => keys.some((name) => name === key));
+    for (const alias of aliases ?? []) clear(alias);
   }
 }
