@@ -38,12 +38,12 @@ describe("akce v bublině návrhu", () => {
     const icon = view.getByRole("button", { name: "Ke kontrole" });
     fireEvent.mouseEnter(icon);
     const dialog = await view.findByRole("dialog", { name: "Ke kontrole" });
-    fireEvent.mouseLeave(icon);
+    fireEvent.mouseLeave(icon, { relatedTarget: document.body });
     expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
-    fireEvent.mouseEnter(dialog);
+    fireEvent.mouseEnter(dialog, { relatedTarget: document.body });
     await act(async () => { await new Promise((resolve) => setTimeout(resolve, 300)); });
     expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
-    fireEvent.mouseLeave(dialog);
+    fireEvent.mouseLeave(dialog, { relatedTarget: document.body });
     await waitFor(() => expect(view.queryByRole("button", { name: "Prověřit" })).toBeNull());
   });
 

@@ -8,7 +8,7 @@ export interface RecordDialogPanelToggleProps {
   visible: boolean;
   /** Název panelu pro bublinu. */
   label: string;
-  /** Vlastní text tlačítka; výchozí je název panelu. */
+  /** Doplňující název panelu; textová hodnota se zobrazí v bublině. */
   title?: ReactNode;
   /** Přepnutí panelu. */
   onToggle: () => void;
@@ -26,7 +26,6 @@ export function RecordDialogPanelToggle({
       open={visible}
       tooltip={typeof title === "string" ? title : label}
       className="absolute right-12 top-3"
-      onClick={onToggle}
       onToggle={onToggle}
     />
   );
