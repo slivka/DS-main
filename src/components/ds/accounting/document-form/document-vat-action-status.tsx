@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { StatusBadge } from "../../data-display/status-badge";
 import { VatStatusBadge } from "../../data-display/vat-status-badge";
 import type { DocumentFormProps, DocumentFormTexts } from "./document-form-types";
+import { Field } from "../../layout/form-field-layout";
 
 /** Vlastnosti štítku ručně zadaného dodavatele. */
 export interface UnverifiedSupplierBadgeProps {
@@ -62,7 +63,8 @@ export function DocumentVatActionStatus({
 }: DocumentVatActionStatusProps) {
   return (
     <div className="flex min-w-0 items-center gap-2">
-      <label className="flex items-center gap-2 whitespace-nowrap text-sm font-medium">
+      <Field htmlFor="document-vatRelevant" className="shrink-0 [&[data-suggestion=uncertain]_.ds-field-control]:pr-6">
+      <label className="flex h-[var(--control-h)] items-center gap-2 whitespace-nowrap text-sm font-medium">
         <Switch
           id="document-vatRelevant"
           checked={checked}
@@ -72,6 +74,7 @@ export function DocumentVatActionStatus({
         />
         {texts.vatRelevant}
       </label>
+      </Field>
       {counterpartyStatus}
       {checked && status ? (
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">

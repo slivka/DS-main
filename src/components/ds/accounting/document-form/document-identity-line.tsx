@@ -6,6 +6,7 @@
 import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
 import type { ReactNode, RefObject } from "react";
 import { IdentityLine } from "../../layout/identity-line";
+import { Field } from "../../layout/form-field-layout";
 import { Pencil } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
@@ -133,6 +134,7 @@ export function DocumentIdentityLine({
         <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">
           {account.side}
         </span>
+        <Field htmlFor="document-mainAccountId" className="min-w-0 [&[data-suggestion=uncertain]_.ds-field-control]:pr-6">
         {editingAccount ? (
           <span className="document-identity-account-box">
             <span
@@ -181,6 +183,7 @@ export function DocumentIdentityLine({
             </Tooltip>
           </span>
         )}
+        </Field>
         <span className="document-identity-pencil-slot">{pencil}</span>
       </span>,
     );
