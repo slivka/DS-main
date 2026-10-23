@@ -207,6 +207,7 @@ describe("ExtractedItemsTable", () => {
     view.getByText("Kancelářské potřeby");
     view.getByText("Celkem");
     // Souhrnný řádek nese hodnoty od aplikace s oddělenými tisíci.
+    console.log("TDs:", Array.from(view.container.querySelectorAll("td")).map((t) => JSON.stringify(t.textContent)).join(" | "));
     view.getByText("2 650,00");
     view.getByText("556,50");
   });
