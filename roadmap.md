@@ -1,6 +1,6 @@
 ## DS 2.137.0 (nevydáno)
 
-- [ ] Doplněk 3: test zalomené identity 360/480 px při max zoomu, výchozí výška SplitButton a explicitní sm v lištách, sjednocené ovladače panelu, zavírání bubliny po odjetí a lookup akce, aktuální katalog; unit DS a tři určené Chromium specy. Nevydávat.
+- [x] Doplněk 3: test zalomené identity 360/480 px při max zoomu, výchozí výška SplitButton a explicitní sm v lištách, sjednocené ovladače panelu, zavírání bubliny po odjetí a lookup akce, aktuální katalog. Unit DS 1 444/1 444 (150 souborů), požadované tři Chromium specy 8/8; katalog 485 → 486 / 1 213 → 1 271, 0 odebrání. check:quick --harness audity OK, výslovný lint 14 souborů 0 chyb/3 stávající varování, formát 20 souborů OK; automatická kontrola Lovable OK. check:full ani plná E2E sada neběžely; nevydáno, package/meta 2.136.0, release Claude.
 - [x] Řádek identity bez překryvu (priorita, zkracování, stav na druhý řádek), E2E 420/480/640 px.
 - [x] Jedna ikona návrhu vlevo od ikonových tlačítek pole.
 - [x] Tlačítko panelu: stále orámované, šipka a bublina podle stavu; výchozí pořadí záložek Zdroj → Poznámky → Přílohy → Historie → Propojené.

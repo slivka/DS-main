@@ -151,7 +151,8 @@ test("IdentityLine: 360/480 px i maximální zoom drží jednu nebo dvě výšky
         const parts = Array.from(
           row.querySelectorAll<HTMLElement>(
             '[data-slot="identity-line-item"] > :not([aria-hidden]), ' +
-              '[data-slot="identity-line-number"] > *, .document-identity-pencil-slot',
+              '[data-slot="identity-line-number"] > *, .document-identity-account > span, ' +
+              '.document-identity-account-box, .document-identity-pencil-slot',
           ),
         );
         const boxes = parts
