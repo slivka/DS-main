@@ -19,7 +19,7 @@ describe("PanelToggleButton", () => {
   it("otevřený stav je stisknutý a klik vyvolá změnu", () => {
     const toggle = mock();
     const ui = render(wrap(<PanelToggleButton open tooltip="Panel" onToggle={toggle} />));
-    const button = ui.getByRole("button", { name: "Panel" });
+    const button = ui.getByRole("button", { name: "Zavřít panel" });
     expect(button.getAttribute("aria-pressed")).toBe("true");
     fireEvent.click(button);
     expect(toggle).toHaveBeenCalledTimes(1);
@@ -38,7 +38,7 @@ describe("PanelToggleButton", () => {
         />,
       ),
     );
-    const button = ui.getByRole("button", { name: "Panel" });
+    const button = ui.getByRole("button", { name: "Otevřít panel" });
     expect(button.getAttribute("aria-pressed")).toBe("true");
     fireEvent.click(button);
     expect(focus).toHaveBeenCalledTimes(1);
