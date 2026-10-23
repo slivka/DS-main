@@ -584,11 +584,6 @@ body {
   :is(input, [role="combobox"]) {
   padding-left: 2em;
 }
-/* Vnitřní ikona vstupu se nezdvojuje s ikonou obalu pole. */
-[data-suggestion] > .ds-field-control [data-slot="field-suggestion"] ~ * [data-slot="field-suggestion"],
-.ds-field-control .ds-field-control [data-slot="field-suggestion"] {
-  display: none;
-}
 [data-suggestion="uncertain"] > .ds-field-control input[inputmode="decimal"] {
   padding-left: 2em;
 }
