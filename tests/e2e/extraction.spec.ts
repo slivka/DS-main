@@ -16,7 +16,7 @@ test.describe("vytěžování souboru", () => {
     // Nejisté pole je označené a F8 na něj přesune fokus; hydratace stránky může
     // trvat, proto stisk opakujeme, dokud posluchač nezačne reagovat.
     const amount = showcase.getByRole("textbox", { name: "Částka", exact: true });
-    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(4);
+    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(5);
     await expect
       .poll(
         async () => {
@@ -29,7 +29,7 @@ test.describe("vytěžování souboru", () => {
 
     // Ruční změna hodnoty stav návrhu zruší (řídí rodič).
     await amount.fill("12 500,00");
-    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(3);
+    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(4);
 
     // Jeden stisk F8 posune právě o jedno pole, i se dvěma souhrny návrhu na stránce.
     const documentForm = showcase.getByTestId("extraction-document");
@@ -42,7 +42,19 @@ test.describe("vytěžování souboru", () => {
     await page.keyboard.press("F8");
     await expect(rowAmount).toBeFocused();
     await page.keyboard.press("F8");
+    const accountText = documentForm.locator('[data-slot="document-identity-account-text"]');
+    await expect(accountText).toBeFocused();
+    await page.keyboard.press("F8");
     await expect(dueDate).toBeFocused();
+
+    // Nejistý hlavní účet: box zůstává šířky textu, tužka nejvýše 12 px za ním.
+    const accountBox = documentForm.locator('[data-slot="document-identity-account"]');
+    await expect(accountBox).toHaveAttribute("data-suggestion", "uncertain");
+    const pencilSlot = documentForm.locator(".document-identity-pencil-slot");
+    const textBox = await accountText.boundingBox();
+    const pencilBox = await pencilSlot.boundingBox();
+    if (!textBox || !pencilBox) throw new Error("Chybí účet nebo tužka");
+    expect(pencilBox.x - (textBox.x + textBox.width)).toBeLessThanOrEqual(12);
     const row = rowAmount.locator("xpath=ancestor::tr");
     const before = await row.boundingBox();
     await rowAmount.click();

@@ -48,6 +48,7 @@ export function ExtractionDocumentShowcase() {
     externalNumber: { source: SOURCE },
     dueDate: { source: SOURCE, uncertain: true },
     amountTotal: { source: SOURCE, uncertain: true },
+    mainAccountId: { source: SOURCE, uncertain: true },
   });
   const [rows, setRows] = useState<JournalRowSuggestions>({
     "extraction-row": { amount: { source: SOURCE, uncertain: true } },
