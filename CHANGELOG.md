@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.136.0 (nevydáno)
+## 2.137.0 (nevydáno)
+
+## 2.136.0
 
 - Oprava: návrh hlavního účtu se kreslí přímo na boxu účtu bez obalu pole, takže tužka „Změnit účet“ zůstává hned za textem i s nejistým návrhem (ikona ve čtení vlevo před kódem).
 - **Breaking-ish: toJournalRow už nevrací absolutní hodnotu**. Záporné amount se zachovává na původních stranách MD/DAL, stejně jako v DB; APP musí ověřit, že nikde nespoléhá na kladné amount. Dobropis je vydaná/přijatá faktura se zápornými částkami, nula běžného řádku zůstává neplatná. Prověřeny skupiny a rekapitulace DPH, předběžné řádky daně, součty, Rozdíl proti zápornému Celkem, zaokrouhlení a číselný editor; stávající znaménková aritmetika zůstává zachována.

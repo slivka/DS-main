@@ -1,4 +1,6 @@
-## DS 2.136.0 (nevydáno)
+## DS 2.137.0 (nevydáno)
+
+## DS 2.136.0
 
 - [x] Zachovat záporné řádky, ověřit DPH/součty/rozdíl/zaokrouhlení a nulovou validaci; migrace Breaking-ish v CHANGELOGu.
 - [x] Návrhy hlavičky a buněk DocumentForm (faktury i zálohové listy), první ruční zrušení, sdílené aliasy a společné F8; ukázka FP, datumové ikony a Celkem bez překrytí.
