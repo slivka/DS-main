@@ -1,6 +1,7 @@
 ## DS 2.134.0 (nevydáno)
 
-- [ ] Před vydáním: zachytit rušení předchozího PDF načítání a přidat regresi rychlé dvojí změny; sjednotit E2E bubliny, dotčené testy 20× a celá sada Chromium, výsledky do CHANGELOGu. Release Claude.
+- [x] Před vydáním: rušení PDF zachyceno v jedné životnosti, abortovatelný fetch bajtů před PDF.js, tři unit regrese; společný E2E pomocník ve všech osmi souborech bublin. Devět dotčených scénářů má 20/20 (hlavní běh 177/180 + po doplnění Tab/hover dva zbývající 40/40); úplná kontrola 1 375/1 375, katalog beze ztrát. Výsledky v CHANGELOGu, nevydáno, release Claude.
+- Celá sada Chromium provedena: 148 prošlo / 2 nesouvisející selhání / 3 vynecháno; ND baseline odchylka šířky 0,71875 px proti 0,5 a PageHeader data-ready po 10 s. Sada není zelená; nesouvisející komponenty/tolerance se v tomto zadání neměnily. Poslední doplnění Tab + hover následně ověřeno 40/40, nikoli novou celou sadou.
 
 - [x] Tisk faktury: nullable množství a jednotková cena, prázdné buňky bez změny základu/DPH, ukázka a čtyři regresní testy; cíleně 76/76, check:full --harness 1 372/1 372 ve 141 souborech, katalog bez ztrát. Nevydáno, release Claude.
 
