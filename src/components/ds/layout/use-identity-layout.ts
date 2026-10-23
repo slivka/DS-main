@@ -57,8 +57,8 @@ export function useIdentityLayout() {
       if (!full || !minimum || !status || !short) return;
       setLevel((previous) => resolveIdentityLevel({
         available: row.clientWidth,
-        full: full.getBoundingClientRect().width,
-        minimum: minimum.getBoundingClientRect().width,
+        full: full.firstElementChild?.getBoundingClientRect().width ?? 0,
+        minimum: minimum.firstElementChild?.getBoundingClientRect().width ?? 0,
         status: status.getBoundingClientRect().width,
         short: short.getBoundingClientRect().width,
       }, previous));
