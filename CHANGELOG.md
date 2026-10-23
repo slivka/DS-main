@@ -2,7 +2,8 @@
 
 ## 2.137.0 (nevydáno)
 
-- Doplněk 4 (nové rozhodnutí Petra): IdentityLine never wraps; jediná výška --control-h. Pořadí ústupu: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy; rok, strana a kód účtu zůstávají celé. `data-stacked` odstraněno; měření vlastní jeden hook s jediným ResizeObserverem a hysterezí. Při krajním prostoru menším než pevné hodnoty se jejich měřítko přizpůsobí bez změny výšky řádku.
+- Doplněk 4 (nové rozhodnutí Petra): IdentityLine never wraps; jediná výška --control-h. Pořadí ústupu: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy; rok, strana a kód účtu zůstávají celé. `data-stacked` odstraněno; měření vlastní jeden hook s jediným ResizeObserverem a hysterezí. Písmo ani měřítko se nezmenšují.
+- Doplněk 4 není uzavřen: unit DS 1 450/1 450, Chromium 5/6; úzký formulář při maximálním zoomu poskytuje identitě pouze 244 px a pevný rok, strana, kód účtu, indikátor návrhu a tužka se nevejdou. Zbývá vyřešit prostor bez zmenšení textu či skrytí povinných údajů. Plná E2E sada a check:full neběžely.
 - Nové volitelné `IdentityLine.fallbackShort` a `DocumentIdentity.fallbackShort`; DocumentForm (faktury i zálohové listy) předává výchozí `DsTexts.documentForm.fallbackShort` = „Koncept“ v CS/SK. Plný fallback je stále v bublině a přístupném názvu; bez krátkého tvaru zůstává trojtečka plného textu. Katalog i generovaná reference aktualizovány před vydáním.
 - `SplitButton.size?: "default" | "sm"` má výchozí výšku --control-h; všechna tři použití v lištách výslovně zachovávají sm (DocumentNewMenu předá také výslovné default). Katalog obsahuje SplitButton již před vydáním.
 - Ovladač panelu v režimu elsewhere používá šipku otevření a stejný název jako bublina. **Migrace testů APP:** místo názvu „Panel“ hledejte „Otevřít panel“ / „Zavřít panel“. RecordDialogPanelToggle sdílí orámovaný ikonový vzhled bez změny props; jeho title zůstává doplňujícím textem bubliny.

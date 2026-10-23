@@ -10,7 +10,7 @@ export function enrichIdentityCatalog(components: PanelCatalogComponent[]) {
   if (!identity.props.some((prop) => prop.name === "fallbackShort"))
     identity.props.push({ name: "fallbackShort", type: "string" });
   identity.usage =
-    "Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve ustupuje název účtu, pak plný fallback nahradí fallbackShort, pak se zkracuje krátký stav a nakonec kniha. Rok, strana a kód účtu zůstávají celé. Plný fallback zůstává v bublině a přístupném názvu. Jediný ResizeObserver a hystereze brání kmitání; při krajním prostoru pro pevné hodnoty se přizpůsobí jejich měřítko bez změny výšky řádku.";
+    "Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve ustupuje název účtu, pak plný fallback nahradí fallbackShort, pak se zkracuje krátký stav a nakonec kniha. Rok, strana a kód účtu zůstávají celé. Plný fallback zůstává v bublině a přístupném názvu. Jediný ResizeObserver a hystereze brání kmitání. Písmo ani měřítko se nezmenšují; hostitel musí rezervovat prostor pro pevné hodnoty.";
   identity.examples ??= [];
   const example = {
     label: "Koncept v úzkém formuláři",
