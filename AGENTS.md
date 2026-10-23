@@ -82,3 +82,4 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Invoice printing composes section modules over createPrintDocument/Roboto and PrintPreviewDialog; APP supplies every monetary total and resolved logo; shared invoice-options owns defaults, including the explicitly required home-currency fallback. Why: one PDF system without a second accounting engine.
 
 - Keep print/export and journal-editor translations in dedicated per-language modules, re-exported through DsTexts. Why: bounded translation catalogs preserve public imports.
+- DocumentCounterpartyTab resolves delivery locking independently, defaulting to counterpartyLocked with global readOnly taking precedence. Why: APP can edit descriptive delivery data without unlocking the counterparty.
