@@ -2,9 +2,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
 import { IdentityLine } from "../../src/components/ds/layout/identity-line";
-import {
-  resolveIdentityLevel,
-} from "../../src/components/ds/layout/use-identity-layout";
+import { resolveIdentityLevel } from "../../src/components/ds/layout/use-identity-layout";
 import { DS_TEXTS_CS } from "../../src/ds-texts/cs";
 import { DS_TEXTS_SK } from "../../src/ds-texts/sk";
 
@@ -26,7 +24,9 @@ describe("IdentityLine", () => {
     const ui = render(
       <IdentityLine items={["Kniha", "2026"]} fallback="Koncept – číslo při zařazení" />,
     );
-    expect(ui.container.querySelector('[data-slot="identity-status-text"]')?.textContent).toBe("Koncept – číslo při zařazení");
+    expect(ui.container.querySelector('[data-slot="identity-status-text"]')?.textContent).toBe(
+      "Koncept – číslo při zařazení",
+    );
   });
   it("krátký stav zachovává plné znění v přístupném názvu", () => {
     const ui = render(
@@ -50,7 +50,9 @@ describe("IdentityLine", () => {
         fallbackShort="Koncept"
       />,
     );
-    expect(ui.container.querySelector('[data-slot="identity-status-text"]')?.textContent).toBe("FV202600001");
+    expect(ui.container.querySelector('[data-slot="identity-status-text"]')?.textContent).toBe(
+      "FV202600001",
+    );
   });
   it("CS i SK dodávají krátký stav Koncept", () => {
     expect(DS_TEXTS_CS.documentForm.fallbackShort).toBe("Koncept");

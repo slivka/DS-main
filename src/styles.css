@@ -2923,7 +2923,11 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   flex: 0 0 auto;
   width: max-content;
 }
-.ds-identity-pencil-measure { width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+.ds-identity-pencil-measure {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
 .ds-identity-measure [data-slot="identity-measure-minimum"] .ds-identity-items {
   width: min-content;
 }
