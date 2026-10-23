@@ -13,11 +13,19 @@ test.describe("vytěžování souboru", () => {
     await expect(showcase.getByText("Hotovo · AI návrh")).toBeVisible();
     await expect(showcase.getByText(/Vyplněno ze souboru \(AI návrh\)/)).toBeVisible();
 
-    // Nejisté pole je označené a F8 na něj přesune fokus.
+    // Nejisté pole je označené a F8 na něj přesune fokus; hydratace stránky může
+    // trvat, proto stisk opakujeme, dokud posluchač nezačne reagovat.
     const amount = showcase.getByLabel("Částka");
     await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(1);
-    await page.keyboard.press("F8");
-    await expect(amount).toBeFocused();
+    await expect
+      .poll(
+        async () => {
+          await page.keyboard.press("F8");
+          return page.evaluate(() => document.activeElement?.id);
+        },
+        { timeout: 20_000 },
+      )
+      .toBe("extraction-amount");
 
     // Ruční změna hodnoty stav návrhu zruší (řídí rodič).
     await amount.fill("12 500,00");
