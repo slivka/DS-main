@@ -1,22 +1,35 @@
 /** První ruční změna návrhu · sdílené aliasy a nové návrhy stejného pole. */
 import { describe, expect, it, mock } from "bun:test";
 import { renderHook } from "@testing-library/react";
-import { clearChangedHeaderSuggestions, useSuggestionClear } from "../../src/components/ds/accounting/document-form/document-suggestions";
-import { useJournalSuggestionClear, journalSuggestionKey } from "../../src/components/ds/accounting/journal-suggestions";
+import {
+  clearChangedHeaderSuggestions,
+  useSuggestionClear,
+} from "../../src/components/ds/accounting/document-form/document-suggestions";
+import {
+  useJournalSuggestionClear,
+  journalSuggestionKey,
+} from "../../src/components/ds/accounting/journal-suggestions";
 
 describe("oznámení zrušení návrhu", () => {
   it("změna částky zruší i návrh sdíleného totalMode", () => {
     const cleared = mock();
-    const { result } = renderHook(() => useSuggestionClear({ totalMode: { source: "f.pdf" } }, cleared));
-    clearChangedHeaderSuggestions({ currency: "CZK", amountTotal: 1000, totalMode: "entered" },
-      { amountTotal: 2000 }, result.current);
+    const { result } = renderHook(() =>
+      useSuggestionClear({ totalMode: { source: "f.pdf" } }, cleared),
+    );
+    clearChangedHeaderSuggestions(
+      { currency: "CZK", amountTotal: 1000, totalMode: "entered" },
+      { amountTotal: 2000 },
+      result.current,
+    );
     expect(cleared).toHaveBeenCalledTimes(1);
     expect(cleared).toHaveBeenCalledWith("totalMode");
   });
   it("ekvivalentní návrh při překreslení nehlásí druhé zrušení", () => {
     const cleared = mock();
-    const { result, rerender } = renderHook(({ source }) =>
-      useSuggestionClear({ description: { source } }, cleared), { initialProps: { source: "f.pdf" } });
+    const { result, rerender } = renderHook(
+      ({ source }) => useSuggestionClear({ description: { source } }, cleared),
+      { initialProps: { source: "f.pdf" } },
+    );
     result.current("description");
     rerender({ source: "f.pdf" });
     result.current("description");
@@ -27,8 +40,11 @@ describe("oznámení zrušení návrhu", () => {
   });
   it("návrh odstraněný a pak znovu dodaný lze znovu zrušit", () => {
     const cleared = mock();
-    const { result, rerender } = renderHook(({ present }) => useSuggestionClear(
-      present ? { description: { source: "f.pdf" } } : {}, cleared), { initialProps: { present: true } });
+    const { result, rerender } = renderHook(
+      ({ present }) =>
+        useSuggestionClear(present ? { description: { source: "f.pdf" } } : {}, cleared),
+      { initialProps: { present: true } },
+    );
     result.current("description");
     rerender({ present: false });
     rerender({ present: true });
@@ -43,8 +59,10 @@ describe("oznámení zrušení návrhu", () => {
   });
   it("řádek s ekvivalentním návrhem při dalším psaní hlásí jen jednou", () => {
     const cleared = mock();
-    const { result, rerender } = renderHook(({ source }) => useJournalSuggestionClear(
-      { r1: { text: { source } } }, cleared), { initialProps: { source: "f.pdf" } });
+    const { result, rerender } = renderHook(
+      ({ source }) => useJournalSuggestionClear({ r1: { text: { source } } }, cleared),
+      { initialProps: { source: "f.pdf" } },
+    );
     result.current({ id: "r1", text: "A" }, { text: "B" });
     rerender({ source: "f.pdf" });
     result.current({ id: "r1", text: "B" }, { text: "C" });
