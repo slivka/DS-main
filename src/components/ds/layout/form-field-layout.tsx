@@ -63,6 +63,13 @@ const FIELD_SPAN_CLASSES_COMPACT: Record<keyof typeof FIELD_SPAN_CLASSES, string
   20: "@min-[24rem]:col-span-20",
 };
 
+/**
+ * Podklad navržené hodnoty míří jen na ovládání hodnoty (vstup, výběr, víceřádkový vstup
+ * a spouštěč výběru); ikonová tlačítka uvnitř pole (zámek, ARES, kalendář, přepínače) se nemění.
+ */
+const SUGGESTION_BG_CLASS =
+  "[&_input]:bg-suggestion-soft [&_select]:bg-suggestion-soft [&_textarea]:bg-suggestion-soft [&_[role=combobox]]:bg-suggestion-soft [&_[data-slot=select-trigger]]:bg-suggestion-soft";
+
 /** Hranice, od které se mřížka polí řadí do sloupců: výchozí 40 rem, malý dialog 24 rem. */
 export type FieldGridBreakpoint = "default" | "compact";
 
@@ -122,7 +129,7 @@ export function Field({
   const suggestionClass = activeSuggestion
     ? activeSuggestion.uncertain
       ? "[&_.border-input]:border-warning [&_input]:border-warning [&_select]:border-warning [&_textarea]:border-warning"
-      : "[&_input]:bg-suggestion-soft [&_select]:bg-suggestion-soft [&_textarea]:bg-suggestion-soft [&_button]:bg-suggestion-soft"
+      : SUGGESTION_BG_CLASS
     : "";
   return (
     <div
