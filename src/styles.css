@@ -2803,110 +2803,58 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   flex: 0 1 auto;
   min-width: min-content;
 }
-/* Jediná výška identity: účet ustoupí před stavem, kniha až úplně nakonec. */
-.ds-identity-items {
-  flex: 1 1 auto;
-  min-width: min-content;
-}
-.ds-identity-item:last-child {
-  flex: 0 1 auto;
-  min-width: min-content;
-}
-.ds-identity-row .ds-identity-account-name {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 0;
-}
-.ds-identity-row > .ds-identity-items .ds-identity-account-name {
-  width: auto;
-  flex-basis: 0;
-}
-.ds-identity-row [data-slot="document-identity-account-text"] {
-  min-width: min-content;
-}
+/* Jediný řádek: nejprve účet, pak krátký stav a nakonec kniha. */
+.ds-identity-row > .ds-identity-items { flex: 1 1 auto; min-width: 0; }
 .ds-identity-row > .ds-identity-items > .ds-identity-item:last-child {
-  flex: 0 1 auto;
+  flex: 0 1 auto; min-width: min-content;
 }
-.ds-identity-row .document-identity-account {
-  flex: 0 1 auto;
-}
+.ds-identity-row .document-identity-account { flex: 0 1 auto; min-width: min-content; }
 .ds-identity-row .document-identity-account-box[data-mode="read"] {
-  max-width: none;
+  min-width: min-content; max-width: none;
 }
-.ds-identity-status {
-  flex: 0 0 auto;
-  max-width: 100%;
-}
+.ds-identity-row [data-slot="document-identity-account-text"] { min-width: min-content; }
+.ds-identity-row .ds-identity-account-name { min-width: 0; flex: 0 1 auto; }
+.ds-identity-status { flex: 0 0 auto; max-width: 100%; }
 .ds-identity-row[data-identity-level="3"] .ds-identity-status {
-  flex: 0 1 1ch;
-  min-width: 1ch;
-  overflow: hidden;
-}
-.ds-identity-row[data-identity-level="3"] > .ds-identity-items {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.ds-identity-row[data-identity-level="3"] > .ds-identity-items > .ds-identity-item:first-of-type {
-  flex: 0 1 auto;
-  min-width: 0;
-}
-.ds-identity-measure {
-  contain: layout;
-  width: max-content;
-}
-.ds-identity-measure .ds-identity-account-name {
-  width: max-content;
-}
-.ds-identity-measure [data-slot="identity-measure-full"] > * {
-  width: max-content;
-}
-.ds-identity-measure .document-identity-account,
-.ds-identity-measure .document-identity-account-box[data-mode="read"] {
-  flex: 0 0 auto;
-}
-.ds-identity-measure [data-slot="identity-measure-minimum"] > * {
-  width: min-content;
-}
-.ds-identity-measure [data-slot="identity-measure-full"],
-.ds-identity-measure [data-slot="identity-measure-minimum"] {
-  width: max-content;
-}
-.ds-identity-row > .ds-identity-items > .ds-identity-item:last-child,
-.ds-identity-row .document-identity-account,
-.ds-identity-row .document-identity-account-box[data-mode="read"] {
-  min-width: min-content;
-}
-.ds-identity-row[data-identity-level="3"] {
-  gap: var(--spacing);
+  flex: 0 1 auto; min-width: 1ch; overflow: hidden;
 }
 .ds-identity-row[data-identity-level="3"] > .ds-identity-items > [data-identity-first] {
-  flex: 0 1 auto;
-  min-width: 0;
-  overflow: hidden;
+  flex: 0 1 auto; min-width: 0;
 }
-.ds-identity-row[data-identity-level="3"] > .ds-identity-items > span:first-child:not(.ds-identity-item) {
-  max-width: 0;
-  overflow: hidden;
+.ds-identity-row[data-identity-level="3"] { gap: var(--spacing); }
+.ds-identity-row[data-identity-level="3"] .ds-identity-item > [aria-hidden] {
+  margin-inline: calc(var(--spacing) / 2);
 }
-.ds-identity-row[data-identity-level="3"] > .ds-identity-items > .ds-identity-item > [aria-hidden] {
-  margin-inline: var(--spacing);
-}
-.ds-identity-row[data-identity-level="3"] .document-identity-account {
-  gap: var(--spacing);
+.ds-identity-row[data-identity-level="3"] .document-identity-account { gap: calc(var(--spacing) / 2); }
+.ds-identity-row[data-identity-level="3"] [data-slot="document-identity-account-text"] {
+  padding-inline: calc(var(--spacing) / 2);
 }
 .ds-identity-row[data-identity-level="3"] .ds-identity-account-name {
-  width: 0;
+  flex: 0 0 0; width: 0;
 }
-.ds-identity-row[data-identity-level="3"] .ds-identity-account-name,
-.ds-identity-row[data-identity-level="3"] .ds-identity-account-name + * {
-  flex-shrink: 1;
+.ds-identity-row[data-identity-level="3"] .ds-identity-account-separator { display: none; }
+.ds-identity-row[data-identity-level="3"] .document-identity-pencil-slot,
+.ds-identity-row[data-identity-level="3"] .document-identity-pencil-slot button {
+  width: 0.875rem; height: 0.875rem;
 }
-.ds-identity-row[data-identity-level="3"] [data-slot="document-identity-account-text"] {
-  padding-inline: var(--spacing);
+.ds-identity-row[data-identity-level="3"] [data-slot="document-direction-badge"] {
+  padding-inline: 0; gap: 0;
 }
+.ds-identity-row[data-identity-level="3"] [data-slot="document-direction-badge"] .ds-badge-text {
+  display: none;
+}
+.ds-identity-measure { width: max-content; }
+.ds-identity-measure [data-slot="identity-measure-full"],
+.ds-identity-measure [data-slot="identity-measure-minimum"] { width: max-content; }
+.ds-identity-measure .ds-identity-items,
+.ds-identity-measure .ds-identity-item,
+.ds-identity-measure .document-identity-account,
+.ds-identity-measure .document-identity-account-box[data-mode="read"] {
+  flex: 0 0 auto; width: max-content; min-width: 0; max-width: none;
+}
+.ds-identity-measure .ds-identity-account-name { flex: 0 0 auto; width: max-content; }
 .ds-identity-measure [data-slot="identity-measure-minimum"] .ds-identity-account-name {
-  width: 0;
-  flex: 0 0 0;
+  flex: 0 0 0; width: 0;
 }
 .ds-identity-measure [data-slot="identity-measure-status"],
 .ds-identity-measure [data-slot="identity-measure-short"] {
