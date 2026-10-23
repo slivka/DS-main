@@ -2,13 +2,14 @@
  * Stav pole · vlastní přístupnou výstrahu uvnitř pole, ikonu nápovědy a sdílený stav chyby
  * · nesmí měnit hodnotu ani výšku pole a nesmí nic kreslit pod ovládáním.
  */
-import { createContext, useContext, useId, useState, type ReactNode } from "react";
+import { createContext, useContext, useId, type ReactNode } from "react";
 import { AlertTriangle, Info } from "lucide-react";
 import { TooltipProvider } from "../../ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Button } from "../../ui/button";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { cn } from "../../../lib/utils";
+import { useHoverPopover } from "./use-hover-popover";
 
 /** Návrh hodnoty z vytěžení souboru; rodič ho zruší při první ruční změně hodnoty. */
 export interface FieldSuggestion {
@@ -176,7 +177,7 @@ export function FieldSuggestionIndicator({
   side = "end",
   className,
 }: FieldSuggestionIndicatorProps) {
-  const [open, setOpen] = useState(false);
+  const bubble = useHoverPopover();
   if (!suggestion?.uncertain) return null;
   const message = suggestion.message ?? defaultMessage ?? suggestion.source;
   const iconClass = cn(
@@ -188,7 +189,7 @@ export function FieldSuggestionIndicator({
   if (action)
     // S akcí je bublina ovladatelná: otevře ji najetí, klik i Enter; fokus přejde na akci.
     return (
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={bubble.open} onOpenChange={bubble.onOpenChange}>
         <PopoverTrigger asChild>
           <button
             type="button"
@@ -198,7 +199,9 @@ export function FieldSuggestionIndicator({
             data-side={side}
             data-has-action="true"
             className={cn(iconClass, "inline-flex border-0 bg-transparent p-0")}
-            onMouseEnter={() => setOpen(true)}
+            onMouseEnter={bubble.onMouseEnter}
+            onMouseLeave={bubble.onMouseLeave}
+            onClick={bubble.onClick}
           >
             <AlertTriangle className="size-4" aria-hidden="true" />
           </button>
@@ -208,6 +211,12 @@ export function FieldSuggestionIndicator({
           aria-label={message}
           data-slot="field-suggestion-bubble"
           side="top"
+          onMouseEnter={bubble.onMouseEnter}
+          onMouseLeave={bubble.onMouseLeave}
+          onOpenAutoFocus={(event) => {
+            // Najetí myši nesmí přesunout fokus z rozepsaného pole do bubliny.
+            if (bubble.hovered.current) event.preventDefault();
+          }}
           className="w-auto max-w-[min(20rem,calc(100vw-2rem))] space-y-1 px-3 py-2 text-xs"
         >
           <p>{message}</p>
@@ -218,7 +227,7 @@ export function FieldSuggestionIndicator({
             data-slot="field-suggestion-action"
             className="h-auto p-0 text-xs"
             onClick={() => {
-              setOpen(false);
+              bubble.onOpenChange(false);
               action.onClick();
             }}
           >

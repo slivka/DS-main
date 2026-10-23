@@ -33,6 +33,8 @@ export interface SplitButtonProps {
   menu: ReactNode;
   /** Vzhled: primary = plné tlačítko, outline = obrysové. */
   variant?: "primary" | "outline";
+  /** Výška běžného tlačítka; kompaktní velikost jen na výslovné přání volajícího. */
+  size?: "default" | "sm";
   /** Zakázané obě části. */
   disabled?: boolean;
   /** Důvod zákazu; obě části zůstanou fokusovatelné a ukážou ho v bublině. */
@@ -58,6 +60,7 @@ export const SplitButton = forwardRef<HTMLButtonElement, SplitButtonProps>(funct
     onClick,
     menu,
     variant = "primary",
+    size = "default",
     disabled,
     disabledReason,
     tooltip,
@@ -81,7 +84,7 @@ export const SplitButton = forwardRef<HTMLButtonElement, SplitButtonProps>(funct
       {...blockedProps}
       ref={ref}
       type="button"
-      size="sm"
+      size={size}
       variant={variant === "primary" ? "default" : "outline"}
       disabled={nativeDisabled}
       onClick={(event) => {
@@ -99,7 +102,7 @@ export const SplitButton = forwardRef<HTMLButtonElement, SplitButtonProps>(funct
       {...menuProps}
       {...blockedProps}
       type="button"
-      size="sm"
+      size={size}
       variant={variant === "primary" ? "default" : "outline"}
       disabled={nativeDisabled}
       aria-label={t.moreOptionsFor(actionName)}

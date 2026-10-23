@@ -130,7 +130,9 @@ test("GridToolbar: všechny prvky sdílejí výšku při min, 75 %, 100 % a max"
   }
 });
 
-test("IdentityLine: 360/480 px i maximální zoom drží jedinou výšku", async ({ page }) => {
+test("IdentityLine: 360/480 px i maximální zoom drží jednu nebo dvě výšky bez překryvu", async ({
+  page,
+}) => {
   await page.goto("/components/design-three");
   await expect(page.getByTestId("design-three")).toHaveAttribute("data-ready", "true");
   for (const width of [360, 480]) {
@@ -138,14 +140,36 @@ test("IdentityLine: 360/480 px i maximální zoom drží jedinou výšku", async
       demo.style.width = `${width}px`;
       document.documentElement.style.fontSize = "32px";
     }, width);
-    const metrics = await page.locator('[data-slot="document-identity"]').evaluate((identity) => {
-      const row = identity.firstElementChild;
-      if (!row) throw new Error("Chybí řádek");
-      return {
-        height: row.getBoundingClientRect().height,
-        control: parseFloat(getComputedStyle(identity).getPropertyValue("--control-h")),
-      };
-    });
-    expect(Math.abs(metrics.height - metrics.control)).toBeLessThanOrEqual(0.5);
+    await expect(async () => {
+      const metrics = await page.locator('[data-slot="document-identity"]').evaluate((identity) => {
+        const row = identity.querySelector<HTMLElement>('[data-slot="identity-line-row"]');
+        if (!row) throw new Error("Chybí řádek");
+        const style = getComputedStyle(row);
+        const control = parseFloat(style.getPropertyValue("--control-h"));
+        const expected =
+          row.dataset.stacked === "true" ? 2 * control + parseFloat(style.rowGap) : control;
+        const parts = Array.from(
+          row.querySelectorAll<HTMLElement>(
+            '[data-slot="identity-line-item"] > :not([aria-hidden]), ' +
+              '[data-slot="identity-line-number"] > *, .document-identity-account > span, ' +
+              ".document-identity-account-box, .document-identity-pencil-slot",
+          ),
+        );
+        const boxes = parts
+          .filter((part) => !parts.some((other) => other !== part && other.contains(part)))
+          .map((part) => ({ text: part.textContent, box: part.getBoundingClientRect() }))
+          .filter(({ box }) => box.width > 0 && box.height > 0);
+        const overlaps = boxes.flatMap((a, index) =>
+          boxes.slice(index + 1).flatMap((b) => {
+            const x = Math.min(a.box.right, b.box.right) - Math.max(a.box.left, b.box.left);
+            const y = Math.min(a.box.bottom, b.box.bottom) - Math.max(a.box.top, b.box.top);
+            return x > 1 && y > 1 ? [`${a.text} × ${b.text}`] : [];
+          }),
+        );
+        return { difference: Math.abs(row.getBoundingClientRect().height - expected), overlaps };
+      });
+      expect(metrics.difference, `výška při ${width} px`).toBeLessThanOrEqual(0.5);
+      expect(metrics.overlaps, `překryv při ${width} px`).toEqual([]);
+    }).toPass();
   }
 });

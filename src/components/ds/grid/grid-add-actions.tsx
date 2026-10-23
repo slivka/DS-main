@@ -181,6 +181,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
           return (
             <SplitButton
               key={action.label}
+              size="sm"
               ref={index === 0 ? primaryActionRef : undefined}
               icon={<Plus className="size-[1.2em]" />}
               label={labelContent}

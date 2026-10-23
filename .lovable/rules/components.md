@@ -3168,9 +3168,11 @@ _Stav pole a jednotná výška (2.107.0)_
 
 ### FieldSuggestionIndicator
 
-```ts
-import { FieldSuggestionIndicator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```tsx
+import { FieldSuggestionIndicator } from "@/design-system/{slug}";
 ```
+
+Ikona nejistého návrhu; FieldSuggestion.action zpřístupní odkazovou akci v bublině. Po najetí se bublina po odjetí zavře s prodlevou pro přejezd myši; klik a Escape zachovávají ovládání.
 
 **Props:**
 
@@ -3178,8 +3180,20 @@ import { FieldSuggestionIndicator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 |---|---|---|
 | `suggestion` | any | `—` |
 | `defaultMessage` | string | `—` |
-| `side` | start · end | `end` |
+| `side` | enum | `end` |
 | `className` | string | `flex flex-col gap-1` |
+
+**Examples:**
+
+**Kontrola návrhu s akcí:**
+
+```tsx
+<FieldSuggestionIndicator suggestion={{ source: fileName, uncertain: true, message: texts.review, action: { label: texts.create, onClick: createRecord } }} />
+```
+
+**Avoid:**
+
+- Nevykreslujte druhou ikonu návrhu přes ikonová tlačítka pole; používejte sdílený Field.
 
 ### FieldTable
 
@@ -5312,7 +5326,7 @@ tabs.closeLinkedPanel(pane.tabId);
 import { PanelToggleButton } from "@/design-system/{slug}";
 ```
 
-Tlačítko panelu ve formuláři přes DocumentForm.panelToggle / RecordActionBar.panelToggle úplně vpravo za nabídkou akcí, nikoli v záhlaví. DataGrid.panelToggle zůstává za Obnovit. Stav elsewhere zaměří sousední okno přes onFocusElsewhere; tooltip a indikátor dodává APP.
+Orámovaný ovladač panelu s výškou --control-h. Ikona i přístupný název popisují akci: Otevřít panel (←), Zavřít panel (→). Stav elsewhere otevírá/zaměří sousední okno, neuzavírá místní panel. Ve formuláři patří za nabídku akcí, v gridu za Obnovit.
 
 **Props:**
 
@@ -7742,3 +7756,43 @@ import { ZoomGrid } from "@/design-system/{slug}";
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+### SplitButton
+
+```tsx
+import { SplitButton } from "@/design-system/{slug}";
+```
+
+Jedno tlačítko se společným obrysem: hlavní plocha provede akci, šipka otevře nabídku APP. Výchozí výška je --control-h; size=sm použijte výslovně pro kompaktní lištu. Každá část má vlastní fokus a najetí.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | ReactNode | `—` |
+| `actionName` | string | `—` |
+| `icon` | ReactNode | `—` |
+| `onClick` | (event: MouseEvent<HTMLButtonElement>) => void | `—` |
+| `menu` | ReactNode | `—` |
+| `variant` | "primary"  /  "outline" | `primary` |
+| `size` | "default"  /  "sm" | `default` |
+| `disabled` | boolean | `—` |
+| `disabledReason` | ReactNode | `—` |
+| `tooltip` | ReactNode | `—` |
+| `menuAlign` | "start"  /  "end" | `start` |
+| `mainProps` | PartProps | `—` |
+| `menuProps` | PartProps | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Hlavní akce a další možnosti:**
+
+```tsx
+<SplitButton label={texts.create} actionName={texts.create} onClick={createRecord} menu={<DropdownMenuItem onSelect={createFromTemplate}>{texts.fromTemplate}</DropdownMenuItem>} />
+```
+
+**Avoid:**
+
+- Neskládejte dvě samostatná tlačítka s mezerou; nevkládejte do komponenty doménovou logiku.
+- Kompaktní výšku nevolte pomocí className; použijte size=sm.

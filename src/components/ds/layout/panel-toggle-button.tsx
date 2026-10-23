@@ -31,9 +31,10 @@ export const PanelToggleButton = forwardRef<HTMLButtonElement, PanelToggleButton
   ) {
     const active = state ? state !== "closed" : open;
     // Zavřený panel: šipka k obsahu (←, „Otevřít panel“); otevřený: šipka ven (→, „Zavřít panel“).
-    const Icon = active ? PanelRightClose : PanelRightOpen;
+    const closes = active && state !== "elsewhere";
+    const Icon = closes ? PanelRightClose : PanelRightOpen;
     const t = useDsTexts().recordPanel;
-    const action = active && state !== "elsewhere" ? t.close : t.open;
+    const action = closes ? t.close : t.open;
     const extra = tooltip && tooltip !== t.panel ? tooltip : undefined;
     return (
       <Tooltip>
@@ -45,8 +46,8 @@ export const PanelToggleButton = forwardRef<HTMLButtonElement, PanelToggleButton
             size="icon"
             {...props}
             className={cn("relative h-[var(--control-h)] w-[var(--control-h)] shrink-0", className)}
-            aria-label={t.panel}
-            data-direction={active ? "close" : "open"}
+            aria-label={action}
+            data-direction={closes ? "close" : "open"}
             aria-pressed={active}
             onClick={() => (state === "elsewhere" ? onFocusElsewhere?.() : onToggle())}
           >
