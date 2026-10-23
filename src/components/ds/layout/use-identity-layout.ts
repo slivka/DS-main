@@ -56,6 +56,7 @@ export function useIdentityLayout() {
         target.replaceChildren(copy);
       }
     };
+    if (!row.clientWidth) return;
     copyItems();
     const measure = () => {
       if (!row.clientWidth) return;
