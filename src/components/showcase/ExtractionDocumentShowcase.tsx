@@ -52,7 +52,7 @@ export function ExtractionDocumentShowcase() {
           { code: "518001", name: "Služby" },
           { code: "343021", name: "DPH" },
         ]}
-        partners={[{ id: "supplier", code: "P1", name: "Kancelářské potřeby s.r.o." }]}
+        partners={[{ id: "supplier", name: "Kancelářské potřeby s.r.o." }]}
         mainSide="D" homeCurrency="CZK" homeCurrencySymbol="Kč"
         currencies={[{ code: "CZK", label: "Koruna", symbol: "Kč" }]}
         fieldSuggestions={fields} rowSuggestions={rows} onSuggestionCleared={clear}

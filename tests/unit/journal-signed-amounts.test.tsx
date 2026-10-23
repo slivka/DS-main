@@ -9,6 +9,7 @@ import { roundingSuggestion } from "../../src/components/ds/accounting/journal-l
 import { validateJournalLines } from "../../src/components/ds/accounting/journal-lines-validation";
 import { useJournalTotals } from "../../src/components/ds/accounting/useJournalTotals";
 import { JournalLinesEditor } from "../../src/components/ds/accounting/journal-lines-editor";
+import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { DS_TEXTS_CS } from "../../src/ds-texts";
 
 const code: VatCodeOption = { id: "v21", code: "Z", name: "Tuzemsko", rate: 21,
@@ -21,7 +22,7 @@ const config = { codes, calcMode: "net" as const };
 
 describe("záporné částky dokladů", () => {
   it("převod tam a zpět zachová −1 000 na stejných stranách", () => {
-    const row = toJournalRow(negative);
+    const row = toJournalRow(negative, { vat: { calcMode: "net" } });
     expect(row.amount).toBe(-1000);
     expect(fromJournalRow(row, negative.id)).toMatchObject(negative);
   });
@@ -73,7 +74,7 @@ describe("záporné částky dokladů", () => {
         accounts={[]} withoutAccounts documentCurrency="CZK" homeCurrency="CZK"
         storageKey="signed-amount-test" />;
     }
-    const view = render(<Editor />);
+    const view = render(<TooltipProvider><Editor /></TooltipProvider>);
     const cell = view.container.querySelector('[data-cell-key="credit-note:amount"]');
     if (!cell) throw new Error("Chybí buňka částky");
     expect(cell.textContent).toContain("-1 000,00");

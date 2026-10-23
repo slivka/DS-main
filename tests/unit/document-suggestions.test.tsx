@@ -1,13 +1,15 @@
 /** Návrhy dokumentu · hlavička, buňky, první ruční změna, přednost chyby a F8. */
 import { describe, expect, it, mock } from "bun:test";
 import * as React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { act, render, fireEvent } from "@testing-library/react";
 import { DocumentForm } from "../../src/components/ds/accounting/document-form";
 import { JournalLinesEditor } from "../../src/components/ds/accounting/journal-lines-editor";
 import { SuggestionSummary } from "../../src/components/ds/extraction/suggestion-summary";
 import type { DocumentFormProps, DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 import type { JournalLinesEditorProps } from "../../src/components/ds/accounting/journal-editor-types";
 import type { JournalRowSuggestions } from "../../src/components/ds/accounting/journal-suggestions";
+
+import { TooltipProvider } from "../../src/components/ui/tooltip";
 
 const suggestion = { source: "f.pdf", uncertain: true };
 const base: DocumentHeaderValue = { id: "existing", number: "FP1", externalNumber: "123",
@@ -18,7 +20,7 @@ function Form(props: Partial<DocumentFormProps>) {
   const [value, setValue] = React.useState(base);
   return <DocumentForm title="Doklad" status="draft" documentType="FP" value={value}
     onChange={setValue} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]}
-    homeCurrency="CZK" partners={[{ id: "p1", code: "P1", name: "Dodavatel" }]}
+    homeCurrency="CZK" partners={[{ id: "p1", name: "Dodavatel" }]}
     vat={{ visible: true }} {...props} />;
 }
 function field(view: ReturnType<typeof render>, id: string) {
@@ -28,9 +30,9 @@ function field(view: ReturnType<typeof render>, id: string) {
 }
 function Editor(props: Partial<JournalLinesEditorProps>) {
   const [lines, setLines] = React.useState([{ id: "r1", amount: 1000, text: "Služby" }]);
-  return <JournalLinesEditor lines={lines} onChange={setLines} accounts={[]}
+  return <TooltipProvider><JournalLinesEditor lines={lines} onChange={setLines} accounts={[]}
     documentCurrency="CZK" homeCurrency="CZK" withoutAccounts storageKey="suggestions-test"
-    {...props} />;
+    {...props} /></TooltipProvider>;
 }
 
 describe("DocumentForm návrhy hlavičky", () => {
@@ -74,7 +76,7 @@ describe("DocumentForm návrhy hlavičky", () => {
     const amount = view.container.querySelector<HTMLElement>("#document-amountTotal");
     const cell = view.container.querySelector<HTMLElement>('[data-cell-key="r1:text"]');
     if (!amount || !cell) throw new Error("Chybí pole návrhu");
-    amount.focus();
+    act(() => amount.focus());
     fireEvent.keyDown(window, { key: "F8" });
     expect(document.activeElement).toBe(cell);
     fireEvent.keyDown(window, { key: "F8" });
