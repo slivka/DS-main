@@ -21,10 +21,15 @@ export function enrichIdentityCatalog(components: PanelCatalogComponent[]) {
   };
   if (!identity.examples.some((item) => item.label === example.label))
     identity.examples.push(example);
+  const extreme = { label: "Krajní šířka bez překryvu", code:
+    '<IdentityLine items={[book, period, account]} bookCode="FP" fullLabel={fullIdentity} fallback={pendingText} fallbackShort={shortPendingText} />' };
+  if (!identity.examples.some((item) => item.label === extreme.label)) identity.examples.push(extreme);
   identity.antipatterns ??= [];
   const rule =
     "Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení.";
   if (!identity.antipatterns.includes(rule)) identity.antipatterns.push(rule);
+  const clipping = "Ořez hodnot na hraně levé části nikdy nenahrazujte překryvem pravé části ani zmenšením písma. Pro složené položky předejte fullLabel.";
+  if (!identity.antipatterns.includes(clipping)) identity.antipatterns.push(clipping);
   const document = components.find((item) => item.name === "DocumentForm");
   if (document && !document.usage?.includes("identity.fallbackShort"))
     document.usage =

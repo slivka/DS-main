@@ -39,6 +39,13 @@ test("řádek identity bez překryvu v úzkém formuláři", async ({ page }) =>
       if (!fullText) throw new Error("Chybí celý stav");
       await expectTooltip(page, status, fullText);
       await page.mouse.move(0, 0);
+      const row = form.locator('[data-slot="identity-line-row"]');
+      if (Number(await row.getAttribute("data-identity-level")) >= 8) {
+        const label = await row.getAttribute("aria-label");
+        if (!label) throw new Error("Chybí plná identita");
+        await expectTooltip(page, row, label, { interaction: "keyboard" });
+        await page.mouse.move(0, 0);
+      }
       // Tužka zůstává hned za textem účtu.
       const text = form.locator('[data-slot="document-identity-account-text"]');
       const pencil = form.locator(".document-identity-pencil-slot");
