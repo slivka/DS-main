@@ -59,6 +59,15 @@ export function useIdentityLayout() {
     copyItems();
     const measure = () => {
       if (!row.clientWidth) return;
+      const statusEl = row.querySelector<HTMLElement>('[data-slot="identity-line-number"]');
+      if (row.dataset.identityLevel === "3" && statusEl) {
+        const gap = parseFloat(getComputedStyle(row).gap) || 0;
+        const reserve = statusEl.getBoundingClientRect().width + gap;
+        // Krajní zoom: pevné hodnoty nesmíme oříznout ani překrýt; výška zůstává control-h.
+        const current = parseFloat(row.style.getPropertyValue("--identity-emergency-scale")) || 1;
+        const natural = Math.max(1, items.scrollWidth * current);
+        row.style.setProperty("--identity-emergency-scale", String(Math.min(1, (row.clientWidth - reserve) / natural)));
+      } else row.style.removeProperty("--identity-emergency-scale");
       const status = row.parentElement?.querySelector<HTMLElement>(
         '[data-slot="identity-measure-status"]',
       );
@@ -83,6 +92,7 @@ export function useIdentityLayout() {
     if (typeof ResizeObserver === "undefined") return;
     const resize = new ResizeObserver(measure);
     resize.observe(row);
+    resize.observe(items);
     for (const child of row.parentElement?.querySelectorAll<HTMLElement>(
       "[data-identity-measure]",
     ) ?? [])

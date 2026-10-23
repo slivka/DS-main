@@ -2838,6 +2838,7 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 }
 .ds-identity-row[data-identity-level="3"] > .ds-identity-items {
   min-width: 0;
+  zoom: var(--identity-emergency-scale, 1);
 }
 .ds-identity-row
   > .ds-identity-items
