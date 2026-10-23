@@ -2724,6 +2724,10 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   min-width: 0;
   max-width: 100%;
 }
+.ds-identity-row:is([data-identity-level="5"], [data-identity-level="6"], [data-identity-level="7"], [data-identity-level="8"]) [data-identity-first] {
+  flex: 0 0 auto;
+  min-width: min-content;
+}
 .document-identity-account-box {
   height: var(--control-h);
   flex: 1 1 var(--identity-account-width);
