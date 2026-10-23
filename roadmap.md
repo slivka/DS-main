@@ -1,5 +1,9 @@
 ## DS 2.136.0 (nevydáno)
 
+- [ ] Zachovat záporné řádky, ověřit DPH/součty/rozdíl/zaokrouhlení a nulovou validaci.
+- [ ] Návrhy hlavičky a buněk DocumentForm, ruční zrušení a společné F8; ukázka FP.
+- [ ] Regresní testy, nejvýše jeden E2E spec, úplná kontrola a migrace v CHANGELOGu; nevydávat.
+
 ## DS 2.135.0
 
 - [x] Oprava kontroly Clauda: podklad návrhu jen pro ovládání hodnoty (input/select/textarea, spouštěč s role="combobox" a data-slot="select-trigger"), ikonová tlačítka v poli beze změny; nový unit test na skutečné prvky (padá po návratu ke starému pravidle). check:quick + check:full --harness 1 393/1 393 ve 144 souborech, katalog bez ztrát, E2E nespouštěny. Nevydáno, release Claude.
