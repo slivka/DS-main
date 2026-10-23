@@ -25,7 +25,7 @@ test("FV: odečty pod položkami, split akce a tři součty", async ({ page }) =
   await expect(fv.locator('[data-slot="journal-deduction-to-pay"]')).toHaveCount(1);
   await expect(fv.locator('[data-slot="journal-footer-sum"]')).toContainText("Součet položek");
 
-  const trigger = fv.getByRole("button", { name: "Odečet zálohy – Akce" });
+  const trigger = fv.getByRole("button", { name: "Další možnosti – Odečet zálohy" });
   await trigger.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("menuitem", { name: "Ruční odečet…" })).toBeVisible();
