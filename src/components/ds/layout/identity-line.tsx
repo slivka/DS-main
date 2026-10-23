@@ -1,9 +1,5 @@
 /** Identita formuláře · vlastní oddělovače, číslo a bezpřekryvové rozvržení · nesmí znát doménu ani měnit data. */
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { cn } from "../../../lib/utils";
 import { TruncatedText } from "../data-display/truncated-text";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
@@ -39,19 +35,26 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
   const pending = !number && !numberContent;
   const fullStatus = numberContent ?? (number || fallback);
   const statusText = pending && level >= 2 && fallbackShort ? fallbackShort : fullStatus;
-  const status = typeof statusText === "string" ? (
-    <TooltipProvider delayDuration={200}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span tabIndex={0} aria-label={typeof fullStatus === "string" ? fullStatus : undefined}
-            className="block min-w-0 truncate" data-slot="identity-status-text">
-            {statusText}
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>{fullStatus}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  ) : statusText;
+  const status =
+    typeof statusText === "string" ? (
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span
+              tabIndex={0}
+              aria-label={typeof fullStatus === "string" ? fullStatus : undefined}
+              className="block min-w-0 truncate"
+              data-slot="identity-status-text"
+            >
+              {statusText}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{fullStatus}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ) : (
+      statusText
+    );
   const last = items.length - 1;
   return (
     <div
@@ -76,7 +79,10 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
               key={index}
               data-slot="identity-line-item"
               data-identity-first={index === 0 ? "true" : undefined}
-              className={cn("ds-identity-item flex items-center", index === last ? "min-w-0" : "shrink-0")}
+              className={cn(
+                "ds-identity-item flex items-center",
+                index === last ? "min-w-0" : "shrink-0",
+              )}
             >
               {index > 0 || leading ? (
                 <span aria-hidden="true" className="mx-2 h-4 w-px shrink-0 bg-border" />
@@ -96,12 +102,32 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
           {status}
         </div>
       </div>
-        <div aria-hidden="true" inert className="ds-identity-measure absolute invisible pointer-events-none">
-          <div data-slot="identity-measure-full" data-identity-measure />
-          <div data-slot="identity-measure-minimum" data-identity-measure />
-          <span data-slot="identity-measure-status" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{typeof fullStatus === "string" ? fullStatus : null}</span>
-          <span data-slot="identity-measure-short" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{fallbackShort ?? (typeof fullStatus === "string" ? fullStatus : null)}</span>
-        </div>
+      <div
+        aria-hidden="true"
+        inert
+        className="ds-identity-measure absolute invisible pointer-events-none"
+      >
+        <div data-slot="identity-measure-full" data-identity-measure />
+        <div data-slot="identity-measure-minimum" data-identity-measure />
+        <span
+          data-slot="identity-measure-status"
+          className={cn(
+            "block w-max whitespace-nowrap",
+            pending ? "text-sm italic" : "font-mono text-xl font-bold",
+          )}
+        >
+          {typeof fullStatus === "string" ? fullStatus : null}
+        </span>
+        <span
+          data-slot="identity-measure-short"
+          className={cn(
+            "block w-max whitespace-nowrap",
+            pending ? "text-sm italic" : "font-mono text-xl font-bold",
+          )}
+        >
+          {fallbackShort ?? (typeof fullStatus === "string" ? fullStatus : null)}
+        </span>
+      </div>
     </div>
   );
 });

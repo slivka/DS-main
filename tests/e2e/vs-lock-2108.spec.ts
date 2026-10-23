@@ -173,7 +173,9 @@ test("IdentityLine: 360/480 px i maximální zoom drží jedinou výšku bez př
     const status = page.locator('[data-slot="identity-status-text"]');
     await expect(status).toHaveText("Koncept");
     await expect(status).toHaveAttribute("aria-label", "Koncept – číslo při zařazení");
-    await expect(page.locator('[data-slot="identity-line-row"]')).not.toHaveAttribute("data-stacked");
+    await expect(page.locator('[data-slot="identity-line-row"]')).not.toHaveAttribute(
+      "data-stacked",
+    );
     await status.hover();
     await expect(page.getByRole("tooltip")).toContainText("Koncept – číslo při zařazení");
     await page.mouse.move(0, 0);

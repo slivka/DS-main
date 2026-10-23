@@ -191,8 +191,13 @@ export function DocumentIdentityLine({
                     <span className="shrink-0 font-mono tabular-nums">{accountCode}</span>
                     {accountName ? (
                       <>
-                        <span className="ds-identity-account-separator shrink-0 whitespace-pre">{CODE_SEPARATOR}</span>
-                        <TruncatedText text={accountName} className="ds-identity-account-name min-w-0" />
+                        <span className="ds-identity-account-separator shrink-0 whitespace-pre">
+                          {CODE_SEPARATOR}
+                        </span>
+                        <TruncatedText
+                          text={accountName}
+                          className="ds-identity-account-name min-w-0"
+                        />
                       </>
                     ) : null}
                   </span>
