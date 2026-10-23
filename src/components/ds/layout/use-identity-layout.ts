@@ -43,17 +43,22 @@ export function useIdentityLayout() {
       for (const target of [full, minimum]) {
         const copy = items.cloneNode(true);
         if (!(copy instanceof HTMLElement)) continue;
-        copy.removeAttribute("data-slot");
-        for (const node of copy.querySelectorAll<HTMLElement>("[id], [data-slot]")) {
-          node.removeAttribute("id");
-          // Kopie nesmějí soupeřit s živými selektory formuláře.
-          node.removeAttribute("data-slot");
+        for (const node of [copy, ...copy.querySelectorAll<HTMLElement>("*")]) {
+          for (const name of node.getAttributeNames())
+            if (name === "id" || name.startsWith("aria-") || name.startsWith("data-"))
+              node.removeAttribute(name);
+          // Měření nemá druhou živou tužku ani identifikátory/formulářové atributy.
+          if (node.classList.contains("document-identity-pencil-slot")) {
+            node.classList.replace("document-identity-pencil-slot", "ds-identity-pencil-measure");
+          }
+          if (node.classList.contains("document-identity-account-box")) node.dataset.mode = "read";
         }
         target.replaceChildren(copy);
       }
     };
     copyItems();
     const measure = () => {
+      if (!row.clientWidth) return;
       const status = row.parentElement?.querySelector<HTMLElement>(
         '[data-slot="identity-measure-status"]',
       );
