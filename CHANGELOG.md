@@ -2,6 +2,12 @@
 
 ## 2.135.0 (nevydáno)
 
+- Vytěžování souborů (E1): nový stav pole `suggestion?: FieldSuggestion` na `Field` i `Input` (a přes kontext na všech polích formuláře). „Navrženo“ = jemný podklad z nového tokenu `--suggestion-soft` (světlý i tmavý režim, nesplývá se zakázaným polem); „ke kontrole“ = žlutý rámeček, ikona a bublina se zprávou stejným vzorem jako varování – výška pole ani řádku se nemění. Chyba a varování mají přednost; stav po první ruční změně ruší rodič, DS jen vykresluje.
+- Nové komponenty bez domény: `ExtractionStatus` (Vytěžuji… / Hotovo · metoda / Nepodařilo se – Zkusit znovu / Duplicitní soubor – Otevřít původní doklad; callbacky `onCancel`/`onRetry`/`onOpenOriginal`), `SuggestionSummary` (jednořádkový souhrn se skloňovaným počtem polí ke kontrole, odkazem na řádky a akcemi „Další ke kontrole“ – klávesa F8 cyklicky obchází pole `data-suggestion="uncertain"` – a „Zahodit návrh“), `ExtractionOverwriteDialog` („Doklad už má vyplněné hodnoty“: Přepsat vše / Doplnit jen prázdná pole / Zrušit) a `ExtractedItemsTable` (grid jen pro čtení se souhrnným řádkem od aplikace, výchozí sbalený, pod náhled zdroje). Texty v DsTexts (CS i SK), žádné pevné řetězce.
+- Ukázka „Vytěžování souboru“ na stránce Panel záznamu: formulář s navrženým a nejistým polem, přepínač stavů vytěžení, souhrn, dialog přepsání a tabulka položek. Součty tabulky dodává aplikace, DS nic nepočítá.
+- Ověření: 13 nových unit testů (stav pole včetně přednosti chyby, všechny stavy pruhu a callbacky, skloňování CS/SK, F8 cyklicky i bez nejistých polí, tři volby dialogu, sbalená tabulka se souhrnem a prázdné buňky řádku bez množství), cíleně 13/13. Nový E2E `extraction.spec.ts` (Chromium 1/1; F8 se opakuje, dokud hydratace nepřipojí posluchač). Plnou E2E sadu pustí Claude v GitHubu. Nevydáno, package/meta 2.133.0, release Claude.
+
+
 ## 2.134.0
 
 - `DocumentCounterpartyTab.deliveryReadOnly?: boolean` odděluje zámek dodací adresy od odběratele. APP předá `deliveryReadOnly: false` pro editaci dodání při `counterpartyLocked: true`; bez prop zůstává dosavadní chování. Celkové `readOnly` má nadále přednost. Platí pro FV i ZFV; objednávka, údaje odběratele, tisk a ukládání beze změny. Nevydáno, release Claude.
