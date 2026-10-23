@@ -13,6 +13,8 @@ export interface IdentityWidths {
   status: number;
   /** Krátký text stavu; bez krátkého tvaru shodný s plným. */
   short: number;
+  /** Šířky ústupu stavu, knihy, kódů a ikony včetně levé části. */
+  compact?: number[];
 }
 
 /** Účet → krátký stav → trojtečka stavu; návrat má rezervu proti kmitání. */
@@ -21,7 +23,11 @@ export function resolveIdentityLevel(widths: IdentityWidths, previous = 0): numb
   if (widths.available >= widths.full + widths.status + margin) return 0;
   if (widths.available >= widths.minimum + widths.status + margin) return 1;
   if (widths.available >= widths.minimum + widths.short + (previous > 2 ? 24 : 0)) return 2;
-  return 3;
+  for (const [index, required] of (widths.compact ?? []).entries()) {
+    const next = index + 3;
+    if (widths.available >= required + (previous > next ? 24 : 0)) return next;
+  }
+  return widths.compact ? 8 : 3;
 }
 
 /** Rozměry se synchronizují s DOM, observer vzniká pouze při připojení řádku. */
@@ -67,6 +73,17 @@ export function useIdentityLayout() {
         '[data-slot="identity-measure-short"]',
       );
       if (!full || !minimum || !status || !short) return;
+      const left = minimum.firstElementChild;
+      const book = left?.querySelector<HTMLElement>(".ds-identity-book-full");
+      const code = left?.querySelector<HTMLElement>(".ds-identity-book-code");
+      const base = left?.getBoundingClientRect().width ?? 0;
+      const bookWidth = book?.getBoundingClientRect().width ?? 0;
+      const codeWidth = code?.scrollWidth || 0;
+      const unit = parseFloat(getComputedStyle(row).fontSize);
+      const compactBook = Math.max(0, base - bookWidth + (codeWidth || unit * 2));
+      const compactAccount = Math.max(0, compactBook - unit);
+      const realNumber = row.dataset.pending !== "true";
+      const right = realNumber ? status.getBoundingClientRect().width : unit;
       setLevel((previous) =>
         resolveIdentityLevel(
           {
@@ -75,6 +92,9 @@ export function useIdentityLayout() {
             minimum: minimum.firstElementChild?.getBoundingClientRect().width ?? 0,
             status: status.getBoundingClientRect().width,
             short: short.getBoundingClientRect().width,
+            compact: [base + right, base - bookWidth + unit * 3 + right,
+              compactBook + right, compactAccount + right,
+              compactAccount + (realNumber ? right : unit)],
           },
           previous,
         ),
