@@ -2829,7 +2829,9 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 }
 .ds-identity-status {
   flex: 0 0 auto;
-  max-width: none;
+  /* Stav nikdy nepřesáhne řádek: krajní šířka ořízne i vlastní ovládání (vstup čísla). */
+  max-width: 100%;
+  overflow: hidden;
 }
 .ds-identity-book-code {
   display: none;

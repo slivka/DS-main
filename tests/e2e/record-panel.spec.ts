@@ -65,7 +65,7 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
   await panel.screenshot({ path: "/tmp/browser/record-panel/pdf-wide.png" });
   await resize.dblclick();
   // Ovladač zůstává poslední samostatnou akcí, v záhlaví není.
-  const panelButton = example.getByRole("button", { name: "Panel", exact: true });
+  const panelButton = example.getByRole("button", { name: "Zavřít panel", exact: true });
   await expect(panelButton).toHaveCount(1);
   expect(
     await panelButton.evaluate((node) =>

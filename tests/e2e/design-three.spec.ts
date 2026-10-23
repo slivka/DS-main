@@ -27,7 +27,10 @@ for (const zoom of [70, 100, 200]) {
       await demo.getByRole("button", { name: "Změnit účet", exact: true }).click();
       await expect(demo.getByRole("combobox")).toBeVisible();
       const after = await identity.boundingBox();
-      const accountBox = demo.locator(".document-identity-account-box");
+      // Měřicí kopie (ds-identity-measure) nesou stejné třídy; měří se jen živý řádek.
+      const accountBox = demo.locator(
+        '[data-slot="identity-line-row"] .document-identity-account-box',
+      );
       const accountMetrics = await accountBox.evaluate((e) => ({
         width: e.getBoundingClientRect().width,
         // Edit 16: řádek identity se nezalamuje, účet bere jen zbývající místo bez příslušenství.
