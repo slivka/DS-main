@@ -4,9 +4,11 @@
  * Nesmí: měnit hodnotu dokladu mimo předané callbacky.
  */
 import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
-import type { ReactNode, RefObject } from "react";
+import { useContext, type ReactNode, type RefObject } from "react";
 import { IdentityLine } from "../../layout/identity-line";
-import { Field } from "../../layout/form-field-layout";
+import { FieldSuggestionContext } from "../../form/field-suggestion-context";
+import { FieldFeedbackContext, FieldSuggestionIndicator } from "../../form/field-feedback";
+import { useDsTexts } from "../../../../ds-texts";
 import { Pencil } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
@@ -70,6 +72,10 @@ export function DocumentIdentityLine({
   accountOptions: AccountOption[];
 }) {
   const number = identity.number || null;
+  const dsTexts = useDsTexts();
+  // Návrh bez obalu Field: box zůstává šířky textu a tužka stojí hned za ním.
+  const suggestion = useContext(FieldSuggestionContext)?.("document-mainAccountId");
+  const suggestionState = suggestion ? (suggestion.uncertain ? "uncertain" : "suggested") : undefined;
   const fullAccountLabel = accountLabel ?? identity.account?.label ?? "";
   const [accountCode, ...accountNameParts] = fullAccountLabel.split(CODE_SEPARATOR);
   const accountName = accountNameParts.join(CODE_SEPARATOR);
@@ -134,12 +140,9 @@ export function DocumentIdentityLine({
         <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">
           {account.side}
         </span>
-        <Field
-          htmlFor="document-mainAccountId"
-          className="min-w-0 [&[data-suggestion=uncertain]_.ds-field-control]:pr-6"
-        >
+        <FieldFeedbackContext.Provider value={{ suggestion }}>
           {editingAccount ? (
-            <span className="document-identity-account-box">
+            <span className="document-identity-account-box" data-suggestion={suggestionState}>
               <span
                 aria-hidden="true"
                 className="document-identity-account-measure"
@@ -156,12 +159,17 @@ export function DocumentIdentityLine({
                   if (!open) onAccountClose();
                 }}
               />
+              <FieldSuggestionIndicator
+                suggestion={suggestion}
+                defaultMessage={suggestion ? dsTexts.extraction.suggestionUncertain(suggestion.source) : undefined}
+              />
             </span>
           ) : (
             <span
               id="document-mainAccountId"
               data-slot="document-identity-account"
               data-mode="read"
+              data-suggestion={suggestionState}
               className="document-identity-account-box flex items-center border border-transparent rounded-md text-sm font-normal"
             >
               {/* Při čtení má box šířku textu, tužka stojí hned za ním (i za trojtečkou). */}
@@ -184,9 +192,13 @@ export function DocumentIdentityLine({
                 </TooltipTrigger>
                 <TooltipContent>{fullAccountLabel}</TooltipContent>
               </Tooltip>
+              <FieldSuggestionIndicator
+                suggestion={suggestion}
+                defaultMessage={suggestion ? dsTexts.extraction.suggestionUncertain(suggestion.source) : undefined}
+              />
             </span>
           )}
-        </Field>
+        </FieldFeedbackContext.Provider>
         <span className="document-identity-pencil-slot">{pencil}</span>
       </span>,
     );
