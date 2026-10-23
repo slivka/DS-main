@@ -3,7 +3,10 @@
  * a řádky rekapitulace DPH · nesmí počítat zálohy ani DPH (data APP).
  */
 import * as React from "react";
-import { ChevronDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
+import { SplitButton, type SplitButtonProps } from "../form/split-button";
+
+type PartAttrs = NonNullable<SplitButtonProps["mainProps"]>;
 
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -85,42 +88,24 @@ export function JournalDeductionAdd() {
       </div>
     );
   return (
-    <div
-      role="group"
-      aria-label={t.deductionAdd}
-      className="inline-flex shrink-0"
-      data-slot="journal-deduction-split"
-      data-toolbar-overflow-item=""
-    >
-      {tip(
-        <Button
-          type="button"
-          variant="outline"
-          data-slot="journal-deduction-add"
-          aria-disabled={blocked || undefined}
-          onClick={() => !blocked && add("advance")}
-          className="grid-toolbar-control h-[var(--control-h)] rounded-r-none px-[0.75em]"
-        >
-          {t.deductionAdd}
-        </Button>,
-      )}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild disabled={blocked}>
-          <Button
-            type="button"
-            variant="outline"
-            aria-label={`${t.deductionAdd} – ${t.actions}`}
-            data-slot="journal-deduction-menu"
-            className="grid-toolbar-control h-[var(--control-h)] w-[calc(var(--control-h)*0.8)] rounded-l-none border-l-0 px-0"
-          >
-            <ChevronDown className="size-[1em]" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DeductionMenuItems add={add} />
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <SplitButton
+      variant="outline"
+      label={t.deductionAdd}
+      actionName={t.deductionAdd}
+      onClick={() => add("advance")}
+      disabled={blocked}
+      disabledReason={blocked ? reason : undefined}
+      className="journal-deduction-split"
+      mainProps={{
+        "data-slot": "journal-deduction-add",
+        className: "grid-toolbar-control h-[var(--control-h)] px-[0.75em]",
+      } as PartAttrs}
+      menuProps={{
+        "data-slot": "journal-deduction-menu",
+        className: "grid-toolbar-control h-[var(--control-h)] w-[calc(var(--control-h)*0.8)] px-0",
+      } as PartAttrs}
+      menu={<DeductionMenuItems add={add} />}
+    />
   );
 }
 
