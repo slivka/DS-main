@@ -161,6 +161,7 @@ export const DS_TEXTS_SK: DsTexts = {
     system: "Systém",
   },
   recordAction: {
+    moreOptionsFor: (action) => `Ďalšie možnosti – ${action}`,
     moreActions: "Ďalšie akcie",
     unsaved: "Neuložené zmeny",
     errorTitle: "Záznam nie je možné uložiť",

@@ -1,7 +1,7 @@
 /** Nabídka Nový · vlastní kompozici sdíleného menu · nesmí vytvářet doklady. */
 import { forwardRef, type ReactNode, type ComponentPropsWithoutRef } from "react";
-import { ChevronDown } from "lucide-react";
 import { useDsTexts } from "../../../ds-texts";
+import { SplitButton } from "../form/split-button";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import {
@@ -98,54 +98,46 @@ export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProp
     ref,
   ) {
     const t = useDsTexts().templates;
+    const items = (
+      <DocumentNewMenuItems
+        templates={templates}
+        onBlank={onBlank}
+        onTemplate={onTemplate}
+        onManage={onManage}
+      />
+    );
+    if (onPrimary)
+      return (
+        <SplitButton
+          ref={ref}
+          icon={icon}
+          label={label ?? children ?? t.newDocument}
+          actionName={label ?? t.newDocument}
+          onClick={() => onPrimary()}
+          disabled={props.disabled}
+          mainProps={{
+            ...props,
+            className: cn("grid-toolbar-control grid-toolbar-primary", className),
+          }}
+          menuProps={{ className: "grid-toolbar-control grid-toolbar-primary" }}
+          menu={items}
+        />
+      );
     return (
       <DropdownMenu>
-        <div className="inline-flex shrink-0">
-          {onPrimary ? (
-            <Button
-              {...props}
-              ref={ref}
-              type="button"
-              size="sm"
-              className={cn("grid-toolbar-control grid-toolbar-primary rounded-r-none", className)}
-              onClick={onPrimary}
-            >
-              {icon}
-              {label ?? children ?? t.newDocument}
-            </Button>
-          ) : null}
-          <DropdownMenuTrigger asChild>
-            <Button
-              {...props}
-              ref={onPrimary ? undefined : ref}
-              type="button"
-              size="sm"
-              aria-label={onPrimary ? `${label ?? t.newDocument} – ${t.menu}` : props["aria-label"]}
-              className={cn(
-                "grid-toolbar-control grid-toolbar-primary shrink-0",
-                onPrimary && "rounded-l-none border-l border-primary-foreground/30 px-2",
-                className,
-              )}
-            >
-              {onPrimary ? (
-                <ChevronDown aria-hidden="true" className="size-4" />
-              ) : (
-                <>
-                  {icon}
-                  {label ?? children ?? t.newDocument}
-                </>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-        </div>
-        <DropdownMenuContent align="start">
-          <DocumentNewMenuItems
-            templates={templates}
-            onBlank={onBlank}
-            onTemplate={onTemplate}
-            onManage={onManage}
-          />
-        </DropdownMenuContent>
+        <DropdownMenuTrigger asChild>
+          <Button
+            {...props}
+            ref={ref}
+            type="button"
+            size="sm"
+            className={cn("grid-toolbar-control grid-toolbar-primary shrink-0", className)}
+          >
+            {icon}
+            {label ?? children ?? t.newDocument}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">{items}</DropdownMenuContent>
       </DropdownMenu>
     );
   },

@@ -5,6 +5,7 @@
  */
 
 /* Layout */
+export * from "./form/split-button";
 export * from "./layout/panel-toggle-button";
 export * from "./layout/record-panel-toolbar";
 export * from "./layout/record-side-panel";

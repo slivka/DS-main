@@ -136,7 +136,7 @@ describe("JournalLinesEditor – odečty záloh", () => {
     renderEditor({ deductions: deductions({ onAdd: (kind) => kinds.push(kind) }) });
     fireEvent.click(screen.getByRole("button", { name: "Odečet zálohy" }));
     expect(kinds).toEqual(["advance"]);
-    expect(screen.getByRole("button", { name: "Odečet zálohy – Akce" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Další možnosti – Odečet zálohy" })).toBeTruthy();
   });
 
   it("zakázaná split akce nevolá onAdd", () => {
@@ -250,7 +250,7 @@ describe("JournalLinesEditor – odečty záloh", () => {
     const kinds: string[] = [];
     renderEditor({ deductions: deductions({ onAdd: (kind) => kinds.push(kind) }) });
     expect(screen.getByRole("group", { name: "Odečet zálohy" })).toBeTruthy();
-    const trigger = screen.getByRole("button", { name: "Odečet zálohy – Akce" });
+    const trigger = screen.getByRole("button", { name: "Další možnosti – Odečet zálohy" });
     trigger.focus();
     fireEvent.keyDown(trigger, { key: "Enter" });
     const manual = await screen.findByRole("menuitem", { name: "Ruční odečet…" });

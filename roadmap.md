@@ -3,7 +3,8 @@
 - [x] Řádek identity bez překryvu (priorita, zkracování, stav na druhý řádek), E2E 420/480/640 px.
 - [x] Jedna ikona návrhu vlevo od ikonových tlačítek pole.
 - [x] Tlačítko panelu: stále orámované, šipka a bublina podle stavu; výchozí pořadí záložek Zdroj → Poznámky → Přílohy → Historie → Propojené.
-- [x] `FieldSuggestion.action` v bublině „ke kontrole“; ukázka úzkého formuláře. check:full 1 433/1 433, katalog bez ztrát. Nevydáno, release Claude.
+- [x] `SplitButton` (jeden obrys, jemná čára) v liště gridu, nabídce nového dokladu a odečtu zálohy; ukázka a testy.
+- [x] `FieldSuggestion.action` v bublině „ke kontrole“; ukázka úzkého formuláře. check:full 1 438/1 438, katalog bez ztrát. Nevydáno, release Claude.
 
 ## DS 2.136.0
 

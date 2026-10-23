@@ -22,6 +22,9 @@ import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { useIsActivePane } from "../panes/pane-context";
 import { GridAddLabelContext, GridToolbarOverflowContext } from "./grid-toolbar-context";
+import { SplitButton, type SplitButtonProps } from "../form/split-button";
+
+type SplitPartAttrs = NonNullable<SplitButtonProps["mainProps"]>;
 
 /** Primární akce lišty gridu. */
 export interface GridAddAction {
@@ -59,7 +62,6 @@ export interface GridAddActionsProps {
 export function GridAddActions({ actions }: GridAddActionsProps) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
   const texts = useDsTexts().grid;
-  const splitMenuText = useDsTexts().templates.menu;
   const addMenuLabel = texts.addMenu ?? DS_TEXTS_CS.grid.addMenu;
   const labelMode = React.useContext(GridAddLabelContext);
   const primaryActionRef = React.useRef<HTMLButtonElement>(null);
@@ -102,32 +104,8 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
         // klepnutí i Enter/mezerník ukázaly důvod; bez důvodu stačí nativní disabled.
         const blocked = Boolean(action.disabled && action.disabledReason);
         const reasonId = `${reasonIdBase}-${index}`;
-        const button = (
-          <Button
-            ref={index === 0 ? primaryActionRef : undefined}
-            data-toolbar-add
-            type="button"
-            size="sm"
-            disabled={blocked ? undefined : action.disabled}
-            aria-disabled={blocked || undefined}
-            aria-describedby={blocked ? reasonId : undefined}
-            onClick={(event) => {
-              if (blocked) {
-                event.preventDefault();
-                return;
-              }
-              action.onClick(event);
-            }}
-            aria-label={actionLabel}
-            // Ve sloučeném stavu zůstává tlačítko v DOM skryté kvůli zkratce N a měření.
-            className={cn(
-              "grid-toolbar-control grid-toolbar-primary shrink-0",
-              action.menu && "rounded-r-none",
-              blocked && "cursor-not-allowed",
-              merged && "hidden",
-            )}
-          >
-            <Plus className="size-[1.2em]" />
+        const labelContent = (
+          <>
             {multiple ? (
               <>
                 <span
@@ -153,6 +131,34 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                 {action.label}
               </span>
             )}
+          </>
+        );
+        const button = (
+          <Button
+            ref={index === 0 ? primaryActionRef : undefined}
+            data-toolbar-add
+            type="button"
+            size="sm"
+            disabled={blocked ? undefined : action.disabled}
+            aria-disabled={blocked || undefined}
+            aria-describedby={blocked ? reasonId : undefined}
+            onClick={(event) => {
+              if (blocked) {
+                event.preventDefault();
+                return;
+              }
+              action.onClick(event);
+            }}
+            aria-label={actionLabel}
+            // Ve sloučeném stavu zůstává tlačítko v DOM skryté kvůli zkratce N a měření.
+            className={cn(
+              "grid-toolbar-control grid-toolbar-primary shrink-0",
+              blocked && "cursor-not-allowed",
+              merged && "hidden",
+            )}
+          >
+            <Plus className="size-[1.2em]" />
+            {labelContent}
           </Button>
         );
         const main = blocked ? (
@@ -170,40 +176,31 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             <TooltipContent>{tip}</TooltipContent>
           </Tooltip>
         );
-        // Split režim: hlavní klik provede akci, šipka otevře dodanou nabídku.
-        const arrow = (
-          <Button
-            type="button"
-            size="sm"
-            disabled={blocked ? undefined : action.disabled}
-            aria-disabled={blocked || undefined}
-            aria-describedby={blocked ? reasonId : undefined}
-            aria-label={`${action.label} – ${splitMenuText}`}
-            className={cn(
-              "grid-toolbar-control grid-toolbar-primary shrink-0 rounded-l-none border-l border-primary-foreground/30 px-2",
-              merged && "hidden",
-            )}
-          >
-            <ChevronDown aria-hidden className="size-4" />
-          </Button>
-        );
+        // Split režim: jedno rozdělené tlačítko – hlavní klik provede akci, šipka otevře nabídku.
         if (action.menu)
           return (
-            <DropdownMenu key={action.label}>
-              <div className="inline-flex shrink-0">
-                {main}
-                {blocked ? (
-                  <DisabledReasonTooltip content={tip} blocked>
-                    {arrow}
-                  </DisabledReasonTooltip>
-                ) : (
-                  <DropdownMenuTrigger asChild disabled={action.disabled}>
-                    {arrow}
-                  </DropdownMenuTrigger>
-                )}
-              </div>
-              <DropdownMenuContent align="start">{action.menu}</DropdownMenuContent>
-            </DropdownMenu>
+            <SplitButton
+              key={action.label}
+              ref={index === 0 ? primaryActionRef : undefined}
+              icon={<Plus className="size-[1.2em]" />}
+              label={labelContent}
+              actionName={action.label}
+              onClick={(event) => action.onClick(event)}
+              disabled={action.disabled}
+              disabledReason={action.disabledReason}
+              tooltip={tip}
+              menu={action.menu}
+              mainProps={
+                {
+                  "data-toolbar-add": "",
+                  "aria-label": actionLabel,
+                  className: cn("grid-toolbar-control grid-toolbar-primary", merged && "hidden"),
+                } as SplitPartAttrs
+              }
+              menuProps={{
+                className: cn("grid-toolbar-control grid-toolbar-primary", merged && "hidden"),
+              }}
+            />
           );
         return main;
       })}

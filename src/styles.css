@@ -2963,3 +2963,47 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   border-radius: var(--radius);
   background: var(--col-swatch-mark);
 }
+
+/* Rozdělené tlačítko: jeden obrys, zaoblené jen vnější rohy, uvnitř jemná svislá čára.
+   Pravidla mají přednost i před zaoblením ovládání lišty gridu. */
+.ds-split-button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  gap: 0;
+}
+.ds-split-button > .ds-split-main,
+.ds-split-button > * > .ds-split-main,
+.ds-split-button .ds-split-main {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right-width: 0 !important;
+  margin: 0;
+}
+.ds-split-button .ds-split-menu {
+  position: relative;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-left-width: 0 !important;
+  padding-inline: 0.45em !important;
+  margin: 0;
+}
+.ds-split-button .ds-split-menu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background-color: currentColor;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.ds-split-button[data-variant="outline"] .ds-split-menu::before {
+  background-color: var(--border);
+  opacity: 1;
+}
+.ds-split-button :is(.ds-split-main, .ds-split-menu):focus-visible {
+  position: relative;
+  z-index: 1;
+}
