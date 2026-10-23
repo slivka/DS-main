@@ -446,6 +446,8 @@ export interface DsTexts {
     creditAccount: string;
   };
   documentForm: {
+    /** Krátký stav identity před přidělením čísla. */
+    fallbackShort: string;
     /** Štítek ručně zadaného dodavatele vedle „Vstupuje do DPH“. */
     unverifiedSupplier: string;
     /** Bublina štítku ručně zadaného dodavatele. */

@@ -2320,7 +2320,7 @@ _Příjem_
 import { DocumentForm } from "@/design-system/{slug}";
 ```
 
-Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0. Formulář dokladu se sdílenými sekcemi a pruhy. FV/ZFV mají daňové číslo s vazbou; účetní datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift. Navázané účetní datum a u FP/ZFP/DDPOZ ručně neměněné DUZP se zapisují přes onChange (při změně vystavení a jednou při otevření dokladu), takže zobrazené = uložené. Neplatné datum a varování čísla dodavatele pro VS jsou ⚠ v poli a celý text v pruhu nad formulářem; chybějící kurz DPH se hlásí jednou a ne u dokladu jen pro čtení. onAddBankAccount dostává hledaný text. Úvodní zápis odvozených datumů přes onChange probíhá jen u upravitelného dokladu; readOnly, posted, locked a cancelled zachovávají uložená data bez callbacku. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors. Pruh vzoru přes templateEdit sdílí faktury i ZL nad identitou. panelToggle předává ovladač do RecordActionBar úplně vpravo za nabídku akcí ve všech šířkách, nikdy do záhlaví; společné pro faktury i zálohové listy. fieldLockedReasons: jen needitovatelná pole přes FieldValue lockedReason; obecný důvod předchází součtu Σ, currencyDisabledReason a counterpartyInputLockedReason. IBAN režim: bankIban před bankAccount, bankSwift před bankCode; paymentReference pro referenci. Ruční protistrana: counterpartyName před partnerId. Zamčené datum sdílí šířku DateField; odkaz chyby zaměří zámek. Platí pro faktury i zálohové listy. FV a ZFV mají customerOrderRef v základních údajích. Tisk dostává hotová InvoicePrintData z APP; DS nepočítá součty faktury ani záloh. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách.
+Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0. Formulář dokladu se sdílenými sekcemi a pruhy. FV/ZFV mají daňové číslo s vazbou; účetní datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift. Navázané účetní datum a u FP/ZFP/DDPOZ ručně neměněné DUZP se zapisují přes onChange (při změně vystavení a jednou při otevření dokladu), takže zobrazené = uložené. Neplatné datum a varování čísla dodavatele pro VS jsou ⚠ v poli a celý text v pruhu nad formulářem; chybějící kurz DPH se hlásí jednou a ne u dokladu jen pro čtení. onAddBankAccount dostává hledaný text. Úvodní zápis odvozených datumů přes onChange probíhá jen u upravitelného dokladu; readOnly, posted, locked a cancelled zachovávají uložená data bez callbacku. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors. Pruh vzoru přes templateEdit sdílí faktury i ZL nad identitou. panelToggle předává ovladač do RecordActionBar úplně vpravo za nabídku akcí ve všech šířkách, nikdy do záhlaví; společné pro faktury i zálohové listy. fieldLockedReasons: jen needitovatelná pole přes FieldValue lockedReason; obecný důvod předchází součtu Σ, currencyDisabledReason a counterpartyInputLockedReason. IBAN režim: bankIban před bankAccount, bankSwift před bankCode; paymentReference pro referenci. Ruční protistrana: counterpartyName před partnerId. Zamčené datum sdílí šířku DateField; odkaz chyby zaměří zámek. Platí pro faktury i zálohové listy. FV a ZFV mají customerOrderRef v základních údajích. Tisk dostává hotová InvoicePrintData z APP; DS nepočítá součty faktury ani záloh. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. identity.fallbackShort volitelně přepíše krátký stav, výchozí DsTexts CS/SK je Koncept. Platí společně pro faktury i zálohové listy.
 
 **Props:**
 
@@ -4037,11 +4037,11 @@ _Právnická osoba_
 
 ### IdentityLine
 
-```ts
-import { IdentityLine } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```tsx
+import { IdentityLine } from "@/design-system/{slug}";
 ```
 
-Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm. Pro editovatelné nebo zamčené číslo použijte numberContent; aplikace vlastní hodnotu a callback. Vlastní numberContent dědí typografii čísla a zůstává omezen šířkou řádku také při zoomu.
+Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve ustupuje název účtu, pak plný fallback nahradí fallbackShort, pak se zkracuje krátký stav a nakonec kniha. Rok, strana a kód účtu zůstávají celé. Plný fallback zůstává v bublině a přístupném názvu. Jediný ResizeObserver a hystereze brání kmitání. Písmo ani měřítko se nezmenšují; hostitel musí rezervovat prostor pro pevné hodnoty.
 
 **Props:**
 
@@ -4053,28 +4053,39 @@ Společná prezentační identita formuláře; položky a volitelný příznak v
 | `numberContent` | any | `—` |
 | `fallback` | any | `—` |
 | `numberId` | string | `—` |
+| `fallbackShort` | string | `—` |
 
 **Examples:**
 
-_Identita výpisu_
+**Identita výpisu:**
+
 ```tsx
 <IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
 ```
 
-_Číslo dokladu s identifikátorem_
+**Číslo dokladu s identifikátorem:**
+
 ```tsx
 <IdentityLine items={[book, period]} number={document.number} numberId="document-number" />
 ```
 
-_Identifikace_
+**Identifikace:**
+
 ```tsx
 <IdentityLine items={[bookName, periodLabel]} number={documentNumber} />
+```
+
+**Koncept v úzkém formuláři:**
+
+```tsx
+<IdentityLine items={[book, period, account]} fallback={texts.numberPending} fallbackShort={texts.fallbackShort} />
 ```
 
 **Avoid:**
 
 - Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
 - Nepřidávejte do identity ukládání nebo doménovou logiku.
+- Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení.
 
 ### InactiveTag
 

@@ -116,6 +116,8 @@ export interface DocumentIdentity {
   account?: { side: "MD" | "DAL"; label: string; editable?: boolean; disabledReason?: string };
   number?: string | null;
   numberPending?: string;
+  /** Krátký text stavu před přidělením čísla; výchozí DsTexts „Koncept“. */
+  fallbackShort?: string;
 }
 export type DocumentSuggestConfig = {
   enabled: boolean;

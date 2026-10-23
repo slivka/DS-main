@@ -3,6 +3,7 @@ import type { DsTexts } from "./types";
 
 /** Úplné texty formuláře dokladu v daném jazyce. */
 export const DOCUMENT_FORM_TEXTS_SK: DsTexts["documentForm"] = {
+  fallbackShort: "Koncept",
   vatDateLinkLabel: "Prepojiť s DUZP",
   totalHome: "Celkom v {symbol}",
   changeAccount: "Zmeniť účet",
