@@ -1,5 +1,6 @@
 ## DS 2.137.0 (nevydáno)
 
+- [x] Doplněk 6: stav identity nikdy nepřetéká řádek (max-width + ořez, oprava přetékajícího čísla výpisu při max zoomu); testy zúženy na živý řádek identity a nový název ovladače panelu. Unit DS 1 451/1 451, pět požadovaných Chromium speců 21/21. Plná E2E neběžela, nevydáno.
 - [x] Doplňky 4–5: jediný řádek identity, fallbackShort CS/SK; ústup přes kód knihy, kód účtu, ikonu stavu a ořez levé části. Jeden ResizeObserver s hysterezí, bez změny písma/měřítka. Unit DS 1 451/1 451 (151 souborů), dva požadované Chromium specy 6/6; katalog 485 → 486 / 1 213 → 1 274, 0 odebrání. check:quick --harness a samostatný lint/formát; plná E2E a check:full neběžely. Nevydáno.
 - [x] Doplněk 3: test identity 360/480 px při max zoomu (pravidlo nahrazeno doplňkem 4), výchozí výška SplitButton a explicitní sm v lištách, sjednocené ovladače panelu, zavírání bubliny po odjetí a lookup akce, aktuální katalog. Unit DS 1 444/1 444 (150 souborů), požadované tři Chromium specy 8/8; katalog 485 → 486 / 1 213 → 1 271, 0 odebrání. check:quick --harness audity OK, výslovný lint 14 souborů 0 chyb/3 stávající varování, formát 20 souborů OK; automatická kontrola Lovable OK. check:full ani plná E2E sada neběžely; nevydáno, package/meta 2.136.0, release Claude.
 - [x] Řádek identity bez překryvu, vždy jediná výška; priorita účet → krátký stav → trojtečka → kniha.
