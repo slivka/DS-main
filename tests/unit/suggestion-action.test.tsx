@@ -1,7 +1,7 @@
 /** 2.137.0 · akce v bublině návrhu a jedna ikona návrhu v poli s ikonovým tlačítkem. */
 import { afterEach, describe, expect, it, mock } from "bun:test";
 
-const { cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { Field } = await import("../../src/components/ds/layout/form-field-layout");
 const { FieldSuggestionIndicator } = await import("../../src/components/ds/form/field-feedback");
 const { Input } = await import("../../src/components/ui/input");
@@ -41,7 +41,7 @@ describe("akce v bublině návrhu", () => {
     fireEvent.mouseLeave(icon);
     expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
     fireEvent.mouseEnter(dialog);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 300)); });
     expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
     fireEvent.mouseLeave(dialog);
     await waitFor(() => expect(view.queryByRole("button", { name: "Prověřit" })).toBeNull());
@@ -56,7 +56,7 @@ describe("akce v bublině návrhu", () => {
     fireEvent.click(icon);
     await view.findByRole("button", { name: "Prověřit" });
     fireEvent.mouseLeave(icon);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 300)); });
     expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
     fireEvent.keyDown(view.getByRole("button", { name: "Prověřit" }), { key: "Escape" });
     await waitFor(() => expect(view.queryByRole("button", { name: "Prověřit" })).toBeNull());
