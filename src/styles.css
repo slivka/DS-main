@@ -2831,7 +2831,13 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   width: 0; flex: 0 0 0;
 }
 .ds-identity-row[data-identity-level="3"] > .ds-identity-items > [data-identity-first] {
-  flex: 0 1 auto; min-width: 0;
+  flex: 0 1 auto; min-width: 1ch;
+}
+.ds-identity-row[data-identity-level="3"] .document-identity-account > span:first-child {
+  padding-inline: 0;
+}
+.ds-identity-row[data-identity-level="3"] > .ds-identity-items > span:first-child:not(.ds-identity-item) {
+  display: none;
 }
 .ds-identity-row[data-identity-level="3"] { gap: var(--spacing); }
 .ds-identity-row[data-identity-level="3"] .ds-identity-item > [aria-hidden] {

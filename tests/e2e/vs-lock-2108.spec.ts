@@ -130,7 +130,7 @@ test("GridToolbar: všechny prvky sdílejí výšku při min, 75 %, 100 % a max"
   }
 });
 
-test("IdentityLine: 360/480 px i maximální zoom drží jednu nebo dvě výšky bez překryvu", async ({
+test("IdentityLine: 360/480 px i maximální zoom drží jedinou výšku bez překryvu", async ({
   page,
 }) => {
   await page.goto("/components/design-three");
@@ -146,8 +146,7 @@ test("IdentityLine: 360/480 px i maximální zoom drží jednu nebo dvě výšky
         if (!row) throw new Error("Chybí řádek");
         const style = getComputedStyle(row);
         const control = parseFloat(style.getPropertyValue("--control-h"));
-        const expected =
-          row.dataset.stacked === "true" ? 2 * control + parseFloat(style.rowGap) : control;
+        const expected = control;
         const parts = Array.from(
           row.querySelectorAll<HTMLElement>(
             '[data-slot="identity-line-item"] > :not([aria-hidden]), ' +
@@ -171,5 +170,12 @@ test("IdentityLine: 360/480 px i maximální zoom drží jednu nebo dvě výšky
       expect(metrics.difference, `výška při ${width} px`).toBeLessThanOrEqual(0.5);
       expect(metrics.overlaps, `překryv při ${width} px`).toEqual([]);
     }).toPass();
+    const status = page.locator('[data-slot="identity-status-text"]');
+    await expect(status).toHaveText("Koncept");
+    await expect(status).toHaveAttribute("aria-label", "Koncept – číslo při zařazení");
+    await expect(page.locator('[data-slot="identity-line-row"]')).not.toHaveAttribute("data-stacked");
+    await status.hover();
+    await expect(page.getByRole("tooltip")).toContainText("Koncept – číslo při zařazení");
+    await page.mouse.move(0, 0);
   }
 });

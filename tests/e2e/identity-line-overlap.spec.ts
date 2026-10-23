@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-/** 2.137.0 · řádek identity dokladu se nepřekrývá při šířce formuláře 420 / 480 / 640 px. */
+/** Identita má jedinou výšku a nepřekrývá se ani při maximálním zoomu. */
 test("řádek identity bez překryvu v úzkém formuláři", async ({ page }) => {
   await page.goto("/components/record-panel", { waitUntil: "networkidle" });
   const section = page.getByTestId("extraction-narrow-section");
@@ -16,7 +16,8 @@ test("řádek identity bez překryvu v úzkém formuláři", async ({ page }) =>
       { timeout: 20_000 },
     )
     .toBe(true);
-  for (const width of [420, 480, 640]) {
+  for (const zoom of [16, 32]) for (const width of [360, 420, 480, 640]) {
+    await page.evaluate((size) => { document.documentElement.style.fontSize = `${size}px`; }, zoom);
     await form.evaluate((node, w) => {
       (node as HTMLElement).style.maxWidth = `${w}px`;
     }, width);
@@ -52,6 +53,9 @@ test("řádek identity bez překryvu v úzkém formuláři", async ({ page }) =>
       );
       const issues: string[] = [];
       const rowBox = row.getBoundingClientRect();
+      const control = parseFloat(getComputedStyle(row).getPropertyValue("--control-h"));
+      if (Math.abs(rowBox.height - control) > 0.5) issues.push("výška není jeden control-h");
+      if (row.hasAttribute("data-stacked")) issues.push("identita nesmí mít stacked režim");
       leaves.forEach((a, i) => {
         if (a.r.right > rowBox.right + 1 || a.r.left < rowBox.left - 1)
           issues.push(`mimo řádek: ${a.el.textContent}`);
