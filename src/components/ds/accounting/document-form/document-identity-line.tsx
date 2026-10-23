@@ -75,7 +75,11 @@ export function DocumentIdentityLine({
   const dsTexts = useDsTexts();
   // Návrh bez obalu Field: box zůstává šířky textu a tužka stojí hned za ním.
   const suggestion = useContext(FieldSuggestionContext)?.("document-mainAccountId");
-  const suggestionState = suggestion ? (suggestion.uncertain ? "uncertain" : "suggested") : undefined;
+  const suggestionState = suggestion
+    ? suggestion.uncertain
+      ? "uncertain"
+      : "suggested"
+    : undefined;
   const fullAccountLabel = accountLabel ?? identity.account?.label ?? "";
   const [accountCode, ...accountNameParts] = fullAccountLabel.split(CODE_SEPARATOR);
   const accountName = accountNameParts.join(CODE_SEPARATOR);
@@ -161,7 +165,9 @@ export function DocumentIdentityLine({
               />
               <FieldSuggestionIndicator
                 suggestion={suggestion}
-                defaultMessage={suggestion ? dsTexts.extraction.suggestionUncertain(suggestion.source) : undefined}
+                defaultMessage={
+                  suggestion ? dsTexts.extraction.suggestionUncertain(suggestion.source) : undefined
+                }
               />
             </span>
           ) : (
@@ -194,7 +200,9 @@ export function DocumentIdentityLine({
               </Tooltip>
               <FieldSuggestionIndicator
                 suggestion={suggestion}
-                defaultMessage={suggestion ? dsTexts.extraction.suggestionUncertain(suggestion.source) : undefined}
+                defaultMessage={
+                  suggestion ? dsTexts.extraction.suggestionUncertain(suggestion.source) : undefined
+                }
               />
             </span>
           )}

@@ -2802,13 +2802,19 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   background-color: var(--suggestion-soft);
 }
 .document-identity-account-box[data-suggestion="uncertain"][data-mode="read"],
-.document-identity-account-box[data-suggestion="uncertain"] :is(input, [role="combobox"], .border-input) {
+.document-identity-account-box[data-suggestion="uncertain"]
+  :is(input, [role="combobox"], .border-input) {
   border-color: var(--warning);
 }
+/* Ve čtení stojí ikona vlevo před kódem, aby tužka zůstala hned za textem. */
 .document-identity-account-box[data-suggestion="uncertain"][data-mode="read"] {
-  padding-right: 1.75rem;
+  padding-left: 1.25rem;
 }
-.document-identity-account-box [data-slot="field-suggestion"] {
+.document-identity-account-box[data-mode="read"] [data-slot="field-suggestion"] {
+  left: 0.375rem;
+  right: auto;
+}
+.document-identity-account-box:not([data-mode="read"]) [data-slot="field-suggestion"] {
   right: 0.375rem;
 }
 .document-identity-pencil-slot {
