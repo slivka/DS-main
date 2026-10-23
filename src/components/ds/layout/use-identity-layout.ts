@@ -1,0 +1,56 @@
+/** Měření identity · vlastní pořadí ústupu a jediný observer · nesmí znát doménu. */
+import { useLayoutEffect, useRef, useState } from "react";
+
+/** Měřené šířky jednotlivých částí identity. */
+export interface IdentityWidths {
+  /** Dostupná šířka řádku. */
+  available: number;
+  /** Šířka všech položek bez zkrácení. */
+  full: number;
+  /** Nejmenší šířka při zkráceném názvu účtu. */
+  minimum: number;
+  /** Plný text stavu. */
+  status: number;
+  /** Krátký text stavu; bez krátkého tvaru shodný s plným. */
+  short: number;
+}
+
+/** Účet → krátký stav → trojtečka stavu; návrat má rezervu proti kmitání. */
+export function resolveIdentityLevel(widths: IdentityWidths, previous = 0): number {
+  const margin = previous > 0 ? 24 : 0;
+  if (widths.available >= widths.full + widths.status + margin) return 0;
+  if (widths.available >= widths.minimum + widths.status + margin) return 1;
+  if (widths.available >= widths.minimum + widths.short + (previous > 2 ? 24 : 0)) return 2;
+  return 3;
+}
+
+/** Rozměry se synchronizují s DOM, observer vzniká pouze při připojení řádku. */
+export function useIdentityLayout() {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [level, setLevel] = useState(0);
+  useLayoutEffect(() => {
+    const row = rowRef.current;
+    if (!row) return;
+    const measure = () => {
+      const full = row.querySelector<HTMLElement>('[data-slot="identity-measure-full"]');
+      const minimum = row.querySelector<HTMLElement>('[data-slot="identity-measure-minimum"]');
+      const status = row.querySelector<HTMLElement>('[data-slot="identity-measure-status"]');
+      const short = row.querySelector<HTMLElement>('[data-slot="identity-measure-short"]');
+      if (!full || !minimum || !status || !short) return;
+      setLevel((previous) => resolveIdentityLevel({
+        available: row.clientWidth,
+        full: full.getBoundingClientRect().width,
+        minimum: minimum.getBoundingClientRect().width,
+        status: status.getBoundingClientRect().width,
+        short: short.getBoundingClientRect().width,
+      }, previous));
+    };
+    measure();
+    const resize = new ResizeObserver(measure);
+    resize.observe(row);
+    for (const child of row.querySelectorAll<HTMLElement>("[data-identity-measure]"))
+      resize.observe(child);
+    return () => resize.disconnect();
+  }, []);
+  return { rowRef, level };
+}
