@@ -2,6 +2,8 @@
 export interface RecordPanelTexts {
   /** Přístupný název tlačítka a panelu. */
   panel: string;
+  /** Bublina tlačítka panelu, když je panel zavřený. */
+  open: string;
   /** Přístupný název táhla. */
   resize: string;
   /** Zavření panelu. */

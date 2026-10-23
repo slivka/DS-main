@@ -1,0 +1,74 @@
+/** PanelToggleButton · stejný obrys v každém stavu, ikona a bublina podle stavu, pořadí záložek panelu. */
+import { afterEach, describe, expect, it } from "bun:test";
+
+const { cleanup, fireEvent, render } = await import("@testing-library/react");
+const { TooltipProvider } = await import("../../src/components/ui/tooltip");
+const { PanelToggleButton } = await import("../../src/components/ds/layout/panel-toggle-button");
+const { orderRecordPanelTabs } =
+  await import("../../src/components/ds/layout/record-side-panel/panel-tabs");
+const { FileText } = await import("lucide-react");
+
+afterEach(cleanup);
+
+const renderToggle = (open: boolean, indicator = false) =>
+  render(
+    <TooltipProvider delayDuration={0}>
+      <PanelToggleButton
+        open={open}
+        indicator={indicator}
+        tooltip="Přílohy 2"
+        onToggle={() => undefined}
+      />
+    </TooltipProvider>,
+  );
+
+describe("PanelToggleButton podle stavu", () => {
+  for (const [open, indicator] of [
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ] as const)
+    it(`má obrys ${open ? "otevřený" : "zavřený"}${indicator ? " s tečkou" : ""}`, () => {
+      const ui = renderToggle(open, indicator);
+      expect(ui.getByRole("button", { name: "Panel" }).getAttribute("data-variant")).toBe(
+        "outline",
+      );
+    });
+
+  it("zavřený panel ukazuje šipku k obsahu a bublinu Otevřít panel", async () => {
+    const ui = renderToggle(false);
+    const button = ui.getByRole("button", { name: "Panel" });
+    expect(button.getAttribute("data-direction")).toBe("open");
+    expect(button.querySelector("svg")?.getAttribute("class")).toContain("panel-right-open");
+    fireEvent.focus(button);
+    const tip = await ui.findAllByText("Otevřít panel");
+    expect(tip.length).toBeGreaterThan(0);
+  });
+
+  it("otevřený panel ukazuje šipku ven a bublinu Zavřít panel", async () => {
+    const ui = renderToggle(true);
+    const button = ui.getByRole("button", { name: "Panel" });
+    expect(button.getAttribute("data-direction")).toBe("close");
+    expect(button.querySelector("svg")?.getAttribute("class")).toContain("panel-right-close");
+    fireEvent.focus(button);
+    expect((await ui.findAllByText("Zavřít panel")).length).toBeGreaterThan(0);
+  });
+});
+
+describe("pořadí záložek panelu", () => {
+  it("Zdroj → Poznámky → Přílohy → Historie → Propojené", () => {
+    const tab = (id: string) => ({ id, label: id, icon: FileText, content: null });
+    const ordered = orderRecordPanelTabs(
+      ["attachments", "linked", "custom", "history", "notes", "source"].map(tab),
+    );
+    expect(ordered.map((item) => item.id)).toEqual([
+      "source",
+      "notes",
+      "attachments",
+      "custom",
+      "history",
+      "linked",
+    ]);
+  });
+});

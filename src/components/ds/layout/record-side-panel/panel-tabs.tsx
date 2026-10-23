@@ -5,15 +5,28 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { fmtAmount } from "../../../../lib/format";
 import type { RecordSidePanelTab } from "../record-side-panel";
 const RELATED_IDS = new Set(["linked", "history"]);
+/** Výchozí pořadí známých sekcí; neznámé sekce zůstávají za nimi v pořadí aplikace. */
+export const RECORD_PANEL_TAB_ORDER = ["source", "notes", "attachments", "history", "linked"];
+const rank = (tab: RecordSidePanelTab) => {
+  const index = RECORD_PANEL_TAB_ORDER.indexOf(tab.id);
+  return index < 0 ? RECORD_PANEL_TAB_ORDER.length : index;
+};
+/** Seřadí záložky: záznam | vazby, uvnitř skupiny podle výchozího pořadí (stabilně). */
+export function orderRecordPanelTabs(tabs: readonly RecordSidePanelTab[]) {
+  const sorted = [...tabs].sort((a, b) => rank(a) - rank(b));
+  return [
+    ...sorted.filter((tab) => recordPanelTabGroup(tab) === "record"),
+    ...sorted.filter((tab) => recordPanelTabGroup(tab) === "related"),
+  ];
+}
 /** Skupina záložky; linked a history patří bez zadání mezi vazby. */
 export function recordPanelTabGroup(tab: RecordSidePanelTab): "record" | "related" {
   return tab.group ?? (RELATED_IDS.has(tab.id) ? "related" : "record");
 }
 /** Ikonová navigace: záznam | vazby, odznak počtu, šipky mezi záložkami (Radix tablist). */
 export function PanelTabs({ tabs }: { tabs: readonly RecordSidePanelTab[] }) {
-  const record = tabs.filter((tab) => recordPanelTabGroup(tab) === "record");
-  const related = tabs.filter((tab) => recordPanelTabGroup(tab) === "related");
-  const ordered = [...record, ...related];
+  const ordered = orderRecordPanelTabs(tabs);
+  const record = ordered.filter((tab) => recordPanelTabGroup(tab) === "record");
   return (
     <TabsList
       data-slot="record-panel-tabs"

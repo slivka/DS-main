@@ -5,8 +5,10 @@
 - `IdentityLine` (a tím `DocumentIdentityLine`): nic se nepřekrývá při žádné šířce. Druh dokladu, rok a strana s kódem účtu se nezkracují; název účtu a text stavu se zkracují trojtečkou (stav s bublinou celého textu) a když se pevné položky se stavem nevejdou, přejde stav na druhý řádek (`data-stacked` na `identity-line-row`). Tužka „Změnit účet“ zůstává hned za textem. API beze změny.
 - Pole s nejistým návrhem a ikonovým tlačítkem uvnitř (Dodavatel s adresářem, bankovní účet, přepínače): jediná ikona návrhu vlevo, hodnota odsunutá, nic nepřekrývá text ani tlačítka.
 - `FieldSuggestion.action?: { label; onClick }` – odkazové tlačítko v bublině „ke kontrole“ (např. „Založit dodavatele z dokladu“); ikona je pak tlačítko, bublina se otevře najetím, klikem i Enterem, akce je dostupná klávesnicí a bublina se po kliku zavře.
+- `PanelToggleButton` (záhlaví DocumentForm i lišta gridu): vždy obrys `outline` a výška `--control-h` jako ⋯, i s tečkou. Zavřený panel → šipka k obsahu (←) a bublina „Otevřít panel“, otevřený → šipka ven (→) a „Zavřít panel“; `tooltip` je nyní volitelný a zobrazí se pod akcí jako doplňující informace. Přístupný název zůstává „Panel“ (`aria-pressed` nese stav). Nový text `recordPanel.open` (CS/SK).
+- Výchozí pořadí záložek `RecordSidePanel` určuje DS: Zdroj → Poznámky → Přílohy → Historie → Propojené (id `source`, `notes`, `attachments`, `history`, `linked`); neznámé sekce zůstávají ve své skupině za známými v pořadí aplikace. Aplikace pořadí přes props měnit nemusí.
 - Ukázka „Úzký formulář s návrhem“ na stránce Panel záznamu (480 px, nejistý Dodavatel s akcí).
-- Ověření: 3 nové unit testy; nový `identity-line-overlap.spec.ts` (420 / 480 / 640 px bez překryvu, tužka ≤ 12 px) spolu se `small-edits-one.spec.ts` a `extraction.spec.ts` Chromium 5/5; check:full --harness 1 426/1 426 ve 148 souborech, katalog 485 → 485 / 1 213 → 1 213, 0 odebrání (pole typů katalog nesleduje).
+- Ověření: 3 nové unit testy; nový `identity-line-overlap.spec.ts` (420 / 480 / 640 px bez překryvu, tužka ≤ 12 px) spolu se `small-edits-one.spec.ts` a `extraction.spec.ts` Chromium 5/5; check:full --harness 1 433/1 433 ve 149 souborech (po doplňku), katalog 485 → 485 / 1 213 → 1 213, 0 odebrání (pole typů katalog nesleduje).
 
 ## 2.136.0
 
