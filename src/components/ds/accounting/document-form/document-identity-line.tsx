@@ -226,8 +226,15 @@ export function DocumentIdentityLine({
       fallback={identity.numberPending ?? fallback}
       fallbackShort={identity.fallbackShort ?? dsTexts.documentForm.fallbackShort}
       bookCode={identity.bookCode ?? identity.book.split(/\s|–|-/)[0]}
-      fullLabel={[identity.book, identity.period, account?.side, fullAccountLabel,
-        number ?? identity.numberPending ?? fallback].filter(Boolean).join(" · ")}
+      fullLabel={[
+        identity.book,
+        identity.period,
+        account?.side,
+        fullAccountLabel,
+        number ?? identity.numberPending ?? fallback,
+      ]
+        .filter(Boolean)
+        .join(" · ")}
       leading={
         direction ? (
           <span id="document-direction" className="inline-flex">

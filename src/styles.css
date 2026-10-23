@@ -2804,20 +2804,84 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   min-width: min-content;
 }
 /* Identita nikdy nezalamuje; pravá část má vlastní nezmenšitelný prostor. */
-.ds-identity-row > .ds-identity-items { flex: 1 1 auto; min-width: 0; overflow: hidden; }
-.ds-identity-item { min-width: min-content; }
-.ds-identity-item:last-child, .ds-identity-row .document-identity-account,
-.ds-identity-row .document-identity-account-box[data-mode="read"] { flex: 0 1 auto; min-width: min-content; max-width: none; }
-.ds-identity-row [data-slot="document-identity-account-text"] { flex: 0 1 auto; min-width: min-content; }
-.ds-identity-account-name { min-width: 0; flex: 0 1 auto; }
-.ds-identity-status { flex: 0 0 auto; max-width: none; }
-.ds-identity-book-code { display: none; }
-.ds-identity-row:not([data-identity-level="0"]) .ds-identity-account-name { width: 0; flex: 1 1 0; }
-.ds-identity-row:is([data-identity-level="3"], [data-identity-level="4"], [data-identity-level="5"], [data-identity-level="6"])[data-pending="true"] .ds-identity-status { flex: 0 1 3ch; min-width: 1ch; overflow: hidden; }
-.ds-identity-row:is([data-identity-level="4"], [data-identity-level="5"], [data-identity-level="6"], [data-identity-level="7"], [data-identity-level="8"]) [data-identity-first] { flex: 0 1 auto; min-width: 1ch; }
-.ds-identity-row:is([data-identity-level="5"], [data-identity-level="6"], [data-identity-level="7"], [data-identity-level="8"]) .ds-identity-book-full { display: none; }
-.ds-identity-row:is([data-identity-level="5"], [data-identity-level="6"], [data-identity-level="7"], [data-identity-level="8"]) .ds-identity-book-code { display: inline; }
-.ds-identity-row:is([data-identity-level="6"], [data-identity-level="7"], [data-identity-level="8"]) :is(.ds-identity-account-name, .ds-identity-account-separator) { display: none; }
+.ds-identity-row > .ds-identity-items {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.ds-identity-item {
+  min-width: min-content;
+}
+.ds-identity-item:last-child,
+.ds-identity-row .document-identity-account,
+.ds-identity-row .document-identity-account-box[data-mode="read"] {
+  flex: 0 1 auto;
+  min-width: min-content;
+  max-width: none;
+}
+.ds-identity-row [data-slot="document-identity-account-text"] {
+  flex: 0 1 auto;
+  min-width: min-content;
+}
+.ds-identity-account-name {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.ds-identity-status {
+  flex: 0 0 auto;
+  max-width: none;
+}
+.ds-identity-book-code {
+  display: none;
+}
+.ds-identity-row:not([data-identity-level="0"]) .ds-identity-account-name {
+  width: 0;
+  flex: 1 1 0;
+}
+.ds-identity-row:is(
+    [data-identity-level="3"],
+    [data-identity-level="4"],
+    [data-identity-level="5"],
+    [data-identity-level="6"]
+  )[data-pending="true"]
+  .ds-identity-status {
+  flex: 0 1 3ch;
+  min-width: 1ch;
+  overflow: hidden;
+}
+.ds-identity-row:is(
+    [data-identity-level="4"],
+    [data-identity-level="5"],
+    [data-identity-level="6"],
+    [data-identity-level="7"],
+    [data-identity-level="8"]
+  )
+  [data-identity-first] {
+  flex: 0 1 auto;
+  min-width: 1ch;
+}
+.ds-identity-row:is(
+    [data-identity-level="5"],
+    [data-identity-level="6"],
+    [data-identity-level="7"],
+    [data-identity-level="8"]
+  )
+  .ds-identity-book-full {
+  display: none;
+}
+.ds-identity-row:is(
+    [data-identity-level="5"],
+    [data-identity-level="6"],
+    [data-identity-level="7"],
+    [data-identity-level="8"]
+  )
+  .ds-identity-book-code {
+  display: inline;
+}
+.ds-identity-row:is([data-identity-level="6"], [data-identity-level="7"], [data-identity-level="8"])
+  :is(.ds-identity-account-name, .ds-identity-account-separator) {
+  display: none;
+}
 .ds-identity-measure {
   width: max-content;
 }
