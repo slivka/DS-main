@@ -1,5 +1,7 @@
 ## DS 2.135.0 (nevydáno)
 
+- [x] Oprava kontroly Clauda: podklad návrhu jen pro ovládání hodnoty (input/select/textarea, spouštěč s role="combobox" a data-slot="select-trigger"), ikonová tlačítka v poli beze změny; nový unit test na skutečné prvky (padá po návratu ke starému pravidle). check:quick + check:full --harness 1 393/1 393 ve 144 souborech, katalog bez ztrát, E2E nespouštěny. Nevydáno, release Claude.
+
 - [x] Vytěžování E1: stav pole suggestion (podklad/žlutý rámeček + bublina, token --suggestion-soft, výška beze změny), ExtractionStatus, SuggestionSummary s F8, ExtractionOverwriteDialog, ExtractedItemsTable (součty od APP), ukázka na Panelu záznamu, texty CS/SK. 13 unit testů 13/13, E2E extraction.spec.ts Chromium 1/1. Nevydáno, release Claude.
 
 

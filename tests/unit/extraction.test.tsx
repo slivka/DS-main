@@ -4,6 +4,9 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { Field, FieldGrid } = await import("../../src/components/ds/layout/form-field-layout");
 const { Input } = await import("../../src/components/ui/input");
+const { Button } = await import("../../src/components/ui/button");
+const { OptionSelect } = await import("../../src/components/ds/form/option-select");
+const { Lock } = await import("lucide-react");
 const { ExtractionStatus } = await import("../../src/components/ds/extraction/extraction-status");
 const { SuggestionSummary } = await import("../../src/components/ds/extraction/suggestion-summary");
 const { focusNextUncertainField } =
@@ -16,6 +19,21 @@ const { DS_TEXTS_CS, DS_TEXTS_SK } = await import("../../src/ds-texts");
 
 afterEach(cleanup);
 
+/**
+ * Prvky, na které míří podklad navržené hodnoty z tříd obalu pole.
+ * Podklad se řídí Tailwind varianitou `[…]:bg-suggestion-soft`, jejíž cíl je v selectoru varianty.
+ */
+function suggestionBgTargets(wrapper: Element): Element[] {
+  const targets = new Set<Element>();
+  for (const cls of wrapper.classList) {
+    const variant = /^\[(.+)\]:bg-suggestion-soft$/.exec(cls);
+    if (!variant) continue;
+    const selector = variant[1].replace(/^&/, "").replace(/_/g, " ");
+    for (const el of wrapper.querySelectorAll(selector)) targets.add(el);
+  }
+  return [...targets];
+}
+
 describe("stav pole z vytěžení", () => {
   it("navržené pole má jemný podklad a značku suggested", () => {
     const view = render(
@@ -26,6 +44,37 @@ describe("stav pole z vytěžení", () => {
     const wrapper = view.container.querySelector('[data-suggestion="suggested"]');
     expect(wrapper).not.toBeNull();
     expect(view.container.querySelector('[data-slot="field-suggestion"]')).toBeNull();
+  });
+
+  it("podklad návrhu míří na ovládání hodnoty, ne na ikony uvnitř pole", () => {
+    const view = render(
+      <Field label="Odběratel" htmlFor="p" suggestion={{ source: "faktura.pdf" }}>
+        <span className="relative flex items-center gap-1">
+          <Input id="p" defaultValue="Firma" />
+          <Button type="button" variant="ghost" size="icon" aria-label="Zamknout odběratele">
+            <Lock />
+          </Button>
+          <OptionSelect value="a" onChange={() => {}} options={[{ value: "a", label: "Firma" }]} />
+          <button type="button" data-slot="select-trigger">
+            Vybrat
+          </button>
+        </span>
+      </Field>,
+    );
+    const wrapper = view.container.querySelector('[data-suggestion="suggested"]');
+    expect(wrapper).not.toBeNull();
+    const targets = suggestionBgTargets(wrapper!);
+    const icon = view.container.querySelector('[aria-label="Zamknout odběratele"]');
+    const trigger = view.container.querySelector('[role="combobox"]');
+    const consumerTrigger = view.container.querySelector('[data-slot="select-trigger"]');
+    expect(icon).not.toBeNull();
+    expect(trigger).not.toBeNull();
+    // Ikonové tlačítko uvnitř pole zůstává beze změny, podklad dostává jen ovládání hodnoty.
+    expect(targets).not.toContain(icon);
+    expect(icon?.className).not.toContain("bg-suggestion-soft");
+    expect(targets).toContain(view.container.querySelector("#p"));
+    expect(targets).toContain(trigger);
+    expect(targets).toContain(consumerTrigger);
   });
 
   it("nejisté pole má ikonu s bublinou a značku uncertain", () => {
