@@ -2,7 +2,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 interface TooltipExpectationOptions {
-  /** Klávesnice, klik a dotyk se ověřují samostatně, nikoli náhradním hoverem. */
+  /** Klávesnice ověří skutečný Tab, poté najetí; klik a dotyk zůstávají samostatné. */
   interaction?: "hover" | "keyboard" | "click" | "tap";
   /** Celková mez opakovaného vstupu při oživení a posunu stránky. */
   timeoutMs?: number;
@@ -35,6 +35,9 @@ export async function expectTooltip(
       await page.keyboard.press("Shift+Tab");
       await page.keyboard.press("Tab");
       await expect(trigger).toBeFocused({ timeout: 2_000 });
+      // Tab může zároveň odrolovat stránku a Radix tehdy zavře bublinu.
+      // Fokus musí zůstat na cíli; znovu najedeme jako uživatel po dokončení rolování.
+      await trigger.hover({ timeout: 3_000 });
     } else if (interaction === "click") {
       // aria-disabled musí zůstat klikatelné kvůli vysvětlení; Playwright je bere jako disabled.
       const blocked = (await trigger.getAttribute("aria-disabled")) === "true";
