@@ -4083,11 +4083,18 @@ IdentityLine never wraps: jedna výška --control-h. Ústup: název účtu → f
 <IdentityLine items={[book, period, account]} fallback={texts.numberPending} fallbackShort={texts.fallbackShort} />
 ```
 
+**Krajní šířka bez překryvu:**
+
+```tsx
+<IdentityLine items={[book, period, account]} bookCode="FP" fullLabel={fullIdentity} fallback={pendingText} fallbackShort={shortPendingText} />
+```
+
 **Avoid:**
 
 - Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
 - Nepřidávejte do identity ukládání nebo doménovou logiku.
 - Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení.
+- Ořez hodnot na hraně levé části nikdy nenahrazujte překryvem pravé části ani zmenšením písma. Pro složené položky předejte fullLabel.
 
 ### InactiveTag
 

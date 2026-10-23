@@ -4241,12 +4241,17 @@
         {
           "label": "Koncept v úzkém formuláři",
           "code": "<IdentityLine items={[book, period, account]} fallback={texts.numberPending} fallbackShort={texts.fallbackShort} />"
+        },
+        {
+          "label": "Krajní šířka bez překryvu",
+          "code": "<IdentityLine items={[book, period, account]} bookCode=\"FP\" fullLabel={fullIdentity} fallback={pendingText} fallbackShort={shortPendingText} />"
         }
       ],
       "antipatterns": [
         "Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.",
         "Nepřidávejte do identity ukládání nebo doménovou logiku.",
-        "Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení."
+        "Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení.",
+        "Ořez hodnot na hraně levé části nikdy nenahrazujte překryvem pravé části ani zmenšením písma. Pro složené položky předejte fullLabel."
       ]
     },
     {
