@@ -185,11 +185,11 @@ describe("DocumentForm návrhy hlavičky", () => {
 
 describe("návrhy buněk řádků", () => {
   it("účty, zakázka a kód DPH mají společné klíče návrhu", () => {
-    const view = render(<Editor withoutAccounts={false} dimensions={[]}
+    const view = render(<Editor withoutAccounts={false} dimensions={[]} sideFields="shared"
       lines={[{ id: "r1", amount: 1000, text: "Služby", debitAccount: "518001", creditAccount: "321001" }]}
       rowSuggestions={{ r1: { account: suggestion, dimension: suggestion, vatCode: suggestion } }}
       vat={{ enabled: true, codes: [] }} />);
-    for (const key of ["debitAccountName", "creditAccountName", "dimensionId", "vatCodeId"]) {
+    for (const key of ["debitAccount", "creditAccount", "dimensionId", "vatCodeId"]) {
       const cell = view.container.querySelector(`[data-cell-key="r1:${key}"]`);
       expect(cell).not.toBeNull();
       expect(cell?.getAttribute("data-suggestion")).toBe("uncertain");

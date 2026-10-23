@@ -63,8 +63,9 @@ test.describe("vytěžování souboru", () => {
     // Tabulka položek je výchozí sbalená a rozbalí se.
     const itemsTitle = showcase.getByText("Vytěžené položky (3)");
     await expect(itemsTitle).toBeVisible();
-    await expect(showcase.getByText("Kancelářské potřeby")).toBeHidden();
+    const extractedItems = showcase.locator('[data-slot="extracted-items"]');
+    await expect(extractedItems.getByText("Kancelářské potřeby", { exact: true })).toBeHidden();
     await itemsTitle.click();
-    await expect(showcase.getByText("Kancelářské potřeby")).toBeVisible();
+    await expect(extractedItems.getByText("Kancelářské potřeby", { exact: true })).toBeVisible();
   });
 });

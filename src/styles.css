@@ -560,6 +560,19 @@ body {
 .document-dates-compact button {
   font-size: inherit;
 }
+/* Datum vlastní rozestupy ikon i návrh: obal nesmí přidat druhou výstrahu přes kalendář. */
+.ds-field-control:has(input[data-visible-icons]) > [data-slot="field-suggestion"] {
+  display: none;
+}
+/* Číslo zarovnané doprava má návrh vlevo, mimo hodnotu a přepínač součtu. */
+[data-suggestion="uncertain"] > .ds-field-control:has(input[inputmode="decimal"])
+  > [data-slot="field-suggestion"] {
+  left: 0.5em;
+  right: auto;
+}
+[data-suggestion="uncertain"] > .ds-field-control input[inputmode="decimal"] {
+  padding-left: 2em;
+}
 .document-dates-compact [data-document-date-locked] {
   font-size: inherit;
   width: 0;
