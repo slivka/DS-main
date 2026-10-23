@@ -2834,6 +2834,9 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .ds-identity-book-code {
   display: none;
 }
+.ds-identity-book-full { overflow: hidden; }
+.ds-identity-book-full > * { min-width: 0; max-width: 100%; }
+.ds-identity-row .document-identity-account { gap: var(--spacing); }
 .ds-identity-row:not([data-identity-level="0"]) .ds-identity-account-name {
   width: 0;
   flex: 1 1 0;
