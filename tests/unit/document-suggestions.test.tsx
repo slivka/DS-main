@@ -13,6 +13,7 @@ import type { JournalLinesEditorProps } from "../../src/components/ds/accounting
 import type { JournalRowSuggestions } from "../../src/components/ds/accounting/journal-suggestions";
 
 import { TooltipProvider } from "../../src/components/ui/tooltip";
+import { updateGridLayout } from "../../src/lib/grid-prefs";
 
 const suggestion = { source: "f.pdf", uncertain: true };
 const base: DocumentHeaderValue = {
@@ -210,6 +211,10 @@ describe("DocumentForm návrhy hlavičky", () => {
 
 describe("návrhy buněk řádků", () => {
   it("účty, zakázka a kód DPH mají společné klíče návrhu", () => {
+    updateGridLayout("suggestions-test:v4", {
+      visible: { debitAccount: true, creditAccount: true, dimensionId: true, vatCodeId: true },
+      visibilityOverrides: ["dimensionId"],
+    });
     const view = render(
       <Editor
         withoutAccounts={false}
