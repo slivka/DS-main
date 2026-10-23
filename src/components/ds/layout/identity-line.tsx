@@ -46,6 +46,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
     const left = leftRef.current;
     if (!row || !left) return;
     const width = row.clientWidth;
+    console.log("IDL", width, stacked, left.scrollWidth, left.clientWidth);
     if (stacked) {
       // Zpět na jeden řádek zkusíme až při širším řádku, než kdy došlo k zalomení.
       if (width > stackedAt.current + 1) setStacked(false);
