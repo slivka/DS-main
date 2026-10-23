@@ -2837,6 +2837,7 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .ds-identity-book-full {
   overflow: hidden;
 }
+.ds-identity-measure .ds-identity-book-full { overflow: visible; width: max-content; }
 .ds-identity-book-full > * {
   min-width: 0;
   max-width: 100%;

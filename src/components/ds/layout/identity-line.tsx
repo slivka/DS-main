@@ -148,6 +148,9 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
       >
         <div data-slot="identity-measure-full" data-identity-measure />
         <div data-slot="identity-measure-minimum" data-identity-measure />
+        <span data-slot="identity-measure-code" className="block w-max text-[length:var(--text-identity)] font-semibold">
+          {bookCode}
+        </span>
         <span
           data-slot="identity-measure-status"
           className={cn(

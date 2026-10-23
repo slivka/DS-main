@@ -75,15 +75,19 @@ export function useIdentityLayout() {
       if (!full || !minimum || !status || !short) return;
       const left = minimum.firstElementChild;
       const book = left?.querySelector<HTMLElement>(".ds-identity-book-full");
-      const code = left?.querySelector<HTMLElement>(".ds-identity-book-code");
+      const code = row.parentElement?.querySelector<HTMLElement>('[data-slot="identity-measure-code"]');
       const base = left?.getBoundingClientRect().width ?? 0;
       const bookWidth = book?.getBoundingClientRect().width ?? 0;
-      const codeWidth = code?.scrollWidth || 0;
-      const unit = parseFloat(getComputedStyle(row).fontSize);
-      const compactBook = Math.max(0, base - bookWidth + (codeWidth || unit * 2));
-      const compactAccount = Math.max(0, compactBook - unit);
+      const codeWidth = code?.getBoundingClientRect().width || bookWidth;
+      const statusControl = row.querySelector<HTMLElement>('[data-slot="identity-line-number"]');
+      const unit = parseFloat(getComputedStyle(statusControl ?? row).fontSize);
+      const gap = parseFloat(getComputedStyle(row).gap) || 0;
+      const compactBook = Math.max(0, base - bookWidth + codeWidth);
+      const separator = left?.querySelector<HTMLElement>(".ds-identity-account-separator");
+      const compactAccount = Math.max(0, compactBook - (separator?.getBoundingClientRect().width ?? 0));
       const realNumber = row.dataset.pending !== "true";
-      const right = realNumber ? status.getBoundingClientRect().width : unit;
+      const right = realNumber ? status.getBoundingClientRect().width : unit * 1.5 + gap;
+      const icon = parseFloat(getComputedStyle(row).getPropertyValue("--spacing")) * 4;
       setLevel((previous) =>
         resolveIdentityLevel(
           {
@@ -97,7 +101,7 @@ export function useIdentityLayout() {
               base - bookWidth + unit * 3 + right,
               compactBook + right,
               compactAccount + right,
-              compactAccount + (realNumber ? right : unit),
+              compactAccount + (realNumber ? right : icon + gap),
             ],
           },
           previous,
