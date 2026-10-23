@@ -65,7 +65,14 @@ export function useIdentityLayout() {
         const gap = parseFloat(getComputedStyle(row).gap) || 0;
         const reserve = statusEl.getBoundingClientRect().width + gap;
         // Krajní zoom: pevné hodnoty nesmíme oříznout ani překrýt; výška zůstává control-h.
-        const natural = Math.max(1, items.scrollWidth);
+        const current = parseFloat(row.style.getPropertyValue("--identity-emergency-scale")) || 1;
+        const natural = Array.from(items.children).reduce((width, child) => {
+          if (!(child instanceof HTMLElement)) return width;
+          if (child.hasAttribute("data-identity-first")) {
+            return width + parseFloat(getComputedStyle(child).minWidth);
+          }
+          return width + child.getBoundingClientRect().width / current;
+        }, 0);
         row.style.setProperty(
           "--identity-emergency-scale",
           String(Math.min(1, (row.clientWidth - reserve - 2) / natural)),
