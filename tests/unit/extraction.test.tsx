@@ -4,8 +4,7 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { Field, FieldGrid } = await import("../../src/components/ds/layout/form-field-layout");
 const { Input } = await import("../../src/components/ui/input");
-const { ExtractionStatus } =
-  await import("../../src/components/ds/extraction/extraction-status");
+const { ExtractionStatus } = await import("../../src/components/ds/extraction/extraction-status");
 const { SuggestionSummary, focusNextUncertainField } =
   await import("../../src/components/ds/extraction/suggestion-summary");
 const { ExtractionOverwriteDialog } =

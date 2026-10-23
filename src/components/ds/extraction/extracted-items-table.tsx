@@ -54,45 +54,45 @@ export function ExtractedItemsTable({
     <div data-slot="extracted-items" className={cn(className)}>
       <CollapsibleSection title={texts.itemsTitle(items.length)} defaultOpen={defaultOpen}>
         <Table data-slot="extracted-items-table">
-        <TableHeader>
-          <TableRow>
-            <TableHead>{texts.itemText}</TableHead>
-            <TableHead className={NUMERIC}>{texts.itemQuantity}</TableHead>
-            <TableHead>{texts.itemUnit}</TableHead>
-            <TableHead className={NUMERIC}>{texts.itemUnitPrice}</TableHead>
-            <TableHead>{texts.itemVatRate}</TableHead>
-            <TableHead className={NUMERIC}>{texts.itemBase}</TableHead>
-            <TableHead className={NUMERIC}>{texts.itemTax}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="max-w-64 truncate" title={item.text}>
-                {item.text}
-              </TableCell>
-              <TableCell className={NUMERIC}>{formatQuantity(item.quantity)}</TableCell>
-              <TableCell>{item.unit ?? ""}</TableCell>
-              <TableCell className={NUMERIC}>{formatAmount(item.unitPrice)}</TableCell>
-              <TableCell>{item.vatRate}</TableCell>
-              <TableCell className={NUMERIC}>{formatAmount(item.base)}</TableCell>
-              <TableCell className={NUMERIC}>{formatAmount(item.tax)}</TableCell>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{texts.itemText}</TableHead>
+              <TableHead className={NUMERIC}>{texts.itemQuantity}</TableHead>
+              <TableHead>{texts.itemUnit}</TableHead>
+              <TableHead className={NUMERIC}>{texts.itemUnitPrice}</TableHead>
+              <TableHead>{texts.itemVatRate}</TableHead>
+              <TableHead className={NUMERIC}>{texts.itemBase}</TableHead>
+              <TableHead className={NUMERIC}>{texts.itemTax}</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={5} className="font-semibold">
-              {texts.itemsTotal}
-            </TableCell>
-            <TableCell className={cn(NUMERIC, "font-semibold")}>
-              {formatAmount(totals.base)}
-            </TableCell>
-            <TableCell className={cn(NUMERIC, "font-semibold")}>
-              {formatAmount(totals.tax)}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
+          </TableHeader>
+          <TableBody>
+            {items.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="max-w-64 truncate" title={item.text}>
+                  {item.text}
+                </TableCell>
+                <TableCell className={NUMERIC}>{formatQuantity(item.quantity)}</TableCell>
+                <TableCell>{item.unit ?? ""}</TableCell>
+                <TableCell className={NUMERIC}>{formatAmount(item.unitPrice)}</TableCell>
+                <TableCell>{item.vatRate}</TableCell>
+                <TableCell className={NUMERIC}>{formatAmount(item.base)}</TableCell>
+                <TableCell className={NUMERIC}>{formatAmount(item.tax)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={5} className="font-semibold">
+                {texts.itemsTotal}
+              </TableCell>
+              <TableCell className={cn(NUMERIC, "font-semibold")}>
+                {formatAmount(totals.base)}
+              </TableCell>
+              <TableCell className={cn(NUMERIC, "font-semibold")}>
+                {formatAmount(totals.tax)}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </CollapsibleSection>
     </div>

@@ -86,7 +86,9 @@ export function ExtractionShowcase() {
         <Button variant="outline" onClick={() => setDialogOpen(true)}>
           Vytěžit do rozepsaného dokladu
         </Button>
-        {dialogResult ? <span className="text-sm text-muted-foreground">{dialogResult}</span> : null}
+        {dialogResult ? (
+          <span className="text-sm text-muted-foreground">{dialogResult}</span>
+        ) : null}
       </div>
       <ExtractionStatus
         state={state}
@@ -108,7 +110,12 @@ export function ExtractionShowcase() {
         />
       ) : null}
       <FieldGrid cols={12}>
-        <Field label="Odběratel" htmlFor="extraction-partner" span={6} suggestion={partnerSuggestion}>
+        <Field
+          label="Odběratel"
+          htmlFor="extraction-partner"
+          span={6}
+          suggestion={partnerSuggestion}
+        >
           <Input
             id="extraction-partner"
             value={partner}
