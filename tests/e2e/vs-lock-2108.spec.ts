@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { identityMetrics } from "./helpers/identity";
+import { expectTooltip } from "./helpers/tooltip";
 
 // Zámek VS v prohlížeči: přijatá FP – náhled z čísla, odemčení zachová hodnotu,
 // > 10 číslic zachová vazbu s prázdným náhledem a varováním.
@@ -141,43 +143,23 @@ test("IdentityLine: 360/480 px i maximální zoom drží jedinou výšku bez př
       document.documentElement.style.fontSize = "32px";
     }, width);
     await expect(async () => {
-      const metrics = await page.locator('[data-slot="document-identity"]').evaluate((identity) => {
-        const row = identity.querySelector<HTMLElement>('[data-slot="identity-line-row"]');
-        if (!row) throw new Error("Chybí řádek");
-        const style = getComputedStyle(row);
-        const control = parseFloat(style.getPropertyValue("--control-h"));
-        const expected = control;
-        const parts = Array.from(
-          row.querySelectorAll<HTMLElement>(
-            '[data-slot="identity-line-item"] > :not([aria-hidden]), ' +
-              '[data-slot="identity-line-number"] > *, .document-identity-account > span, ' +
-              ".document-identity-account-box, .document-identity-pencil-slot",
-          ),
-        );
-        const boxes = parts
-          .filter((part) => !parts.some((other) => other !== part && other.contains(part)))
-          .map((part) => ({ text: part.textContent, box: part.getBoundingClientRect() }))
-          .filter(({ box }) => box.width > 0 && box.height > 0);
-        const overlaps = boxes.flatMap((a, index) =>
-          boxes.slice(index + 1).flatMap((b) => {
-            const x = Math.min(a.box.right, b.box.right) - Math.max(a.box.left, b.box.left);
-            const y = Math.min(a.box.bottom, b.box.bottom) - Math.max(a.box.top, b.box.top);
-            return x > 1 && y > 1 ? [`${a.text} × ${b.text}`] : [];
-          }),
-        );
-        return { difference: Math.abs(row.getBoundingClientRect().height - expected), overlaps };
-      });
+      const metrics = await page
+        .locator('[data-slot="document-identity"]')
+        .evaluate(identityMetrics);
       expect(metrics.difference, `výška při ${width} px`).toBeLessThanOrEqual(0.5);
       expect(metrics.overlaps, `překryv při ${width} px`).toEqual([]);
     }).toPass();
     const status = page.locator('[data-slot="identity-status-text"]');
-    await expect(status).toHaveText("Koncept");
+    const level = Number(
+      await page.locator('[data-slot="identity-line-row"]').getAttribute("data-identity-level"),
+    );
+    if (level >= 7) await expect(status.locator("svg")).toBeVisible();
+    else await expect(status).toHaveText("Koncept");
     await expect(status).toHaveAttribute("aria-label", "Koncept – číslo při zařazení");
     await expect(page.locator('[data-slot="identity-line-row"]')).not.toHaveAttribute(
       "data-stacked",
     );
-    await status.hover();
-    await expect(page.getByRole("tooltip")).toContainText("Koncept – číslo při zařazení");
+    await expectTooltip(page, status, "Koncept – číslo při zařazení");
     await page.mouse.move(0, 0);
   }
 });

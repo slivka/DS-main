@@ -9,8 +9,11 @@ export function enrichIdentityCatalog(components: PanelCatalogComponent[]) {
   identity.props ??= [];
   if (!identity.props.some((prop) => prop.name === "fallbackShort"))
     identity.props.push({ name: "fallbackShort", type: "string" });
+  for (const name of ["bookCode", "fullLabel"])
+    if (!identity.props.some((prop) => prop.name === name))
+      identity.props.push({ name, type: "string" });
   identity.usage =
-    "Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve ustupuje název účtu, pak plný fallback nahradí fallbackShort, pak se zkracuje krátký stav a nakonec kniha. Rok, strana a kód účtu zůstávají celé. Plný fallback zůstává v bublině a přístupném názvu. Jediný ResizeObserver a hystereze brání kmitání. Písmo ani měřítko se nezmenšují; hostitel musí rezervovat prostor pro pevné hodnoty.";
+    "IdentityLine never wraps: jedna výška --control-h. Ústup: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy → bookCode → samotný kód účtu → ikona stavu → ořez levé části na hraně. Pravá část nikdy nepřekreslí levou a skutečné číslo se nezkracuje. fullLabel zpřístupňuje celou identitu v bublině i aria-label. Plný fallback zůstává dostupný i u ikony. Písmo ani měřítko se nezmenšují; jediný ResizeObserver a hystereze brání kmitání.";
   identity.examples ??= [];
   const example = {
     label: "Koncept v úzkém formuláři",
@@ -18,10 +21,19 @@ export function enrichIdentityCatalog(components: PanelCatalogComponent[]) {
   };
   if (!identity.examples.some((item) => item.label === example.label))
     identity.examples.push(example);
+  const extreme = {
+    label: "Krajní šířka bez překryvu",
+    code: '<IdentityLine items={[book, period, account]} bookCode="FP" fullLabel={fullIdentity} fallback={pendingText} fallbackShort={shortPendingText} />',
+  };
+  if (!identity.examples.some((item) => item.label === extreme.label))
+    identity.examples.push(extreme);
   identity.antipatterns ??= [];
   const rule =
     "Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení.";
   if (!identity.antipatterns.includes(rule)) identity.antipatterns.push(rule);
+  const clipping =
+    "Ořez hodnot na hraně levé části nikdy nenahrazujte překryvem pravé části ani zmenšením písma. Pro složené položky předejte fullLabel.";
+  if (!identity.antipatterns.includes(clipping)) identity.antipatterns.push(clipping);
   const document = components.find((item) => item.name === "DocumentForm");
   if (document && !document.usage?.includes("identity.fallbackShort"))
     document.usage =

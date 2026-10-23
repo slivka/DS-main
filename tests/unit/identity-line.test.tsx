@@ -20,6 +20,12 @@ describe("IdentityLine", () => {
     expect(resolveIdentityLevel({ ...widths, available: 390 }, 2)).toBe(2);
     expect(resolveIdentityLevel({ ...widths, available: 410 }, 2)).toBe(1);
   });
+  it("po trojtečce ustoupí kniha, její kód, účet, ikona a nakonec ořez", () => {
+    const compact = [280, 250, 230, 210, 190];
+    for (const [index, available] of [280, 250, 230, 210, 190, 170].entries()) {
+      expect(resolveIdentityLevel({ ...widths, compact, available })).toBe(index + 3);
+    }
+  });
   it("bez krátkého tvaru zkracuje plný fallback", () => {
     const ui = render(
       <IdentityLine items={["Kniha", "2026"]} fallback="Koncept – číslo při zařazení" />,

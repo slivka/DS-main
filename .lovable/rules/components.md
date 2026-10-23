@@ -4041,7 +4041,7 @@ _Právnická osoba_
 import { IdentityLine } from "@/design-system/{slug}";
 ```
 
-Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve ustupuje název účtu, pak plný fallback nahradí fallbackShort, pak se zkracuje krátký stav a nakonec kniha. Rok, strana a kód účtu zůstávají celé. Plný fallback zůstává v bublině a přístupném názvu. Jediný ResizeObserver a hystereze brání kmitání. Písmo ani měřítko se nezmenšují; hostitel musí rezervovat prostor pro pevné hodnoty.
+IdentityLine never wraps: jedna výška --control-h. Ústup: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy → bookCode → samotný kód účtu → ikona stavu → ořez levé části na hraně. Pravá část nikdy nepřekreslí levou a skutečné číslo se nezkracuje. fullLabel zpřístupňuje celou identitu v bublině i aria-label. Plný fallback zůstává dostupný i u ikony. Písmo ani měřítko se nezmenšují; jediný ResizeObserver a hystereze brání kmitání.
 
 **Props:**
 
@@ -4054,6 +4054,8 @@ Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve u
 | `fallback` | any | `—` |
 | `numberId` | string | `—` |
 | `fallbackShort` | string | `—` |
+| `bookCode` | string | `—` |
+| `fullLabel` | string | `—` |
 
 **Examples:**
 
@@ -4081,11 +4083,18 @@ Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve u
 <IdentityLine items={[book, period, account]} fallback={texts.numberPending} fallbackShort={texts.fallbackShort} />
 ```
 
+**Krajní šířka bez překryvu:**
+
+```tsx
+<IdentityLine items={[book, period, account]} bookCode="FP" fullLabel={fullIdentity} fallback={pendingText} fallbackShort={shortPendingText} />
+```
+
 **Avoid:**
 
 - Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
 - Nepřidávejte do identity ukládání nebo doménovou logiku.
 - Identitu nezalamujte ani nezkracujte rok, stranu a kód účtu; nevytvářejte ResizeObserver při každém vykreslení.
+- Ořez hodnot na hraně levé části nikdy nenahrazujte překryvem pravé části ani zmenšením písma. Pro složené položky předejte fullLabel.
 
 ### InactiveTag
 
