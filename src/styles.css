@@ -2851,7 +2851,7 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .ds-identity-row > .ds-identity-items > .ds-identity-item:last-child {
   min-width: min-content;
 }
-.ds-identity-row > .ds-identity-items .ds-identity-account-name {
+.ds-identity-row:not([data-identity-level="0"]) > .ds-identity-items .ds-identity-account-name {
   width: 0;
   flex: 1 1 0;
 }
