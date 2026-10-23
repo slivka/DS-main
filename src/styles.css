@@ -2824,7 +2824,11 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 }
 .ds-identity-row [data-slot="document-identity-account-text"] { flex: 0 1 auto; }
 .ds-identity-row > .ds-identity-items > .ds-identity-item:last-child {
-  min-width: 0;
+  min-width: min-content;
+}
+.ds-identity-row > .ds-identity-items .ds-identity-account-name { width: 0; flex: 1 1 0; }
+.ds-identity-row[data-identity-level="3"] > .ds-identity-items .ds-identity-account-name {
+  width: 0; flex: 0 0 0;
 }
 .ds-identity-row[data-identity-level="3"] > .ds-identity-items > [data-identity-first] {
   flex: 0 1 auto; min-width: 0;
