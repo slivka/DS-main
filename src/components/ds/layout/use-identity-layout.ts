@@ -75,7 +75,9 @@ export function useIdentityLayout() {
       if (!full || !minimum || !status || !short) return;
       const left = minimum.firstElementChild;
       const book = left?.querySelector<HTMLElement>(".ds-identity-book-full");
-      const code = row.parentElement?.querySelector<HTMLElement>('[data-slot="identity-measure-code"]');
+      const code = row.parentElement?.querySelector<HTMLElement>(
+        '[data-slot="identity-measure-code"]',
+      );
       const base = left?.getBoundingClientRect().width ?? 0;
       const bookWidth = book?.getBoundingClientRect().width ?? 0;
       const codeWidth = code?.getBoundingClientRect().width || bookWidth;
@@ -84,7 +86,10 @@ export function useIdentityLayout() {
       const gap = parseFloat(getComputedStyle(row).gap) || 0;
       const compactBook = Math.max(0, base - bookWidth + codeWidth);
       const separator = left?.querySelector<HTMLElement>(".ds-identity-account-separator");
-      const compactAccount = Math.max(0, compactBook - (separator?.getBoundingClientRect().width ?? 0));
+      const compactAccount = Math.max(
+        0,
+        compactBook - (separator?.getBoundingClientRect().width ?? 0),
+      );
       const realNumber = row.dataset.pending !== "true";
       const right = realNumber ? status.getBoundingClientRect().width : unit * 1.5 + gap;
       const icon = parseFloat(getComputedStyle(row).getPropertyValue("--spacing")) * 4;
