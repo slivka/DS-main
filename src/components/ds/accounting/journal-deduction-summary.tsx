@@ -95,6 +95,7 @@ export function JournalDeductionAdd() {
     >
       <SplitButton
         variant="outline"
+        size="sm"
         label={t.deductionAdd}
         actionName={t.deductionAdd}
         onClick={() => add("advance")}

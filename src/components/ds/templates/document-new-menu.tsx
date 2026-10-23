@@ -110,6 +110,7 @@ export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProp
       return (
         <SplitButton
           ref={ref}
+          size={props.size === "default" ? "default" : "sm"}
           icon={icon}
           label={label ?? children ?? t.newDocument}
           actionName={label ?? t.newDocument}

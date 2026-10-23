@@ -1,5 +1,6 @@
 ## DS 2.137.0 (nevydáno)
 
+- [ ] Doplněk 3: test zalomené identity 360/480 px při max zoomu, výchozí výška SplitButton a explicitní sm v lištách, sjednocené ovladače panelu, zavírání bubliny po odjetí a lookup akce, aktuální katalog; unit DS a tři určené Chromium specy. Nevydávat.
 - [x] Řádek identity bez překryvu (priorita, zkracování, stav na druhý řádek), E2E 420/480/640 px.
 - [x] Jedna ikona návrhu vlevo od ikonových tlačítek pole.
 - [x] Tlačítko panelu: stále orámované, šipka a bublina podle stavu; výchozí pořadí záložek Zdroj → Poznámky → Přílohy → Historie → Propojené.
