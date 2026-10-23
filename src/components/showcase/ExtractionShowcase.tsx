@@ -142,7 +142,6 @@ export function ExtractionShowcase() {
       </FieldGrid>
       <ExtractedItemsTable items={ITEMS} totals={{ base: 8650, tax: 1816.5 }} />
       <ExtractionDocumentShowcase />
-      <ExtractionDocumentShowcase narrow />
       <ExtractionOverwriteDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
