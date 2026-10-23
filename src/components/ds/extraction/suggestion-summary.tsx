@@ -32,21 +32,6 @@ export interface SuggestionSummaryProps {
   className?: string;
 }
 
-/** Přesune fokus na další pole se stavem ke kontrole (cyklicky). */
-export function focusNextUncertainField(): void {
-  const fields = Array.from(
-    document.querySelectorAll<HTMLElement>('[data-suggestion="uncertain"]'),
-  );
-  if (!fields.length) return;
-  const active = document.activeElement;
-  const current = fields.findIndex((field) => field === active || field.contains(active));
-  const next = fields[(current + 1) % fields.length];
-  const control = next.matches("input,select,textarea,button,[tabindex]")
-    ? next
-    : next.querySelector<HTMLElement>("input,select,textarea,button,[tabindex]");
-  control?.focus();
-}
-
 /** Jednořádkový souhrn vytěžení s klávesou F8 pro obcházení polí ke kontrole. */
 export function SuggestionSummary({
   method,
