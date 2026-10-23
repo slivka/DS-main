@@ -2836,6 +2836,12 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .ds-identity-measure .ds-identity-account-name {
   width: max-content;
 }
+.ds-identity-measure [data-slot="identity-measure-full"] > * {
+  width: max-content;
+}
+.ds-identity-measure [data-slot="identity-measure-minimum"] > * {
+  width: min-content;
+}
 .ds-identity-measure [data-slot="identity-measure-minimum"] .ds-identity-account-name {
   width: 0;
 }

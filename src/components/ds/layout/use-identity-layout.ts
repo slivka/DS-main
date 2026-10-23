@@ -31,6 +31,24 @@ export function useIdentityLayout() {
   useLayoutEffect(() => {
     const row = rowRef.current;
     if (!row) return;
+    const items = row.querySelector<HTMLElement>('[data-slot="identity-line-items"]');
+    const full = row.querySelector<HTMLElement>('[data-slot="identity-measure-full"]');
+    const minimum = row.querySelector<HTMLElement>('[data-slot="identity-measure-minimum"]');
+    if (!items || !full || !minimum) return;
+    const copyItems = () => {
+      for (const target of [full, minimum]) {
+        const copy = items.cloneNode(true);
+        if (!(copy instanceof HTMLElement)) continue;
+        copy.removeAttribute("data-slot");
+        for (const node of copy.querySelectorAll<HTMLElement>("[id], [data-slot]")) {
+          node.removeAttribute("id");
+          // Kopie nesmějí soupeřit s živými selektory formuláře.
+          if (node.dataset.slot?.startsWith("identity-line")) node.removeAttribute("data-slot");
+        }
+        target.replaceChildren(copy);
+      }
+    };
+    copyItems();
     const measure = () => {
       const full = row.querySelector<HTMLElement>('[data-slot="identity-measure-full"]');
       const minimum = row.querySelector<HTMLElement>('[data-slot="identity-measure-minimum"]');
@@ -46,11 +64,14 @@ export function useIdentityLayout() {
       }, previous));
     };
     measure();
+    if (typeof ResizeObserver === "undefined") return;
     const resize = new ResizeObserver(measure);
     resize.observe(row);
     for (const child of row.querySelectorAll<HTMLElement>("[data-identity-measure]"))
       resize.observe(child);
-    return () => resize.disconnect();
+    const mutation = new MutationObserver(() => { copyItems(); measure(); });
+    mutation.observe(items, { childList: true, subtree: true, characterData: true });
+    return () => { resize.disconnect(); mutation.disconnect(); };
   }, []);
   return { rowRef, level };
 }

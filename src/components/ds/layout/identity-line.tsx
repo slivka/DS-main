@@ -37,7 +37,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
 ) {
   const { rowRef, level } = useIdentityLayout();
   const pending = !number && !numberContent;
-  const fullStatus = numberContent ?? number ?? fallback;
+  const fullStatus = numberContent ?? (number || fallback);
   const statusText = pending && level >= 2 && fallbackShort ? fallbackShort : fullStatus;
   const status = typeof statusText === "string" ? (
     <TooltipProvider delayDuration={200}>
@@ -95,12 +95,8 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
           {status}
         </div>
         <div aria-hidden="true" inert className="ds-identity-measure absolute invisible pointer-events-none" data-identity-measure>
-          <div data-slot="identity-measure-full" className="ds-identity-items flex w-max items-center whitespace-nowrap text-[length:var(--text-identity)] font-semibold">
-            {leading}{items.map((item, index) => <span key={index} className="ds-identity-item flex items-center">{index > 0 || leading ? <span className="mx-2 h-4 w-px shrink-0" /> : null}{item}</span>)}
-          </div>
-          <div data-slot="identity-measure-minimum" className="ds-identity-items flex w-min items-center whitespace-nowrap text-[length:var(--text-identity)] font-semibold">
-            {leading}{items.map((item, index) => <span key={index} className="ds-identity-item flex items-center">{index > 0 || leading ? <span className="mx-2 h-4 w-px shrink-0" /> : null}{item}</span>)}
-          </div>
+          <div data-slot="identity-measure-full" data-identity-measure />
+          <div data-slot="identity-measure-minimum" data-identity-measure />
           <span data-slot="identity-measure-status" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{typeof fullStatus === "string" ? fullStatus : null}</span>
           <span data-slot="identity-measure-short" className={cn("block w-max whitespace-nowrap", pending ? "text-sm italic" : "font-mono text-xl font-bold")}>{fallbackShort ?? (typeof fullStatus === "string" ? fullStatus : null)}</span>
         </div>
