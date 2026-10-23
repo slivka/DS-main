@@ -8,6 +8,7 @@ import { Button } from "../../ui/button";
 import { NoticeBar } from "../feedback/notice-bar";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { focusNextUncertainField } from "./focus-uncertain";
 
 /** Odkaz na řádky, podle kterých se pole vyplnila. */
 export interface SuggestionLinesReference {
