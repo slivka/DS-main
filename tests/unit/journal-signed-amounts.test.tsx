@@ -77,12 +77,12 @@ describe("záporné částky dokladů", () => {
     const view = render(<TooltipProvider><Editor /></TooltipProvider>);
     const cell = view.container.querySelector('[data-cell-key="credit-note:amount"]');
     if (!cell) throw new Error("Chybí buňka částky");
-    expect(cell.textContent).toContain("-1 000,00");
+    expect(cell.textContent?.replace(/\s/g, " ")).toContain("−1 000,00");
     fireEvent.click(cell);
     const input = view.getByRole("textbox", { name: "Částka" });
     fireEvent.change(input, { target: { value: "-2 500,50" } });
     fireEvent.blur(input);
     expect(change.mock.calls.at(-1)?.[0][0].amount).toBe(-2500.5);
-    expect(cell.textContent).toContain("-2 500,50");
+    expect(cell.textContent?.replace(/\s/g, " ")).toContain("−2 500,50");
   });
 });

@@ -16,7 +16,7 @@ test.describe("vytěžování souboru", () => {
     // Nejisté pole je označené a F8 na něj přesune fokus; hydratace stránky může
     // trvat, proto stisk opakujeme, dokud posluchač nezačne reagovat.
     const amount = showcase.getByLabel("Částka");
-    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(1);
+    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(4);
     await expect
       .poll(
         async () => {
@@ -29,7 +29,30 @@ test.describe("vytěžování souboru", () => {
 
     // Ruční změna hodnoty stav návrhu zruší (řídí rodič).
     await amount.fill("12 500,00");
-    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(0);
+    await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(3);
+
+    // Jeden stisk F8 posune právě o jedno pole, i se dvěma souhrny návrhu na stránce.
+    const documentForm = showcase.getByTestId("extraction-document");
+    const dueDate = documentForm.locator("#document-dueDate");
+    const total = documentForm.locator("#document-amountTotal");
+    const rowAmount = documentForm.locator('[data-cell-key="extraction-row:amount"]');
+    await dueDate.focus();
+    await page.keyboard.press("F8");
+    await expect(total).toBeFocused();
+    await page.keyboard.press("F8");
+    await expect(rowAmount).toBeFocused();
+    await page.keyboard.press("F8");
+    await expect(dueDate).toBeFocused();
+    const row = rowAmount.locator("xpath=ancestor::tr");
+    const before = await row.boundingBox();
+    await rowAmount.click();
+    const rowInput = documentForm.getByRole("textbox", { name: "Částka" });
+    await rowInput.fill("-1 000,00");
+    await page.keyboard.press("Tab");
+    await expect(rowAmount).not.toHaveAttribute("data-suggestion");
+    await expect(rowAmount).toContainText("−1 000,00");
+    const after = await row.boundingBox();
+    expect(before?.height).toBe(after?.height);
 
     // Dialog přepsání do rozepsaného dokladu.
     await showcase.getByRole("button", { name: "Vytěžit do rozepsaného dokladu" }).click();

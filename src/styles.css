@@ -831,6 +831,14 @@ body {
 .journal-grid-cell:focus:not(:has(.journal-cell-editor)) {
   background-color: color-mix(in oklch, var(--primary) 8%, transparent);
 }
+/* Návrh zůstává patrný i při editaci/fokusu; obrys nemění rozměr buňky. */
+.journal-grid-cell[data-suggestion] {
+  background-color: var(--suggestion-soft);
+}
+.journal-grid-cell[data-suggestion="uncertain"] {
+  outline: 1px solid var(--warning-strong);
+  outline-offset: -1px;
+}
 .journal-grid-cell:has(.journal-cell-editor),
 .journal-grid-cell[data-invalid="true"]:has(.journal-cell-editor) {
   box-shadow: none;

@@ -11,6 +11,7 @@ import { enrichDocumentLocks } from "./document-lock-catalog";
 import { enrichPaymentScheduleCatalog } from "./payment-schedule-catalog";
 import { enrichInvoicePrintCatalog } from "./invoice-print-catalog";
 import { enrichColumnFormatCatalog } from "./column-format-catalog";
+import { enrichExtractionDocumentCatalog } from "./extraction-document-catalog";
 
 interface CatalogProp {
   name: string;
@@ -34,6 +35,7 @@ interface Catalog {
 export function refreshCatalog() {
   const path = ".lovable/design-system.json";
   const catalog = JSON.parse(readFileSync(path, "utf8")) as Catalog;
+  enrichExtractionDocumentCatalog(catalog.components);
   const packages = JSON.parse(readFileSync("package.json", "utf8")) as {
     dependencies: Record<string, string>;
   };
