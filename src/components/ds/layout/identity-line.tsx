@@ -4,6 +4,7 @@ import { cn } from "../../../lib/utils";
 import { TruncatedText } from "../data-display/truncated-text";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useIdentityLayout } from "./use-identity-layout";
+import { Info } from "lucide-react";
 
 /** Vlastnosti společného řádku identity. */
 export interface IdentityLineProps extends ComponentPropsWithoutRef<"div"> {
@@ -19,6 +20,10 @@ export interface IdentityLineProps extends ComponentPropsWithoutRef<"div"> {
   fallback?: ReactNode;
   /** Krátký stav při nedostatku místa; plný fallback zůstává v bublině a názvu. */
   fallbackShort?: string;
+  /** Kód první položky pro krajní šířku; plný název zůstává dostupný. */
+  bookCode?: string;
+  /** Plná identita pro bublinu a přístupný název při ořezu. */
+  fullLabel?: string;
   /** Id prvku čísla (fokus z chybového pruhu). */
   numberId?: string;
 }
@@ -28,7 +33,8 @@ export interface IdentityLineProps extends ComponentPropsWithoutRef<"div"> {
  * pak ustoupí stav a nakonec kniha. Řádek nikdy nemění výšku ani se nezalamuje.
  */
 export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(function IdentityLine(
-  { items, leading, number, numberContent, fallback, fallbackShort, numberId, className, ...props },
+  { items, leading, number, numberContent, fallback, fallbackShort, bookCode, fullLabel,
+    numberId, className, ...props },
   ref,
 ) {
   const { rowRef, level } = useIdentityLayout();
@@ -46,7 +52,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
               className="block min-w-0 truncate"
               data-slot="identity-status-text"
             >
-              {statusText}
+              {pending && level >= 7 ? <Info aria-hidden="true" className="size-4" /> : statusText}
             </span>
           </TooltipTrigger>
           <TooltipContent>{fullStatus}</TooltipContent>
@@ -63,10 +69,13 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
       {...props}
       className={cn("mb-3 border-b border-border pb-3", className)}
     >
-      <div
+      <TooltipProvider delayDuration={200}><Tooltip><TooltipTrigger asChild><div
         ref={rowRef}
         data-slot="identity-line-row"
         data-identity-level={level}
+        data-pending={pending ? "true" : "false"}
+        aria-label={fullLabel}
+        tabIndex={level >= 8 ? 0 : undefined}
         className="ds-identity-row relative flex h-[var(--control-h)] min-w-0 items-center gap-3"
       >
         <div
@@ -87,7 +96,12 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
               {index > 0 || leading ? (
                 <span aria-hidden="true" className="mx-2 h-4 w-px shrink-0 bg-border" />
               ) : null}
-              {index === 0 && typeof item === "string" ? <TruncatedText text={item} /> : item}
+              {index === 0 ? <>
+                <span className="ds-identity-book-full min-w-0">
+                  {typeof item === "string" ? <TruncatedText text={item} /> : item}
+                </span>
+                {bookCode ? <span className="ds-identity-book-code">{bookCode}</span> : null}
+              </> : item}
             </span>
           ))}
         </div>
@@ -101,7 +115,8 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
         >
           {status}
         </div>
-      </div>
+      </div></TooltipTrigger>{fullLabel ? <TooltipContent>{fullLabel}</TooltipContent> : null}
+      </Tooltip></TooltipProvider>
       <div
         aria-hidden="true"
         inert
