@@ -15,7 +15,7 @@ test.describe("vytěžování souboru", () => {
 
     // Nejisté pole je označené a F8 na něj přesune fokus; hydratace stránky může
     // trvat, proto stisk opakujeme, dokud posluchač nezačne reagovat.
-    const amount = showcase.getByLabel("Částka");
+    const amount = showcase.getByRole("textbox", { name: "Částka", exact: true });
     await expect(showcase.locator('[data-suggestion="uncertain"]')).toHaveCount(4);
     await expect
       .poll(

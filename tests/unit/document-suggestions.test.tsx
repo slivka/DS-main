@@ -135,6 +135,33 @@ describe("DocumentForm návrhy hlavičky", () => {
       view.container.querySelector("#document-amountTotal")?.getAttribute("aria-invalid"),
     ).toBe("true");
   });
+  it("BA v režimu IBAN přiřazuje návrhy bankIban a bankSwift", () => {
+    const view = render(<Form documentType="BA"
+      value={{ ...base, bankAccountKind: "iban", bankIban: "DE89370400440532013000", bankSwift: "COBADEFF" }}
+      fieldSuggestions={{ bankIban: suggestion, bankSwift: suggestion }} />);
+    expect(field(view, "document-movement-account")?.getAttribute("data-suggestion")).toBe("uncertain");
+    expect(field(view, "document-bank-code")?.getAttribute("data-suggestion")).toBe("uncertain");
+  });
+  it("FV předá návrh firemnímu účtu i způsobu platby", () => {
+    const view = render(<Form documentType="FV" companyBankAccountOptions={[
+      { id: "c1", label: "Hlavní", account: "123/0100", currency: "CZK" },
+    ]} paymentMethodOptions={[{ value: "bank", label: "Převod" }]}
+      fieldSuggestions={{ companyBankAccountId: suggestion, paymentMethodId: suggestion }} />);
+    expect(field(view, "document-companyBankAccountId")?.getAttribute("data-suggestion")).toBe("uncertain");
+    expect(field(view, "document-paymentMethodId")?.getAttribute("data-suggestion")).toBe("uncertain");
+  });
+  it("ruční jméno partnera a přepínač DPH hlásí své klíče", () => {
+    const cleared = mock();
+    const view = render(<Form counterpartyInput="manual"
+      fieldSuggestions={{ counterpartyName: suggestion, vatRelevant: suggestion }}
+      onSuggestionCleared={cleared} />);
+    const input = view.container.querySelector("#document-partner");
+    if (!input) throw new Error("Chybí ruční partner");
+    fireEvent.change(input, { target: { value: "Ruční dodavatel" } });
+    fireEvent.click(view.getByRole("switch", { name: "Vstupuje do DPH" }));
+    expect(cleared).toHaveBeenCalledWith("counterpartyName");
+    expect(cleared).toHaveBeenCalledWith("vatRelevant");
+  });
   it("F8 cyklicky prochází hlavičku i buňku řádku", () => {
     const view = render(
       <Form
@@ -157,6 +184,17 @@ describe("DocumentForm návrhy hlavičky", () => {
 });
 
 describe("návrhy buněk řádků", () => {
+  it("účty, zakázka a kód DPH mají společné klíče návrhu", () => {
+    const view = render(<Editor withoutAccounts={false} dimensions={[]}
+      lines={[{ id: "r1", amount: 1000, text: "Služby", debitAccount: "518001", creditAccount: "321001" }]}
+      rowSuggestions={{ r1: { account: suggestion, dimension: suggestion, vatCode: suggestion } }}
+      vat={{ enabled: true, codes: [] }} />);
+    for (const key of ["debitAccountName", "creditAccountName", "dimensionId", "vatCodeId"]) {
+      const cell = view.container.querySelector(`[data-cell-key="r1:${key}"]`);
+      expect(cell).not.toBeNull();
+      expect(cell?.getAttribute("data-suggestion")).toBe("uncertain");
+    }
+  });
   it("ruční změna částky oznamuje amount a id řádku jen jednou", () => {
     const cleared = mock();
     const view = render(
