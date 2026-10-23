@@ -2,7 +2,13 @@
  * Rozdělené tlačítko · vlastní jeden společný obrys, jemnou dělicí čáru a oddělené funkce
  * (hlavní akce | nabídka) · nesmí znát doménu ani obsah nabídky.
  */
-import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import {
+  forwardRef,
+  useId,
+  type ComponentPropsWithoutRef,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import { ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";
@@ -22,7 +28,7 @@ export interface SplitButtonProps {
   /** Volitelná ikona před textem hlavní části. */
   icon?: ReactNode;
   /** Hlavní akce (velká plocha). */
-  onClick: () => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   /** Položky nabídky šipky (DropdownMenuItem…). */
   menu: ReactNode;
   /** Vzhled: primary = plné tlačítko, outline = obrysové. */
@@ -78,8 +84,9 @@ export const SplitButton = forwardRef<HTMLButtonElement, SplitButtonProps>(funct
       size="sm"
       variant={variant === "primary" ? "default" : "outline"}
       disabled={nativeDisabled}
-      onClick={() => {
-        if (!blocked) onClick();
+      onClick={(event) => {
+        if (blocked) event.preventDefault();
+        else onClick(event);
       }}
       className={cn("ds-split-main", blocked && "cursor-not-allowed", mainProps?.className)}
     >

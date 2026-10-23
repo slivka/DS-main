@@ -88,24 +88,33 @@ export function JournalDeductionAdd() {
       </div>
     );
   return (
-    <div className="inline-flex shrink-0" data-slot="journal-deduction-split" data-toolbar-overflow-item="">
-    <SplitButton
-      variant="outline"
-      label={t.deductionAdd}
-      actionName={t.deductionAdd}
-      onClick={() => add("advance")}
-      disabled={blocked}
-      disabledReason={blocked ? reason : undefined}
-      mainProps={{
-        "data-slot": "journal-deduction-add",
-        className: "grid-toolbar-control h-[var(--control-h)] px-[0.75em]",
-      } as PartAttrs}
-      menuProps={{
-        "data-slot": "journal-deduction-menu",
-        className: "grid-toolbar-control h-[var(--control-h)] w-[calc(var(--control-h)*0.8)] px-0",
-      } as PartAttrs}
-      menu={<DeductionMenuItems add={add} />}
-    />
+    <div
+      className="inline-flex shrink-0"
+      data-slot="journal-deduction-split"
+      data-toolbar-overflow-item=""
+    >
+      <SplitButton
+        variant="outline"
+        label={t.deductionAdd}
+        actionName={t.deductionAdd}
+        onClick={() => add("advance")}
+        disabled={blocked}
+        disabledReason={blocked ? reason : undefined}
+        mainProps={
+          {
+            "data-slot": "journal-deduction-add",
+            className: "grid-toolbar-control h-[var(--control-h)] px-[0.75em]",
+          } as PartAttrs
+        }
+        menuProps={
+          {
+            "data-slot": "journal-deduction-menu",
+            className:
+              "grid-toolbar-control h-[var(--control-h)] w-[calc(var(--control-h)*0.8)] px-0",
+          } as PartAttrs
+        }
+        menu={<DeductionMenuItems add={add} />}
+      />
     </div>
   );
 }

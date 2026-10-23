@@ -115,7 +115,10 @@ export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProp
           actionName={label ?? t.newDocument}
           onClick={() => onPrimary()}
           disabled={props.disabled}
-          mainProps={{ ...props, className: cn("grid-toolbar-control grid-toolbar-primary", className) }}
+          mainProps={{
+            ...props,
+            className: cn("grid-toolbar-control grid-toolbar-primary", className),
+          }}
           menuProps={{ className: "grid-toolbar-control grid-toolbar-primary" }}
           menu={items}
         />
