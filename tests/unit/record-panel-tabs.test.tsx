@@ -34,7 +34,7 @@ function Panel() {
 }
 
 describe("RecordSidePanel záložky", () => {
-  it("pořadí Zdroj · Poznámky · Přílohy | Propojené · Historie s oddělovačem", () => {
+  it("pořadí Zdroj · Poznámky · Přílohy | Historie · Propojené s oddělovačem", () => {
     const view = render(<Panel />);
     const list = view.container.querySelector('[data-slot="record-panel-tabs"]')!;
     expect(list.getAttribute("role")).toBe("tablist");
@@ -48,8 +48,8 @@ describe("RecordSidePanel záložky", () => {
       "Poznámky",
       "Přílohy: 2",
       "|",
-      "Propojené doklady",
       "Historie",
+      "Propojené doklady",
     ]);
     expect(view.container.querySelector('[data-slot="record-panel-tab-count"]')?.textContent).toBe(
       "2",
