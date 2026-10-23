@@ -571,6 +571,19 @@ body {
   left: 0.5em;
   right: auto;
 }
+/* Pole s ikonovým tlačítkem (adresář, bankovní účet, přepínače): jedna ikona návrhu vlevo,
+   mimo tlačítka; hodnota se odsune, aby ikona nepřekryla text. */
+[data-suggestion="uncertain"]
+  > .ds-field-control:has(button:not([role="combobox"]):not([data-slot="field-suggestion"]))
+  > [data-slot="field-suggestion"] {
+  left: 0.5em;
+  right: auto;
+}
+[data-suggestion="uncertain"]
+  > .ds-field-control:has(button:not([role="combobox"]):not([data-slot="field-suggestion"]))
+  :is(input, [role="combobox"]) {
+  padding-left: 2em;
+}
 [data-suggestion="uncertain"] > .ds-field-control input[inputmode="decimal"] {
   padding-left: 2em;
 }

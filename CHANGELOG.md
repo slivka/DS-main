@@ -2,6 +2,12 @@
 
 ## 2.137.0 (nevydáno)
 
+- `IdentityLine` (a tím `DocumentIdentityLine`): nic se nepřekrývá při žádné šířce. Druh dokladu, rok a strana s kódem účtu se nezkracují; název účtu a text stavu se zkracují trojtečkou (stav s bublinou celého textu) a když se pevné položky se stavem nevejdou, přejde stav na druhý řádek (`data-stacked` na `identity-line-row`). Tužka „Změnit účet“ zůstává hned za textem. API beze změny.
+- Pole s nejistým návrhem a ikonovým tlačítkem uvnitř (Dodavatel s adresářem, bankovní účet, přepínače): jediná ikona návrhu vlevo, hodnota odsunutá, nic nepřekrývá text ani tlačítka.
+- `FieldSuggestion.action?: { label; onClick }` – odkazové tlačítko v bublině „ke kontrole“ (např. „Založit dodavatele z dokladu“); ikona je pak tlačítko, bublina se otevře najetím, klikem i Enterem, akce je dostupná klávesnicí a bublina se po kliku zavře.
+- Ukázka „Úzký formulář s návrhem“ na stránce Panel záznamu (480 px, nejistý Dodavatel s akcí).
+- Ověření: 3 nové unit testy; nový `identity-line-overlap.spec.ts` (420 / 480 / 640 px bez překryvu, tužka ≤ 12 px) spolu se `small-edits-one.spec.ts` a `extraction.spec.ts` Chromium 5/5; check:full --harness 1 426/1 426 ve 148 souborech, katalog 485 → 485 / 1 213 → 1 213, 0 odebrání (pole typů katalog nesleduje).
+
 ## 2.136.0
 
 - Oprava: návrh hlavního účtu se kreslí přímo na boxu účtu bez obalu pole, takže tužka „Změnit účet“ zůstává hned za textem i s nejistým návrhem (ikona ve čtení vlevo před kódem).

@@ -31,8 +31,11 @@ const INITIAL: DocumentHeaderValue = {
 };
 
 /** Přijatá faktura sdílí návrhy a F8 s ostatními variantami DocumentForm. */
-export function ExtractionDocumentShowcase() {
-  const [value, setValue] = useState(INITIAL);
+export function ExtractionDocumentShowcase({ narrow = false }: { narrow?: boolean }) {
+  const [value, setValue] = useState<DocumentHeaderValue>(
+    narrow ? { ...INITIAL, id: "extraction-fp-narrow", number: undefined } : INITIAL,
+  );
+  const [created, setCreated] = useState(false);
   const [lines, setLines] = useState<JournalLine[]>([
     {
       id: "extraction-row",
@@ -44,7 +47,14 @@ export function ExtractionDocumentShowcase() {
     },
   ]);
   const [fields, setFields] = useState<Partial<Record<string, FieldSuggestion>>>({
-    partnerId: { source: SOURCE },
+    partnerId: narrow
+      ? {
+          source: SOURCE,
+          uncertain: true,
+          message: "Dodavatel z dokladu není v adresáři.",
+          action: { label: "Založit dodavatele z dokladu", onClick: () => setCreated(true) },
+        }
+      : { source: SOURCE },
     externalNumber: { source: SOURCE },
     dueDate: { source: SOURCE, uncertain: true },
     amountTotal: { source: SOURCE, uncertain: true },
@@ -71,7 +81,10 @@ export function ExtractionDocumentShowcase() {
       );
   };
   return (
-    <div data-testid="extraction-document">
+    <div
+      data-testid={narrow ? "extraction-document-narrow" : "extraction-document"}
+      className={narrow ? "max-w-[30rem] rounded-md border border-border p-3" : undefined}
+    >
       <DocumentForm
         title="Přijatá faktura ze souboru"
         documentType="FP"
@@ -96,7 +109,7 @@ export function ExtractionDocumentShowcase() {
         onSuggestionCleared={clear}
         vat={{ visible: true }}
         linesEditorProps={{
-          storageKey: "extraction-document-lines",
+          storageKey: narrow ? "extraction-document-lines-narrow" : "extraction-document-lines",
           vat: {
             enabled: true,
             codes: [
@@ -125,6 +138,11 @@ export function ExtractionDocumentShowcase() {
           />
         }
       />
+      {created ? (
+        <p data-testid="extraction-partner-created" className="mt-2 text-sm text-muted-foreground">
+          Aplikace by nyní založila dodavatele z dokladu.
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -2,9 +2,11 @@
  * Stav pole · vlastní přístupnou výstrahu uvnitř pole, ikonu nápovědy a sdílený stav chyby
  * · nesmí měnit hodnotu ani výšku pole a nesmí nic kreslit pod ovládáním.
  */
-import { createContext, useContext, useId, type ReactNode } from "react";
+import { createContext, useContext, useId, useState, type ReactNode } from "react";
 import { AlertTriangle, Info } from "lucide-react";
 import { TooltipProvider } from "../../ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Button } from "../../ui/button";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { cn } from "../../../lib/utils";
 
@@ -16,6 +18,16 @@ export interface FieldSuggestion {
   uncertain?: boolean;
   /** Vlastní zpráva bubliny; výchozí text dodá pole z DsTexts. */
   message?: string;
+  /** Volitelná akce v bublině „ke kontrole“ (např. založení záznamu z dokladu); bublina se po kliku zavře. */
+  action?: FieldSuggestionAction;
+}
+
+/** Akce nabídnutá v bublině návrhu. */
+export interface FieldSuggestionAction {
+  /** Text odkazového tlačítka. */
+  label: string;
+  /** Akce aplikace. */
+  onClick: () => void;
 }
 
 /** Zprávy sdílené mezi obalem a jeho ovládáním. */
@@ -164,8 +176,57 @@ export function FieldSuggestionIndicator({
   side = "end",
   className,
 }: FieldSuggestionIndicatorProps) {
+  const [open, setOpen] = useState(false);
   if (!suggestion?.uncertain) return null;
   const message = suggestion.message ?? defaultMessage ?? suggestion.source;
+  const iconClass = cn(
+    "absolute top-[calc(var(--control-h)/2)] z-10 -translate-y-1/2 cursor-help rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+    side === "start" ? "left-[0.5em]" : "right-[var(--field-feedback-offset,0.75rem)]",
+    className,
+  );
+  const action = suggestion.action;
+  if (action)
+    // S akcí je bublina ovladatelná: otevře ji najetí, klik i Enter; fokus přejde na akci.
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label={message}
+            aria-haspopup="dialog"
+            data-slot="field-suggestion"
+            data-side={side}
+            data-has-action="true"
+            className={cn(iconClass, "inline-flex border-0 bg-transparent p-0")}
+            onMouseEnter={() => setOpen(true)}
+          >
+            <AlertTriangle className="size-4" aria-hidden="true" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          role="dialog"
+          aria-label={message}
+          data-slot="field-suggestion-bubble"
+          side="top"
+          className="w-auto max-w-[min(20rem,calc(100vw-2rem))] space-y-1 px-3 py-2 text-xs"
+        >
+          <p>{message}</p>
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
+            data-slot="field-suggestion-action"
+            className="h-auto p-0 text-xs"
+            onClick={() => {
+              setOpen(false);
+              action.onClick();
+            }}
+          >
+            {action.label}
+          </Button>
+        </PopoverContent>
+      </Popover>
+    );
   return (
     <TooltipProvider>
       <DisabledReasonTooltip content={message} blocked openOnTouch>
@@ -175,11 +236,7 @@ export function FieldSuggestionIndicator({
           aria-label={message}
           data-slot="field-suggestion"
           data-side={side}
-          className={cn(
-            "absolute top-[calc(var(--control-h)/2)] z-10 -translate-y-1/2 cursor-help rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            side === "start" ? "left-[0.5em]" : "right-[var(--field-feedback-offset,0.75rem)]",
-            className,
-          )}
+          className={iconClass}
         >
           <AlertTriangle className="size-4" aria-hidden="true" />
           <span className="sr-only">{message}</span>
