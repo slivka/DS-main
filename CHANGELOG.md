@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.134.0 (nevydáno)
+## 2.135.0 (nevydáno)
+
+## 2.134.0
 
 - `DocumentCounterpartyTab.deliveryReadOnly?: boolean` odděluje zámek dodací adresy od odběratele. APP předá `deliveryReadOnly: false` pro editaci dodání při `counterpartyLocked: true`; bez prop zůstává dosavadní chování. Celkové `readOnly` má nadále přednost. Platí pro FV i ZFV; objednávka, údaje odběratele, tisk a ukládání beze změny. Nevydáno, release Claude.
 - Ověření dodací adresy: čtyři nové unit regrese (výchozí zámek, odemčené dodání při zamčeném odběrateli včetně změny/vypnutí, samostatné zamčení dodání a přednost celkového readOnly); cíleně 14/14. `check:full --harness` prošel **1 379/1 379 ve 143 souborech**, lint/formát/audity OK. Katalog proti vydané 2.133.0 **480 → 480 komponent / 1 187 → 1 227 props, 0 odebrání** (z toho jedna nová prop tohoto doplnění, ostatní obnovené z dosavadního kódu). Automatické sestavení build OK; samostatné typy/build ani E2E v tomto doplnění nespouštěny. Package/meta 2.133.0, doplnění 2.134.0 nevydáno.

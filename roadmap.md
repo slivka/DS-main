@@ -1,4 +1,6 @@
-## DS 2.134.0 (nevydáno)
+## DS 2.135.0 (nevydáno)
+
+## DS 2.134.0
 
 - [x] Samostatné deliveryReadOnly pro dodací adresu (FV i ZFV), zpětně kompatibilní výchozí zámek a přednost celkového readOnly. Čtyři unit regrese, cíleně 14/14; check:full --harness 1 379/1 379 ve 143 souborech, katalog 480 → 480 / 1 187 → 1 227, 0 odebrání. Nevydáno, release Claude.
 
