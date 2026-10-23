@@ -1,6 +1,6 @@
 import { afterEach, expect, it } from "bun:test";
 const { cleanup, fireEvent, render } = await import("@testing-library/react");
-const { ExtractedItemsTable } = await import("../src/components/ds/extraction/extracted-items-table");
+const { ExtractedItemsTable } = await import("../../src/components/ds/extraction/extracted-items-table");
 afterEach(cleanup);
 it("table totals", () => {
   const items = [
