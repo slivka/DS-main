@@ -176,6 +176,8 @@ export interface DsTexts {
   };
   recordAction: {
     moreActions: string;
+    /** Přístupný název šipky rozděleného tlačítka. */
+    moreOptionsFor: (action: string) => string;
     unsaved: string;
     errorTitle: string;
     closeError: string;
