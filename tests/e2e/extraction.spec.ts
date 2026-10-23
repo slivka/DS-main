@@ -11,7 +11,7 @@ test.describe("vytěžování souboru", () => {
 
     // Pruh stavu a souhrn návrhu.
     await expect(showcase.getByText("Hotovo · AI návrh")).toBeVisible();
-    await expect(showcase.getByText(/Vyplněno ze souboru \(AI návrh\)/)).toBeVisible();
+    await expect(showcase.getByText(/Vyplněno ze souboru \(AI návrh\)/).first()).toBeVisible();
 
     // Nejisté pole je označené a F8 na něj přesune fokus; hydratace stránky může
     // trvat, proto stisk opakujeme, dokud posluchač nezačne reagovat.

@@ -8,7 +8,7 @@ import type { DocumentFormProps, DocumentHeaderValue } from "./document-form-typ
 export function documentFieldSuggestion(props: DocumentFormProps, id: string) {
   const { value, fieldSuggestions: suggestions } = props;
   const key = headerFieldKeyFromId(id, {
-    code: props.documentType,
+    code: props.documentType?.toUpperCase(),
     bankAccountKind: value.bankAccountKind,
   });
   const aliases: Record<string, string[]> = {
@@ -49,6 +49,9 @@ export function clearChangedHeaderSuggestions(
   next: Partial<DocumentHeaderValue>,
   clear: (key: string) => void,
 ) {
-  for (const key of Object.keys(next) as (keyof DocumentHeaderValue)[])
-    if (value[key] !== next[key]) clear(key);
+  for (const key of Object.keys(next) as (keyof DocumentHeaderValue)[]) {
+    if (value[key] === next[key]) continue;
+    clear(key);
+    if (key === "partnerBankAccountId" || key === "manualBankAccount") clear("bankAccount");
+  }
 }
