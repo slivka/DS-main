@@ -5,8 +5,7 @@ const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { Field, FieldGrid } = await import("../../src/components/ds/layout/form-field-layout");
 const { Input } = await import("../../src/components/ui/input");
 const { ExtractionStatus } = await import("../../src/components/ds/extraction/extraction-status");
-const { SuggestionSummary } =
-  await import("../../src/components/ds/extraction/suggestion-summary");
+const { SuggestionSummary } = await import("../../src/components/ds/extraction/suggestion-summary");
 const { focusNextUncertainField } =
   await import("../../src/components/ds/extraction/focus-uncertain");
 const { ExtractionOverwriteDialog } =
