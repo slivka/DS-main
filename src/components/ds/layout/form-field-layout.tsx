@@ -11,7 +11,10 @@ import {
   FieldFeedbackContext,
   FieldFeedbackIndicator,
   FieldHintIcon,
+  FieldSuggestionIndicator,
+  type FieldSuggestion,
 } from "../form/field-feedback";
+import { useDsTexts } from "../../../ds-texts";
 
 const FIELD_SPAN_CLASSES = {
   1: "@min-[40rem]:col-span-1",
@@ -80,6 +83,8 @@ export interface FieldProps {
   error?: ReactNode;
   /** Varování uvnitř ovládání; nikdy pod polem. */
   warning?: ReactNode;
+  /** Návrh hodnoty z vytěžení; zobrazí se jen bez chyby a varování. Rodič ho zruší při první ruční změně. */
+  suggestion?: FieldSuggestion;
   /** Šířka pole v mřížce; pod 40 rem zůstává pole přes celý řádek. */
   span?: keyof typeof FIELD_SPAN_CLASSES;
   /** Doplňující třídy obalu. */
@@ -105,23 +110,35 @@ export function Field({
   hint,
   error,
   warning,
+  suggestion,
   span,
   className = "",
   children,
 }: FieldProps) {
   const breakpoint = useContext(FieldGridBreakpointContext);
+  const texts = useDsTexts();
+  // Chyba a varování mají přednost; návrh se vykreslí jen u čistého pole.
+  const activeSuggestion = !error && !warning ? suggestion : undefined;
+  const suggestionClass = activeSuggestion
+    ? activeSuggestion.uncertain
+      ? "[&_.border-input]:border-warning [&_input]:border-warning [&_select]:border-warning [&_textarea]:border-warning"
+      : "[&_input]:bg-suggestion-soft [&_select]:bg-suggestion-soft [&_textarea]:bg-suggestion-soft [&_button]:bg-suggestion-soft"
+    : "";
   return (
     <div
       data-slot="field"
       data-field-has-label={label ? "true" : "false"}
       data-invalid={error ? "true" : undefined}
       data-warning={warning && !error ? "true" : undefined}
+      data-suggestion={
+        activeSuggestion ? (activeSuggestion.uncertain ? "uncertain" : "suggested") : undefined
+      }
       className={`${label ? "flex min-w-0 flex-col gap-1" : ""} ${fieldSpanClass(span, breakpoint)} ${
         error
           ? "[&_.border-input]:border-destructive [&_input]:border-destructive [&_select]:border-destructive [&_textarea]:border-destructive"
           : warning
             ? "[&_.border-input]:border-warning [&_input]:border-warning"
-            : ""
+            : suggestionClass
       } ${className}`}
     >
       {label ? (
@@ -137,10 +154,18 @@ export function Field({
           {hint ? <FieldHintIcon hint={hint} /> : null}
         </span>
       ) : null}
-      <FieldFeedbackContext.Provider value={{ error, warning }}>
+      <FieldFeedbackContext.Provider value={{ error, warning, suggestion: activeSuggestion }}>
         <div className="relative min-w-0 ds-field-control">
           {children}
           <FieldFeedbackIndicator error={error} warning={warning} />
+          <FieldSuggestionIndicator
+            suggestion={activeSuggestion}
+            defaultMessage={
+              activeSuggestion
+                ? texts.extraction.suggestionUncertain(activeSuggestion.source)
+                : undefined
+            }
+          />
         </div>
       </FieldFeedbackContext.Provider>
       {!label && hint ? <span className="sr-only">{hint}</span> : null}

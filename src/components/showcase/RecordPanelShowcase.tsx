@@ -26,6 +26,7 @@ import { PURCHASE_INVOICE_HEADER } from "./document-form-showcase-data";
 import { MOCK_ACCOUNTS, MOCK_PARTNERS } from "../../lib/mock/accounting";
 import { LinkedListShowcase } from "./LinkedListShowcase";
 import { AdjacentPanelExample } from "./AdjacentPanelExample";
+import { ExtractionShowcase } from "./ExtractionShowcase";
 type DemoRow = (typeof DOCUMENTS)[number];
 const columns: DataGridColumn<DemoRow>[] = [
   { id: "number", label: "Doklad", value: (row) => row.number },
@@ -277,6 +278,7 @@ export function RecordPanelShowcase() {
         </RecordSidePanel>
       </section>
       <LinkedListShowcase />
+      <ExtractionShowcase />
       <RecordDialog
         open={dialog}
         onOpenChange={setDialog}

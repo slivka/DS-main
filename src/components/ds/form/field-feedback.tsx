@@ -8,12 +8,24 @@ import { TooltipProvider } from "../../ui/tooltip";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { cn } from "../../../lib/utils";
 
+/** Návrh hodnoty z vytěžení souboru; rodič ho zruší při první ruční změně hodnoty. */
+export interface FieldSuggestion {
+  /** Zdroj návrhu (např. název souboru nebo metoda vytěžení). */
+  source: string;
+  /** true = ke kontrole (žlutý rámeček, ikona a bublina); false = jen jemný podklad. */
+  uncertain?: boolean;
+  /** Vlastní zpráva bubliny; výchozí text dodá pole z DsTexts. */
+  message?: string;
+}
+
 /** Zprávy sdílené mezi obalem a jeho ovládáním. */
 export interface FieldFeedbackValue {
   /** Chyba má přednost před varováním. */
   error?: ReactNode;
   /** Nezabraňující upozornění. */
   warning?: ReactNode;
+  /** Návrh z vytěžení; vykreslí se jen bez chyby a varování. */
+  suggestion?: FieldSuggestion;
 }
 
 /** Jednotný stav pole: `error` má přednost před `warning`. */
@@ -132,6 +144,50 @@ export function FieldFeedbackIndicator({
 
 /** Nový název ukazatele stavu pole; `FieldFeedbackIndicator` zůstává jako alias. */
 export const FieldStatusIndicator = FieldFeedbackIndicator;
+
+/** Vlastnosti ukazatele návrhu z vytěžení. */
+export interface FieldSuggestionIndicatorProps {
+  /** Návrh ke kontrole; bez něj se nic nevykreslí. */
+  suggestion?: FieldSuggestion;
+  /** Výchozí zpráva bubliny, když návrh vlastní zprávu nemá. */
+  defaultMessage?: string;
+  /** Strana uvnitř pole; čísla zarovnaná doprava mají ikonu vlevo. */
+  side?: "start" | "end";
+  /** Doplňkové umístění ukazatele. */
+  className?: string;
+}
+
+/** Ikona pole „ke kontrole“ se stejným vzorem jako varování; výšku pole nemění. */
+export function FieldSuggestionIndicator({
+  suggestion,
+  defaultMessage,
+  side = "end",
+  className,
+}: FieldSuggestionIndicatorProps) {
+  if (!suggestion?.uncertain) return null;
+  const message = suggestion.message ?? defaultMessage ?? suggestion.source;
+  return (
+    <TooltipProvider>
+      <DisabledReasonTooltip content={message} blocked openOnTouch>
+        <span
+          tabIndex={0}
+          role="img"
+          aria-label={message}
+          data-slot="field-suggestion"
+          data-side={side}
+          className={cn(
+            "absolute top-[calc(var(--control-h)/2)] z-10 -translate-y-1/2 cursor-help rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            side === "start" ? "left-[0.5em]" : "right-[var(--field-feedback-offset,0.75rem)]",
+            className,
+          )}
+        >
+          <AlertTriangle className="size-4" aria-hidden="true" />
+          <span className="sr-only">{message}</span>
+        </span>
+      </DisabledReasonTooltip>
+    </TooltipProvider>
+  );
+}
 
 /** Vlastnosti ikony nápovědy. */
 export interface FieldHintIconProps {
