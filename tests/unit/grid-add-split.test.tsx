@@ -72,7 +72,9 @@ describe("split primární akce lišty gridu", () => {
     fireEvent.keyDown(document.body, { key: "N" });
     expect(income).toHaveBeenCalledTimes(2);
     expect(expense).toHaveBeenCalledTimes(1);
-    fireEvent.keyDown(screen.getByRole("button", { name: "Další možnosti – Výdaj" }), { key: "Enter" });
+    fireEvent.keyDown(screen.getByRole("button", { name: "Další možnosti – Výdaj" }), {
+      key: "Enter",
+    });
     expect(screen.getByRole("menu")).toBeTruthy();
   });
 
@@ -95,9 +97,9 @@ describe("split primární akce lišty gridu", () => {
     );
     // Split tlačítka zůstávají v DOM skrytá (zkratka N), viditelné je jen „+ ▾“.
     expect(screen.getByRole("button", { name: "Nový příjem (N)" }).className).toContain("hidden");
-    expect(screen.getByRole("button", { name: "Další možnosti – Nový příjem" }).className).toContain(
-      "hidden",
-    );
+    expect(
+      screen.getByRole("button", { name: "Další možnosti – Nový příjem" }).className,
+    ).toContain("hidden");
     const merged = screen.getByRole("button", { name: "Nový – vyberte druh" });
     expect(merged.className).not.toContain("hidden");
     fireEvent.keyDown(merged, { key: "Enter" });
