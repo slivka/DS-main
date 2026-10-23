@@ -45,7 +45,7 @@ export const PanelToggleButton = forwardRef<HTMLButtonElement, PanelToggleButton
             size="icon"
             {...props}
             className={cn("relative h-[var(--control-h)] w-[var(--control-h)] shrink-0", className)}
-            aria-label={action}
+            aria-label={t.panel}
             data-direction={active ? "close" : "open"}
             aria-pressed={active}
             onClick={() => (state === "elsewhere" ? onFocusElsewhere?.() : onToggle())}
