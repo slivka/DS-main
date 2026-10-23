@@ -36,7 +36,7 @@ test("dvě pokladní tlačítka mají nezávislý hlavní klik a nabídku", () =
   expect(screen.queryByRole("menu")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Výdaj" }));
   expect(expense).toHaveBeenCalledTimes(1);
-  fireEvent.keyDown(screen.getByRole("button", { name: "Příjem – Nabídka" }), { key: "Enter" });
+  fireEvent.keyDown(screen.getByRole("button", { name: "Další možnosti – Příjem" }), { key: "Enter" });
   fireEvent.click(
     within(screen.getByRole("menu")).getByRole("menuitem", { name: "Spravovat vzory" }),
   );
