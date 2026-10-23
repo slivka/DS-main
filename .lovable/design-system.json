@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.134.0",
+    "version": "2.135.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -23,7 +23,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "e6102d24a5df53b51588f290158168f8d93d8abceab12c11c56d4c4cd1b84b57",
+      "#enrichment": "24ca93aec61b50d1dd861a95aa5367d0fa848eb1b9c614b46cc4fa5ad4aaa416",
       ".bun-version": "5b28ee398da148313e912a0c08d76ba4",
       ".dsignore": "01c38db55ee24e00c307bc76b63ff758",
       ".github/workflows/e2e.yml": "6e4d0b136c7bc836e29f771ac9d38ac1",
@@ -73,13 +73,13 @@
       ".lovable/plan/vystředění-firmy-a-období-v-horní-liště-2026-09-24.md": "da4bb48cc53dfbab43c8b83ce10f7a39",
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
-      ".lovable/release-base.json": "176d2c9c9421fbb2987d8411f50ff067",
+      ".lovable/release-base.json": "c98942ac5488b02c629f1e7e7744405c",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
       ".lovable/system.md": "eb39c7bf938b1f196337afb01ccaa883",
       ".prettierignore": "fde3080f9e4ff6bef6d518cba96e6394",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
       "AGENTS.md": "3b9afaa4e69beb830073be8899cc2955",
-      "CHANGELOG.md": "d400d35614c7298982dc99f432ca444d",
+      "CHANGELOG.md": "58924089aefcd4469057f8de95575e41",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
       "components.json": "30d3d035361ce807021f5c54620962e9",
@@ -88,10 +88,10 @@
       "eslint.config.js": "b88e2040078ccbacbd923b5c966ab4a9",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "6fe5f05c493baf6efc66702e62705495",
-      "package.json": "cd2c9c5986d2d2803f5dda675f269ff9",
+      "package.json": "06c95d3011b53c6d9e08871207a9e79b",
       "playwright.config.ts": "7519ba35e2befb5709ed9c9915b5cada",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "3676ff778a4b23c7450144b80062179c",
+      "roadmap.md": "860d66ab971e76b48f402d9912998c21",
       "scripts/advance-catalog.ts": "8fb0747915ba970e58bf440bb0090922",
       "scripts/check-catalog.ts": "df0fc76e3eccc8929693d87b3110e3ac",
       "scripts/check-full.ts": "de169f3a48067dd10696d789a18fdea8",
@@ -256,6 +256,12 @@
       "src/components/ds/data-display/tree-view.tsx": "07aa85c2b125c42408109a7217c435fd",
       "src/components/ds/data-display/truncated-text.tsx": "de2dc51368f363344757ad556f4dd360",
       "src/components/ds/data-display/vat-status-badge.tsx": "a53ac227db4e5d70609b45ff943b08c6",
+      "src/components/ds/extraction/extracted-items-table.tsx": "f3c9d1cc1546a104f601909b275ff90b",
+      "src/components/ds/extraction/extraction-overwrite-dialog.tsx": "620be051e9b0727ccd687856a3c5fc4b",
+      "src/components/ds/extraction/extraction-status.tsx": "5d40a5380579f23abce604beff9f6080",
+      "src/components/ds/extraction/extraction-types.ts": "73e9ad813752213d283cf676d94b5a1b",
+      "src/components/ds/extraction/focus-uncertain.ts": "1d1d17807a778fbedc7983a1aac74abf",
+      "src/components/ds/extraction/suggestion-summary.tsx": "871162786c971d4379e9ff80ca1a70de",
       "src/components/ds/feedback/attachment-item.tsx": "8dbb00cda672a28fb432196bc19749f7",
       "src/components/ds/feedback/attachment-list.tsx": "9d56bfc631930fe42d2dbe5edc280e7f",
       "src/components/ds/feedback/attachment-types.ts": "f0bee1939a2972af8e56865f88cedde6",
@@ -300,7 +306,7 @@
       "src/components/ds/form/date-range-field.tsx": "3f740b123e028d5d471e437f28393746",
       "src/components/ds/form/decimal-input.tsx": "e8013c4871f0991b3dbc2121ecc6f2b3",
       "src/components/ds/form/entity-select.tsx": "908e4d6d3a22b8c72b95023bc5a4281d",
-      "src/components/ds/form/field-feedback.tsx": "2e3784270959f6d40747a263ea94a26c",
+      "src/components/ds/form/field-feedback.tsx": "8fe02751b5d5b19cbf1d8edf25225882",
       "src/components/ds/form/field-inline-actions.tsx": "9aaf0f61cd8dac3d8d323eb70cdd2951",
       "src/components/ds/form/field-table.tsx": "6fbac22923d3981830287415ff27f894",
       "src/components/ds/form/field-toggle-button.tsx": "45dd35a2f3aa12da5271ab4328afc8f4",
@@ -390,7 +396,7 @@
       "src/components/ds/grid/useRowActions.tsx": "38a55e87390e351ac2524d4bfd2efac6",
       "src/components/ds/grid/view-mode-toggle.tsx": "667d5e28e63a250a46ceb6d59dcf8035",
       "src/components/ds/grid/vs-column.tsx": "08787750c40354104cde7445d0eb4f41",
-      "src/components/ds/index.ts": "a7d74b71eaf30730f1689040c1f0dd88",
+      "src/components/ds/index.ts": "8cb8659c51c4c591b8bd9e68a852462d",
       "src/components/ds/layout/AppShell.tsx": "f2661ffe97493c3dc7fc9567a2af51d5",
       "src/components/ds/layout/AppShellNav.tsx": "ca091ea04506319a704f3ad8edaa2710",
       "src/components/ds/layout/AppShellNavGroup.tsx": "0a865c7cf895855e9da6a06d1f8fc1e8",
@@ -408,7 +414,7 @@
       "src/components/ds/layout/context-pill.tsx": "c8980396bd1ac9b69a2d5f332b743c30",
       "src/components/ds/layout/context-switcher.tsx": "68abbe2861e102ba394a0f998eeb1e9f",
       "src/components/ds/layout/focus-boundary.ts": "377a92be7a1ff6db64abc9c1f96507fa",
-      "src/components/ds/layout/form-field-layout.tsx": "f4fc97d2d091e6b1e4a218f8f149d397",
+      "src/components/ds/layout/form-field-layout.tsx": "6c6d4690757a4de9b9778eb828463c85",
       "src/components/ds/layout/identity-line.tsx": "8d1eacb1676365bd82175c921e6483f4",
       "src/components/ds/layout/multi-selection-panel.tsx": "e1923be2b2582c79a1ca662bb846c4e5",
       "src/components/ds/layout/nav-items.tsx": "cd5ec31101ce6e15d56052fe53155161",
@@ -514,6 +520,7 @@
       "src/components/showcase/DocumentFormSecondaryShowcase.tsx": "c74bce0bd7342d3bf175452fad135d55",
       "src/components/showcase/DocumentFormShowcase.tsx": "9819fc84d55e51328cc957c92e901b96",
       "src/components/showcase/Dph5Showcase.tsx": "1dd0096b87820f0cea7454e2daf54c3b",
+      "src/components/showcase/ExtractionShowcase.tsx": "7e7858a37e00c2d70231de83cc64fa16",
       "src/components/showcase/FieldStatusShowcase.tsx": "26f4ed14be628d0f71e44a9b95cc815d",
       "src/components/showcase/FileImportShowcase.tsx": "4b78872dc96ce4add2514046ec9b1d74",
       "src/components/showcase/FormDesignShowcase.tsx": "2a0612f7c5d06aca0167e5aa1e9b232e",
@@ -532,7 +539,7 @@
       "src/components/showcase/RecordDialogPatternsShowcase.tsx": "386a16b41eed0c5df5fd0d1c9a0a7ae0",
       "src/components/showcase/RecordDialogShowcase.tsx": "d19fb6641bb563153e07f9b4ab4a9652",
       "src/components/showcase/RecordHistoryShowcase.tsx": "1cf55262ab53bc33b4afca2683c0c73a",
-      "src/components/showcase/RecordPanelShowcase.tsx": "a86cee14838154e043b65644be8610d0",
+      "src/components/showcase/RecordPanelShowcase.tsx": "cf8bfd46ec9db152122fc2501c27f1b2",
       "src/components/showcase/ReportsShowcase.tsx": "4c040e7fc138f71096d6d7cd7a36c587",
       "src/components/showcase/ShowcaseLayout.tsx": "09d4caf6bddfb0a75093f0d4b1f82c0e",
       "src/components/showcase/SmallDialogShowcase.tsx": "c363ba6aea045d983cfb5bd03bd80638",
@@ -589,7 +596,7 @@
       "src/components/ui/form.tsx": "fdd11ebe66b2799203353d713fc2c5e6",
       "src/components/ui/hover-card.tsx": "1f4ca143d9f75cc9858425e9e6eba7f8",
       "src/components/ui/input-otp.tsx": "e73af750feaebc6bbc38f226f644392c",
-      "src/components/ui/input.tsx": "31355f9e8631eb8bde5b8d182ab4f9b5",
+      "src/components/ui/input.tsx": "883e285959f93f34fb486b8d1359e8ca",
       "src/components/ui/label.tsx": "047ac9d0d6075ad8682e1862d39ffe5d",
       "src/components/ui/menubar.tsx": "f9256bbcccc3d9cacf87da66fdc3589c",
       "src/components/ui/navigation-menu.tsx": "651e23496a146e12513c8a449ef958d1",
@@ -626,7 +633,7 @@
       "src/ds-texts/cs-templates.ts": "7ca8e6eade76064f8c5bee00601c8b0a",
       "src/ds-texts/cs-unsaved-actions.ts": "ef2b6c230ba2cdabb39941b2446643ea",
       "src/ds-texts/cs-vat-groups.ts": "4a4224525782d8f79d139bb9698e38e8",
-      "src/ds-texts/cs.ts": "2edfb956970e8e0038fc0c68357c2a2c",
+      "src/ds-texts/cs.ts": "b069bbc33c1ec97420a6fa9107ec44ac",
       "src/ds-texts/file-import-texts.ts": "2e71d1e742d6156b4e02351e2b528dc2",
       "src/ds-texts/form-design-two-showcase.ts": "fa5c99b6df4bf937b9c3d2d62495848e",
       "src/ds-texts/grid-journal-types.ts": "438e4b87c4444c72874c852e8b421c4d",
@@ -645,9 +652,9 @@
       "src/ds-texts/sk-templates.ts": "e33f2a7d648c3d31b3ebcc663116c964",
       "src/ds-texts/sk-unsaved-actions.ts": "3527052fa6cc3e8356337bd24d44b617",
       "src/ds-texts/sk-vat-groups.ts": "73d52fcbe2720c70bc86e1ff30d88bb9",
-      "src/ds-texts/sk.ts": "18dcb437a064e201d1a9418f6164ba36",
+      "src/ds-texts/sk.ts": "cf0bd5c205565c6692da02581d344ec9",
       "src/ds-texts/template-texts.ts": "f8d1f731ffd55d9ca80048d8cb6731a0",
-      "src/ds-texts/types.ts": "93866d03952a8ded0f208a2e70844e0d",
+      "src/ds-texts/types.ts": "a1401636d86ea6165beb6784a675b95e",
       "src/ds-texts/vat-five-texts.ts": "d3df1f6721df46d80f33c17fb0abdd2e",
       "src/hooks/index.ts": "2d99a777353fa8239bca1df84f65d5e0",
       "src/hooks/use-dialog-back-close.ts": "d3a0a16f8bc86d6133a313901508f2b0",
@@ -724,7 +731,7 @@
       "src/slivka-head.tsx": "a126065cc8ea1f5bc5be4d79afae31dc",
       "src/slivka-provider.tsx": "534ba72d2302fa980a607e0cba6ecd69",
       "src/start.ts": "3b877c99f5f4668ccc3694f7a09a1f07",
-      "src/styles.css": "e2a7ff8337d3030dbd7e6bbb4a385cad",
+      "src/styles.css": "925e5b9c9b80d4fbe7477a775104a655",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "f489ce71bed4bf62da4f6ea918d5d560",
       "tests/e2e/advance-deduction-rows.spec.ts": "33f2fec2e6e71458937454ea1cc61fc8",
@@ -745,6 +752,7 @@
       "tests/e2e/edit-document-thirteen.spec.ts": "4dc05009420fd80bf809413a6f59a9ed",
       "tests/e2e/edit-document-twelve.spec.ts": "9f87404d3bf0dd44e00964fefa8136ee",
       "tests/e2e/excel-download.spec.ts": "2fcce93a560a08f3abe6fe3bd012da37",
+      "tests/e2e/extraction.spec.ts": "6a3acc836028e715c776400c2b18dee6",
       "tests/e2e/file-import.spec.ts": "af3a58d9c6cb2809a3f25ea5c3282c10",
       "tests/e2e/form-design-two.spec.ts": "1bba71a0f7743a43059276b0b47f2e6f",
       "tests/e2e/form-design.spec.ts": "b0b9d20417a043ba778dde88635f1a0e",
@@ -831,6 +839,7 @@
       "tests/unit/edit-document-fifteen-ids.test.tsx": "c77f7e409a9804f6455217a117e4ffd1",
       "tests/unit/edit-document-fifteen.test.tsx": "b81f1789dffeaf65ef6e6240d423f748",
       "tests/unit/edit-document-twelve.test.tsx": "88761e2e4f4b87fa859090d9a3d0058a",
+      "tests/unit/extraction.test.tsx": "50846d97989fa5f742c94efc6933e719",
       "tests/unit/field-status-2107.test.tsx": "3533029a9ee69d73dc83b71aec67dac8",
       "tests/unit/field-status-controls.test.tsx": "8cc88675ad53cb7b462e5544aa8a7cf5",
       "tests/unit/field-toggle-button.test.tsx": "8660f7968365b6bf85af8a45f0df9f27",
@@ -1281,6 +1290,11 @@
       {
         "name": "--warning-strong",
         "raw": "oklch(0.55 0.13 75)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--suggestion-soft",
+        "raw": "oklch(0.95 0.025 250)",
         "source": "src/styles.css"
       },
       {
@@ -2225,6 +2239,10 @@
         {
           "name": "warning",
           "type": "string"
+        },
+        {
+          "name": "suggestion",
+          "type": "any"
         }
       ],
       "usage": "Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci. Zakázaný vstup sdílí podklad muted/40 se zamčeným datumem; rámeček, text a průhlednost zůstávají shodné ve světlém i tmavém režimu. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Chyba a varování mají rámeček a ukazatel s úplným tooltipem uvnitř pole. Formát přes formatPattern, nikoli nápovědu pod polem.",
@@ -4135,6 +4153,10 @@
         },
         {
           "name": "warning",
+          "type": "any"
+        },
+        {
+          "name": "suggestion",
           "type": "any"
         },
         {
@@ -11558,6 +11580,35 @@
       ]
     },
     {
+      "name": "FieldSuggestionIndicator",
+      "file": "src/components/ds/form/field-feedback.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "suggestion",
+          "type": "any"
+        },
+        {
+          "name": "defaultMessage",
+          "type": "string"
+        },
+        {
+          "name": "side",
+          "type": "enum",
+          "values": [
+            "start",
+            "end"
+          ],
+          "default": "end"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "flex flex-col gap-1"
+        }
+      ]
+    },
+    {
       "name": "FieldHintIcon",
       "file": "src/components/ds/form/field-feedback.tsx",
       "import_path": "",
@@ -11586,6 +11637,123 @@
       ],
       "antipatterns": [
         "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ]
+    },
+    {
+      "name": "ExtractionStatus",
+      "file": "src/components/ds/extraction/extraction-status.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "state",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "method",
+          "type": "string"
+        },
+        {
+          "name": "onCancel",
+          "type": "function"
+        },
+        {
+          "name": "onRetry",
+          "type": "function"
+        },
+        {
+          "name": "onOpenOriginal",
+          "type": "function"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "SuggestionSummary",
+      "file": "src/components/ds/extraction/suggestion-summary.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "method",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "uncertainCount",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "linesReference",
+          "type": "any"
+        },
+        {
+          "name": "onDiscard",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "whitespace-nowrap"
+        }
+      ]
+    },
+    {
+      "name": "ExtractionOverwriteDialog",
+      "file": "src/components/ds/extraction/extraction-overwrite-dialog.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onOverwriteAll",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onFillEmpty",
+          "type": "function",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "ExtractedItemsTable",
+      "file": "src/components/ds/extraction/extracted-items-table.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "totals",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "max-w-64 truncate"
+        }
       ]
     },
     {

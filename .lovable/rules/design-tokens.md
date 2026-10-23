@@ -80,6 +80,7 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `warning` | `--warning` |
 | `warning-foreground` | `--warning-foreground` |
 | `warning-strong` | `--warning-strong` |
+| `suggestion-soft` | `--suggestion-soft` |
 | `border` | `--border` |
 | `input` | `--input` |
 | `ring` | `--ring` |

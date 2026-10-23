@@ -2792,6 +2792,53 @@ import { ExcelExportButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 | `label` | string | `Stáhnout vzorový export` |
 | `className` | string | `—` |
 
+### ExtractedItemsTable
+
+```ts
+import { ExtractedItemsTable } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `totals` | any | `—` |
+| `defaultOpen` | boolean | `false` |
+| `className` | string | `max-w-64 truncate` |
+
+### ExtractionOverwriteDialog
+
+```ts
+import { ExtractionOverwriteDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `onOverwriteAll` | function | `—` |
+| `onFillEmpty` | function | `—` |
+
+### ExtractionStatus
+
+```ts
+import { ExtractionStatus } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `state` | any | `—` |
+| `method` | string | `—` |
+| `onCancel` | function | `—` |
+| `onRetry` | function | `—` |
+| `onOpenOriginal` | function | `—` |
+| `className` | string | `—` |
+
 ### Field
 
 ```ts
@@ -2810,6 +2857,7 @@ Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek,
 | `hint` | any | `—` |
 | `error` | any | `—` |
 | `warning` | any | `—` |
+| `suggestion` | any | `—` |
 | `span` | 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 17 · 18 · 19 · 20 | `—` |
 | `className` | string | `—` |
 | `children` | any | `—` |
@@ -3012,6 +3060,21 @@ _Stav pole a jednotná výška (2.107.0)_
 **Avoid:**
 
 - Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku.
+
+### FieldSuggestionIndicator
+
+```ts
+import { FieldSuggestionIndicator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `suggestion` | any | `—` |
+| `defaultMessage` | string | `—` |
+| `side` | start · end | `end` |
+| `className` | string | `flex flex-col gap-1` |
 
 ### FieldTable
 
@@ -3915,6 +3978,7 @@ Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPat
 | `formatPattern` | string | `—` |
 | `error` | string | `—` |
 | `warning` | string | `—` |
+| `suggestion` | any | `—` |
 
 **Examples:**
 
@@ -6695,6 +6759,22 @@ _Historie popisů_
 
 - Nenačítejte více než deset viditelných návrhů ani neblokujte psaní čekáním na odpověď.
 - Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
+
+### SuggestionSummary
+
+```ts
+import { SuggestionSummary } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `method` | string | `—` |
+| `uncertainCount` | number | `—` |
+| `linesReference` | any | `—` |
+| `onDiscard` | function | `—` |
+| `className` | string | `whitespace-nowrap` |
 
 ### Switch
 
