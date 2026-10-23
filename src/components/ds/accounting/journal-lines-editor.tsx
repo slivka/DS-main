@@ -57,6 +57,7 @@ export type {
   JournalDeductionTotals,
 } from "./journal-deductions-types";
 export { JournalLinesEditor } from "./JournalLinesEditor";
+export type { JournalSuggestionKey, JournalRowSuggestions } from "./journal-suggestions";
 
 /**
  * České výchozí texty editoru.

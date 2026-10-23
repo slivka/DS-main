@@ -1,5 +1,10 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Vytěžení a znaménka dokladů
+
+- Dobropis a storno zachovávají záporné částky na původních stranách zápisu. `toJournalRow` znaménko nemění; APP nesmí spoléhat na kladný amount. Nula běžného řádku je neplatná.
+- `DocumentForm.fieldSuggestions` používá klíče hodnot hlavičky, `rowSuggestions` id řádku a klíče account/dimension/vatCode/amount/text. APP vlastní návrhy a odebere je přes `onSuggestionCleared(key, rowId?)` po první ruční změně; otevření pole je neruší. Chyba a varování mají přednost, F8 sdíleně prochází hlavičku i buňky bez změny jejich výšky. Stejný kontrakt platí pro faktury i zálohové listy.
+
 ## Úložiště rozložení gridů
 
 - Store dodává APP; `configureGridPrefsStore(store, { scope: userId })` oddělí účty a zruší čekající debounce. Rozběhnuté zápisy dokončí původní store; zastaralá hydratace nesmí zapisovat do nového scope.

@@ -4,6 +4,7 @@
  * Nesmí: obsahovat logiku; změna tvaru props je změna veřejného API.
  */
 import type { JournalDeductions } from "./journal-deductions-types";
+import type { JournalRowSuggestions } from "./journal-suggestions";
 import type * as React from "react";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
@@ -132,6 +133,10 @@ export interface JournalLinesEditorProps {
   lines: JournalLine[];
   /** Nové řádky po každé změně. */
   onChange: (lines: JournalLine[]) => void;
+  /** Návrhy účtu, zakázky, kódu DPH, částky a textu podle id řádku. */
+  rowSuggestions?: JournalRowSuggestions;
+  /** První ruční změna navržené buňky; APP odebere návrh. */
+  onSuggestionCleared?: (key: string, rowId?: string) => void;
   /** Účtový rozvrh. */
   accounts: AccountOption[];
   /** Zakázky. */

@@ -3,7 +3,8 @@
  * Vlastní: jednořádkový souhrn, akci Další ke kontrole (F8) a Zahodit návrh.
  * Nesmí: měnit hodnoty polí ani znát doménu; stav návrhů řídí rodič.
  */
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import { useGlobalShortcuts } from "../../../lib/global-shortcuts";
 import { Button } from "../../ui/button";
 import { NoticeBar } from "../feedback/notice-bar";
 import { useDsTexts } from "../../../ds-texts";
@@ -41,15 +42,17 @@ export function SuggestionSummary({
   className,
 }: SuggestionSummaryProps) {
   const texts = useDsTexts().extraction;
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "F8") return;
-      event.preventDefault();
-      focusNextUncertainField();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  useGlobalShortcuts([
+    {
+      id: "suggestion-next",
+      allowInEditing: true,
+      match: (event) => event.key === "F8" && !event.defaultPrevented,
+      run: (event) => {
+        event.preventDefault();
+        focusNextUncertainField();
+      },
+    },
+  ]);
   const parts: ReactNode[] = [
     texts.summaryFilled(method),
     texts.summaryFieldsToCheck(uncertainCount),

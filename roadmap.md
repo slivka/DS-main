@@ -1,8 +1,8 @@
 ## DS 2.136.0 (nevydáno)
 
-- [ ] Zachovat záporné řádky, ověřit DPH/součty/rozdíl/zaokrouhlení a nulovou validaci.
-- [ ] Návrhy hlavičky a buněk DocumentForm, ruční zrušení a společné F8; ukázka FP.
-- [ ] Regresní testy, nejvýše jeden E2E spec, úplná kontrola a migrace v CHANGELOGu; nevydávat.
+- [x] Zachovat záporné řádky, ověřit DPH/součty/rozdíl/zaokrouhlení a nulovou validaci; migrace Breaking-ish v CHANGELOGu.
+- [x] Návrhy hlavičky a buněk DocumentForm (faktury i zálohové listy), první ruční zrušení, sdílené aliasy a společné F8; ukázka FP, datumové ikony a Celkem bez překrytí.
+- [x] 30 nových regresí; check:full --harness 1 423/1 423 ve 147 souborech; jediný dotčený extraction.spec Chromium 1/1; katalog 485 → 485 / 1 213 → 1 257, 0 odebrání. Plná E2E sada neběžela. Nevydáno, package/meta 2.135.0, release Claude.
 
 ## DS 2.135.0
 

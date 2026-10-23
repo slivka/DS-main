@@ -279,7 +279,7 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     debit_account_id: debit,
     credit_account_id: credit,
     counter_account_id: counter,
-    amount: Math.abs(Number(line.amount) || 0),
+    amount: Number(line.amount) || 0,
     description: emptyToNull(line.text),
     debit_variable_symbol: sideValue(
       emptyToNull(line.debitVs),

@@ -5,7 +5,8 @@
  * Nesmí: počítat hodnoty – text buňky dává journalDisplayValue, zápis JournalCellEditor.
  */
 import { useId } from "react";
-import { Lock, ReceiptText, Percent } from "lucide-react";
+import { AlertTriangle, Lock, ReceiptText, Percent } from "lucide-react";
+import { journalSuggestionKey } from "./journal-suggestions";
 
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
@@ -110,12 +111,20 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       : undefined;
   const errorMessage = editor.validations.get(line.id)?.[validationColumn];
   const warningMessage = editor.vatWarnings.get(line.id)?.[validationColumn];
+  const suggestionKey = journalSuggestionKey(column);
+  const suggestion =
+    !errorMessage && !warningMessage && suggestionKey
+      ? editor.props.rowSuggestions?.[line.id]?.[suggestionKey]
+      : undefined;
+  const suggestionMessage = suggestion?.uncertain
+    ? (suggestion.message ?? editor.dsTexts.extraction.suggestionUncertain(suggestion.source))
+    : undefined;
   const rowEditing = editing?.rowId === line.id;
   const hint = accountTitle ?? (calculated ? t.quantityPriceHint : undefined);
   // Bublina chyby vzniká líně až při hover/focus; původní informace jde do téže bubliny.
   const status = useCellStatusTooltip({
     error: errorMessage,
-    warning: warningMessage,
+    warning: warningMessage ?? suggestionMessage,
     extraInfo: hint,
   });
   const deductionCode = line.vatCodeId ? editor.vatCodeMap.get(line.vatCodeId) : undefined;
@@ -141,11 +150,14 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       aria-label={`${columnLabel} ${rowIndex + 1}`}
       data-invalid={errorMessage ? true : undefined}
       data-warning={warningMessage ? true : undefined}
+      data-suggestion={suggestion ? (suggestion.uncertain ? "uncertain" : "suggested") : undefined}
       data-inherited={editor.pins.isInherited(line.id, column) || undefined}
       {...status.triggerProps}
       className={cn(
         "journal-grid-cell flex min-h-[1.8em] items-center truncate rounded-sm px-1 outline-none",
         canEdit && "cursor-cell",
+        suggestion && "bg-suggestion-soft",
+        suggestion?.uncertain && "ring-1 ring-inset ring-warning-strong",
         // Převzatá hodnota zakotveného sloupce je světlejší, dokud do ní uživatel nesáhne.
         editor.pins.isInherited(line.id, column) && "text-muted-foreground",
       )}
@@ -185,6 +197,13 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
           editor.displayValue(line, column)
         )}
       </span>
+      {suggestion?.uncertain ? (
+        <AlertTriangle
+          aria-hidden="true"
+          data-slot="journal-suggestion"
+          className="ml-1 size-4 shrink-0 text-warning-strong"
+        />
+      ) : null}
       {deductionHint ? (
         <Tooltip>
           <TooltipTrigger asChild>

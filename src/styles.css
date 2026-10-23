@@ -560,6 +560,20 @@ body {
 .document-dates-compact button {
   font-size: inherit;
 }
+/* Datum vlastní rozestupy ikon i návrh: obal nesmí přidat druhou výstrahu přes kalendář. */
+.ds-field-control:has(input[data-visible-icons]) > [data-slot="field-suggestion"] {
+  display: none;
+}
+/* Číslo zarovnané doprava má návrh vlevo, mimo hodnotu a přepínač součtu. */
+[data-suggestion="uncertain"]
+  > .ds-field-control:has(input[inputmode="decimal"])
+  > [data-slot="field-suggestion"] {
+  left: 0.5em;
+  right: auto;
+}
+[data-suggestion="uncertain"] > .ds-field-control input[inputmode="decimal"] {
+  padding-left: 2em;
+}
 .document-dates-compact [data-document-date-locked] {
   font-size: inherit;
   width: 0;
@@ -830,6 +844,14 @@ body {
 }
 .journal-grid-cell:focus:not(:has(.journal-cell-editor)) {
   background-color: color-mix(in oklch, var(--primary) 8%, transparent);
+}
+/* Návrh zůstává patrný i při editaci/fokusu; obrys nemění rozměr buňky. */
+.journal-grid-cell[data-suggestion] {
+  background-color: var(--suggestion-soft);
+}
+.journal-grid-cell[data-suggestion="uncertain"] {
+  outline: 1px solid var(--warning-strong);
+  outline-offset: -1px;
 }
 .journal-grid-cell:has(.journal-cell-editor),
 .journal-grid-cell[data-invalid="true"]:has(.journal-cell-editor) {

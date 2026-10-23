@@ -6,6 +6,7 @@
 import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
 import type { ReactNode, RefObject } from "react";
 import { IdentityLine } from "../../layout/identity-line";
+import { Field } from "../../layout/form-field-layout";
 import { Pencil } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
@@ -133,54 +134,59 @@ export function DocumentIdentityLine({
         <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">
           {account.side}
         </span>
-        {editingAccount ? (
-          <span className="document-identity-account-box">
+        <Field
+          htmlFor="document-mainAccountId"
+          className="min-w-0 [&[data-suggestion=uncertain]_.ds-field-control]:pr-6"
+        >
+          {editingAccount ? (
+            <span className="document-identity-account-box">
+              <span
+                aria-hidden="true"
+                className="document-identity-account-measure"
+                data-label={accountLabel ?? account.label}
+              />
+              <AccountSelect
+                id="document-mainAccountId"
+                ariaLabel={texts.mainAccountSelect}
+                accounts={accountOptions}
+                value={accountValue}
+                onChange={onAccountChange}
+                defaultOpen
+                onOpenChange={(open) => {
+                  if (!open) onAccountClose();
+                }}
+              />
+            </span>
+          ) : (
             <span
-              aria-hidden="true"
-              className="document-identity-account-measure"
-              data-label={accountLabel ?? account.label}
-            />
-            <AccountSelect
               id="document-mainAccountId"
-              ariaLabel={texts.mainAccountSelect}
-              accounts={accountOptions}
-              value={accountValue}
-              onChange={onAccountChange}
-              defaultOpen
-              onOpenChange={(open) => {
-                if (!open) onAccountClose();
-              }}
-            />
-          </span>
-        ) : (
-          <span
-            id="document-mainAccountId"
-            data-slot="document-identity-account"
-            data-mode="read"
-            className="document-identity-account-box flex items-center border border-transparent rounded-md text-sm font-normal"
-          >
-            {/* Při čtení má box šířku textu, tužka stojí hned za ním (i za trojtečkou). */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span
-                  data-slot="document-identity-account-text"
-                  className="flex min-w-0 items-center pl-3 pr-1"
-                  tabIndex={0}
-                  title={fullAccountLabel}
-                >
-                  <span className="shrink-0 font-mono tabular-nums">{accountCode}</span>
-                  {accountName ? (
-                    <>
-                      <span className="shrink-0 whitespace-pre">{CODE_SEPARATOR}</span>
-                      <span className="min-w-0 truncate">{accountName}</span>
-                    </>
-                  ) : null}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>{fullAccountLabel}</TooltipContent>
-            </Tooltip>
-          </span>
-        )}
+              data-slot="document-identity-account"
+              data-mode="read"
+              className="document-identity-account-box flex items-center border border-transparent rounded-md text-sm font-normal"
+            >
+              {/* Při čtení má box šířku textu, tužka stojí hned za ním (i za trojtečkou). */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    data-slot="document-identity-account-text"
+                    className="flex min-w-0 items-center pl-3 pr-1"
+                    tabIndex={0}
+                    title={fullAccountLabel}
+                  >
+                    <span className="shrink-0 font-mono tabular-nums">{accountCode}</span>
+                    {accountName ? (
+                      <>
+                        <span className="shrink-0 whitespace-pre">{CODE_SEPARATOR}</span>
+                        <span className="min-w-0 truncate">{accountName}</span>
+                      </>
+                    ) : null}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>{fullAccountLabel}</TooltipContent>
+              </Tooltip>
+            </span>
+          )}
+        </Field>
         <span className="document-identity-pencil-slot">{pencil}</span>
       </span>,
     );

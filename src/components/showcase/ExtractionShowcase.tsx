@@ -1,5 +1,6 @@
 /** Ukázka vytěžování · vlastní demo stav · nesmí se distribuovat aplikacím. */
 import { useState } from "react";
+import { ExtractionDocumentShowcase } from "./ExtractionDocumentShowcase";
 import {
   Button,
   ExtractedItemsTable,
@@ -140,6 +141,7 @@ export function ExtractionShowcase() {
         </Field>
       </FieldGrid>
       <ExtractedItemsTable items={ITEMS} totals={{ base: 8650, tax: 1816.5 }} />
+      <ExtractionDocumentShowcase />
       <ExtractionOverwriteDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
