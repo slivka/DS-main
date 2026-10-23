@@ -2812,17 +2812,38 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   flex: 0 1 auto;
   min-width: min-content;
 }
+.ds-identity-row .ds-identity-account-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 0;
+}
+.ds-identity-row > .ds-identity-items .ds-identity-account-name {
+  width: auto;
+  flex-basis: 0;
+}
+.ds-identity-row [data-slot="document-identity-account-text"] {
+  min-width: min-content;
+}
+.ds-identity-row > .ds-identity-items > .ds-identity-item:last-child {
+  flex: 0 1 auto;
+}
+.ds-identity-row .document-identity-account {
+  flex: 0 1 auto;
+}
+.ds-identity-row .document-identity-account-box[data-mode="read"] {
+  max-width: none;
+}
 .ds-identity-status {
   flex: 0 0 auto;
   max-width: 100%;
 }
 .ds-identity-row[data-identity-level="3"] .ds-identity-status {
-  flex: 0 1 auto;
+  flex: 0 1 1ch;
   min-width: 1ch;
   overflow: hidden;
 }
 .ds-identity-row[data-identity-level="3"] > .ds-identity-items {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
 }
 .ds-identity-row[data-identity-level="3"] > .ds-identity-items > .ds-identity-item:first-of-type {
@@ -2838,6 +2859,10 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 }
 .ds-identity-measure [data-slot="identity-measure-full"] > * {
   width: max-content;
+}
+.ds-identity-measure .document-identity-account,
+.ds-identity-measure .document-identity-account-box[data-mode="read"] {
+  flex: 0 0 auto;
 }
 .ds-identity-measure [data-slot="identity-measure-minimum"] > * {
   width: min-content;
@@ -2881,6 +2906,7 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 }
 .ds-identity-measure [data-slot="identity-measure-minimum"] .ds-identity-account-name {
   width: 0;
+  flex: 0 0 0;
 }
 .ds-identity-measure [data-slot="identity-measure-status"],
 .ds-identity-measure [data-slot="identity-measure-short"] {
