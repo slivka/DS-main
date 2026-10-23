@@ -565,7 +565,8 @@ body {
   display: none;
 }
 /* Číslo zarovnané doprava má návrh vlevo, mimo hodnotu a přepínač součtu. */
-[data-suggestion="uncertain"] > .ds-field-control:has(input[inputmode="decimal"])
+[data-suggestion="uncertain"]
+  > .ds-field-control:has(input[inputmode="decimal"])
   > [data-slot="field-suggestion"] {
   left: 0.5em;
   right: auto;

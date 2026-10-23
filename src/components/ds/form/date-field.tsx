@@ -135,9 +135,12 @@ export function DateField({
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
   const feedback = useFieldFeedback();
-  const warning = ownWarning ?? (!feedback.error && feedback.suggestion?.uncertain
-    ? feedback.suggestion.message ?? dsTexts.extraction.suggestionUncertain(feedback.suggestion.source)
-    : undefined);
+  const warning =
+    ownWarning ??
+    (!feedback.error && feedback.suggestion?.uncertain
+      ? (feedback.suggestion.message ??
+        dsTexts.extraction.suggestionUncertain(feedback.suggestion.source))
+      : undefined);
   const { dateFormat, formatDate } = preferences;
   const [open, setOpen] = React.useState(false);
   const selected = parseISO(value);
