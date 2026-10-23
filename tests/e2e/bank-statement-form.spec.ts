@@ -1,5 +1,6 @@
 /** Výpis · vlastní chování ve skutečném panelu · nesmí kontrolovat zdrojový text. */
 import { expect, test, type Page } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 
 async function open(page: Page, scenario: string, width: number) {
   await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
@@ -79,10 +80,12 @@ test("BankStatementForm dotyk vysvětlí zámek čísla", async ({ browser }) =>
   });
   const page = await context.newPage();
   const form = await open(page, "items", 960);
-  await form.getByRole("button", { name: "Výpis má položky" }).tap();
-  await expect(
-    page.getByRole("tooltip").filter({ hasText: "Výpis má položky" }).first(),
-  ).toBeVisible();
+  await expectTooltip(
+    page,
+    form.getByRole("button", { name: "Výpis má položky" }),
+    "Výpis má položky",
+    { interaction: "tap" },
+  );
   await context.close();
 });
 

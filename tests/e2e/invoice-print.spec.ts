@@ -4,10 +4,14 @@ test("InvoicePrint – skutečné PDF, čtyři vzory, koncept a stažení", asyn
   await page.setViewportSize({ width: 1280, height: 1800 });
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
   await page.goto("/components/print");
   const showcase = page.getByTestId("invoice-print-showcase");
   const preview = page.getByTestId("invoice-pdf-preview").frameLocator("iframe");
-  await expect(preview.locator("canvas").first()).toBeVisible();
+  // První PDF čeká na hydrataci, fonty i import workeru; nejde o chybu rušení náhledu.
+  await expect(preview.locator("canvas").first()).toBeVisible({ timeout: 30_000 });
   await expect(showcase).toHaveAttribute("data-pages", "2");
   await expect(preview.locator("canvas").first()).toHaveAttribute("aria-label", /112012005/);
   await showcase.getByRole("combobox").first().click();
@@ -41,5 +45,12 @@ test("InvoicePrint – skutečné PDF, čtyři vzory, koncept a stažení", asyn
   expect(await preview.locator("canvas").first().getAttribute("aria-label")).not.toContain(
     "K úhradě",
   );
+  // Dvě rychlé změny dokumentu zruší předchozí načítání/render; skutečná chyba se nefiltruje.
+  const draft = showcase.getByRole("checkbox", { name: "KONCEPT", exact: true });
+  for (let round = 0; round < 3; round++) {
+    await draft.click();
+    await draft.click();
+  }
+  await expect(preview.locator("canvas").first()).toHaveAttribute("aria-label", /FV20260004/);
   expect(errors).toEqual([]);
 });

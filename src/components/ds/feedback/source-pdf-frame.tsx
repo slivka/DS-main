@@ -1,5 +1,6 @@
 /** PDF zdroje · vlastní klientské vykreslení podle šířky · nesmí načítat doménová data. */
 import { useEffect, useRef } from "react";
+import { createPdfSession } from "./source-pdf-session";
 
 /** Vnitřní vlastnosti náhledu, adresu a chybovou obsluhu dodává SourcePreview. */
 interface SourcePdfPreviewProps {
@@ -19,40 +20,46 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
   useEffect(() => {
     const element = frame.current;
     if (!element) return;
-    const reportError = () => error.current();
+    const session = createPdfSession(() => error.current());
+    const request = new AbortController();
+    const reportError = () => {
+      if (session.active) error.current();
+    };
     element.addEventListener("error", reportError);
-    let stopped = false;
     let loaded = false;
     let generation = 0;
-    let dispose = () => {};
     let observer: ResizeObserver | undefined;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const load = async () => {
       const document = element.contentDocument;
-      if (!document || stopped || loaded) return;
+      if (!document || !session.active || loaded) return;
       loaded = true;
-      try {
+      await session.run(async () => {
         // Import jen v efektu: PDF.js potřebuje prohlížeč, nikoli SSR runtime.
         const pdfjs = await import("pdfjs-dist");
+        if (!session.active) return;
         const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?url");
+        if (!session.active) return;
         pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-        const task = pdfjs.getDocument({ url, ownerDocument: document });
-        dispose = () => {
-          void task.destroy();
-        };
+        // PDF.js 5.x ignoruje Promise z ReadableStream.cancel při destroy síťového readeru.
+        // Bajty načítáme s vlastním abortem; celý fetch i úklid zůstává zachycen v session.
+        const response = await fetch(url, { signal: request.signal });
+        if (!session.active) return;
+        if (!response.ok) throw new Error(`PDF HTTP ${response.status}`);
+        const data = await response.arrayBuffer();
+        if (!session.active) return;
+        const task = pdfjs.getDocument({ data, ownerDocument: document });
+        session.own(task);
         const pdf = await task.promise;
-        if (stopped) {
-          dispose();
-          return;
-        }
+        if (!session.active) return;
         const render = async () => {
           const current = ++generation;
           const width = document.body.clientWidth;
-          if (!width || stopped) return;
+          if (!width || !session.active) return;
           const pages = document.createDocumentFragment();
           for (let number = 1; number <= pdf.numPages; number++) {
             const page = await pdf.getPage(number);
-            if (stopped || current !== generation) return;
+            if (!session.active || current !== generation) return;
             const base = page.getViewport({ scale: 1 });
             const scale = width / base.width;
             const viewport = page.getViewport({ scale });
@@ -65,6 +72,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
             canvas.style.width = "100%";
             canvas.style.display = "block";
             const text = await page.getTextContent();
+            if (!session.active || current !== generation) return;
             canvas.setAttribute("role", "img");
             canvas.setAttribute(
               "aria-label",
@@ -78,12 +86,10 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
             }).promise;
             pages.append(canvas);
           }
-          if (!stopped && current === generation) document.body.replaceChildren(pages);
+          if (session.active && current === generation) document.body.replaceChildren(pages);
         };
         const refresh = () => {
-          void render().catch(() => {
-            if (!stopped) error.current();
-          });
+          void session.run(render);
         };
         observer = new ResizeObserver(() => {
           clearTimeout(timer);
@@ -91,9 +97,7 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
         });
         observer.observe(element);
         refresh();
-      } catch {
-        if (!stopped) error.current();
-      }
+      });
     };
     // Srcdoc může být připraveno před připojením React load handleru.
     const check = window.setInterval(() => {
@@ -107,12 +111,13 @@ export function SourcePdfPreview({ url, title, onError }: SourcePdfPreviewProps)
       void load();
     }, 20);
     return () => {
-      stopped = true;
+      session.stop();
+      request.abort();
+      element.removeEventListener("error", reportError);
       window.clearInterval(check);
       generation++;
       clearTimeout(timer);
       observer?.disconnect();
-      dispose();
     };
   }, [url]);
   return (
