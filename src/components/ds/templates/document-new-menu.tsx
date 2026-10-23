@@ -2,6 +2,7 @@
 import { forwardRef, type ReactNode, type ComponentPropsWithoutRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { useDsTexts } from "../../../ds-texts";
+import { SplitButton } from "../form/split-button";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import {
@@ -98,6 +99,28 @@ export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProp
     ref,
   ) {
     const t = useDsTexts().templates;
+    const items = (
+      <DocumentNewMenuItems
+        templates={templates}
+        onBlank={onBlank}
+        onTemplate={onTemplate}
+        onManage={onManage}
+      />
+    );
+    if (onPrimary)
+      return (
+        <SplitButton
+          ref={ref}
+          icon={icon}
+          label={label ?? children ?? t.newDocument}
+          actionName={label ?? t.newDocument}
+          onClick={() => onPrimary()}
+          disabled={props.disabled}
+          mainProps={{ ...props, className: cn("grid-toolbar-control grid-toolbar-primary", className) }}
+          menuProps={{ className: "grid-toolbar-control grid-toolbar-primary" }}
+          menu={items}
+        />
+      );
     return (
       <DropdownMenu>
         <div className="inline-flex shrink-0">
