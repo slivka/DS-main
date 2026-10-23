@@ -8,6 +8,7 @@ import { RecordDialogPatternsShowcase } from "../components/showcase/RecordDialo
 import { RecordDialogShowcase } from "@/components/showcase/RecordDialogShowcase";
 import { SmallDialogShowcase } from "@/components/showcase/SmallDialogShowcase";
 import { FieldStatusShowcase } from "@/components/showcase/FieldStatusShowcase";
+import { SplitButtonShowcase } from "@/components/showcase/SplitButtonShowcase";
 import {
   AccountSelect,
   AmountInput,
@@ -79,6 +80,13 @@ function FormsPage() {
         description="Pod polem se nic nevykresluje; chyba ani varování nemění výšku řádku. Formulář i detail řádku mřížky."
       >
         <FieldStatusShowcase />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Rozdělené tlačítko"
+        description="Jedno tlačítko se dvěma funkcemi: hlavní akce a šipka s nabídkou, oddělené jemnou čarou."
+      >
+        <SplitButtonShowcase />
       </ShowcaseSection>
 
       <ShowcaseSection
