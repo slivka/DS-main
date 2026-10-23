@@ -13,6 +13,8 @@
 
 - Route form panel toggles through RecordActionBar and include their fixed control slot in action-width measurement. Why: the toggle stays last and visible at every width without duplicating live controls.
 - SourcePreview fills a min-height-zero flex chain; RecordSidePanel hosts must receive an available height, and PDF.js loads only in a client effect with a bundled worker to render pages at iframe width on resize. Why: editor, grid and linked panes share predictable previews without native viewer zoom differences.
+- PDF preview sessions own loading-task destruction and guard async imports; fetch bytes with an owned abort before PDF.js. Cancelled sessions catch loading/render/cleanup rejections. Why: PDF.js 5.x network-reader cancellation can leak an unhandled rejection during regeneration.
+- E2E tooltip checks share a real pointer/keyboard interaction helper, retaining explicit click, touch and dismissal assertions. Why: delayed hydration and grid relayout must not make tooltip tests depend on synthetic focus alone.
 
 - Pravidla dokladů, DPH a editoru řádků: `src/components/ds/accounting/AGENTS.md`.
 - Pravidla kvality, formulářů a gridů DS: `src/components/ds/AGENTS.md`; před změnami této části je přečti.

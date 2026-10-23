@@ -1,5 +1,6 @@
 /** Edit dokladu 11 · skutečné rozměry, pořadí a tooltipy při zoomu aplikace. */
 import { expect, test } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   test.setTimeout(180_000);
@@ -72,11 +73,9 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
     el.style.width = "800px";
   });
   const rate = issued.locator("#document-rate");
-  await rate.hover();
-  await expect(page.getByRole("tooltip")).toContainText("ČNB 9. 10. 2026");
+  await expectTooltip(page, rate, "ČNB 9. 10. 2026");
   await page.mouse.move(0, 0);
-  await rate.focus();
-  await expect(page.getByRole("tooltip")).toContainText("ČNB 9. 10. 2026");
+  await expectTooltip(page, rate, "ČNB 9. 10. 2026", { interaction: "keyboard" });
   await rate.blur();
   await issued.getByRole("checkbox", { name: "Starší zdroj kurzu" }).click();
   await expect(issued.locator('[data-slot="rate-source-attention"]')).toHaveCount(1);
@@ -88,10 +87,9 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
     name: "Platit příkazem",
   });
   await expect(toggle).toHaveAttribute("aria-disabled", "true");
-  await toggle.focus();
-  await expect(page.getByRole("tooltip")).toContainText(
-    "Hotovostní platba nepoužívá bankovní účet",
-  );
+  await expectTooltip(page, toggle, "Hotovostní platba nepoužívá bankovní účet", {
+    interaction: "keyboard",
+  });
   await expect(toggle).toHaveAttribute("aria-pressed", "false");
   // 2.96.0 (D2, BREAKING): KS/SS se neskrývají – při nepoužitém účtu jsou prázdné a zakázané.
   for (const id of ["#document-constantSymbol", "#document-specificSymbol"]) {
@@ -120,15 +118,9 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   expect(geometry.textRight).toBeLessThanOrEqual(geometry.bankLeft);
   expect(geometry.scroll).toBeGreaterThan(geometry.width);
   await expect(reason.locator("svg")).toHaveCount(0);
-  // Bublina přepínače z předchozího kroku se zavírá s animací; ověřujeme bublinu důvodu.
-  const reasonTip = page
-    .getByRole("tooltip")
-    .filter({ hasText: "Hotovostní platba nepoužívá bankovní účet" });
-  await expect(async () => {
-    await reason.blur();
-    await reason.focus();
-    await expect(reasonTip).toHaveCount(1, { timeout: 1000 });
-  }).toPass();
+  await expectTooltip(page, reason, "Hotovostní platba nepoužívá bankovní účet", {
+    interaction: "keyboard",
+  });
 });
 
 test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page }) => {
@@ -212,23 +204,9 @@ test("reálný kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m
       expect(geometry.fontSize).toBeCloseTo(0.875, 2);
       expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
       expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
-      // Standardní Tooltip po kliknutí do pole znovu otevře až nové najetí.
-      // Najetí je v opakování: po změně zoomu se stránka ještě posouvá a WebKit
-      // by jinak čekal na „stabilní" prvek až do timeoutu.
-      await expect(async () => {
-        await page.mouse.move(0, 0);
-        await rate.hover({ timeout: 1500 });
-        await expect(page.getByRole("tooltip")).toContainText("Ruční kurz", {
-          timeout: 1500,
-        });
-      }).toPass();
-      // Posun stránky při změně zoomu zavírá tooltipy; najetí se proto opakuje po ustálení.
-      await expect(async () => {
-        await page.mouse.move(0, 0);
-        await update.hover();
-        await expect(page.getByRole("tooltip")).toHaveCount(1, { timeout: 1500 });
-      }).toPass();
-      await expect(page.getByRole("tooltip")).toContainText("25,000");
+      await expectTooltip(page, rate, "Ruční kurz");
+      await expectTooltip(page, update, "25,000");
+      await expect(page.getByRole("tooltip")).toHaveCount(1);
       await update.click();
     }
   }

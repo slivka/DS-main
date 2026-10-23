@@ -1,5 +1,6 @@
 /** 13g · dvě primární akce lišty ve třech šířkách a DUZP u BA. */
 import { expect, test } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 
 test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ page }) => {
   await page.goto("/components/grid", { waitUntil: "networkidle" });
@@ -90,15 +91,8 @@ test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespust
   await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
   const out = wide.locator("[data-toolbar-add]:visible").nth(1);
   await expect(out).toHaveAttribute("aria-disabled", "true");
-  // Lišta se po vstupu do viewportu ještě přeměřuje; před každým klikem ji
-  // znovu posuneme do zorného pole a klik opakujeme, dokud se důvod neukáže.
-  await expect(async () => {
-    await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
-    await out.click({ force: true });
-    await expect(page.getByRole("tooltip").filter({ hasText: reason }).first()).toBeAttached({
-      timeout: 1000,
-    });
-  }).toPass({ timeout: 15000 });
+  await expectTooltip(page, out, reason);
+  await expectTooltip(page, out, reason, { interaction: "click" });
   await out.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");

@@ -1,5 +1,6 @@
 /** Evidence záloh se záložkami: sdílené datum, varování rozdílu, lišta bez zalomení při zoomu. */
 import { expect, test, type Page } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 
 async function setRootZoom(page: Page, zoom: number) {
   await page.evaluate((z) => {
@@ -30,18 +31,7 @@ test("přepnutí záložek zachová Stav k datu, rozdíl varuje, lišta se nezal
   const warning = view.locator('[data-slot="advance-difference-warning"]');
   await expect(warning).toHaveCount(1);
   await expect(warning).toHaveAttribute("tabindex", "0");
-  // Skutečný Tab znovu vstoupí do spouštěče i po oživení/rolování gridu;
-  // samotný focus() nebo hover před přestavbou řádku může zaniknout.
-  await expect(async () => {
-    await warning.focus();
-    await page.keyboard.press("Shift+Tab");
-    await page.keyboard.press("Tab");
-    await expect(warning).toBeFocused();
-    // Opakujeme skutečný vstup, pokud přepočet gridu nahradí spouštěč.
-    await page.mouse.move(0, 0);
-    await warning.hover();
-    await expect(page.getByRole("tooltip")).toContainText("nesouhlasí", { timeout: 2_000 });
-  }).toPass({ timeout: 20_000 });
+  await expectTooltip(page, warning, "nesouhlasí");
 
   for (const name of ["Platby záloh", "Vyúčtování záloh", "Zůstatek"]) {
     await view.getByRole("tab", { name }).click();

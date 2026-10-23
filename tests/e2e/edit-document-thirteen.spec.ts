@@ -1,6 +1,7 @@
 /** Edit 13 · skutečné klávesy, rozměry a bankovní výpisy ve třech prohlížečích. */
 import { nonTaxBaseline } from "./non-tax-baseline";
 import { expect, test, type Page } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 
 test.use({ viewport: { width: 1280, height: 1800 } });
 // Matice 40 rozvržení a 18 referenčních ND měření potřebuje delší celkový běh.
@@ -75,8 +76,7 @@ test("přepínače mají jednotné rozměry, stálé názvy a klávesnici", asyn
   await page.keyboard.press("Space");
   await expect(locked).toHaveAttribute("aria-pressed", "true");
   await expect(locked).toHaveAttribute("aria-disabled", "true");
-  await locked.hover();
-  await expect(page.getByRole("tooltip")).toContainText("Doklad je zařazen");
+  await expectTooltip(page, locked, "Doklad je zařazen");
   const suggest = root
     .getByRole("combobox", { name: "Popis", exact: true })
     .locator("..")
@@ -93,7 +93,14 @@ test("přepínače mají jednotné rozměry, stálé názvy a klávesnici", asyn
   await expect(page.getByRole("option", { name: "Doprava zásilky" })).toBeVisible();
   await page.keyboard.press("Enter");
   await expect(root.getByRole("combobox", { name: "Popis" })).toHaveValue("Doprava zásilky");
-  await info.attach("Přepínače 200 %", { body: await root.screenshot(), contentType: "image/png" });
+  // Screenshot rovněž čeká na stabilní aktuální uzel po přestavbě ukázky.
+  await expect(async () => {
+    await root.scrollIntoViewIfNeeded();
+    await info.attach("Přepínače 200 %", {
+      body: await root.screenshot(),
+      contentType: "image/png",
+    });
+  }).toPass();
 });
 
 test("výpis uloží zůstatek přes Σ, rozdíl varuje v poli a položky zakážou odstranění", async ({

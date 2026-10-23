@@ -1,5 +1,6 @@
 /** Odečty záloh jako řádky dokladu a čitelné zakázané primární tlačítko. */
 import { expect, test } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 
 /** Relativní jas sRGB barvy z rgb(...) textu. */
 function luminance(color: string) {
@@ -75,6 +76,5 @@ test("zakázané Pokračovat má čitelný text (AA) a důvod", async ({ page })
     (a, b) => b - a,
   );
   expect(((light ?? 0) + 0.05) / ((dark ?? 0) + 0.05)).toBeGreaterThanOrEqual(4.5);
-  await button.focus();
-  await expect(page.getByRole("tooltip")).toContainText("Nejdříve vyberte soubory");
+  await expectTooltip(page, button, "Nejdříve vyberte soubory", { interaction: "keyboard" });
 });

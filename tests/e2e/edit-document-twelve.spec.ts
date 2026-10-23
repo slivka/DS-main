@@ -1,5 +1,6 @@
 /** Skutečné panely, měření data a zamknuté platební symboly. */
 import { expect, test } from "@playwright/test";
+import { expectTooltip } from "./helpers/tooltip";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, testInfo) => {
   test.setTimeout(480_000);
@@ -258,20 +259,19 @@ test("přijaté symboly zůstávají prázdné se správným důvodem", async ({
     const input = received.locator(
       name === "Konstantní symbol" ? "#document-constantSymbol" : "#document-specificSymbol",
     );
-    await expect(input.locator("..")).toHaveAccessibleName(name);
-    await expect(input.locator("..")).toHaveAccessibleDescription(
-      "Nezahrnuje se do platebních příkazů",
-    );
+    const locked = received.getByRole("group", { name, exact: true });
+    await expect(locked).toHaveAccessibleName(name);
+    await expect(locked).toHaveAccessibleDescription("Nezahrnuje se do platebních příkazů");
     await expect(input).toBeDisabled();
     await expect(input).toHaveValue("");
     await expect(page.getByRole("tooltip")).toHaveCount(0);
-    await input.locator("..").hover();
-    await expect(page.getByRole("tooltip")).toHaveText("Nezahrnuje se do platebních příkazů");
+    await expectTooltip(page, locked, "Nezahrnuje se do platebních příkazů");
     await page.mouse.move(0, 0);
     await expect(page.getByRole("tooltip")).toHaveCount(0);
-    await input.locator("..").focus();
-    await expect(page.getByRole("tooltip")).toHaveText("Nezahrnuje se do platebních příkazů");
-    await input.locator("..").evaluate((el) => {
+    await expectTooltip(page, locked, "Nezahrnuje se do platebních příkazů", {
+      interaction: "keyboard",
+    });
+    await locked.evaluate((el) => {
       if (el instanceof HTMLElement) el.blur();
     });
   }
