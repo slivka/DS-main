@@ -33,9 +33,11 @@ describe("PanelToggleButton podle stavu", () => {
   ] as const)
     it(`má obrys ${open ? "otevřený" : "zavřený"}${indicator ? " s tečkou" : ""}`, () => {
       const ui = renderToggle(open, indicator);
-      expect(ui.getByRole("button", { name: open ? "Zavřít panel" : "Otevřít panel" }).getAttribute("data-variant")).toBe(
-        "outline",
-      );
+      expect(
+        ui
+          .getByRole("button", { name: open ? "Zavřít panel" : "Otevřít panel" })
+          .getAttribute("data-variant"),
+      ).toBe("outline");
     });
 
   it("zavřený panel ukazuje šipku k obsahu a bublinu Otevřít panel", async () => {
@@ -63,7 +65,12 @@ it("panel jinde otevírá sousední okno, ikona i název odpovídají akci", asy
   const toggle = mock(() => undefined);
   const ui = render(
     <TooltipProvider delayDuration={0}>
-      <PanelToggleButton open={false} state="elsewhere" onToggle={toggle} onFocusElsewhere={focus} />
+      <PanelToggleButton
+        open={false}
+        state="elsewhere"
+        onToggle={toggle}
+        onFocusElsewhere={focus}
+      />
     </TooltipProvider>,
   );
   const button = ui.getByRole("button", { name: "Otevřít panel" });

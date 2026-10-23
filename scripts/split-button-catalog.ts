@@ -22,26 +22,47 @@ export function enrichSplitButtonCatalog(components: PanelCatalogComponent[]) {
   ];
   let split = components.find((item) => item.name === "SplitButton");
   if (!split) {
-    split = { name: "SplitButton", file: "src/components/ds/form/split-button.tsx", import_path: "" };
+    split = {
+      name: "SplitButton",
+      file: "src/components/ds/form/split-button.tsx",
+      import_path: "",
+    };
     components.push(split);
   }
   Object.assign(split, {
     props,
-    usage: "Jedno tlačítko se společným obrysem: hlavní plocha provede akci, šipka otevře nabídku APP. Výchozí výška je --control-h; size=sm použijte výslovně pro kompaktní lištu. Každá část má vlastní fokus a najetí.",
-    examples: [{
-      label: "Hlavní akce a další možnosti",
-      code: '<SplitButton label={texts.create} actionName={texts.create} onClick={createRecord} menu={<DropdownMenuItem onSelect={createFromTemplate}>{texts.fromTemplate}</DropdownMenuItem>} />',
-    }],
-    antipatterns: ["Neskládejte dvě samostatná tlačítka s mezerou; nevkládejte do komponenty doménovou logiku.", "Kompaktní výšku nevolte pomocí className; použijte size=sm."],
+    usage:
+      "Jedno tlačítko se společným obrysem: hlavní plocha provede akci, šipka otevře nabídku APP. Výchozí výška je --control-h; size=sm použijte výslovně pro kompaktní lištu. Každá část má vlastní fokus a najetí.",
+    examples: [
+      {
+        label: "Hlavní akce a další možnosti",
+        code: "<SplitButton label={texts.create} actionName={texts.create} onClick={createRecord} menu={<DropdownMenuItem onSelect={createFromTemplate}>{texts.fromTemplate}</DropdownMenuItem>} />",
+      },
+    ],
+    antipatterns: [
+      "Neskládejte dvě samostatná tlačítka s mezerou; nevkládejte do komponenty doménovou logiku.",
+      "Kompaktní výšku nevolte pomocí className; použijte size=sm.",
+    ],
   });
   const panel = components.find((item) => item.name === "PanelToggleButton");
-  if (panel) panel.usage = "Orámovaný ovladač panelu s výškou --control-h. Ikona i přístupný název popisují akci: Otevřít panel (←), Zavřít panel (→). Stav elsewhere otevírá/zaměří sousední okno, neuzavírá místní panel. Ve formuláři patří za nabídku akcí, v gridu za Obnovit.";
+  if (panel)
+    panel.usage =
+      "Orámovaný ovladač panelu s výškou --control-h. Ikona i přístupný název popisují akci: Otevřít panel (←), Zavřít panel (→). Stav elsewhere otevírá/zaměří sousední okno, neuzavírá místní panel. Ve formuláři patří za nabídku akcí, v gridu za Obnovit.";
   const suggestion = components.find((item) => item.name === "FieldSuggestionIndicator");
-  if (suggestion) Object.assign(suggestion, {
-    usage: "Ikona nejistého návrhu; FieldSuggestion.action zpřístupní odkazovou akci v bublině. Po najetí se bublina po odjetí zavře s prodlevou pro přejezd myši; klik a Escape zachovávají ovládání.",
-    examples: [{ label: "Kontrola návrhu s akcí", code: '<FieldSuggestionIndicator suggestion={{ source: fileName, uncertain: true, message: texts.review, action: { label: texts.create, onClick: createRecord } }} />' }],
-    antipatterns: ["Nevykreslujte druhou ikonu návrhu přes ikonová tlačítka pole; používejte sdílený Field."],
-  });
+  if (suggestion)
+    Object.assign(suggestion, {
+      usage:
+        "Ikona nejistého návrhu; FieldSuggestion.action zpřístupní odkazovou akci v bublině. Po najetí se bublina po odjetí zavře s prodlevou pro přejezd myši; klik a Escape zachovávají ovládání.",
+      examples: [
+        {
+          label: "Kontrola návrhu s akcí",
+          code: "<FieldSuggestionIndicator suggestion={{ source: fileName, uncertain: true, message: texts.review, action: { label: texts.create, onClick: createRecord } }} />",
+        },
+      ],
+      antipatterns: [
+        "Nevykreslujte druhou ikonu návrhu přes ikonová tlačítka pole; používejte sdílený Field.",
+      ],
+    });
   return [split, ...(panel ? [panel] : []), ...(suggestion ? [suggestion] : [])];
 }
 
