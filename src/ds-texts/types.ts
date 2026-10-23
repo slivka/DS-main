@@ -247,6 +247,48 @@ export interface DsTexts {
   confirmByTyping: { instruction: string; cancel: string; running: string };
   dangerZone: { title: string };
   noticeBar: { close: string };
+  /** Vytěžování souborů: stavy, souhrn návrhů, potvrzení přepsání a tabulka položek. */
+  extraction: {
+    /** Probíhá vytěžení (s akcí Zrušit). */
+    statusExtracting: string;
+    /** Dokončené vytěžení s metodou. */
+    statusDone: (method: string) => string;
+    /** Nezdar vytěžení (s akcí Zkusit znovu). */
+    statusFailed: string;
+    /** Duplicitní soubor (s akcí Otevřít původní doklad). */
+    statusDuplicate: string;
+    cancel: string;
+    retry: string;
+    openOriginal: string;
+    /** Začátek souhrnu: vyplněno ze souboru danou metodou. */
+    summaryFilled: (method: string) => string;
+    /** Počet polí ke kontrole ve správném tvaru (1 pole / 2–4 pole / 5+ polí). */
+    summaryFieldsToCheck: (count: number) => string;
+    /** Spojka před odkazem na řádky. */
+    summaryLinesFrom: string;
+    /** Akce přesunu na další pole ke kontrole (F8). */
+    nextToCheck: string;
+    /** Akce zahození celého návrhu. */
+    discardSuggestion: string;
+    overwriteTitle: string;
+    overwriteDescription: string;
+    overwriteAll: string;
+    overwriteEmptyOnly: string;
+    /** Nadpis tabulky vytěžených položek s počtem. */
+    itemsTitle: (count: number) => string;
+    itemText: string;
+    itemQuantity: string;
+    itemUnit: string;
+    itemUnitPrice: string;
+    itemVatRate: string;
+    itemBase: string;
+    itemTax: string;
+    itemsTotal: string;
+    /** Výchozí bublina navrženého pole. */
+    suggestionSuggested: (source: string) => string;
+    /** Výchozí bublina pole ke kontrole. */
+    suggestionUncertain: (source: string) => string;
+  };
   maskInput: {
     /** Popisek náhledu příštího čísla. */
     preview: string;

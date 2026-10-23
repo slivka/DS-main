@@ -224,6 +224,12 @@ export {
   type JournalRecapHomeTotalProps,
 } from "./accounting/journal-recap-home-total";
 export * from "./form/field-feedback";
+export * from "./extraction/extraction-types";
+export * from "./extraction/focus-uncertain";
+export * from "./extraction/extraction-status";
+export * from "./extraction/suggestion-summary";
+export * from "./extraction/extraction-overwrite-dialog";
+export * from "./extraction/extracted-items-table";
 
 export * from "./form/field-toggle-button";
 

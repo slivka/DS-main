@@ -1,5 +1,8 @@
 ## DS 2.135.0 (nevydáno)
 
+- [x] Vytěžování E1: stav pole suggestion (podklad/žlutý rámeček + bublina, token --suggestion-soft, výška beze změny), ExtractionStatus, SuggestionSummary s F8, ExtractionOverwriteDialog, ExtractedItemsTable (součty od APP), ukázka na Panelu záznamu, texty CS/SK. 13 unit testů 13/13, E2E extraction.spec.ts Chromium 1/1. Nevydáno, release Claude.
+
+
 ## DS 2.134.0
 
 - [x] Samostatné deliveryReadOnly pro dodací adresu (FV i ZFV), zpětně kompatibilní výchozí zámek a přednost celkového readOnly. Čtyři unit regrese, cíleně 14/14; check:full --harness 1 379/1 379 ve 143 souborech, katalog 480 → 480 / 1 187 → 1 227, 0 odebrání. Nevydáno, release Claude.

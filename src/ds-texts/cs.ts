@@ -325,6 +325,41 @@ export const DS_TEXTS_CS: DsTexts = {
   confirmByTyping: { instruction: "Pro potvrzení opište:", cancel: "Zrušit", running: "Probíhá…" },
   dangerZone: { title: "Nebezpečná zóna" },
   noticeBar: { close: "Zavřít upozornění" },
+  extraction: {
+    statusExtracting: "Vytěžuji soubor…",
+    statusDone: (method) => (method ? `Hotovo · ${method}` : "Hotovo"),
+    statusFailed: "Soubor se nepodařilo vytěžit.",
+    statusDuplicate: "Duplicitní soubor – tento soubor už byl vytěžen.",
+    cancel: "Zrušit",
+    retry: "Zkusit znovu",
+    openOriginal: "Otevřít původní doklad",
+    summaryFilled: (method) => `Vyplněno ze souboru (${method})`,
+    summaryFieldsToCheck: (count) =>
+      count === 1
+        ? "1 pole ke kontrole"
+        : count >= 2 && count <= 4
+          ? `${count} pole ke kontrole`
+          : `${count} polí ke kontrole`,
+    summaryLinesFrom: "řádky podle",
+    nextToCheck: "Další ke kontrole",
+    discardSuggestion: "Zahodit návrh",
+    overwriteTitle: "Doklad už má vyplněné hodnoty",
+    overwriteDescription:
+      "Vytěžené hodnoty mohou přepsat stávající údaje. Vyberte, jak má vytěžení pokračovat.",
+    overwriteAll: "Přepsat vše",
+    overwriteEmptyOnly: "Doplnit jen prázdná pole",
+    itemsTitle: (count) => `Vytěžené položky (${count})`,
+    itemText: "Text",
+    itemQuantity: "Množství",
+    itemUnit: "MJ",
+    itemUnitPrice: "Cena/ks",
+    itemVatRate: "Sazba",
+    itemBase: "Základ",
+    itemTax: "Daň",
+    itemsTotal: "Celkem",
+    suggestionSuggested: (source) => `Navrženo ze souboru (${source})`,
+    suggestionUncertain: (source) => `Ke kontrole – navrženo ze souboru (${source})`,
+  },
   maskInput: {
     preview: "Náhled příštího čísla",
     tokens: [
