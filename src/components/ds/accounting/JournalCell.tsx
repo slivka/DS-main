@@ -112,10 +112,12 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
   const errorMessage = editor.validations.get(line.id)?.[validationColumn];
   const warningMessage = editor.vatWarnings.get(line.id)?.[validationColumn];
   const suggestionKey = journalSuggestionKey(column);
-  const suggestion = !errorMessage && !warningMessage && suggestionKey
-    ? editor.props.rowSuggestions?.[line.id]?.[suggestionKey] : undefined;
+  const suggestion =
+    !errorMessage && !warningMessage && suggestionKey
+      ? editor.props.rowSuggestions?.[line.id]?.[suggestionKey]
+      : undefined;
   const suggestionMessage = suggestion?.uncertain
-    ? suggestion.message ?? editor.dsTexts.extraction.suggestionUncertain(suggestion.source)
+    ? (suggestion.message ?? editor.dsTexts.extraction.suggestionUncertain(suggestion.source))
     : undefined;
   const rowEditing = editing?.rowId === line.id;
   const hint = accountTitle ?? (calculated ? t.quantityPriceHint : undefined);
@@ -148,7 +150,7 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       aria-label={`${columnLabel} ${rowIndex + 1}`}
       data-invalid={errorMessage ? true : undefined}
       data-warning={warningMessage ? true : undefined}
-      data-suggestion={suggestion ? suggestion.uncertain ? "uncertain" : "suggested" : undefined}
+      data-suggestion={suggestion ? (suggestion.uncertain ? "uncertain" : "suggested") : undefined}
       data-inherited={editor.pins.isInherited(line.id, column) || undefined}
       {...status.triggerProps}
       className={cn(
@@ -196,7 +198,11 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
         )}
       </span>
       {suggestion?.uncertain ? (
-        <AlertTriangle aria-hidden="true" data-slot="journal-suggestion" className="ml-1 size-4 shrink-0 text-warning-strong" />
+        <AlertTriangle
+          aria-hidden="true"
+          data-slot="journal-suggestion"
+          className="ml-1 size-4 shrink-0 text-warning-strong"
+        />
       ) : null}
       {deductionHint ? (
         <Tooltip>

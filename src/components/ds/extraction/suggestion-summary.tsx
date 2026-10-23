@@ -42,15 +42,17 @@ export function SuggestionSummary({
   className,
 }: SuggestionSummaryProps) {
   const texts = useDsTexts().extraction;
-  useGlobalShortcuts([{
-    id: "suggestion-next",
-    allowInEditing: true,
-    match: (event) => event.key === "F8" && !event.defaultPrevented,
-    run: (event) => {
-      event.preventDefault();
-      focusNextUncertainField();
+  useGlobalShortcuts([
+    {
+      id: "suggestion-next",
+      allowInEditing: true,
+      match: (event) => event.key === "F8" && !event.defaultPrevented,
+      run: (event) => {
+        event.preventDefault();
+        focusNextUncertainField();
+      },
     },
-  }]);
+  ]);
   const parts: ReactNode[] = [
     texts.summaryFilled(method),
     texts.summaryFieldsToCheck(uncertainCount),

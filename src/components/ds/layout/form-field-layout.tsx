@@ -128,7 +128,7 @@ export function Field({
   const resolveSuggestion = useContext(FieldSuggestionContext);
   const inheritedSuggestion = htmlFor ? resolveSuggestion?.(htmlFor) : undefined;
   // Chyba a varování mají přednost; návrh se vykreslí jen u čistého pole.
-  const activeSuggestion = !error && !warning ? suggestion ?? inheritedSuggestion : undefined;
+  const activeSuggestion = !error && !warning ? (suggestion ?? inheritedSuggestion) : undefined;
   const suggestionClass = activeSuggestion
     ? activeSuggestion.uncertain
       ? "[&_.border-input]:border-warning [&_input]:border-warning [&_select]:border-warning [&_textarea]:border-warning"

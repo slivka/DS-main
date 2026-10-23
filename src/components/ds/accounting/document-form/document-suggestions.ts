@@ -12,10 +12,12 @@ export function documentFieldSuggestion(props: DocumentFormProps, id: string) {
     bankAccountKind: value.bankAccountKind,
   });
   const aliases: Record<string, string[]> = {
-    "document-partner": props.counterpartyInput === "manual"
-      ? ["counterpartyName", "partnerId"] : ["partnerId"],
-    "document-bankAccount": props.counterpartyInput === "manual"
-      ? ["manualBankAccount", "bankAccount"] : ["partnerBankAccountId", "bankAccount"],
+    "document-partner":
+      props.counterpartyInput === "manual" ? ["counterpartyName", "partnerId"] : ["partnerId"],
+    "document-bankAccount":
+      props.counterpartyInput === "manual"
+        ? ["manualBankAccount", "bankAccount"]
+        : ["partnerBankAccountId", "bankAccount"],
     "document-movement-account": [key, "bankAccountKind"],
     "document-amountTotal": ["amountTotal", "totalMode"],
     "document-variableSymbol": ["variableSymbol", "variableSymbolLinked"],

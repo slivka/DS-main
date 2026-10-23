@@ -5,23 +5,50 @@ import { act, render, fireEvent } from "@testing-library/react";
 import { DocumentForm } from "../../src/components/ds/accounting/document-form";
 import { JournalLinesEditor } from "../../src/components/ds/accounting/journal-lines-editor";
 import { SuggestionSummary } from "../../src/components/ds/extraction/suggestion-summary";
-import type { DocumentFormProps, DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import type {
+  DocumentFormProps,
+  DocumentHeaderValue,
+} from "../../src/components/ds/accounting/document-form";
 import type { JournalLinesEditorProps } from "../../src/components/ds/accounting/journal-editor-types";
 import type { JournalRowSuggestions } from "../../src/components/ds/accounting/journal-suggestions";
 
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 
 const suggestion = { source: "f.pdf", uncertain: true };
-const base: DocumentHeaderValue = { id: "existing", number: "FP1", externalNumber: "123",
-  currency: "CZK", amountTotal: 1000, totalMode: "entered", partnerId: "p1",
-  mainAccountId: "321001", issueDate: "2026-10-23", accountingDate: "2026-10-23",
-  dueDate: "2026-11-06", taxDate: "2026-10-23", vatDate: "2026-10-23" };
+const base: DocumentHeaderValue = {
+  id: "existing",
+  number: "FP1",
+  externalNumber: "123",
+  currency: "CZK",
+  amountTotal: 1000,
+  totalMode: "entered",
+  partnerId: "p1",
+  mainAccountId: "321001",
+  issueDate: "2026-10-23",
+  accountingDate: "2026-10-23",
+  dueDate: "2026-11-06",
+  taxDate: "2026-10-23",
+  vatDate: "2026-10-23",
+};
 function Form(props: Partial<DocumentFormProps>) {
   const [value, setValue] = React.useState(base);
-  return <DocumentForm title="Doklad" status="draft" documentType="FP" value={value}
-    onChange={setValue} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]}
-    homeCurrency="CZK" partners={[{ id: "p1", name: "Dodavatel" }]}
-    vat={{ visible: true }} {...props} />;
+  return (
+    <DocumentForm
+      title="Doklad"
+      status="draft"
+      documentType="FP"
+      value={value}
+      onChange={setValue}
+      lines={[]}
+      onLinesChange={() => {}}
+      books={[]}
+      accounts={[]}
+      homeCurrency="CZK"
+      partners={[{ id: "p1", name: "Dodavatel" }]}
+      vat={{ visible: true }}
+      {...props}
+    />
+  );
 }
 function field(view: ReturnType<typeof render>, id: string) {
   const input = view.container.querySelector(`#${id}`);
@@ -30,30 +57,64 @@ function field(view: ReturnType<typeof render>, id: string) {
 }
 function Editor(props: Partial<JournalLinesEditorProps>) {
   const [lines, setLines] = React.useState([{ id: "r1", amount: 1000, text: "Služby" }]);
-  return <TooltipProvider><JournalLinesEditor lines={lines} onChange={setLines} accounts={[]}
-    documentCurrency="CZK" homeCurrency="CZK" withoutAccounts storageKey="suggestions-test"
-    {...props} /></TooltipProvider>;
+  return (
+    <TooltipProvider>
+      <JournalLinesEditor
+        lines={lines}
+        onChange={setLines}
+        accounts={[]}
+        documentCurrency="CZK"
+        homeCurrency="CZK"
+        withoutAccounts
+        storageKey="suggestions-test"
+        {...props}
+      />
+    </TooltipProvider>
+  );
 }
 
 describe("DocumentForm návrhy hlavičky", () => {
   for (const documentType of ["FV", "FP", "ZFV", "ZFP", "PO", "BA", "ID"]) {
     it(`${documentType}: společná částka a přepínač DPH nesou návrh`, () => {
-      const view = render(<Form documentType={documentType}
-        fieldSuggestions={{ amountTotal: suggestion, vatRelevant: suggestion }} />);
-      expect(field(view, "document-amountTotal")?.getAttribute("data-suggestion")).toBe("uncertain");
-      expect(field(view, "document-vatRelevant")?.getAttribute("data-suggestion")).toBe("uncertain");
+      const view = render(
+        <Form
+          documentType={documentType}
+          fieldSuggestions={{ amountTotal: suggestion, vatRelevant: suggestion }}
+        />,
+      );
+      expect(field(view, "document-amountTotal")?.getAttribute("data-suggestion")).toBe(
+        "uncertain",
+      );
+      expect(field(view, "document-vatRelevant")?.getAttribute("data-suggestion")).toBe(
+        "uncertain",
+      );
     });
   }
   it("výběr partnera, jeho účtu, datum a text dostávají návrh", () => {
-    const view = render(<Form bankAccountOptions={[{ id: "b1", account: "123/0100", label: "Hlavní" }]}
-      fieldSuggestions={{ partnerId: suggestion, partnerBankAccountId: suggestion,
-        dueDate: suggestion, description: suggestion }} />);
-    for (const id of ["document-partner", "document-bankAccount", "document-dueDate", "document-description"])
+    const view = render(
+      <Form
+        bankAccountOptions={[{ id: "b1", account: "123/0100", label: "Hlavní" }]}
+        fieldSuggestions={{
+          partnerId: suggestion,
+          partnerBankAccountId: suggestion,
+          dueDate: suggestion,
+          description: suggestion,
+        }}
+      />,
+    );
+    for (const id of [
+      "document-partner",
+      "document-bankAccount",
+      "document-dueDate",
+      "document-description",
+    ])
       expect(field(view, id)?.getAttribute("data-suggestion")).toBe("uncertain");
   });
   it("ruční změna hlásí správný klíč pouze jednou, samotné otevření nic nehlásí", () => {
     const cleared = mock();
-    const view = render(<Form fieldSuggestions={{ externalNumber: suggestion }} onSuggestionCleared={cleared} />);
+    const view = render(
+      <Form fieldSuggestions={{ externalNumber: suggestion }} onSuggestionCleared={cleared} />,
+    );
     expect(cleared).not.toHaveBeenCalled();
     const input = view.container.querySelector("#document-externalNumber");
     if (!input) throw new Error("Chybí číslo");
@@ -63,16 +124,27 @@ describe("DocumentForm návrhy hlavičky", () => {
     expect(cleared).toHaveBeenCalledWith("externalNumber");
   });
   it("chyba hlavičky překryje návrh", () => {
-    const view = render(<Form fieldSuggestions={{ amountTotal: suggestion }}
-      fieldErrors={{ amountTotal: "Neplatná částka" }} />);
+    const view = render(
+      <Form
+        fieldSuggestions={{ amountTotal: suggestion }}
+        fieldErrors={{ amountTotal: "Neplatná částka" }}
+      />,
+    );
     expect(field(view, "document-amountTotal")?.hasAttribute("data-suggestion")).toBe(false);
-    expect(view.container.querySelector("#document-amountTotal")?.getAttribute("aria-invalid")).toBe("true");
+    expect(
+      view.container.querySelector("#document-amountTotal")?.getAttribute("aria-invalid"),
+    ).toBe("true");
   });
   it("F8 cyklicky prochází hlavičku i buňku řádku", () => {
-    const view = render(<Form fieldSuggestions={{ amountTotal: suggestion }}
-      lines={[{ id: "r1", amount: 1000, text: "Služby" }]}
-      rowSuggestions={{ r1: { text: suggestion } }} linesEditorProps={{ withoutAccounts: true }}
-      notices={<SuggestionSummary method="AI" uncertainCount={2} onDiscard={() => {}} />} />);
+    const view = render(
+      <Form
+        fieldSuggestions={{ amountTotal: suggestion }}
+        lines={[{ id: "r1", amount: 1000, text: "Služby" }]}
+        rowSuggestions={{ r1: { text: suggestion } }}
+        linesEditorProps={{ withoutAccounts: true }}
+        notices={<SuggestionSummary method="AI" uncertainCount={2} onDiscard={() => {}} />}
+      />,
+    );
     const amount = view.container.querySelector<HTMLElement>("#document-amountTotal");
     const cell = view.container.querySelector<HTMLElement>('[data-cell-key="r1:text"]');
     if (!amount || !cell) throw new Error("Chybí pole návrhu");
@@ -87,7 +159,9 @@ describe("DocumentForm návrhy hlavičky", () => {
 describe("návrhy buněk řádků", () => {
   it("ruční změna částky oznamuje amount a id řádku jen jednou", () => {
     const cleared = mock();
-    const view = render(<Editor rowSuggestions={{ r1: { amount: suggestion } }} onSuggestionCleared={cleared} />);
+    const view = render(
+      <Editor rowSuggestions={{ r1: { amount: suggestion } }} onSuggestionCleared={cleared} />,
+    );
     const cell = view.container.querySelector('[data-cell-key="r1:amount"]');
     if (!cell) throw new Error("Chybí částka");
     expect(cell.getAttribute("data-suggestion")).toBe("uncertain");
@@ -112,8 +186,12 @@ describe("návrhy buněk řádků", () => {
     expect(cell.hasAttribute("data-suggestion")).toBe(false);
   });
   it("chyba buňky má přednost a F8 ji nepovažuje za návrh", () => {
-    const view = render(<Editor rowSuggestions={{ r1: { amount: suggestion } }}
-      cellIssues={[{ rowId: "r1", columnId: "amount", severity: "error", message: "Chyba" }]} />);
+    const view = render(
+      <Editor
+        rowSuggestions={{ r1: { amount: suggestion } }}
+        cellIssues={[{ rowId: "r1", columnId: "amount", severity: "error", message: "Chyba" }]}
+      />,
+    );
     const cell = view.container.querySelector('[data-cell-key="r1:amount"]');
     expect(cell?.hasAttribute("data-suggestion")).toBe(false);
     expect(cell?.getAttribute("aria-invalid")).toBe("true");

@@ -7,7 +7,10 @@ import { isAccountColumn, DIMENSION_COLUMNS } from "./journal-lines-model";
 /** Klíče návrhů buněk, nezávislé na režimu MD/DAL/protiúčet. */
 export type JournalSuggestionKey = "account" | "dimension" | "vatCode" | "amount" | "text";
 /** Návrhy podle id řádku; vlastníkem je aplikace. */
-export type JournalRowSuggestions = Record<string, Partial<Record<JournalSuggestionKey, FieldSuggestion>>>;
+export type JournalRowSuggestions = Record<
+  string,
+  Partial<Record<JournalSuggestionKey, FieldSuggestion>>
+>;
 
 /** Klíč návrhu odpovídající sloupci editoru. */
 export function journalSuggestionKey(column: string): JournalSuggestionKey | undefined {

@@ -63,17 +63,20 @@ export function DocumentVatActionStatus({
 }: DocumentVatActionStatusProps) {
   return (
     <div className="flex min-w-0 items-center gap-2">
-      <Field htmlFor="document-vatRelevant" className="shrink-0 [&[data-suggestion=uncertain]_.ds-field-control]:pr-6">
-      <label className="flex h-[var(--control-h)] items-center gap-2 whitespace-nowrap text-sm font-medium">
-        <Switch
-          id="document-vatRelevant"
-          checked={checked}
-          disabled={readOnly}
-          onCheckedChange={onCheckedChange}
-          aria-label={texts.vatRelevant}
-        />
-        {texts.vatRelevant}
-      </label>
+      <Field
+        htmlFor="document-vatRelevant"
+        className="shrink-0 [&[data-suggestion=uncertain]_.ds-field-control]:pr-6"
+      >
+        <label className="flex h-[var(--control-h)] items-center gap-2 whitespace-nowrap text-sm font-medium">
+          <Switch
+            id="document-vatRelevant"
+            checked={checked}
+            disabled={readOnly}
+            onCheckedChange={onCheckedChange}
+            aria-label={texts.vatRelevant}
+          />
+          {texts.vatRelevant}
+        </label>
       </Field>
       {counterpartyStatus}
       {checked && status ? (

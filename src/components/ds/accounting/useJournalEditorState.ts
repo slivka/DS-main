@@ -216,7 +216,10 @@ export function useJournalEditorState(
     [normalizedLines, search],
   );
   const pins = useJournalPins();
-  const clearSuggestions = useJournalSuggestionClear(props.rowSuggestions, props.onSuggestionCleared);
+  const clearSuggestions = useJournalSuggestionClear(
+    props.rowSuggestions,
+    props.onSuggestionCleared,
+  );
   const patch = (id: string, values: Partial<JournalLine>) => {
     touchedRows.current.add(id);
     const current = lines.find((line) => line.id === id);
