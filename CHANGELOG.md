@@ -2,6 +2,10 @@
 
 ## 2.137.0 (nevydáno)
 
+- Doplněk 3 po CI 40008549305: pouze test identity v `vs-lock-2108.spec.ts` přijímá jeden control-h, nebo při `data-stacked=true` dva control-h + mezeru a ověřuje bounding boxy bez překryvu při 360/480 px a maximálním zoomu; nové zalomení zůstává platné.
+- `SplitButton.size?: "default" | "sm"` má výchozí výšku --control-h; všechna tři použití v lištách výslovně zachovávají sm (DocumentNewMenu předá také výslovné default). Katalog obsahuje SplitButton již před vydáním.
+- Ovladač panelu v režimu elsewhere používá šipku otevření a stejný název jako bublina. **Migrace testů APP:** místo názvu „Panel“ hledejte „Otevřít panel“ / „Zavřít panel“. RecordDialogPanelToggle sdílí orámovaný ikonový vzhled bez změny props; jeho title zůstává doplňujícím textem bubliny.
+- Akční bublina návrhu se po odjetí myši zavře s prodlevou 250 ms, přejezd do obsahu zavření zruší; klik/Escape zůstávají. Regrese ověřuje skutečný LookupField s ikonovým tlačítkem a volání FieldSuggestion.action.
 - `IdentityLine` (a tím `DocumentIdentityLine`): nic se nepřekrývá při žádné šířce. Druh dokladu, rok a strana s kódem účtu se nezkracují; název účtu a text stavu se zkracují trojtečkou (stav s bublinou celého textu) a když se pevné položky se stavem nevejdou, přejde stav na druhý řádek (`data-stacked` na `identity-line-row`). Tužka „Změnit účet“ zůstává hned za textem. API beze změny.
 - Pole s nejistým návrhem a ikonovým tlačítkem uvnitř (Dodavatel s adresářem, bankovní účet, přepínače): jediná ikona návrhu vlevo, hodnota odsunutá, nic nepřekrývá text ani tlačítka.
 - `FieldSuggestion.action?: { label; onClick }` – odkazové tlačítko v bublině „ke kontrole“ (např. „Založit dodavatele z dokladu“); ikona je pak tlačítko, bublina se otevře najetím, klikem i Enterem, akce je dostupná klávesnicí a bublina se po kliku zavře.

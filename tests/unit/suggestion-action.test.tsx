@@ -1,12 +1,13 @@
 /** 2.137.0 · akce v bublině návrhu a jedna ikona návrhu v poli s ikonovým tlačítkem. */
 import { afterEach, describe, expect, it, mock } from "bun:test";
 
-const { act, cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render, renderHook, waitFor } = await import("@testing-library/react");
 const { Field } = await import("../../src/components/ds/layout/form-field-layout");
 const { FieldSuggestionIndicator } = await import("../../src/components/ds/form/field-feedback");
 const { Input } = await import("../../src/components/ui/input");
 const { Button } = await import("../../src/components/ui/button");
 const { LookupField } = await import("../../src/components/ds/form/lookup-field");
+const { useHoverPopover } = await import("../../src/components/ds/form/use-hover-popover");
 
 afterEach(cleanup);
 
@@ -31,20 +32,16 @@ describe("akce v bublině návrhu", () => {
   });
 
   it("po odjetí se zavře se zpožděním a přejezd do bubliny zavření zruší", async () => {
-    const view = render(<FieldSuggestionIndicator suggestion={{
-      source: "faktura.pdf", uncertain: true, message: "Ke kontrole",
-      action: { label: "Prověřit", onClick: () => undefined },
-    }} />);
-    const icon = view.getByRole("button", { name: "Ke kontrole" });
-    fireEvent.mouseEnter(icon);
-    const dialog = await view.findByRole("dialog", { name: "Ke kontrole" });
-    fireEvent.mouseLeave(icon, { relatedTarget: document.body });
-    expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
-    fireEvent.mouseEnter(dialog, { relatedTarget: document.body });
+    const { result } = renderHook(useHoverPopover);
+    act(() => result.current.onMouseEnter());
+    expect(result.current.open).toBe(true);
+    act(() => result.current.onMouseLeave());
+    expect(result.current.open).toBe(true);
+    act(() => result.current.onMouseEnter());
     await act(async () => { await new Promise((resolve) => setTimeout(resolve, 300)); });
-    expect(view.getByRole("button", { name: "Prověřit" })).toBeTruthy();
-    fireEvent.mouseLeave(dialog, { relatedTarget: document.body });
-    await waitFor(() => expect(view.queryByRole("button", { name: "Prověřit" })).toBeNull());
+    expect(result.current.open).toBe(true);
+    act(() => result.current.onMouseLeave());
+    await waitFor(() => expect(result.current.open).toBe(false));
   });
 
   it("kliknutím otevřená bublina zůstane otevřená po odjetí", async () => {

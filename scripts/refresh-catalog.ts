@@ -12,6 +12,7 @@ import { enrichPaymentScheduleCatalog } from "./payment-schedule-catalog";
 import { enrichInvoicePrintCatalog } from "./invoice-print-catalog";
 import { enrichColumnFormatCatalog } from "./column-format-catalog";
 import { enrichExtractionDocumentCatalog } from "./extraction-document-catalog";
+import { enrichSplitButtonCatalog } from "./split-button-catalog";
 
 interface CatalogProp {
   name: string;
@@ -186,6 +187,7 @@ export function refreshCatalog() {
     }
   }
   const columnFormatComponents = enrichColumnFormatCatalog(catalog.components);
+  const splitButtonComponents = enrichSplitButtonCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -245,6 +247,7 @@ export function refreshCatalog() {
       ...fileImportComponents,
       ...columnFormatComponents,
       ...invoicePrintComponents,
+      ...splitButtonComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";
