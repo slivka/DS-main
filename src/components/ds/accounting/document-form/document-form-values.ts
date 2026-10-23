@@ -112,6 +112,8 @@ export type DocumentFormError = {
 export interface DocumentIdentity {
   variant: DocumentIdentityVariant;
   book: string;
+  /** Kód knihy při extrémní šířce; bez něj se použije první část názvu. */
+  bookCode?: string;
   period: string;
   account?: { side: "MD" | "DAL"; label: string; editable?: boolean; disabledReason?: string };
   number?: string | null;

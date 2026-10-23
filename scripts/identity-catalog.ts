@@ -9,8 +9,11 @@ export function enrichIdentityCatalog(components: PanelCatalogComponent[]) {
   identity.props ??= [];
   if (!identity.props.some((prop) => prop.name === "fallbackShort"))
     identity.props.push({ name: "fallbackShort", type: "string" });
+  for (const name of ["bookCode", "fullLabel"])
+    if (!identity.props.some((prop) => prop.name === name))
+      identity.props.push({ name, type: "string" });
   identity.usage =
-    "Identita se nikdy nezalamuje a má vždy jednu výšku --control-h. Nejdříve ustupuje název účtu, pak plný fallback nahradí fallbackShort, pak se zkracuje krátký stav a nakonec kniha. Rok, strana a kód účtu zůstávají celé. Plný fallback zůstává v bublině a přístupném názvu. Jediný ResizeObserver a hystereze brání kmitání. Písmo ani měřítko se nezmenšují; hostitel musí rezervovat prostor pro pevné hodnoty.";
+    "IdentityLine never wraps: jedna výška --control-h. Ústup: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy → bookCode → samotný kód účtu → ikona stavu → ořez levé části na hraně. Pravá část nikdy nepřekreslí levou a skutečné číslo se nezkracuje. fullLabel zpřístupňuje celou identitu v bublině i aria-label. Plný fallback zůstává dostupný i u ikony. Písmo ani měřítko se nezmenšují; jediný ResizeObserver a hystereze brání kmitání.";
   identity.examples ??= [];
   const example = {
     label: "Koncept v úzkém formuláři",
