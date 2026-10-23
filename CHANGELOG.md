@@ -11,7 +11,7 @@
 - `SplitButton` nově používají všechna místa DS, kde bylo tlačítko + samostatná šipka: `GridAddActions` (akce s `menu`, např. Příjem / Výdaj v Bance), `DocumentNewMenu` s `onPrimary` a „Odečet zálohy“ v `JournalLinesEditor`. APP, která skládá vlastní dvojici tlačítek, ji nahradí `SplitButton`.
 - Breaking-ish: přístupný název šipky je nově „Další možnosti – <akce>“ (dříve „<akce> – Nabídka“ / „Odečet zálohy – Akce“); testy APP, které šipku hledají podle názvu, je třeba upravit. Nový text `recordAction.moreOptionsFor` (CS/SK).
 - Ukázka „Úzký formulář s návrhem“ na stránce Panel záznamu (480 px, nejistý Dodavatel s akcí).
-- Ověření: 3 nové unit testy; nový `identity-line-overlap.spec.ts` (420 / 480 / 640 px bez překryvu, tužka ≤ 12 px) spolu se `small-edits-one.spec.ts` a `extraction.spec.ts` Chromium 5/5; check:full --harness 1 433/1 433 ve 149 souborech (po doplňku), katalog 485 → 485 / 1 213 → 1 213, 0 odebrání (pole typů katalog nesleduje).
+- Ověření: 3 nové unit testy; nový `identity-line-overlap.spec.ts` (420 / 480 / 640 px bez překryvu, tužka ≤ 12 px) spolu se `small-edits-one.spec.ts` a `extraction.spec.ts` Chromium 5/5; check:full --harness 1 438/1 438 ve 150 souborech (po doplňcích), katalog 485 → 485 / 1 213 → 1 213, 0 odebrání (pole typů katalog nesleduje).
 
 ## 2.136.0
 
