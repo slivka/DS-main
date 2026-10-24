@@ -79,7 +79,7 @@ export function DimensionValuePicker({
               title={value.inactive ? t.ended : undefined}
               data-inherited={value.inherited || undefined}
               className={cn(
-                "h-[var(--control-h)] min-w-0 justify-start rounded-none px-2 font-normal",
+                "h-[var(--control-h)] w-full min-w-0 justify-start rounded-none px-2 font-normal",
                 (value.inherited || value.inactive) && "text-muted-foreground",
                 value.inherited === false && "font-semibold text-primary",
               )}
@@ -91,7 +91,7 @@ export function DimensionValuePicker({
                 }
               }}
             >
-              <span className="truncate">
+              <span className="min-w-0 truncate">
                 {type.label}: {value.label || t.choose}
               </span>
             </Button>

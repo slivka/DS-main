@@ -44,7 +44,7 @@ export function JournalRowDimensions({ line }: { line: JournalLine }) {
       dimensions: side === "both" ? { MD: values, D: values } : { ...dimensions, [side]: values },
     });
   return (
-    <div className="flex min-w-0 flex-1 flex-wrap gap-3" data-slot="journal-dimensions-detail">
+    <div className="flex min-w-0 basis-full flex-wrap gap-3" data-slot="journal-dimensions-detail">
       {sides.map((side) => {
         const own = side === "D" ? dimensions.D : dimensions.MD;
         const label =
