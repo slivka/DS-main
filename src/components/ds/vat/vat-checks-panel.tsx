@@ -5,6 +5,8 @@ import { TooltipProvider } from "../../ui/tooltip";
 import { OptionSelect } from "../form/option-select";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import type { VatReportStateProps } from "./vat-report-types";
+import { VatReportState } from "./vat-report-state";
 /** Nález dodaný APP. */
 export interface VatCheckItem {
   /** Klíč nálezu. */ id: string;
@@ -14,7 +16,7 @@ export interface VatCheckItem {
   /** ID souvisejícího dokladu. */ documentId?: string;
 }
 /** Parametry kontrol. */
-export interface VatChecksPanelProps extends ComponentPropsWithoutRef<"div"> {
+export interface VatChecksPanelProps extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
   /** Nálezy. */ items: VatCheckItem[];
   /** Otevření dokladu. */ onDocumentOpen?: (id: string) => void;
   /** Řízený filtr; bez něj místní. */ severity?: VatCheckItem["severity"] | "all";
@@ -23,7 +25,7 @@ export interface VatChecksPanelProps extends ComponentPropsWithoutRef<"div"> {
 /** Nálezy s filtrem a celkovým počtem. */
 export const VatChecksPanel = forwardRef<HTMLDivElement, VatChecksPanelProps>(
   function VatChecksPanel(
-    { items, onDocumentOpen, severity, onSeverityChange, className, ...props },
+    { items, onDocumentOpen, severity, onSeverityChange, loading, error, className, ...props },
     ref,
   ) {
     const texts = useDsTexts();
@@ -54,27 +56,29 @@ export const VatChecksPanel = forwardRef<HTMLDivElement, VatChecksPanelProps>(
             }}
           />
         </header>
-        <TooltipProvider>
-          <CheckList
-            items={items
-              .filter((item) => current === "all" || item.severity === current)
-              .map((item) => ({
-                id: item.id,
-                severity: item.severity,
-                title: item.text,
-                detail: item.detail,
-                action:
-                  item.documentId && onDocumentOpen
-                    ? {
-                        label: t.openDocument,
-                        onClick: () => {
-                          if (item.documentId) onDocumentOpen(item.documentId);
-                        },
-                      }
-                    : undefined,
-              }))}
-          />
-        </TooltipProvider>
+        <VatReportState loading={loading} error={error}>
+          <TooltipProvider>
+            <CheckList
+              items={items
+                .filter((item) => current === "all" || item.severity === current)
+                .map((item) => ({
+                  id: item.id,
+                  severity: item.severity,
+                  title: item.text,
+                  detail: item.detail,
+                  action:
+                    item.documentId && onDocumentOpen
+                      ? {
+                          label: t.openDocument,
+                          onClick: () => {
+                            if (item.documentId) onDocumentOpen(item.documentId);
+                          },
+                        }
+                      : undefined,
+                }))}
+            />
+          </TooltipProvider>
+        </VatReportState>
       </div>
     );
   },
