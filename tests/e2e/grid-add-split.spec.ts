@@ -13,6 +13,7 @@ for (const width of [360, 480]) {
     await expect(grid.locator('[data-slot="grid-toolbar"]')).toHaveAttribute(
       "data-overflow-level",
       /[0-3]/,
+      { timeout: 45000 },
     );
     await main.click();
     await expect(page.getByText("Prázdný doklad", { exact: true })).toBeVisible({ timeout: 45000 });

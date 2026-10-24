@@ -12,6 +12,7 @@ export function enrichDocumentLocks(components: Component[]) {
   const bank = components.find((c) => c.name === "BankStatementForm");
   for (const [component, name, type] of [
     [form, "fieldLockedReasons", "Partial<Record<DocumentHeaderField, string>>"],
+    [form, "lockedReason", "Partial<Record<DocumentHeaderField, string>>"],
     [bank, "menuActions", "RecordMoreAction[]"],
   ] as const) {
     if (!component) continue;
@@ -19,6 +20,9 @@ export function enrichDocumentLocks(components: Component[]) {
     if (!component.props.some((p) => p.name === name)) component.props.push({ name, type });
   }
   if (form) {
+    const alias = form.props?.find(p => p.name === "fieldLockedReasons");
+    if (alias) alias.type = "Partial<Record<DocumentHeaderField, string>> (@deprecated: lockedReason; odstranění 3.0.0)";
+    if (!form.usage?.includes("lockedReason (2.139.0)")) form.usage = (form.usage ?? "") + " lockedReason (2.139.0) přímo zakáže úpravu libovolného pole hlavičky a má přednost před fieldLockedReasons i vat.dateLockReadOnly; oba staré vstupy zůstávají aliasy do 3.0.0. Platí pro faktury i zálohové listy.";
     const text =
       " fieldLockedReasons: jen needitovatelná pole přes FieldValue lockedReason; obecný důvod předchází součtu Σ, currencyDisabledReason a counterpartyInputLockedReason. IBAN režim: bankIban před bankAccount, bankSwift před bankCode; paymentReference pro referenci. Ruční protistrana: counterpartyName před partnerId. Zamčené datum sdílí šířku DateField; odkaz chyby zaměří zámek. Platí pro faktury i zálohové listy.";
     if (!form.usage?.includes("fieldLockedReasons:")) form.usage = (form.usage ?? "") + text;
