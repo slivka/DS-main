@@ -3,7 +3,7 @@ import { DataGrid } from "../grid/DataGrid";
 import type { DataGridColumn } from "../grid/data-grid-types";
 import { GridRowMenu } from "../grid/grid-active-status";
 import { useDsTexts } from "../../../ds-texts";
-import { formatDateTime } from "../../../lib/format";
+import { formatDate } from "../../../lib/format";
 import { statementUnitLabel } from "./financial-statement-view";
 import type { SavedStatement } from "./statement-types";
 
@@ -58,7 +58,7 @@ export function SavedStatementList({
     {
       id: "savedAt",
       label: t.savedAt,
-      value: (row) => formatDateTime(row.savedAt),
+      value: (row) => `${formatDate(row.savedAt)} ${row.savedAt.slice(11, 16)}`.trim(),
       sortValue: (row) => row.savedAt,
       defaultSortDirection: "desc",
     },
