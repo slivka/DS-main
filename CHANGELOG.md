@@ -2,6 +2,14 @@
 
 ## 2.141.0 (nevydáno)
 
+### Dobropisy – záporné částky a vazba na původní doklad
+
+- `PaymentScheduleEditor`: doklad se záporným celkem přijme záporné splátky a ukáže záporný zbytek; „Přidat" předvyplní záporný zbytek místo ořezu na nulu; kontrola součtu splátek = celek platí se znaménkem. Kladné doklady beze změny.
+- `generatePaymentSchedule`: rozpis na N splátek u záporného celku dává záporné splátky se zbytkem v poslední (−1 210 / 3 → −403,33 / −403,33 / −403,34); pozastávka (částkou i procenty) u záporného celku je záporná a nikdy nepřepne znaménko.
+- `DocumentForm.correctsDocument`: nové volitelné pole „Opravuje doklad" v základních údajích FV/FP – hledatelný výběr původního dokladu z dat APP, odkaz na otevření (`onOpen`), zrušení vazby (`onChange(null)`) a `lockedReason` (FieldValue se zámkem). Data, kandidáty i ukládání dodává APP; bez propů se pole nevykreslí a ostatní typy se nemění. Text `DocumentFormTexts.correctsDocument`.
+- Ukázka dobropisu v katalogu (záporný celek, vazba, záporný kalendář).
+- Ověření: 10 nových unit testů (`credit-note-2141.test.tsx`) 10/10. Nevydáno.
+
 ### Drobná API a vzhled pro APP
 
 - `DocumentSettingsDialog`: nové řízené props `accountingDateFollowsIssue`, `onAccountingDateFollowsIssueChange` a `accountingDateFollowsIssueDisabled` (důvod v bublině); přepínač „Datum účetního případu podle data vystavení" se ukládá tlačítkem Uložit. Zámek pole Datum účetního případu ve formuláři řídí APP přes `lockedReason` jako dosud.

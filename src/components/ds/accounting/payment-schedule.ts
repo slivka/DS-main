@@ -66,10 +66,11 @@ export function generatePaymentSchedule(
   params: PaymentScheduleParams,
 ): PaymentScheduleItem[] {
   const count = Math.max(1, Math.floor(params.count));
+  // Dobropis: záporný celek dává záporné splátky i pozastávku; znaménko se nikdy nepřepíná.
   const retention =
     params.retentionPercent != null && params.retentionPercent > 0
       ? round2((total * params.retentionPercent) / 100)
-      : params.retentionAmount != null && params.retentionAmount > 0
+      : params.retentionAmount != null && params.retentionAmount !== 0
         ? round2(params.retentionAmount)
         : 0;
   const toSplit = round2(total - retention);
@@ -88,7 +89,7 @@ export function generatePaymentSchedule(
       description: params.installmentDescription ?? `Splátka ${i + 1}/${count}`,
     });
   }
-  if (retention > 0) {
+  if (retention !== 0) {
     items.push({
       kind: "retention",
       dueDate: params.retentionDueDate ?? items[items.length - 1].dueDate,
