@@ -47,8 +47,8 @@ export function journalCategoryInputs(props: JournalLinesEditorProps): JournalLi
     categories: props.categories ?? legacyDimensionCategories(props.dimensions),
     onEditCategory: props.onEditCategory ?? props.onEditDimension,
     onCreateCategory: props.onCreateCategory ?? props.onCreateDimension,
-    categoryRequired: props.categoryRequired ?? props.dimensionRequired,
-    categoryBySide: props.categoryBySide ?? (props.mode ?? "internal") === "internal",
+    categoryRequired: props.categoriesEnabled === false ? false : props.categoryRequired ?? props.dimensionRequired,
+    categoryBySide: props.bookkeepingMode === "tax_records" ? false : props.categoryBySide ?? (props.mode ?? "internal") === "internal",
     rowSuggestions: suggestions,
     onSuggestionCleared: (key, rowId) =>
       props.onSuggestionCleared?.(

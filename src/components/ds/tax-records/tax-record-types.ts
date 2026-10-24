@@ -33,7 +33,7 @@ export interface TaxBookFilters {
 export interface TaxCategoryRow {
   id: string;
   label: string;
-  paragraph: "7" | "8" | "9" | "10";
+  paragraph: "7" | "8" | "9" | "10" | "";
   income: number;
   expense: number;
   /** Výsledek, procento a strop dodává APP; DS je nepřepočítává. */

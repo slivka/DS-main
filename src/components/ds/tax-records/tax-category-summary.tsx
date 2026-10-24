@@ -49,7 +49,7 @@ export const TaxCategorySummary = forwardRef<HTMLDivElement, TaxCategorySummaryP
     const unassigned: TaxCategoryRow = {
       id: "__unassigned__",
       label: t.unassigned,
-      paragraph: "7",
+      paragraph: "",
       income: unassignedAmount,
       expense: 0,
     };

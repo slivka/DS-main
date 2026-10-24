@@ -163,7 +163,7 @@ export function useJournalEditorState(
         bookkeepingMode,
         taxItemLabels: dsTexts.taxRecords,
         taxMovementKind: props.taxMovementKind,
-        mainSide,
+        mainSide: mainSide ?? (props.taxMovementKind === "non_cash_expense" ? "D" : "MD"),
         categoriesEnabled: props.categoriesEnabled,
         labels,
         counterShortLabel,
