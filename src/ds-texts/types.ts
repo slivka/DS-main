@@ -54,6 +54,8 @@ export interface DsTexts {
   taxRecords: import("./tax-record-texts").TaxRecordTexts;
   /** Přiznání, hlášení a podání DPH. */
   vatReports: import("./vat-report-texts").VatReportTexts;
+  /** Výkazy – rozvaha, výsledovka, uložené výkazy a šablony. */
+  statements: import("./statement-texts").StatementTexts;
   /** Obecné dimenze. */
   dimensions: import("./dimension-texts").DimensionTexts;
   /** Tisk vydané faktury a jeho pole. */
