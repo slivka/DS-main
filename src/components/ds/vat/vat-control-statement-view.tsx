@@ -155,7 +155,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
               <TabsContent value={section} key={section}>
                 {section === "A5" || section === "B3" ? (
                   <DataGrid
-                    title={`${t.controlTitle} · ${section}`}
+                    title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
                     storageKey={`${storageKey}:${section}`}
                     rows={sections[section]?.summary ?? []}
                     columns={summaryColumns}
@@ -164,12 +164,10 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
                   />
                 ) : (
                   <DataGrid
-                    title={`${t.controlTitle} · ${section}`}
+                    title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
                     storageKey={`${storageKey}:${section}`}
                     rows={sections[section]?.documents ?? []}
-                    columns={columns.filter(
-                      (c) => c.id !== "subject" || section === "A1" || section === "B1",
-                    )}
+                    columns={sectionColumns(section, sections[section]?.documents ?? [])}
                     rowKey={(r) => r.id}
                     onRowOpen={(r) => onDocumentOpen?.(r.id)}
                   />
@@ -178,6 +176,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
             ))}
           </PageTabs>
         </div>
+        </VatReportState>
       </div>
     );
   },
