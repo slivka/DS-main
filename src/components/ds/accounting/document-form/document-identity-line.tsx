@@ -10,7 +10,7 @@ import { TruncatedText } from "../../data-display/truncated-text";
 import { FieldSuggestionContext } from "../../form/field-suggestion-context";
 import { FieldFeedbackContext, FieldSuggestionIndicator } from "../../form/field-feedback";
 import { useDsTexts } from "../../../../ds-texts";
-import { Pencil } from "lucide-react";
+import { Pencil, Lock } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { AccountSelect, type AccountOption } from "../account-select";
@@ -57,6 +57,7 @@ export function DocumentIdentityLine({
   onAccountChange,
   onAccountClose,
   accountOptions,
+  lockedReason,
 }: {
   identity: DocumentIdentity;
   direction?: DocumentDirection;
@@ -71,6 +72,8 @@ export function DocumentIdentityLine({
   onAccountChange: (code: string) => void;
   onAccountClose: () => void;
   accountOptions: AccountOption[];
+  /** Obecný zámek hlavního účtu s důvodem. */
+  lockedReason?: string;
 }) {
   const number = identity.number || null;
   const dsTexts = useDsTexts();
@@ -94,8 +97,13 @@ export function DocumentIdentityLine({
       {identity.period}
     </span>,
   ];
-  const pencil =
-    !editingAccount && canEditAccount && account ? (
+  const pencil = lockedReason && account ? (
+    <DisabledReasonTooltip content={lockedReason} blocked>
+      <Button variant="ghost" size="icon" className="size-4 shrink-0 p-0 text-muted-foreground" aria-label={lockedReason}>
+        <Lock className="size-4" aria-hidden="true" />
+      </Button>
+    </DisabledReasonTooltip>
+  ) : !editingAccount && canEditAccount && account ? (
       account.disabledReason ? (
         <DisabledReasonTooltip content={account.disabledReason} blocked>
           <span

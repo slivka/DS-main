@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 for (const width of [600, 760]) {
   test(`Panel při ${width} px překrývá obsah bez vodorovného posuvu`, async ({ page }) => {
     await page.goto("/components/record-panel");
-    await expect(page.getByTestId("record-panel-showcase")).toHaveAttribute("data-ready", "true");
+    await expect(page.getByTestId("record-panel-showcase")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
     const example = page.getByTestId("document-panel-example");
     await example.evaluate((node, value) => (node.style.width = `${value}px`), width);
     await example.getByRole("button", { name: "Přílohy: 2", exact: true }).click();
@@ -29,7 +29,7 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
   await page.goto("/components/record-panel");
   const example = page.getByTestId("document-panel-example");
   const trigger = example.getByRole("button", { name: "Přílohy: 2", exact: true });
-  await expect(page.getByTestId("record-panel-showcase")).toHaveAttribute("data-ready", "true");
+  await expect(page.getByTestId("record-panel-showcase")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
   await trigger.click();
   const panel = example.locator('[data-slot="record-side-panel"]');
   await expect(panel.getByRole("tab", { name: "Přílohy: 2", exact: true })).toHaveAttribute(

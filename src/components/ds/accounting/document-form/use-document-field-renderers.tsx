@@ -9,6 +9,7 @@ import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
 import { LockedDocumentDate } from "./locked-document-date";
 import { FieldValue } from "../../form/field-value";
+import { fmtAmount } from "../../../../lib/format";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
 import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
@@ -78,7 +79,7 @@ export function useDocumentFieldRenderers({
           aria-labelledby={`${id}-label`}
           lockedReason={lockReason(headerFieldKey(id))}
         >
-          {String(value[headerFieldKey(id)] ?? "")}
+          {typeof value[headerFieldKey(id)] === "number" ? fmtAmount(Number(value[headerFieldKey(id)]), headerFieldKey(id) === "rate" ? 4 : 2) : String(value[headerFieldKey(id)] ?? "")}
         </FieldValue>
       ) : (
         control
