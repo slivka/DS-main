@@ -14617,6 +14617,300 @@
       "antipatterns": [
         "Nevytvářejte vlastní paletu nebo ukládání mimo GridLayout.styles."
       ]
+    },
+    {
+      "name": "FinancialStatementView",
+      "file": "src/components/ds/statements/financial-statement-view.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Rozvaha nebo výsledovka jako strom řádků s přepínačem jednotek, kontrolami, prokliky a exportem; editable povolí jen hodnoty nesoučtových řádků.",
+      "props": [
+        {
+          "name": "kind",
+          "type": "enum",
+          "values": [
+            "balance",
+            "income"
+          ]
+        },
+        {
+          "name": "rows",
+          "type": "StatementRow[]"
+        },
+        {
+          "name": "columns",
+          "type": "StatementValueColumn[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "unit",
+          "type": "enum",
+          "values": [
+            "full",
+            "thousands"
+          ]
+        },
+        {
+          "name": "defaultUnit",
+          "type": "enum",
+          "values": [
+            "full",
+            "thousands"
+          ]
+        },
+        {
+          "name": "onUnitChange",
+          "type": "(unit: StatementUnit) => void"
+        },
+        {
+          "name": "checks",
+          "type": "StatementCheck[]"
+        },
+        {
+          "name": "onRowOpen",
+          "type": "(row: StatementRow) => void"
+        },
+        {
+          "name": "editable",
+          "type": "boolean"
+        },
+        {
+          "name": "onValuesChange",
+          "type": "(patch: StatementValuePatch) => void"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "printContext",
+          "type": "PrintContext"
+        },
+        {
+          "name": "exportName",
+          "type": "string"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Výkaz z dat APP",
+          "code": "<FinancialStatementView kind=\"balance\" rows={rows} columns={columns} currency={currency} checks={checks} onRowOpen={openAccounts} />"
+        }
+      ],
+      "antipatterns": [
+        "Neměňte strukturu řádků v režimu úprav; součtové řádky vrací APP.",
+        "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB."
+      ]
+    },
+    {
+      "name": "StatementChecksBar",
+      "file": "src/components/ds/statements/statement-checks-bar.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Pruh kontrol Aktiva = Pasiva a HV rozvaha = HV výsledovka se stavem a rozdílem od APP.",
+      "props": [
+        {
+          "name": "checks",
+          "type": "StatementCheck[]"
+        },
+        {
+          "name": "decimals",
+          "type": "number"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Výkaz z dat APP",
+          "code": "<StatementChecksBar checks={[{ kind: \"balance\", ok: true }]} />"
+        }
+      ],
+      "antipatterns": [
+        "Kontroly nevyhodnocujte v DS.",
+        "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB."
+      ]
+    },
+    {
+      "name": "SavedStatementList",
+      "file": "src/components/ds/statements/saved-statement-list.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Grid uložených výkazů s akcemi Otevřít, Přejmenovat, Duplikovat, Smazat (potvrzení) a Nový z účetnictví.",
+      "props": [
+        {
+          "name": "items",
+          "type": "SavedStatement[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "onOpen",
+          "type": "(item: SavedStatement) => void"
+        },
+        {
+          "name": "onRename",
+          "type": "(item: SavedStatement) => void"
+        },
+        {
+          "name": "onDuplicate",
+          "type": "(item: SavedStatement) => void"
+        },
+        {
+          "name": "onDelete",
+          "type": "(item: SavedStatement) => void"
+        },
+        {
+          "name": "onCreateFromLedger",
+          "type": "() => void"
+        },
+        {
+          "name": "loading",
+          "type": "boolean"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Výkaz z dat APP",
+          "code": "<SavedStatementList items={saved} currency={currency} onOpen={openSaved} onDelete={deleteSaved} onCreateFromLedger={createNew} />"
+        }
+      ],
+      "antipatterns": [
+        "Nemažte bez potvrzení; ukládání a mazání provádí APP.",
+        "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB."
+      ]
+    },
+    {
+      "name": "StatementSaveDialog",
+      "file": "src/components/ds/statements/statement-save-dialog.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "RecordDialog uložení výkazu pod názvem s druhem, obdobím a jednotkami.",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void"
+        },
+        {
+          "name": "value",
+          "type": "StatementSaveValue"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: StatementSaveValue) => void"
+        },
+        {
+          "name": "onSubmit",
+          "type": "() => void"
+        },
+        {
+          "name": "periods",
+          "type": "SelectOption[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "errors",
+          "type": "Partial<Record<keyof StatementSaveValue, string>>"
+        },
+        {
+          "name": "error",
+          "type": "enum",
+          "values": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
+          "name": "lockStructure",
+          "type": "boolean"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Výkaz z dat APP",
+          "code": "<StatementSaveDialog open={open} onOpenChange={setOpen} value={draft} onChange={setDraft} periods={periods} currency={currency} onSubmit={save} />"
+        }
+      ],
+      "antipatterns": [
+        "Nezavírejte dialog před úspěšným uložením v APP.",
+        "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB."
+      ]
+    },
+    {
+      "name": "StatementTemplateEditor",
+      "file": "src/components/ds/statements/statement-template-editor.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Správa šablony výkazu: strom řádků, typ součet / mapovaný, mapování účtů a skupin, přidání, odebrání a pořadí přetažením; validace z props.",
+      "props": [
+        {
+          "name": "rows",
+          "type": "StatementTemplateRow[]"
+        },
+        {
+          "name": "onChange",
+          "type": "(rows: StatementTemplateRow[]) => void"
+        },
+        {
+          "name": "mappingOptions",
+          "type": "StatementMappingOption[]"
+        },
+        {
+          "name": "issues",
+          "type": "Record<string, string>"
+        },
+        {
+          "name": "createRowId",
+          "type": "() => string"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Výkaz z dat APP",
+          "code": "<StatementTemplateEditor rows={template} onChange={setTemplate} mappingOptions={accounts} issues={issues} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevalidujte šablonu v DS; chyby předává APP v issues.",
+        "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB."
+      ]
     }
   ],
   "assets": [

@@ -3,7 +3,8 @@ import type { PanelCatalogComponent } from "./record-panel-catalog";
 
 type Definition = [string, string, string, [string, string][], string, string[]];
 
-const ANTI = "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.";
+const ANTI =
+  "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.";
 
 /** Doplní komponenty výkazů bez odebrání existujícího API. */
 export function enrichStatementCatalog(components: PanelCatalogComponent[]) {
