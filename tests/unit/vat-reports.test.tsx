@@ -208,3 +208,47 @@ test("slovenský provider podporuje lištu podání", () => {
   fireEvent.click(screen.getByRole("button", { name: "Vytvoriť podanie" }));
   expect(create).toHaveBeenCalledTimes(1);
 });
+
+test("VatPeriodPicker výběr měsíce předá přesný rozsah APP", async () => {
+  const change = mock();
+  const period = {
+    from: "2026-10-01",
+    to: "2026-10-31",
+    kind: "month" as const,
+    label: "Říjen 2026",
+  };
+  render(<VatPeriodPicker periods={[period]} onChange={change} />);
+  fireEvent.keyDown(screen.getByRole("combobox"), { key: "Ř" });
+  await waitFor(() => expect(screen.getByRole("option", { name: "Říjen 2026" })).toBeDefined());
+  fireEvent.click(screen.getByRole("option", { name: "Říjen 2026" }));
+  expect(change).toHaveBeenCalledWith(period);
+});
+
+test("VatChecksPanel změna filtru hlásí závažnost a rodič řídí seznam", async () => {
+  const change = mock();
+  const items = [
+    { id: "e", severity: "error" as const, text: "Chybí DIČ" },
+    { id: "i", severity: "info" as const, text: "Informativní nález" },
+  ];
+  const view = render(<VatChecksPanel items={items} severity="all" onSeverityChange={change} />);
+  fireEvent.pointerDown(screen.getByRole("combobox"), { button: 0, ctrlKey: false });
+  await waitFor(() => expect(screen.getByRole("option", { name: "Chyba" })).toBeDefined());
+  fireEvent.click(screen.getByRole("option", { name: "Chyba" }));
+  expect(change).toHaveBeenCalledWith("error");
+  view.rerender(<VatChecksPanel items={items} severity="error" onSeverityChange={change} />);
+  expect(screen.queryByText("Informativní nález")).toBeNull();
+});
+
+test("VatControlStatementView A5 zobrazuje souhrn bez prokliku dokladu", () => {
+  const open = mock();
+  render(
+    <VatControlStatementView
+      currency="EUR"
+      activeSection="A5"
+      sections={{ A5: { summary: [{ rate: 12, base: 7000.25, tax: 840.03 }] } }}
+      onDocumentOpen={open}
+    />,
+  );
+  fireEvent.doubleClick(screen.getByText("12 %"));
+  expect(open).not.toHaveBeenCalled();
+});
