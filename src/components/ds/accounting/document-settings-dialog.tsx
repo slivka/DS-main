@@ -124,14 +124,21 @@ export function DocumentSettingsDialog({
   documentTypeLabel,
   allowCounterpartySuggestions = false,
   showVatCalcMode = false,
+  accountingDateFollowsIssue,
+  onAccountingDateFollowsIssueChange,
+  accountingDateFollowsIssueDisabled,
   busy,
   texts,
 }: DocumentSettingsDialogProps) {
   const t = { ...DEFAULT_DOCUMENT_SETTINGS_TEXTS, ...texts };
   const [draft, setDraft] = useState(value);
+  const [followsDraft, setFollowsDraft] = useState(accountingDateFollowsIssue ?? false);
   useEffect(() => {
-    if (open) setDraft(value);
-  }, [open, value]);
+    if (open) {
+      setDraft(value);
+      setFollowsDraft(accountingDateFollowsIssue ?? false);
+    }
+  }, [open, value, accountingDateFollowsIssue]);
   const patch = (next: Partial<DocumentSettingsValue>) =>
     setDraft((current) => ({ ...current, ...next }));
   const scopes = [
@@ -149,7 +156,10 @@ export function DocumentSettingsDialog({
       busy={busy}
       submitLabel={t.save}
       cancelLabel={t.cancel}
-      onSubmit={() => void onSave(draft)}
+      onSubmit={() => {
+        if (onAccountingDateFollowsIssueChange) onAccountingDateFollowsIssueChange(followsDraft);
+        void onSave(draft);
+      }}
     >
       <FormSection title={t.entrySection}>
         <CheckboxField
@@ -214,6 +224,16 @@ export function DocumentSettingsDialog({
               ]}
             />
           </div>
+        ) : null}
+        {onAccountingDateFollowsIssueChange ? (
+          <span title={accountingDateFollowsIssueDisabled} className="block">
+            <CheckboxField
+              checked={followsDraft}
+              onCheckedChange={setFollowsDraft}
+              label={t.accountingDateFollowsIssue}
+              disabled={Boolean(accountingDateFollowsIssueDisabled)}
+            />
+          </span>
         ) : null}
         <CheckboxField
           checked={draft.showQuantityColumns}
