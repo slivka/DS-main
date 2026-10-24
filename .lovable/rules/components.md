@@ -8483,3 +8483,338 @@ import { ZoomGrid } from "@/design-system/{slug}";
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### BankStatementReconcileView
+
+```tsx
+import { BankStatementReconcileView } from "@/design-system/{slug}";
+```
+
+Rozpis bankovního výpisu s rozpoznáním: filtry stavu, editovatelné řádky, návrh pod aktivním pohybem, souhrn a Ctrl/Cmd+Enter pro přijetí návrhu. Rozpoznání i zařazení provádí APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `storageKey` | string | `—` |
+| `rows` | BankMovementRow[] | `—` |
+| `accounts` | AccountOption[] | `—` |
+| `partners` | { id: string; name: string; ico?: string; active?: boolean }[] | `—` |
+| `onPatch` | (rowId: string, patch: Partial<BankMovementRow>) => void | `—` |
+| `onAcceptSuggestion` | (rowId: string, candidateId?: string) => void | `—` |
+| `onRejectSuggestion` | (rowId: string) => void | `—` |
+| `onFileCertain` | () => void | `—` |
+| `onFileSelected` | (ids: string[]) => void | `—` |
+| `onAcceptSelected` | (ids: string[]) => void | `—` |
+| `onRecognize` | () => void | `—` |
+| `onCreateRule` | (rowId: string) => void | `—` |
+| `onOpenDocument` | (id: string) => void | `—` |
+| `importInfo` | BankImportInfo | `—` |
+| `summary` | BankReconcileSummary | `—` |
+| `bookkeepingMode` | BookkeepingMode | `—` |
+| `categoriesEnabled` | boolean | `—` |
+| `categorySelect` | (row: BankMovementRow) => ReactNode | `—` |
+| `dimensionValues` | (row: BankMovementRow) => { label: string; inactive?: boolean }[] | `—` |
+| `sourceLabel` | (row: BankMovementRow) => string \| null | `—` |
+| `busy` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+
+**Příklad:**
+
+```tsx
+<BankStatementReconcileView rows={rows} summary={summary} accounts={accounts} partners={partners} onPatch={updateRow} onAcceptSuggestion={accept} onRejectSuggestion={reject} onFileSelected={fileRows} />
+```
+
+**Nepoužívat:** Nerozpoznávejte ani nepárujte pohyby v DS; kandidáty a stav dodává APP.
+
+### BankReconcileSuggestionRow
+
+```tsx
+import { BankReconcileSuggestionRow } from "@/design-system/{slug}";
+```
+
+Řádek návrhu pod pohybem: kandidát úhrady a akce Přijmout / Odmítnout.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `row` | BankMovementRow | `—` |
+| `onAccept` | (rowId: string, candidateId?: string) => void | `—` |
+| `onReject` | (rowId: string) => void | `—` |
+| `onCandidateChange` | (rowId: string, candidateId: string) => void | `—` |
+| `currencySymbol` | string | `—` |
+| `readOnly` | boolean | `—` |
+
+**Příklad:**
+
+```tsx
+<BankReconcileSuggestionRow row={row} currencySymbol={row.currency} onAccept={accept} onReject={reject} />
+```
+
+**Nepoužívat:** Nepoužívejte pro pohyb bez návrhu; komponenta pak nic nevykreslí.
+
+### BankConnectionSettings
+
+```tsx
+import { BankConnectionSettings } from "@/design-system/{slug}";
+```
+
+Nastavení napojení banky (Fio): token se jen zadává a po uložení se nikdy nezobrazí, zobrazí se jen kdy a kdo ho uložil; interval, stahování od data a ochranná lhůta.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | BankConnectionValue | `—` |
+| `onChange` | (value: BankConnectionValue) => void | `—` |
+| `onTokenSave` | (token: string, kind: "read" \| "payments") => void \| Promise<void> | `—` |
+| `onTest` | () => void | `—` |
+| `onFetchNow` | () => void | `—` |
+| `nextAvailableAt` | string \| null | `—` |
+| `onPausedChange` | (paused: boolean) => void | `—` |
+| `onDisconnect` | () => void | `—` |
+| `minFetchFrom` | string | `—` |
+| `readOnly` | boolean | `—` |
+| `busy` | boolean | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<BankConnectionSettings value={connection} onChange={setConnection} onTokenSave={saveToken} onTest={testConnection} onFetchNow={fetchNow} />
+```
+
+**Nepoužívat:** Nikdy nezobrazujte, nelogujte ani nepředvyplňujte uložený token.
+
+### BankConnectionBanner
+
+```tsx
+import { BankConnectionBanner } from "@/design-system/{slug}";
+```
+
+Pruh stavu napojení banky (chyba, neplatný token, čekání) s akcemi dodanými APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `state` | BankConnectionBannerState | `—` |
+| `onFetchNow` | () => void | `—` |
+| `onChangeToken` | () => void | `—` |
+| `fetchCooldownSeconds` | number | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<BankConnectionBanner state={{ tone: "error", reason: errorText }} onChangeToken={openSettings} />
+```
+
+**Nepoužívat:** Nevkládejte do textu pruhu token ani technické chyby banky.
+
+### BankOngoingBadge
+
+```tsx
+import { BankOngoingBadge } from "@/design-system/{slug}";
+```
+
+Štítek průběžného výpisu stahovaného z banky s vysvětlením v bublině.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | string | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<BankOngoingBadge />
+```
+
+**Nepoužívat:** Nepoužívejte pro uzavřený výpis.
+
+### BankRuleList
+
+```tsx
+import { BankRuleList } from "@/design-system/{slug}";
+```
+
+Seřazený seznam pravidel účtování banky na DataGrid: pořadí, podmínky, výsledek, duplikace a vypnutí.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `storageKey` | string | `—` |
+| `rules` | BankRule[] | `—` |
+| `onReorder` | (ids: string[]) => void | `—` |
+| `onAdd` | () => void | `—` |
+| `onEdit` | (id: string) => void | `—` |
+| `onDuplicate` | (id: string) => void | `—` |
+| `onActiveChange` | (id: string, active: boolean) => void | `—` |
+| `readOnly` | boolean | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<BankRuleList rules={rules} onAdd={addRule} onEdit={editRule} onDuplicate={duplicateRule} onActiveChange={toggleRule} />
+```
+
+**Nepoužívat:** Nevyhodnocujte pravidla v DS; pořadí a shodu řeší APP.
+
+### BankRuleDialog
+
+```tsx
+import { BankRuleDialog } from "@/design-system/{slug}";
+```
+
+Dialog pravidla banky: podmínky (protiúčet, text, částka, směr, knihy) a výsledek (účet, partner, popis).
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | (open: boolean) => void | `—` |
+| `isNew` | boolean | `—` |
+| `value` | Pick<BankRule, "name" \| "conditions" \| "result"> | `—` |
+| `onChange` | (value: Pick<BankRule, "name" \| "conditions" \| "result">) => void | `—` |
+| `onSubmit` | () => void | `—` |
+| `accounts` | AccountOption[] | `—` |
+| `partners` | { id: string; name: string; ico?: string; active?: boolean }[] | `—` |
+| `books` | BankRuleBookOption[] | `—` |
+| `categorySelect` | React.ReactNode | `—` |
+| `dimensionSelect` | React.ReactNode | `—` |
+| `previewCount` | number \| null | `—` |
+| `busy` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+
+**Příklad:**
+
+```tsx
+<BankRuleDialog open={open} onOpenChange={setOpen} value={rule} onChange={setRule} onSubmit={saveRule} accounts={accounts} books={books} />
+```
+
+**Nepoužívat:** Nepřidávejte vlastní select; účty vybírejte AccountSelect s bookkeepingMode.
+
+### PaymentOrderBatchView
+
+```tsx
+import { PaymentOrderBatchView } from "@/design-system/{slug}";
+```
+
+Dávka platebních příkazů: výběr závazků, účet partnera jen z dodaných účtů, součty podle měn, kontroly blokující soubor a akce Vytvořit soubor / Odeslat.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `storageKey` | string | `—` |
+| `rows` | PaymentOrderRow[] | `—` |
+| `partnerAccounts` | (row: PaymentOrderRow) => PaymentPartnerAccount[] | `—` |
+| `onPatch` | (rowId: string, patch: Partial<PaymentOrderRow>) => void | `—` |
+| `formats` | PaymentFileFormat[] | `—` |
+| `onCreateFile` | (ids: string[], formatId: string) => void | `—` |
+| `canSendFio` | boolean | `—` |
+| `sendDisabledReason` | string | `—` |
+| `onSendFio` | (ids: string[]) => void | `—` |
+| `onSave` | (ids: string[]) => void | `—` |
+| `today` | string | `—` |
+| `dueFilter` | React.ReactNode | `—` |
+| `bookFilter` | React.ReactNode | `—` |
+| `readOnly` | boolean | `—` |
+| `busy` | boolean | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<PaymentOrderBatchView rows={rows} partnerAccounts={accounts} formats={formats} onPatch={updateRow} onCreateFile={createFile} canSendFio onSendFio={openSend} />
+```
+
+**Nepoužívat:** Nesčítejte částky různých měn do jednoho součtu.
+
+### PaymentOrderSendDialog
+
+```tsx
+import { PaymentOrderSendDialog } from "@/design-system/{slug}";
+```
+
+Potvrzení odeslání plateb do banky opsáním textu; počet a součty podle měn dodává APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | (open: boolean) => void | `—` |
+| `count` | number | `—` |
+| `amounts` | string[] | `—` |
+| `payerAccount` | string | `—` |
+| `approver` | { name: string; status: string } \| null | `—` |
+| `batchLimit` | string | `—` |
+| `dayLimit` | string | `—` |
+| `confirmText` | string | `—` |
+| `onConfirm` | () => Promise<void> | `—` |
+
+**Příklad:**
+
+```tsx
+<PaymentOrderSendDialog open={open} onOpenChange={setOpen} count={count} amounts={amounts} confirmText="ODESLAT" onConfirm={send} />
+```
+
+**Nepoužívat:** Neodesílejte platby bez opsání potvrzovacího textu.
+
+### PaymentOrderBatchList
+
+```tsx
+import { PaymentOrderBatchList } from "@/design-system/{slug}";
+```
+
+Seznam dávek plateb se stavem, staženým souborem a zrušením s povinným důvodem.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `storageKey` | string | `—` |
+| `batches` | PaymentBatch[] | `—` |
+| `onOpen` | (id: string) => void | `—` |
+| `onDownload` | (id: string) => void | `—` |
+| `onCancel` | (id: string, reason: string) => void | `—` |
+| `readOnly` | boolean | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<PaymentOrderBatchList batches={batches} onOpen={openBatch} onDownload={download} onCancel={cancelBatch} />
+```
+
+**Nepoužívat:** Nerušte odeslanou dávku bez důvodu.
+
+### PaymentSentBadge
+
+```tsx
+import { PaymentSentBadge } from "@/design-system/{slug}";
+```
+
+Štítek „Odesláno“ u závazku zařazeného do odeslané dávky.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | string | `—` |
+| `className` | string | `—` |
+
+**Příklad:**
+
+```tsx
+<PaymentSentBadge />
+```
+
+**Nepoužívat:** Nepoužívejte jako stav úhrady; zaplacení potvrzuje výpis.
