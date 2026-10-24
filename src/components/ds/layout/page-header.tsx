@@ -130,7 +130,12 @@ export function PageHeader({
             {titleBadge ? (
               <span className="page-title-badge-slot ml-3">
                 {"\u200b"}
-                <span className="page-title-badge inline-flex items-center">{titleBadge}</span>
+                <span
+                  className="page-title-badge inline-flex items-center"
+                  title={typeof titleBadge === "string" ? titleBadge : undefined}
+                >
+                  {titleBadge}
+                </span>
               </span>
             ) : null}
             {chrome?.dirty ? (

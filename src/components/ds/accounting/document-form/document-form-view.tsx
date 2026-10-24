@@ -176,6 +176,8 @@ export function DocumentFormView({ props, model }: DocumentFormViewProps) {
                     can,
                     onCreatePartner,
                     onEditCounterparty,
+                    favoriteIds: props.favoriteIds,
+                    onToggleFavorite: props.onToggleFavorite,
                     readOnly,
                     field,
                     suggestedText,

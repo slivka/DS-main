@@ -164,6 +164,10 @@ export interface DocumentFormProps {
   /** Důvod, proč měnu nelze změnit; zobrazí se v tooltipu zakázaného výběru. */
   currencyDisabledReason?: string;
   onCreatePartner?: (seed: CounterpartySeed) => void;
+  /** Oblíbení partneři nahoře ve výběru protistrany. */
+  favoriteIds?: string[];
+  /** Přepnutí oblíbeného partnera hvězdičkou ve výběru protistrany. */
+  onToggleFavorite?: (partnerId: string) => void;
   /** Tužka u vybraného partnera – otevře jeho kartu. */
   onEditCounterparty?: (partnerId: string) => void;
   icoLinkTarget?: IcoLinkTarget;

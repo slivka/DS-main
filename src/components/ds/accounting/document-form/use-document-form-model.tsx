@@ -107,7 +107,7 @@ export function useDocumentFormModel(props: DocumentFormProps) {
     t,
   });
   const showTaxNumber =
-    ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID"].includes(code));
+    ["FV", "ZFV", "DDPZ"].includes(code) || (showVatFields && ["BA", "ID"].includes(code));
   const vsLink = useVariableSymbolLink(code, value, patch, dsTexts.documentEdit);
   const {
     issues: formIssueList,

@@ -51,6 +51,10 @@ export interface CounterpartyInputFieldProps {
   onCreatePartner?: (query: string) => void;
   /** Tužka u vybraného partnera. */
   onEditPartner?: (id: string) => void;
+  /** Oblíbení partneři nahoře v nabídce (režim partner). */
+  favoriteIds?: string[];
+  /** Přepnutí oblíbeného partnera hvězdičkou. */
+  onToggleFavorite?: (id: string) => void;
 }
 
 /** Pole protistrany s ikonou přepnutí režimu. */
@@ -98,6 +102,8 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
             disabled={props.disabled || props.readOnly}
             onCreate={props.onCreatePartner}
             onEditSelected={props.onEditPartner}
+            favoriteIds={props.favoriteIds}
+            onToggleFavorite={props.onToggleFavorite}
             className={
               props.onEditPartner && props.partnerId
                 ? "pr-[calc(var(--field-toggle-space)+3.5rem)]"

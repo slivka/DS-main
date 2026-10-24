@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Check, ChevronDown, Download } from "lucide-react";
+import { Check, ChevronDown, Download, Star } from "lucide-react";
 import { SelectSearchAction } from "../form/select-search-action";
 import { FieldInlineActions } from "../form/field-inline-actions";
 
@@ -58,6 +58,8 @@ export function PartnerSelect({
   className,
   onEditSelected,
   editSelectedLabel,
+  favoriteIds,
+  onToggleFavorite,
 }: {
   partners: PartnerOption[];
   value: string | null | undefined;
@@ -85,6 +87,10 @@ export function PartnerSelect({
   onEditSelected?: (id: string) => void;
   /** Přístupný název tužky. */
   editSelectedLabel?: string;
+  /** Oblíbení partneři – řadí se nahoře a mají hvězdičku. */
+  favoriteIds?: string[];
+  /** Přepnutí oblíbeného partnera hvězdičkou v nabídce. */
+  onToggleFavorite?: (id: string) => void;
 }) {
   const dsTexts = useDsTexts();
   const resolvedEditSelectedLabel = editSelectedLabel ?? dsTexts.documentForm.editSelected;
@@ -96,7 +102,18 @@ export function PartnerSelect({
     onOpenChange?.(next);
   };
 
-  const list = useMemo(() => partners.filter((partner) => partner.active !== false), [partners]);
+  const favorites = useMemo(() => new Set(favoriteIds ?? []), [favoriteIds]);
+  const list = useMemo(
+    () =>
+      partners
+        .filter((partner) => partner.active !== false)
+        .sort(
+          (a, b) =>
+            Number(favorites.has(b.id)) - Number(favorites.has(a.id)) ||
+            a.name.localeCompare(b.name, "cs"),
+        ),
+    [favorites, partners],
+  );
   const selected = partners.find((partner) => partner.id === value);
 
   return (
@@ -175,6 +192,36 @@ export function PartnerSelect({
                       <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
                         {partner.ico}
                       </span>
+                    ) : null}
+                    {favorites.has(partner.id) || onToggleFavorite ? (
+                      <button
+                        type="button"
+                        aria-label={
+                          favorites.has(partner.id)
+                            ? dsTexts.selectCreate.favoriteRemove
+                            : dsTexts.selectCreate.favoriteAdd
+                        }
+                        title={
+                          favorites.has(partner.id)
+                            ? dsTexts.selectCreate.favoriteRemove
+                            : dsTexts.selectCreate.favoriteAdd
+                        }
+                        aria-pressed={favorites.has(partner.id)}
+                        disabled={!onToggleFavorite}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onToggleFavorite?.(partner.id);
+                        }}
+                        className="shrink-0 rounded-sm p-0.5 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:hover:text-muted-foreground"
+                      >
+                        <Star
+                          className={cn(
+                            "size-3.5",
+                            favorites.has(partner.id) && "fill-amber-400 text-amber-400",
+                          )}
+                        />
+                      </button>
                     ) : null}
                     {selected?.id === partner.id ? <Check className="size-4" /> : null}
                   </CommandItem>

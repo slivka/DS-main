@@ -84,7 +84,7 @@ export function DocumentFormTop({
         titleBadge={
           <span
             data-slot="document-title-badges"
-            className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"
+            className="inline-flex h-[1.625rem] min-w-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"
           >
             <DocumentStatusBadge status={p.status} approved={p.approved} size="md" />
             {p.titleBadges}

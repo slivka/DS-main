@@ -46,6 +46,10 @@ export interface DocumentBasicSectionProps {
   can: (key: keyof DocumentHeaderValue) => boolean;
   onCreatePartner?: (seed: CounterpartySeed) => void;
   onEditCounterparty?: (partnerId: string) => void;
+  /** Oblíbení partneři nahoře ve výběru protistrany. */
+  favoriteIds?: string[];
+  /** Přepnutí oblíbeného partnera hvězdičkou. */
+  onToggleFavorite?: (partnerId: string) => void;
   readOnly?: boolean;
   field: FieldRenderer;
   suggestedText: (
@@ -159,6 +163,8 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                     : undefined
                 }
                 onEditPartner={onEditCounterparty}
+                favoriteIds={p.favoriteIds}
+                onToggleFavorite={p.onToggleFavorite}
               />
             ),
             14,

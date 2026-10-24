@@ -72,7 +72,7 @@ export function BankMovementAccount({
   return (
     <>
       <SectionHeading>{t.counteraccountSection}</SectionHeading>
-      <div data-slot="bank-movement-account" className="grid grid-cols-20 gap-3">
+      <div data-slot="bank-movement-account" className="mt-3 grid grid-cols-20 gap-3">
         <Field
           label={t.counterpartyAccount}
           htmlFor="document-movement-account"

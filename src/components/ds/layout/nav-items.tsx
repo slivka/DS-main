@@ -1,4 +1,5 @@
 import type { ComponentType, ReactNode } from "react";
+import { Clock } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
 import { TruncatedText } from "../data-display/truncated-text";
@@ -84,12 +85,26 @@ export function NavItemContent({
         <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" />
       ) : null}
       {!collapsed && item.badge != null ? (
-        <span
-          data-slot="shell-nav-badge"
-          className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground"
-        >
-          {item.badge}
-        </span>
+        // Textový odznak (např. „Připravujeme“) se zmenší na ikonu s bublinou,
+        // aby nikdy nezkracoval název položky.
+        typeof item.badge === "string" ? (
+          <span
+            data-slot="shell-nav-badge"
+            role="img"
+            aria-label={item.badge}
+            title={item.badge}
+            className="ml-auto inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-sidebar-badge text-sidebar-badge-foreground"
+          >
+            <Clock className="size-3" aria-hidden />
+          </span>
+        ) : (
+          <span
+            data-slot="shell-nav-badge"
+            className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground"
+          >
+            {item.badge}
+          </span>
+        )
       ) : null}
     </>
   );

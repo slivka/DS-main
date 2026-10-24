@@ -24,6 +24,8 @@ export function DocumentFormShowcase() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [incomePanelOpen, setIncomePanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState("attachments");
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(["p2"]);
+  const [accountingDateFollows, setAccountingDateFollows] = useState(true);
   const panelContent = useRecordPanelContent("draft", "");
   const {
     cashDateLocked,
@@ -143,6 +145,12 @@ export function DocumentFormShowcase() {
               load: suggestDescriptions,
             }}
             onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)}
+            favoriteIds={favoriteIds}
+            onToggleFavorite={(id) =>
+              setFavoriteIds((current) =>
+                current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+              )
+            }
           />
         </RecordSidePanel>
         <DocumentSettingsDialog
@@ -157,6 +165,8 @@ export function DocumentFormShowcase() {
           documentTypeLabel="Pokladní doklad – výdaj"
           allowCounterpartySuggestions
           showVatCalcMode
+          accountingDateFollowsIssue={accountingDateFollows}
+          onAccountingDateFollowsIssueChange={setAccountingDateFollows}
         />
       </ShowcaseSection>
       <ShowcaseSection
