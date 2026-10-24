@@ -1,5 +1,6 @@
 /** Trvalé ukázky DE s daty preview; zdroje účetních zápisů vlastní APP. */
 import { useState } from "react";
+import { TaxYearShowcase } from "./TaxYearShowcase";
 import {
   JournalLinesEditor,
   TaxBookView,
@@ -201,6 +202,7 @@ export function TaxRecordsShowcase() {
         value={rounding}
         onValueChange={setRounding}
       />
+      <TaxYearShowcase />
     </div>
   );
 }
