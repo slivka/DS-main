@@ -4,7 +4,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../../ui/tooltip";
 import type { DataGridColumn } from "../grid/data-grid-types";
 import type { TaxRecordTexts } from "../../../ds-texts/tax-record-texts";
 import type { TaxYearTexts } from "../../../ds-texts/tax-year-texts";
-import type { TaxBookEntry } from "./tax-record-types";
+import type { TaxBookEntry, TaxBookEntryKind } from "./tax-record-types";
 import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
 import { formatDate } from "../../../lib/format";
 export function taxBookColumns(
@@ -15,7 +15,7 @@ export function taxBookColumns(
   extra?: { y: TaxYearTexts; showKind: boolean; showBase: boolean },
 ): DataGridColumn<TaxBookEntry>[] {
   const kinds = extra?.y.kinds;
-  const kindConfig: StatusConfig = kinds
+  const kindConfig: StatusConfig<TaxBookEntryKind> | null = kinds
     ? {
         payment: { label: kinds.payment, tone: "neutral" },
         advance: { label: kinds.advance, tone: "info" },
@@ -24,7 +24,7 @@ export function taxBookColumns(
         non_cash: { label: kinds.non_cash, tone: "neutral" },
         offset: { label: kinds.offset, tone: "neutral" },
       }
-    : {};
+    : null;
   const money = (
     id: "amount" | "movementAmount" | "vat" | "base",
     label: string,
@@ -108,7 +108,7 @@ export function taxBookColumns(
             label: extra.y.kind,
             value: (r: TaxBookEntry) => (r.kind ? kinds[r.kind] : ""),
             render: (r: TaxBookEntry) =>
-              r.kind ? <StatusBadge status={r.kind} config={kindConfig} /> : null,
+              r.kind && kindConfig ? <StatusBadge status={r.kind} config={kindConfig} /> : null,
           },
         ]
       : []),
