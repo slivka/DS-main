@@ -84,7 +84,7 @@ describe("editor kalendáře – záporný a smíšený doklad", () => {
       /></TooltipProvider>,
     );
     expect(screen.getByTestId("payment-unallocated").textContent?.trim()).toBe("0,00");
-    expect(screen.getByTestId("payment-total").textContent?.trim()).toBe("-500,00");
+    expect(screen.getByTestId("payment-total").textContent?.trim()).toBe("−500,00");
   });
   it("smíšený kalendář ukáže záporný zbytek se znaménkem", () => {
     render(
@@ -94,7 +94,7 @@ describe("editor kalendáře – záporný a smíšený doklad", () => {
         totalToPay={-500}
       /></TooltipProvider>,
     );
-    expect(screen.getByTestId("payment-unallocated").textContent?.trim()).toBe("-200,00");
+    expect(screen.getByTestId("payment-unallocated").textContent?.trim()).toBe("−200,00");
   });
 });
 
