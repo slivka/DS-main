@@ -71,7 +71,8 @@ export function BankConnectionSettings({
   className,
   ...rest
 }: BankConnectionSettingsProps) {
-  const t = useDsTexts().bankConnection;
+  const ds = useDsTexts();
+  const t = ds.bankConnection;
   const [tokenOpen, setTokenOpen] = useState(false);
   const [tokenValue, setTokenValue] = useState("");
   const [tokenKind, setTokenKind] = useState<"read" | "payments">(value.tokenKind ?? "read");
@@ -298,7 +299,7 @@ export function BankConnectionSettings({
             />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setTokenOpen(false)}>
-                {useDsTexts().confirmByTyping.cancel}
+                {ds.confirmByTyping.cancel}
               </Button>
               <Button type="submit" disabled={!tokenValue.trim()}>
                 {t.changeToken}
