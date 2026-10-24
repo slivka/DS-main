@@ -28,7 +28,8 @@ import { cn } from "../../../lib/utils";
 import type { BankConnectionValue } from "./bank-types";
 
 /** Props sekce napojení na banku. */
-export interface BankConnectionSettingsProps extends ComponentPropsWithoutRef<"section"> {
+export interface BankConnectionSettingsProps
+  extends Omit<ComponentPropsWithoutRef<"section">, "onChange"> {
   /** Hodnota napojení. */
   value: BankConnectionValue;
   /** Změna hodnoty. */

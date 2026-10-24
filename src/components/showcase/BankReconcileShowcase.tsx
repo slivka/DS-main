@@ -375,7 +375,9 @@ export function BankReconcileShowcase() {
           <BankConnectionSettings
             value={connection}
             onChange={setConnection}
-            onTokenSave={() => toast.success("Token uložen")}
+            onTokenSave={() => {
+              toast.success("Token uložen");
+            }}
             onTest={() => toast.info("Test spojení")}
             onFetchNow={() => toast.info("Stáhnout teď")}
             onPausedChange={(paused) =>
