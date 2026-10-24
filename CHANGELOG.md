@@ -2,6 +2,17 @@
 
 ## 2.139.0 (nevydáno)
 
+### Drobné opravy 4 (D1–D7)
+
+- D1 už bylo: `BankStatementForm.menuActions` přidává položky do nabídky výpisu; regresní test zachován.
+- D2 hotovo: `DocumentForm.lockedReason?: Partial<Record<DocumentHeaderField, string>>` zamyká pole přímo, zobrazí hodnotu se zámkem a důvodem. Nový kontrakt má přednost; `fieldLockedReasons` a `vat.dateLockReadOnly` zůstávají deprecated aliasy. Zachovány formáty částek, datumů, protistrany a specializované bankovní/platební ovladače.
+- D3 už bylo: sdílený SplitButton v `addAction` a zkratka N pro hlavní akci. Doplněn Chromium test 360/480 px včetně počtu kliknutí hlavní akce.
+- D4 hotovo: `columns[].headerTooltip`, `columns[].defaultSortDirection`, `searchText(row)` a `fixedGroupBy`. Pevné seskupení má záhlaví s počtem, ignoruje uložené vypnutí a nelze odstranit. Uložené řazení má přednost před výchozím směrem.
+- D5 hotovo: hledání při 360/480 px v jediné nabídce Další akce; normální kaskáda hlavních akcí zachována. Strom používá přeložené Rozbalit vše / Sbalit vše. Opravena skutečná čtyřpixelová odchylka ve Firefoxu na hranici 260 px: hystereze nesmí ponechat skutečný přesah. Test měří všechny stupně až do 160 px; čekání na oživení ukázky sjednoceno na 45 sekund.
+- D6 částečně: zpevněno čekání dialogu, zakázané akce a rozsáhlé ukázky. Cílených 30 Firefox/WebKit testů původně 29/30; zbývající hranice lišty po opravě prošla v Chromium/Firefox/WebKit 3/3. WebKit dialog, ruční kurz a zakázaná akce 4/4; dalších 30 WebKit kontrol 29/30, zbývající pomalá hydratace `browser-page-errors` po opravě čekání 3/3. Úplné opakované CI zpevnění a zbývající scénáře odloženy do roadmapy; plná E2E neběžela.
+- D7 hotovo: pod 768 px hostitele místní panel překryje obsah; meze resize respektují dostupnou šířku. Chromium 600/760 px bez vodorovného přetečení.
+- Ověření: unit DS **1 514/1 514** ve 155 souborech; požadované Chromium D3/D5/D7 **20/20** v posledním běhu; check:quick --harness OK, automatické sestavení OK. Katalog dle check:catalog **489 → 489 komponent, 1 248 → 1 339 props, 0 odebrání**; 91 aditivních/obnovených props zahrnuje i dřívější API, nikoli pouze toto kolo. Nevydáno; package/meta/release-base neměněny.
+
 ## 2.138.0
 
 ### B2 – lišta dimenzí
