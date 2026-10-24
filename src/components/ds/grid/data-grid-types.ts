@@ -22,6 +22,10 @@ export type DataGridColumn<Row> = {
   /** Jednoznačný klíč sloupce. */
   id: string;
   label: string;
+  /** Plné vysvětlení záhlaví, dostupné také klávesnicí. */
+  headerTooltip?: string;
+  /** První směr řazení tohoto sloupce; uložené řazení má přednost. */
+  defaultSortDirection?: "asc" | "desc";
   /** Volitelný dynamický důvod, proč nyní nelze změnit viditelnost sloupce. */
   disableToggleReason?: string | undefined;
   align?: "left" | "right" | "center" | undefined;
@@ -136,6 +140,10 @@ export type DataGridProps<Row> = GridBaseProps<Row> & {
   groupable?: boolean | undefined;
   /** Výchozí sloupec seskupení, pokud uživatel nemá uložené vlastní nastavení. */
   defaultGroupBy?: string | undefined;
+  /** Pevné seskupení podle sloupce, bez ovládání změny či odstranění; přednost před uloženým. */
+  fixedGroupBy?: string;
+  /** Dodatečný fulltext řádku nezávislý na zobrazených sloupcích. */
+  searchText?: (row: Row) => string;
   /** Skryje spodnú lištu so stránkovaním. */
   paginated?: boolean | undefined;
   /** Zjednodušený vzhled bez modrého akcentu vlevo a so zaobleným vrchom – pro vnořené gridy bez nadpisu. */

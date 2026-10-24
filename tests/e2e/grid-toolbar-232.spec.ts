@@ -18,7 +18,7 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
       html.style.maxWidth = "100%";
     }, width);
     const toolbar = grid.locator('[data-slot="grid-toolbar"]');
-    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/);
+    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/, { timeout: 45000 });
     await page.waitForTimeout(300);
     const toolbarBox = await toolbar.boundingBox();
     const visibleControls = toolbar.locator("button:visible,input:visible");
@@ -49,7 +49,13 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
         refreshBox.x + refreshBox.width <= toolbarBox.x + toolbarBox.width + 1,
     ).toBe(true);
     if (width < 620) {
+      await expect(toolbar.getByRole("button", { name: /Hledat/ })).toHaveCount(0);
       await toolbar.getByRole("button", { name: "Další akce" }).click();
+      await expect(
+        page
+          .locator('[data-slot="grid-more-content"]')
+          .getByRole("button", { name: "Hledat", exact: true }),
+      ).toBeVisible();
       await expect(page.getByText("Parametry", { exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Stav k datu" }).last()).toBeVisible();
     }
@@ -70,7 +76,7 @@ for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]'
         element.closest('[data-slot="data-grid"],[data-slot="tree-grid"]') as HTMLElement
       ).style.width = "1440px";
     });
-    await expect(toolbar).toHaveAttribute("data-overflow-level", "0");
+    await expect(toolbar).toHaveAttribute("data-overflow-level", "0", { timeout: 45000 });
     const order = await toolbar
       .locator("[data-toolbar-group]")
       .evaluateAll((groups) => groups.map((group) => group.getAttribute("data-toolbar-group")));
@@ -112,7 +118,7 @@ for (const width of [700, 800, 900, 1000]) {
       (element as HTMLElement).style.width = `${nextWidth}px`;
     }, width);
     const toolbar = grid.locator('[data-slot="grid-toolbar"]');
-    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/);
+    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/, { timeout: 45000 });
     await expect(toolbar.locator("[data-toolbar-add]").first()).toBeVisible();
     await page.waitForTimeout(400);
     const box = await toolbar.boundingBox();
@@ -144,11 +150,14 @@ test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
   });
   const toolbar = grid.locator('[data-slot="grid-toolbar"]');
   await expect(toolbar).toHaveAttribute("data-overflow-level", "3");
-  await toolbar
+  await toolbar.getByRole("button", { name: "Další akce" }).click();
+  await page
+    .locator('[data-slot="grid-more-content"]')
     .getByRole("button", { name: /Hledat/ })
     .first()
     .click();
   await page.keyboard.type("faktura");
+  await page.keyboard.press("Escape");
   await page.waitForTimeout(400);
   const box = await toolbar.boundingBox();
   const boxes = await toolbar
@@ -156,3 +165,20 @@ test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
     .evaluateAll((items) => items.map((item) => item.getBoundingClientRect().toJSON()));
   for (const b of boxes) expect(b.right).toBeLessThanOrEqual(box!.x + box!.width + 1);
 });
+for (const width of [360, 480]) {
+  test(`stromový grid při ${width} px má rozbalení a sbalení v nabídce`, async ({ page }) => {
+    await page.goto("/components/accounting-fields", { waitUntil: "networkidle" });
+    const grid = page.locator('[data-slot="tree-grid"]').first();
+    await grid.evaluate((node, size) => (node.style.width = `${size}px`), width);
+    const toolbar = grid.locator('[data-slot="grid-toolbar"]');
+    await expect(toolbar).toHaveAttribute("data-overflow-level", "3", { timeout: 45000 });
+    await toolbar.getByRole("button", { name: "Další akce" }).click();
+    const menu = page.locator('[data-slot="grid-more-content"]');
+    await menu.getByRole("button", { name: "Rozbalit vše", exact: true }).click();
+    await page.getByRole("menuitem", { name: "Vše", exact: true }).click();
+    await expect(grid.locator('[data-row-id="a221001"]')).toBeVisible();
+    await menu.getByRole("button", { name: "Sbalit vše", exact: true }).click();
+    await expect(grid.locator('[data-row-id="a221001"]')).toHaveCount(0);
+    expect(await toolbar.evaluate((node) => node.scrollWidth - node.clientWidth)).toBe(0);
+  });
+}

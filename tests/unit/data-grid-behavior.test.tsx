@@ -6,7 +6,8 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
 
-const { act, cleanup, fireEvent, render, waitFor, within } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render, waitFor, within, screen } =
+  await import("@testing-library/react");
 const { DataGrid, TreeGrid, DEFAULT_PINNED_COLUMNS, DEFAULT_COMPACT_COLUMNS, isPinnedColumn } =
   await import("../../src/components/ds");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
@@ -71,8 +72,14 @@ function Grid(props: Partial<GridProps>) {
 /** Otevře hledání v liště a napíše dotaz. */
 const typeSearch = (root: HTMLElement, value: string) => {
   const button = root.querySelector<HTMLElement>("button[data-toolbar-search]");
+  if (!button) {
+    const menu = within(root).getByRole("button", { name: "Další akce" });
+    fireEvent.click(menu);
+    fireEvent.click(screen.getByRole("button", { name: "Hledat" }));
+  }
   if (button) fireEvent.click(button);
-  const input = root.querySelector<HTMLInputElement>("[data-toolbar-search] input")!;
+  const input = document.querySelector<HTMLInputElement>("[data-toolbar-search] input");
+  if (!input) throw new Error("Hledání se neotevřelo");
   fireEvent.change(input, { target: { value } });
 };
 

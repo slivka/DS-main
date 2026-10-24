@@ -89,6 +89,10 @@ export interface GridTexts {
   sortBy: (label: string) => string;
   expand: string;
   collapse: string;
+  /** Rozbalení všech úrovní stromového gridu. */
+  expandAll: string;
+  /** Sbalení všech úrovní stromového gridu. */
+  collapseAll: string;
   expandLevel: (level: number, label: string) => string;
   exportSearch: (query: string) => string;
   recordsCount: (count: number) => string;

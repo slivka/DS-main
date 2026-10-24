@@ -29,6 +29,8 @@ export interface DataGridFilterOptions<Row> {
   byId: Map<string, DataGridColumn<Row>>;
   /** Texty gridu. */
   texts: GridTexts;
+  /** Dodatečný fulltext dodaný aplikací. */
+  searchText?: (row: Row) => string;
   /** Oznámení změny hledání. */
   onSearchChange?: ((search: string) => void) | undefined;
   /** Oznámení změny autofiltrů. */
@@ -42,6 +44,7 @@ export function useDataGridFilters<Row>({
   shown,
   byId,
   texts,
+  searchText,
   onSearchChange,
   onColumnFiltersChange,
 }: DataGridFilterOptions<Row>) {
@@ -60,15 +63,17 @@ export function useDataGridFilters<Row>({
   const searched = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
-    return rows.filter((row) =>
-      columns.some((c) => {
-        // Skupinový řádek zastupuje i své skryté položky.
-        const many = c.filterValues?.(row);
-        if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
-        return cellText(c.value?.(row)).toLowerCase().includes(q);
-      }),
+    return rows.filter(
+      (row) =>
+        searchText?.(row).toLowerCase().includes(q) ||
+        columns.some((c) => {
+          // Skupinový řádek zastupuje i své skryté položky.
+          const many = c.filterValues?.(row);
+          if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
+          return cellText(c.value?.(row)).toLowerCase().includes(q);
+        }),
     );
-  }, [rows, columns, search]);
+  }, [rows, columns, search, searchText]);
 
   const textOf = (row: Row, id: string) => {
     const c = byId.get(id);

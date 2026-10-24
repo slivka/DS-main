@@ -64,6 +64,72 @@ const lockedReasons = {
 };
 
 describe("DocumentForm fieldLockedReasons", () => {
+  it("lockedReason sám zamkne i jinak upravitelné pole a předchází aliasu", () => {
+    const view = render(
+      <BaForm
+        editableFields={["description"]}
+        lockedReason={{ description: REASON }}
+        fieldLockedReasons={{ description: "Původní důvod" }}
+      />,
+    );
+    expect(view.queryByRole("textbox", { name: "Popis" })).toBeNull();
+    expect(view.getByRole("group", { name: "Popis" }).textContent).toBe("Příjem z banky");
+    expect(view.getByRole("button", { name: REASON })).toBeTruthy();
+    expect(view.queryByRole("button", { name: "Původní důvod" })).toBeNull();
+  });
+  for (const documentType of ["FP", "ZFP"]) {
+    it(`${documentType}: lockedReason zamkne datum DPH stejně jako původní dateLockReadOnly`, () => {
+      const props = {
+        documentType,
+        value: { ...baValue, vatDate: "2026-10-20" },
+        editableFields: ["vatDate"] as const,
+      };
+      const view = render(
+        <BaForm
+          {...props}
+          editableFields={["vatDate"]}
+          vat={{ visible: true, dateLockReadOnly: true }}
+        />,
+      );
+      expect(view.queryByRole("textbox", { name: "Datum DPH" })).toBeNull();
+      expect(view.getByRole("group", { name: "Datum DPH" }).textContent).toContain("20.10.2026");
+      view.rerender(
+        <BaForm
+          {...props}
+          editableFields={["vatDate"]}
+          vat={{ visible: true, dateLockReadOnly: true }}
+          lockedReason={{ vatDate: REASON }}
+        />,
+      );
+      expect(
+        view
+          .getByRole("group", { name: "Datum DPH" })
+          .querySelector("button")
+          ?.getAttribute("aria-label"),
+      ).toBe(REASON);
+    });
+  }
+  for (const documentType of ["FV", "ZFV"]) {
+    it(`${documentType}: obecný zámek firemního účtu a způsobu platby zachová zobrazené hodnoty`, () => {
+      const view = render(
+        <BaForm
+          documentType={documentType}
+          editableFields={["companyBankAccountId", "paymentMethodId"]}
+          value={{ ...baValue, companyBankAccountId: "company", paymentMethodId: "transfer" }}
+          companyBankAccountOptions={[
+            { id: "company", label: "Hlavní", account: "123/0800", currency: "CZK" },
+          ]}
+          paymentMethodOptions={[{ value: "transfer", label: "Převodem" }]}
+          lockedReason={{ companyBankAccountId: REASON, paymentMethodId: REASON }}
+        />,
+      );
+      expect(view.getByRole("group", { name: "Uhradit na bankovní účet" }).textContent).toContain(
+        "123/0800",
+      );
+      expect(view.getByRole("group", { name: "Způsob platby" }).textContent).toBe("Převodem");
+      expect(view.getAllByRole("button", { name: REASON })).toHaveLength(2);
+    });
+  }
   it("pole s důvodem vykreslí jen pro čtení se zámkem a hodnotou", () => {
     const view = render(<BaForm fieldLockedReasons={lockedReasons} />);
     const expected: Array<[string, string]> = [

@@ -71,8 +71,8 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
   const t = {
     ...DEFAULT_TREE_GRID_TEXTS,
     searchPlaceholder: dsTexts.grid.searchPlaceholder,
-    expandAll: dsTexts.grid.expand,
-    collapseAll: dsTexts.grid.collapse,
+    expandAll: dsTexts.grid.expandAll,
+    collapseAll: dsTexts.grid.collapseAll,
     columnsTitle: dsTexts.grid.columnsTitle,
     totalLabel: dsTexts.grid.total,
     ...props.texts,

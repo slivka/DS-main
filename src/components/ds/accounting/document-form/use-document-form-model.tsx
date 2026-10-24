@@ -176,6 +176,7 @@ export function useDocumentFormModel(props: DocumentFormProps) {
     can,
     field,
     receivedDocument,
+    lockReason,
     issuedDocument,
     showVatFields,
     sourcePatch: vsLink.sourcePatch,

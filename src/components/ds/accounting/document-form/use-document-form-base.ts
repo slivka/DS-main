@@ -76,11 +76,19 @@ export function useDocumentFormBase(props: DocumentFormProps) {
   }, onFieldChange);
   const [tab, setTab] = useDetailTab(activeDetailTab, props.onActiveDetailTabChange);
   const formRef = useDocumentFormStickyTop();
+  const explicitLock = (key: DocumentHeaderField) => props.lockedReason?.[key];
+  const vatDateLock = (key: DocumentHeaderField) =>
+    key === "vatDate" && props.vat?.dateLockReadOnly ? t.vatDateLockedHint : undefined;
   const can = (key: DocumentHeaderField) =>
-    !readOnly && (!editableFields || editableFields.includes(key));
-  // Obecný zámek pole (2.128.0): jen pole mimo editableFields s dodaným důvodem aplikace.
+    !readOnly &&
+    !explicitLock(key) &&
+    !vatDateLock(key) &&
+    (!editableFields || editableFields.includes(key));
+  // Nový kontrakt zamyká přímo; původní alias zachovává pravidlo editableFields.
   const lockReason = (key: DocumentHeaderField) =>
-    !can(key) ? props.fieldLockedReasons?.[key] : undefined;
+    explicitLock(key) ??
+    (!can(key) ? props.fieldLockedReasons?.[key] : undefined) ??
+    vatDateLock(key);
   const {
     receivedDocument,
     issuedDocument,

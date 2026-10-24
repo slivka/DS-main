@@ -10,3 +10,5 @@ export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2 | 3>(0);
 
 /** Podoba textů primárních akcí podle změřené dostupné šířky. */
 export const GridAddLabelContext = React.createContext<"full" | "short">("full");
+/** Hledání se přesune samostatně, aniž se předčasně slučují hlavní akce. */
+export const GridSearchInMenuContext = React.createContext(false);
