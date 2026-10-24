@@ -93,7 +93,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
   if (id === "quantity" || id === "unitPrice") {
     const input = (
       <DecimalInput
-        value={state.value}
+        value={line[id]}
         disabled={disabled}
         className={id === "unitPrice" ? "pr-[calc(var(--control-h)*0.8)]" : undefined}
         onChange={(value) =>
