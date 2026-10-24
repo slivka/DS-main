@@ -24,6 +24,8 @@ export function DocumentFormShowcase() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [incomePanelOpen, setIncomePanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState("attachments");
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(["p2"]);
+  const [accountingDateFollows, setAccountingDateFollows] = useState(true);
   const panelContent = useRecordPanelContent("draft", "");
   const {
     cashDateLocked,
