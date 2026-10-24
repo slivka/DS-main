@@ -11,7 +11,7 @@
 - Bankovní pohyb: sekce Protiúčet má stejný rozestup pod nadpisem jako ostatní sekce (`mt-3` mřížka); výběr kódu banky zobrazuje „kód – název banky" z `bankCodeOptions` (ověřeno testem).
 - Menu: textový odznak položky (např. „Připravujeme") se zmenší na ikonu s bublinou, aby nikdy nezkracoval název položky.
 - Záhlaví: štítky v `PageHeader.titleBadge` i ve štítcích dokladu se zkracují trojtečkou (max. 16 rem) a textový štítek nese celý text v bublině.
-- Ověření: 13 nových unit testů (`document-api-2141.test.tsx`) 13/13. Nevydáno.
+- Ověření: 13 nových unit testů (`document-api-2141.test.tsx`) 13/13, unit DS **1 601/1 601**; `check:quick` OK, cílený lint změn bez chyb. Katalog proti vydané 2.140.0 **513 → 513 komponent / 1 416 → 1 530 props**, 0 odebrání. Nevydáno; E2E ani check:full neběžely.
 
 
 ## 2.140.0
