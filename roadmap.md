@@ -1,5 +1,10 @@
 ## DS 2.138.0 (nevydáno)
 
+- [ ] B2: DimensionBar / MultiValueCell, CS/SK a řízené hledání.
+- [ ] B2: model převzatých dimenzí a ručních výjimek, DB převod, kompatibilita B1.
+- [ ] B2: DocumentForm, detail MD/DAL, indikace a volitelné sloupce, ukázky.
+- [ ] B2: unit DS, jeden Chromium spec, check:quick a katalog bez odebrání.
+
 - [x] B1: nové category API a deprecated aliasy, oba DB tvary a nové výstupy.
 - [x] B1: categoryBySide, povolené potomky, jediná zamčená kategorie a změna účtu.
 - [x] B1: CS/SK, ukázka ID, unit a jeden Chromium spec, katalog bez odebrání, migrace v CHANGELOGu.
