@@ -430,19 +430,24 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
               return (
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                   {row.suggestion ? (
-                <BankReconcileSuggestionRow
-                  row={row}
-                  currencySymbol={summary.currencySymbol}
-                  readOnly={readOnly}
-                  onAccept={onAcceptSuggestion}
-                  onReject={onRejectSuggestion}
-                  onCandidateChange={(rowId, candidateId) =>
-                    onPatch(rowId, { suggestion: { ...row.suggestion!, candidateId } })
-                  }
-                />
+                    <BankReconcileSuggestionRow
+                      row={row}
+                      currencySymbol={summary.currencySymbol}
+                      readOnly={readOnly}
+                      onAccept={onAcceptSuggestion}
+                      onReject={onRejectSuggestion}
+                      onCandidateChange={(rowId, candidateId) =>
+                        onPatch(rowId, { suggestion: { ...row.suggestion!, candidateId } })
+                      }
+                    />
                   ) : null}
                   {!readOnly ? (
-                    <Button type="button" size="sm" variant="outline" onClick={() => onCreateRule(row.id)}>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onCreateRule(row.id)}
+                    >
                       {t.createRule}
                     </Button>
                   ) : null}
