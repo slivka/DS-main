@@ -124,6 +124,8 @@ describe("DocumentForm fieldLockedReasons", () => {
         />,
       );
       expect(view.getByRole("group", { name: "Uhradit na bankovní účet" }).textContent).toContain(
+        "123/0800",
+      );
       expect(view.getByRole("group", { name: "Způsob platby" }).textContent).toBe("Převodem");
       expect(view.getAllByRole("button", { name: REASON })).toHaveLength(2);
     });
