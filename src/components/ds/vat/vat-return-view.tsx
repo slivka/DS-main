@@ -75,6 +75,9 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
         rows={tree}
         columns={columns}
         storageKey={storageKey}
+        onRowClick={(row) => {
+          if ("key" in row) onRowOpen?.(row);
+        }}
         onRowOpen={(row) => {
           if ("key" in row) onRowOpen?.(row);
         }}

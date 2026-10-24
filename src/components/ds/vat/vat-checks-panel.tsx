@@ -1,6 +1,7 @@
 /** Kontroly DPH · vlastní filtr a odkazy · nesmí vytvářet nálezy ani blokovat podání. */
 import { forwardRef, useState, type ComponentPropsWithoutRef } from "react";
 import { CheckList } from "../feedback/check-list";
+import { TooltipProvider } from "../../ui/tooltip";
 import { OptionSelect } from "../form/option-select";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
@@ -52,7 +53,7 @@ export const VatChecksPanel = forwardRef<HTMLDivElement, VatChecksPanelProps>(
             }}
           />
         </header>
-        <CheckList
+        <TooltipProvider><CheckList
           items={items
             .filter((item) => current === "all" || item.severity === current)
             .map((item) => ({
@@ -70,7 +71,7 @@ export const VatChecksPanel = forwardRef<HTMLDivElement, VatChecksPanelProps>(
                     }
                   : undefined,
             }))}
-        />
+        /></TooltipProvider>
       </div>
     );
   },

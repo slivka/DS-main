@@ -89,27 +89,28 @@ export const VatFilingBar = forwardRef<HTMLDivElement, VatFilingBarProps>(functi
       />
       <div className="flex min-w-0 flex-wrap gap-2">
         {actions.onCreate ? (
-          <Button disabled={disabled} onClick={actions.onCreate}>
+          <Button type="button" disabled={disabled} onClick={actions.onCreate}>
             {t.create}
           </Button>
         ) : null}
         {actions.onDownloadXml ? (
-          <Button variant="outline" disabled={disabled} onClick={actions.onDownloadXml}>
+          <Button type="button" variant="outline" disabled={disabled} onClick={actions.onDownloadXml}>
             {t.download}
           </Button>
         ) : null}
         {actions.onMarkFiled ? (
-          <Button variant="outline" disabled={disabled} onClick={actions.onMarkFiled}>
+          <Button type="button" variant="outline" disabled={disabled} onClick={actions.onMarkFiled}>
             {t.markFiled}
           </Button>
         ) : null}
         {actions.onCreateCorrection ? (
-          <Button variant="outline" disabled={disabled} onClick={actions.onCreateCorrection}>
+          <Button type="button" variant="outline" disabled={disabled} onClick={actions.onCreateCorrection}>
             {form === "return" ? t.additional : t.subsequent}
           </Button>
         ) : null}
         {actions.onUnlock ? (
           <Button
+            type="button"
             variant="outline"
             disabled={disabled}
             onClick={() => {
