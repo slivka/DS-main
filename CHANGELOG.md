@@ -2,6 +2,11 @@
 
 ## 2.141.0 (nevydáno)
 
+### Oprava E2E před vydáním
+
+- `GridAddActions`: zkratka N spustí jen akci gridu, ve kterém je fokus; jiné gridy ani samostatné lišty (např. platební kalendář) ji už nepřevezmou. Testy beze změny.
+- Ukázka DPH: doplňkové stavy 2.141.0 (SH bez opravného, načítání a chyba) leží mimo hlavní interaktivní ukázku, aby výběr druhu podání byl jednoznačný.
+
 ### Daňová evidence DE-4 až DE-6
 
 - `TaxBookEntry.kind` (`payment`, `advance`, `advance_tax_document`, `advance_deduction`, `non_cash`, `offset`) a `TaxBookEntry.base`: `TaxBookView` ukáže sloupec Typ zápisu se štítkem a rozpočet Základ / DPH / Celkem, jen když je APP dodá; jinak beze změny.

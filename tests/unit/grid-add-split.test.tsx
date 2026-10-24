@@ -110,4 +110,25 @@ describe("split primární akce lišty gridu", () => {
     fireEvent.keyDown(document.body, { key: "n" });
     expect(primary).toHaveBeenCalledTimes(1);
   });
+  it("N spustí jen akci gridu s fokusem, ne lištu jiného gridu nebo samostatnou lištu", () => {
+    const own = mock();
+    const other = mock();
+    const loose = mock();
+    render(
+      <>
+        <div data-slot="data-grid">
+          <GridAddActions actions={{ label: "Nový", onClick: own }} />
+        </div>
+        <GridAddActions actions={{ label: "Přidat", onClick: loose }} />
+        <div data-slot="data-grid">
+          <GridAddActions actions={{ label: "Příjem", onClick: other }} />
+        </div>
+      </>,
+    );
+    screen.getByRole("button", { name: "Nový (N)" }).focus();
+    fireEvent.keyDown(document.activeElement ?? window, { key: "n" });
+    expect(own).toHaveBeenCalledTimes(1);
+    expect(other).not.toHaveBeenCalled();
+    expect(loose).not.toHaveBeenCalled();
+  });
 });
