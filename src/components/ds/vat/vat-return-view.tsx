@@ -6,11 +6,15 @@ import { AmountCell } from "../accounting/amount";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import type { VatReturnRow } from "./vat-report-types";
+import type { VatReturnRow, VatReportExportMeta } from "./vat-report-types";
 import { vatRowDifference } from "./vat-report-model";
+import { VatReportState, vatExportTitle } from "./vat-report-state";
 /** Parametry přehledu přiznání. */
 export interface VatReturnViewProps extends ComponentPropsWithoutRef<"div"> {
   /** Řádky APP. */ rows: VatReturnRow[];
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu (období, firma, druh podání). */ exportMeta?: VatReportExportMeta;
   /** Otevření podkladů řádku. */ onRowOpen?: (row: VatReturnRow) => void;
   /** Podaný snímek. */ compare?: Record<string, { base?: number; tax?: number }>;
   /** Hotová povinnost a odpočet od APP. */ summary: {
@@ -22,7 +26,19 @@ export interface VatReturnViewProps extends ComponentPropsWithoutRef<"div"> {
 }
 /** Strom řádků přiznání s rozdíly proti podanému snímku. */
 export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(function VatReturnView(
-  { rows, onRowOpen, compare, summary, currency, storageKey = "vat-return", className, ...props },
+  {
+    rows,
+    onRowOpen,
+    compare,
+    summary,
+    currency,
+    storageKey = "vat-return",
+    loading,
+    error,
+    exportMeta,
+    className,
+    ...props
+  },
   ref,
 ) {
   const t = useDsTexts().vatReports;
@@ -68,6 +84,15 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
         );
       },
     })),
+    ...(["fullDeduction", "reducedDeduction"] as const).map((field) => ({
+      id: field,
+      label: `${t[field]} · ${currency}`,
+      numeric: true,
+      total: "none" as const,
+      value: (row: DisplayRow) => ("key" in row ? (row[field] ?? null) : null),
+      render: (row: DisplayRow) =>
+        "key" in row ? <AmountCell value={row[field] ?? null} /> : null,
+    })),
     {
       id: "count",
       label: t.documents,
@@ -79,8 +104,9 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
   ];
   return (
     <div ref={ref} {...props} className={cn("min-w-0 space-y-3", className)}>
-      <TreeGrid
-        title={t.returnTitle}
+      <VatReportState loading={loading} error={error}>
+        <TreeGrid
+          title={vatExportTitle(t.returnTitle, exportMeta)}
         rows={tree}
         columns={columns}
         storageKey={storageKey}
@@ -109,6 +135,7 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
           </dd>
         </div>
       </dl>
+      </VatReportState>
     </div>
   );
 });

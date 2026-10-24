@@ -12,6 +12,9 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
         ["compare", "Record<string, {base?: number; tax?: number}>"],
         ["summary", "{liability?: number; excess?: number}"],
         ["onRowOpen", "(row: VatReturnRow) => void"],
+        ["loading", "boolean"],
+        ["error", "string | null"],
+        ["exportMeta", "VatReportExportMeta"],
       ],
     ],
     [
@@ -24,6 +27,10 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
         ["onSectionChange", "(section: VatControlSection) => void"],
         ["onDocumentOpen", "(id: string) => void"],
         ["changed", "boolean"],
+        ["hideEmptyColumns", "boolean"],
+        ["loading", "boolean"],
+        ["error", "string | null"],
+        ["exportMeta", "VatReportExportMeta"],
       ],
     ],
     [
@@ -35,6 +42,9 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
         ["rows", "VatRecapitulativeRow[]"],
         ["ossRows", "OssReturnRow[]"],
         ["onRowOpen", "(id: string) => void"],
+        ["loading", "boolean"],
+        ["error", "string | null"],
+        ["exportMeta", "VatReportExportMeta"],
       ],
     ],
     [
@@ -46,6 +56,9 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
         ["severity", "all | error | warning | info"],
         ["onSeverityChange", "(severity: string) => void"],
         ["onDocumentOpen", "(id: string) => void"],
+        ["loading", "boolean"],
+        ["error", "string | null"],
+        ["exportMeta", "VatReportExportMeta"],
       ],
     ],
     [
@@ -57,6 +70,7 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
         ["status", "open | filed | changed"],
         ["kind", "VatFilingKind"],
         ["onKindChange", "(kind: VatFilingKind) => void"],
+        ["allowedKinds", "VatFilingKind[]"],
         ["actions", "VatFilingActions"],
         ["filedAt", "string"],
         ["filedBy", "string"],

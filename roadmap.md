@@ -1,6 +1,7 @@
 ## DS 2.141.0 (nevydáno)
 
 - [x] Drobná API a vzhled pro APP: přepínač vazby účetního data v nastavení dokladu, daňové číslo u DDPZ, oblíbení partneři ve výběru protistrany, založení partnera z hlavičky ID, rozestupy a „kód – název banky" u protiúčtu pohybu, odznak menu jako ikona s bublinou, zkracování štítků záhlaví trojtečkou s bublinou. 13 nových unit testů 13/13. Nevydáno.
+- [x] DPH C: `VatFilingBar.allowedKinds`, třetí sazba a nesazbový základ A1 v KH, šest oddílů DPHDP3 s plným/kráceným odpočtem, `loading`/`error`/`exportMeta` ve všech přehledech. 11 nových unit testů 11/11, unit DS 1 612/1 612. Nevydáno.
 
 
 ## DS 2.140.0

@@ -13,6 +13,15 @@
 - Záhlaví: štítky v `PageHeader.titleBadge` i ve štítcích dokladu se zkracují trojtečkou (max. 16 rem) a textový štítek nese celý text v bublině.
 - Ověření: 13 nových unit testů (`document-api-2141.test.tsx`) 13/13, unit DS **1 601/1 601**; `check:quick` OK, cílený lint změn bez chyb. Katalog proti vydané 2.140.0 **513 → 513 komponent / 1 416 → 1 530 props**, 0 odebrání. Nevydáno; E2E ani check:full neběžely.
 
+### DPH C – doplňky přehledů podle napojení v APP
+
+- `VatFilingBar.allowedKinds`: omezení nabízených druhů podání z props (SH jen řádné a následné); výchozí chování beze změny.
+- `VatControlStatementView`: sloupce třetí sazby 10 % v gridu dokladů, u A1 samostatný sloupec „Nesazbový základ" (`VatControlDocument.unratedBase`, nikdy se nezobrazuje jako 21 %), nové `hideEmptyColumns` skryje sazby bez hodnot v aktivním oddílu.
+- `VatReturnView`: členění podle šesti oddílů tiskopisu DPHDP3 (I–VI; II „Ostatní plnění a plnění s místem mimo tuzemsko", III „Odpočet daně", IV „Vyrovnání a změna odpočtu", V „Výpočet koeficientu", VI „Výpočet daně"); u odpočtu samostatné sloupce „V plné výši" a „Krácený odpočet" (`VatReturnRow.fullDeduction` / `reducedDeduction`). DS nic nepočítá, strukturu řádků dodává APP.
+- Všechny přehledy (`VatReturnView`, `VatControlStatementView`, `VatRecapitulativeView`, `VatChecksPanel`) mají nové `loading` (kostra), `error` (pruh chyby se zprávou) a `exportMeta` (období, firma, druh podání v titulu exportu Excel/PDF); sdílené v `vat-report-state`.
+- Texty CS/SK v `DsTexts.vatReports` (oddíly I–VI, `fullDeduction`, `reducedDeduction`, `unratedBase`, `loading`). Ukázky: šest oddílů, sazba 10 % s nesazbovým základem, SH jen řádné/následné, načítání a chyba.
+- Ověření: 11 nových unit testů (`vat-reports-2141.test.tsx`) 11/11, unit DS **1 612/1 612**; `check:quick` OK. Katalog proti vydané 2.140.0 **513 → 513 komponent / 1 416 → 1 544 props**, 0 odebrání. Nevydáno; E2E ani check:full neběžely.
+
 
 ## 2.140.0
 

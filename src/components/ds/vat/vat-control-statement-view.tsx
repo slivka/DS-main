@@ -13,17 +13,26 @@ import type {
   VatControlSection,
   VatControlSectionData,
   VatRateAmounts,
+  VatReportExportMeta,
 } from "./vat-report-types";
+import { VatReportState, vatExportTitle } from "./vat-report-state";
 const SECTIONS: VatControlSection[] = ["A1", "A2", "A4", "A5", "B1", "B2", "B3"];
+/** Sazby sloupců dokladů včetně třetí sazby 10 %. */
+const RATES = [21, 12, 10];
 /** Parametry kontrolního hlášení. */
 export interface VatControlStatementViewProps extends ComponentPropsWithoutRef<"div"> {
   /** Oddíly rozdělené APP. */ sections: Partial<Record<VatControlSection, VatControlSectionData>>;
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu (období, firma, druh podání). */ exportMeta?: VatReportExportMeta;
   /** Aktivní oddíl; bez něj místní výběr. */ activeSection?: VatControlSection;
   /** Změna oddílu. */ onSectionChange?: (section: VatControlSection) => void;
   /** Otevření dokladu. */ onDocumentOpen?: (id: string) => void;
   /** Změna po podání. */ changed?: boolean;
   /** Měna. */ currency: string;
   /** Klíč nastavení. */ storageKey?: string;
+  /** Skryje sloupce sazeb, které v aktivním oddílu nemají žádnou hodnotu. */
+  hideEmptyColumns?: boolean;
 }
 /** Oddíly KH, prázdné zůstávají dostupné a ztlumené. */
 export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStatementViewProps>(
@@ -36,6 +45,10 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
       changed,
       currency,
       storageKey = "vat-control",
+      hideEmptyColumns = false,
+      loading,
+      error,
+      exportMeta,
       className,
       ...props
     },
@@ -47,7 +60,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
       { id: "dic", label: t.dic, value: (r) => r.dic },
       { id: "number", label: t.number, value: (r) => r.number },
       { id: "date", label: t.date, value: (r) => r.date, render: (r) => formatDate(r.date) },
-      ...[21, 12].flatMap((rate) =>
+      ...RATES.flatMap((rate) =>
         (["base", "tax"] as const).map((field) => ({
           id: `${field}${rate}`,
           label: `${t[field]} ${rate} % · ${currency}`,
@@ -57,6 +70,14 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
             r.rates.find((item) => item.rate === rate)?.[field] ?? null,
         })),
       ),
+      // Nesazbový základ jen v A1; nikdy se nepromítá do sloupce 21 %.
+      {
+        id: "unratedBase",
+        label: `${t.unratedBase} · ${currency}`,
+        numeric: true,
+        decimals: 2,
+        value: (r) => r.unratedBase ?? null,
+      },
       { id: "regime", label: t.regime, value: (r) => r.regime },
       { id: "subject", label: t.subject, value: (r) => r.subjectCode },
       {
@@ -89,9 +110,20 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
         value: (r) => r.tax,
       },
     ];
+    const sectionColumns = (section: VatControlSection, docs: VatControlDocument[]) =>
+      columns
+        .filter((c) => c.id !== "subject" || section === "A1" || section === "B1")
+        .filter((c) => c.id !== "unratedBase" || section === "A1")
+        .filter(
+          (c) =>
+            !hideEmptyColumns ||
+            !/^(base|tax)\d+$/.test(c.id) ||
+            docs.some((doc) => c.value?.(doc) != null),
+        );
     return (
       <div ref={ref} {...props} className={cn("min-w-0 space-y-2", className)}>
-        {changed ? (
+        <VatReportState loading={loading} error={error}>
+          {changed ? (
           <StatusBadge
             status="changed"
             config={{ changed: { label: t.changed, tone: "warning" } }}
@@ -125,7 +157,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
               <TabsContent value={section} key={section}>
                 {section === "A5" || section === "B3" ? (
                   <DataGrid
-                    title={`${t.controlTitle} · ${section}`}
+                    title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
                     storageKey={`${storageKey}:${section}`}
                     rows={sections[section]?.summary ?? []}
                     columns={summaryColumns}
@@ -134,12 +166,10 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
                   />
                 ) : (
                   <DataGrid
-                    title={`${t.controlTitle} · ${section}`}
+                    title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
                     storageKey={`${storageKey}:${section}`}
                     rows={sections[section]?.documents ?? []}
-                    columns={columns.filter(
-                      (c) => c.id !== "subject" || section === "A1" || section === "B1",
-                    )}
+                    columns={sectionColumns(section, sections[section]?.documents ?? [])}
                     rowKey={(r) => r.id}
                     onRowOpen={(r) => onDocumentOpen?.(r.id)}
                   />
@@ -148,6 +178,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
             ))}
           </PageTabs>
         </div>
+        </VatReportState>
       </div>
     );
   },

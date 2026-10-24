@@ -4,7 +4,15 @@ export interface VatReportTexts {
   controlTitle: string;
   recapitulativeTitle: string;
   ossTitle: string;
-  sections: Record<"I" | "II" | "III" | "IV" | "V", string>;
+  sections: Record<"I" | "II" | "III" | "IV" | "V" | "VI", string>;
+  /** Odpočet v plné výši (oddíl III). */
+  fullDeduction: string;
+  /** Krácený odpočet (oddíl III). */
+  reducedDeduction: string;
+  /** Nesazbový základ bez sazby (A1). */
+  unratedBase: string;
+  /** Stav načítání přehledu. */
+  loading: string;
   row: string;
   base: string;
   tax: string;

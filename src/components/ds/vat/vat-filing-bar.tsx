@@ -24,6 +24,8 @@ export interface VatFilingBarProps extends ComponentPropsWithoutRef<"div"> {
   /** Stav APP. */ status: "open" | "filed" | "changed";
   /** Druh podání APP. */ kind: VatFilingKind;
   /** Požadavek změny druhu. */ onKindChange?: (kind: VatFilingKind) => void;
+  /** Omezení nabízených druhů podání (např. SH jen řádné a následné); výchozí beze změny. */
+  allowedKinds?: VatFilingKind[];
   /** Datum podání ISO. */ filedAt?: string;
   /** Podal. */ filedBy?: string;
   /** Povolené akce. */ actions?: VatFilingActions;
@@ -37,6 +39,7 @@ export const VatFilingBar = forwardRef<HTMLDivElement, VatFilingBarProps>(functi
     status,
     kind,
     onKindChange,
+    allowedKinds,
     filedAt,
     filedBy,
     actions = {},
@@ -51,7 +54,7 @@ export const VatFilingBar = forwardRef<HTMLDivElement, VatFilingBarProps>(functi
   const reasonId = useId();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
-  const kinds = vatFilingKinds(form);
+  const kinds = vatFilingKinds(form, allowedKinds);
   return (
     <div
       ref={ref}
