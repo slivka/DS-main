@@ -13,8 +13,10 @@ import { moveTemplateRow, removeTemplateRow, templateRowDepth } from "./statemen
 import type { StatementMappingOption, StatementTemplateRow } from "./statement-types";
 
 /** Parametry editoru šablony. */
-export interface StatementTemplateEditorProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
+export interface StatementTemplateEditorProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange"
+> {
   /** Řízené řádky šablony v pořadí zobrazení. */
   rows: StatementTemplateRow[];
   /** Změna řádků. */
@@ -180,7 +182,14 @@ export const StatementTemplateEditor = forwardRef<HTMLDivElement, StatementTempl
               onClick={() =>
                 onChange([
                   ...rows,
-                  { id: createRowId(), parentId: null, mark: "", label: "", kind: "mapped", mapping: [] },
+                  {
+                    id: createRowId(),
+                    parentId: null,
+                    mark: "",
+                    label: "",
+                    kind: "mapped",
+                    mapping: [],
+                  },
                 ])
               }
             >

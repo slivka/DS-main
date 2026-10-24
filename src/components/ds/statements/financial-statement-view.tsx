@@ -31,7 +31,10 @@ export function isStatementRowEditable(row: StatementRow, editable: boolean | un
 }
 
 /** Parametry výkazu. */
-export interface FinancialStatementViewProps extends Omit<ComponentPropsWithoutRef<"div">, "title"> {
+export interface FinancialStatementViewProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "title"
+> {
   /** Druh výkazu (titul a export). */
   kind: StatementKind;
   /** Řádky výkazu od APP včetně součtů. */
@@ -106,7 +109,8 @@ export const FinancialStatementView = forwardRef<HTMLDivElement, FinancialStatem
         value: (row) => row.label,
         render: (row) => (
           <span
-            className={cn("flex min-w-0 items-center gap-1",
+            className={cn(
+              "flex min-w-0 items-center gap-1",
               row.kind === "sum" && "font-semibold",
               row.rounded && "rounded-sm bg-warning/10",
             )}
@@ -150,7 +154,10 @@ export const FinancialStatementView = forwardRef<HTMLDivElement, FinancialStatem
                 />
               );
             return (
-              <div onClick={(event) => event.stopPropagation()} onDoubleClick={(event) => event.stopPropagation()}>
+              <div
+                onClick={(event) => event.stopPropagation()}
+                onDoubleClick={(event) => event.stopPropagation()}
+              >
                 <AmountInput
                   aria-label={`${t.editValue} ${row.mark} ${column.label}`}
                   value={value}
@@ -194,7 +201,7 @@ export const FinancialStatementView = forwardRef<HTMLDivElement, FinancialStatem
                 ariaLabel={t.unitsLabel}
                 value={current}
                 defaultValue={defaultUnit}
-                onChange={changeUnit}
+                onChange={(next) => changeUnit(next as StatementUnit)}
                 options={[
                   { value: "full", label: statementUnitLabel(t.units.full, currency) },
                   { value: "thousands", label: statementUnitLabel(t.units.thousands, currency) },

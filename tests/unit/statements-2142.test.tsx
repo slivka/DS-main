@@ -9,8 +9,22 @@ const { DS_TEXTS_SK, DsTextsProvider } = await import("../../src/ds-texts");
 afterEach(cleanup);
 
 const rows: import("../../src/components/ds/statements").StatementRow[] = [
-  { id: "A", mark: "A.", label: "Aktiva", kind: "sum", values: { full: { c: 1_234_567.5 }, thousands: { c: 1_235 } }, rounded: true },
-  { id: "A1", parentId: "A", mark: "A.I.", label: "Majetek", kind: "mapped", values: { full: { c: 1_234_567.5 }, thousands: { c: 1_235 } } },
+  {
+    id: "A",
+    mark: "A.",
+    label: "Aktiva",
+    kind: "sum",
+    values: { full: { c: 1_234_567.5 }, thousands: { c: 1_235 } },
+    rounded: true,
+  },
+  {
+    id: "A1",
+    parentId: "A",
+    mark: "A.I.",
+    label: "Majetek",
+    kind: "mapped",
+    values: { full: { c: 1_234_567.5 }, thousands: { c: 1_235 } },
+  },
 ];
 
 describe("FinancialStatementView", () => {
@@ -24,7 +38,12 @@ describe("FinancialStatementView", () => {
   });
   it("přepnutí na tisíce ukáže hodnoty APP bez desetin a s oddělením tisíců", () => {
     const view = render(
-      <m.FinancialStatementView kind="balance" currency="Kč" rows={rows} columns={[{ id: "c", label: "Běžné" }]} />,
+      <m.FinancialStatementView
+        kind="balance"
+        currency="Kč"
+        rows={rows}
+        columns={[{ id: "c", label: "Běžné" }]}
+      />,
     );
     const text = () => (view.container.textContent ?? "").replace(/\s/g, " ");
     expect(text()).toContain("1 234 567,50");
@@ -35,15 +54,27 @@ describe("FinancialStatementView", () => {
   });
   it("dorovnaný řádek má ikonu s popisem", () => {
     const view = render(
-      <m.FinancialStatementView kind="balance" currency="Kč" rows={rows} columns={[{ id: "c", label: "Běžné" }]} />,
+      <m.FinancialStatementView
+        kind="balance"
+        currency="Kč"
+        rows={rows}
+        columns={[{ id: "c", label: "Běžné" }]}
+      />,
     );
     expect(view.getAllByRole("img", { name: /dorovnán/ }).length).toBe(1);
   });
   it("kontroly zobrazí stav a rozdíl od APP", () => {
     const view = render(
-      <m.StatementChecksBar checks={[{ kind: "balance", ok: true }, { kind: "profit", ok: false, difference: 1 }]} />,
+      <m.StatementChecksBar
+        checks={[
+          { kind: "balance", ok: true },
+          { kind: "profit", ok: false, difference: 1 },
+        ]}
+      />,
     );
-    expect(view.container.querySelector('[data-check="profit"]')?.getAttribute("data-ok")).toBe("false");
+    expect(view.container.querySelector('[data-check="profit"]')?.getAttribute("data-ok")).toBe(
+      "false",
+    );
     expect(view.container.textContent).toContain("Aktiva = Pasiva");
   });
 });
@@ -67,7 +98,13 @@ describe("Šablona výkazu", () => {
   it("přidání řádku a chyba validace z props", () => {
     let next: unknown = null;
     const view = render(
-      <m.StatementTemplateEditor rows={tpl} mappingOptions={[]} createRowId={() => "n"} issues={{ b: "Chybí účet" }} onChange={(r) => (next = r)} />,
+      <m.StatementTemplateEditor
+        rows={tpl}
+        mappingOptions={[]}
+        createRowId={() => "n"}
+        issues={{ b: "Chybí účet" }}
+        onChange={(r) => (next = r)}
+      />,
     );
     expect(view.getByRole("alert").textContent).toBe("Chybí účet");
     fireEvent.click(view.getByRole("button", { name: "Přidat řádek" }));
@@ -78,14 +115,39 @@ describe("Šablona výkazu", () => {
 describe("Uložené výkazy a dialog", () => {
   it("dialog bez názvu nejde uložit", () => {
     const view = render(
-      <m.StatementSaveDialog open onOpenChange={() => {}} value={{ name: " ", kind: "balance", period: "2026", unit: "full" }} onChange={() => {}} onSubmit={() => {}} periods={[{ value: "2026", label: "2026" }]} currency="Kč" />,
+      <m.StatementSaveDialog
+        open
+        onOpenChange={() => {}}
+        value={{ name: " ", kind: "balance", period: "2026", unit: "full" }}
+        onChange={() => {}}
+        onSubmit={() => {}}
+        periods={[{ value: "2026", label: "2026" }]}
+        currency="Kč"
+      />,
     );
-    expect(view.getByRole("button", { name: "Uložit" }).hasAttribute("disabled") || view.getByRole("button", { name: "Uložit" }).getAttribute("aria-disabled") === "true").toBe(true);
+    expect(
+      view.getByRole("button", { name: "Uložit" }).hasAttribute("disabled") ||
+        view.getByRole("button", { name: "Uložit" }).getAttribute("aria-disabled") === "true",
+    ).toBe(true);
   });
   it("seznam ukáže druh a jednotky ve slovenštině", () => {
     const view = render(
       <DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
-        <m.SavedStatementList currency="EUR" onOpen={() => {}} items={[{ id: "1", name: "S1", kind: "income", period: "2025", unit: "thousands", savedBy: "J", savedAt: "2026-03-10T08:05:00" }]} />
+        <m.SavedStatementList
+          currency="EUR"
+          onOpen={() => {}}
+          items={[
+            {
+              id: "1",
+              name: "S1",
+              kind: "income",
+              period: "2025",
+              unit: "thousands",
+              savedBy: "J",
+              savedAt: "2026-03-10T08:05:00",
+            },
+          ]}
+        />
       </DsTextsProvider>,
     );
     expect(view.container.textContent).toContain("Výkaz ziskov a strát");

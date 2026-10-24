@@ -8,7 +8,10 @@ export const Route = createFileRoute("/components/statements")({
       { title: "Výkazy – Slivka Design System" },
       { name: "description", content: "Rozvaha, výsledovka, uložené výkazy a šablony výkazů." },
       { property: "og:title", content: "Výkazy – Slivka Design System" },
-      { property: "og:description", content: "Ukázky rozvahy, výsledovky, uložených výkazů a šablon." },
+      {
+        property: "og:description",
+        content: "Ukázky rozvahy, výsledovky, uložených výkazů a šablon.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

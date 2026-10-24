@@ -28,7 +28,10 @@ export function moveTemplateRow(
 }
 
 /** Odebere řádek; jeho potomci převezmou rodiče odebraného řádku. */
-export function removeTemplateRow(rows: StatementTemplateRow[], id: string): StatementTemplateRow[] {
+export function removeTemplateRow(
+  rows: StatementTemplateRow[],
+  id: string,
+): StatementTemplateRow[] {
   const removed = rows.find((row) => row.id === id);
   return rows
     .filter((row) => row.id !== id)
