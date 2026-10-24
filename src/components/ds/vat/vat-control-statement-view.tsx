@@ -13,10 +13,15 @@ import type {
   VatControlSection,
   VatControlSectionData,
   VatRateAmounts,
+  VatReportStateProps,
 } from "./vat-report-types";
+import { VatReportState, vatExportTitle } from "./vat-report-state";
 const SECTIONS: VatControlSection[] = ["A1", "A2", "A4", "A5", "B1", "B2", "B3"];
+/** Sazby sloupců dokladů včetně třetí sazby 10 %. */
+const RATES = [21, 12, 10];
 /** Parametry kontrolního hlášení. */
-export interface VatControlStatementViewProps extends ComponentPropsWithoutRef<"div"> {
+export interface VatControlStatementViewProps
+  extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
   /** Oddíly rozdělené APP. */ sections: Partial<Record<VatControlSection, VatControlSectionData>>;
   /** Aktivní oddíl; bez něj místní výběr. */ activeSection?: VatControlSection;
   /** Změna oddílu. */ onSectionChange?: (section: VatControlSection) => void;
@@ -24,6 +29,8 @@ export interface VatControlStatementViewProps extends ComponentPropsWithoutRef<"
   /** Změna po podání. */ changed?: boolean;
   /** Měna. */ currency: string;
   /** Klíč nastavení. */ storageKey?: string;
+  /** Skryje sloupce sazeb, které v aktivním oddílu nemají žádnou hodnotu. */
+  hideEmptyColumns?: boolean;
 }
 /** Oddíly KH, prázdné zůstávají dostupné a ztlumené. */
 export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStatementViewProps>(
@@ -36,6 +43,10 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
       changed,
       currency,
       storageKey = "vat-control",
+      hideEmptyColumns = false,
+      loading,
+      error,
+      exportMeta,
       className,
       ...props
     },
