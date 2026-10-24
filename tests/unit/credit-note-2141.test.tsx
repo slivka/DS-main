@@ -3,12 +3,10 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 const { cleanup, fireEvent, render, screen } = await import("@testing-library/react");
-const { generatePaymentSchedule, sumPaymentSchedule } = await import(
-  "../../src/components/ds/accounting/payment-schedule"
-);
-const { PaymentScheduleEditor } = await import(
-  "../../src/components/ds/accounting/payment-schedule-editor"
-);
+const { generatePaymentSchedule, sumPaymentSchedule } =
+  await import("../../src/components/ds/accounting/payment-schedule");
+const { PaymentScheduleEditor } =
+  await import("../../src/components/ds/accounting/payment-schedule-editor");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 const { DocumentForm } = await import("../../src/components/ds/accounting/document-form");
 
@@ -61,38 +59,44 @@ describe("editor kalendáře – záporný a smíšený doklad", () => {
   it("Přidat u záporného celku předvyplní záporný zbytek, ne nulu", () => {
     let next: Array<{ amount: number }> = [];
     render(
-      <TooltipProvider><PaymentScheduleEditor
-        items={[]}
-        onChange={(items) => {
-          next = items;
-        }}
-        totalToPay={-500}
-      /></TooltipProvider>,
+      <TooltipProvider>
+        <PaymentScheduleEditor
+          items={[]}
+          onChange={(items) => {
+            next = items;
+          }}
+          totalToPay={-500}
+        />
+      </TooltipProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Přidat (N)" }));
     expect(next[0]?.amount).toBe(-500);
   });
   it("kontrola součtu splátek platí se znaménkem (záporný celek vyrovnan)", () => {
     render(
-      <TooltipProvider><PaymentScheduleEditor
-        items={[
-          { kind: "installment", dueDate: "2026-11-01", amount: -300 },
-          { kind: "installment", dueDate: "2026-12-01", amount: -200 },
-        ]}
-        onChange={noop}
-        totalToPay={-500}
-      /></TooltipProvider>,
+      <TooltipProvider>
+        <PaymentScheduleEditor
+          items={[
+            { kind: "installment", dueDate: "2026-11-01", amount: -300 },
+            { kind: "installment", dueDate: "2026-12-01", amount: -200 },
+          ]}
+          onChange={noop}
+          totalToPay={-500}
+        />
+      </TooltipProvider>,
     );
     expect(screen.getByTestId("payment-unallocated").textContent?.trim()).toBe("0,00");
     expect(screen.getByTestId("payment-total").textContent?.trim()).toBe("−500,00");
   });
   it("smíšený kalendář ukáže záporný zbytek se znaménkem", () => {
     render(
-      <TooltipProvider><PaymentScheduleEditor
-        items={[{ kind: "installment", dueDate: "2026-11-01", amount: -300 }]}
-        onChange={noop}
-        totalToPay={-500}
-      /></TooltipProvider>,
+      <TooltipProvider>
+        <PaymentScheduleEditor
+          items={[{ kind: "installment", dueDate: "2026-11-01", amount: -300 }]}
+          onChange={noop}
+          totalToPay={-500}
+        />
+      </TooltipProvider>,
     );
     expect(screen.getByTestId("payment-unallocated").textContent?.trim()).toBe("−200,00");
   });

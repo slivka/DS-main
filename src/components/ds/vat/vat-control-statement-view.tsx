@@ -124,60 +124,60 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
       <div ref={ref} {...props} className={cn("min-w-0 space-y-2", className)}>
         <VatReportState loading={loading} error={error}>
           {changed ? (
-          <StatusBadge
-            status="changed"
-            config={{ changed: { label: t.changed, tone: "warning" } }}
-          />
-        ) : null}
-        <div className="overflow-x-auto">
-          <PageTabs
-            listLabel={t.tabs}
-            value={activeSection ?? local}
-            onValueChange={(value) => {
-              const section = SECTIONS.find((s) => s === value);
-              if (!section) return;
-              setLocal(section);
-              onSectionChange?.(section);
-            }}
-            items={SECTIONS.map((value) => ({
-              value,
-              label: (
-                <span
-                  className={cn(
-                    !(sections[value]?.documents?.length || sections[value]?.summary?.length) &&
-                      "text-muted-foreground",
+            <StatusBadge
+              status="changed"
+              config={{ changed: { label: t.changed, tone: "warning" } }}
+            />
+          ) : null}
+          <div className="overflow-x-auto">
+            <PageTabs
+              listLabel={t.tabs}
+              value={activeSection ?? local}
+              onValueChange={(value) => {
+                const section = SECTIONS.find((s) => s === value);
+                if (!section) return;
+                setLocal(section);
+                onSectionChange?.(section);
+              }}
+              items={SECTIONS.map((value) => ({
+                value,
+                label: (
+                  <span
+                    className={cn(
+                      !(sections[value]?.documents?.length || sections[value]?.summary?.length) &&
+                        "text-muted-foreground",
+                    )}
+                  >
+                    {value}
+                  </span>
+                ),
+              }))}
+            >
+              {SECTIONS.map((section) => (
+                <TabsContent value={section} key={section}>
+                  {section === "A5" || section === "B3" ? (
+                    <DataGrid
+                      title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
+                      storageKey={`${storageKey}:${section}`}
+                      rows={sections[section]?.summary ?? []}
+                      columns={summaryColumns}
+                      rowKey={(r) => String(r.rate)}
+                      paginated={false}
+                    />
+                  ) : (
+                    <DataGrid
+                      title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
+                      storageKey={`${storageKey}:${section}`}
+                      rows={sections[section]?.documents ?? []}
+                      columns={sectionColumns(section, sections[section]?.documents ?? [])}
+                      rowKey={(r) => r.id}
+                      onRowOpen={(r) => onDocumentOpen?.(r.id)}
+                    />
                   )}
-                >
-                  {value}
-                </span>
-              ),
-            }))}
-          >
-            {SECTIONS.map((section) => (
-              <TabsContent value={section} key={section}>
-                {section === "A5" || section === "B3" ? (
-                  <DataGrid
-                    title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
-                    storageKey={`${storageKey}:${section}`}
-                    rows={sections[section]?.summary ?? []}
-                    columns={summaryColumns}
-                    rowKey={(r) => String(r.rate)}
-                    paginated={false}
-                  />
-                ) : (
-                  <DataGrid
-                    title={vatExportTitle(`${t.controlTitle} · ${section}`, exportMeta)}
-                    storageKey={`${storageKey}:${section}`}
-                    rows={sections[section]?.documents ?? []}
-                    columns={sectionColumns(section, sections[section]?.documents ?? [])}
-                    rowKey={(r) => r.id}
-                    onRowOpen={(r) => onDocumentOpen?.(r.id)}
-                  />
-                )}
-              </TabsContent>
-            ))}
-          </PageTabs>
-        </div>
+                </TabsContent>
+              ))}
+            </PageTabs>
+          </div>
         </VatReportState>
       </div>
     );

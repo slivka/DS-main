@@ -395,9 +395,7 @@ export function DocumentFormSecondaryScenarios({
 
 /** Dobropis: záporný celek, vazba Opravuje doklad a záporný platební kalendář. */
 function CreditNoteShowcase() {
-  const [value, setValue] = useState<
-    React.ComponentProps<typeof DocumentForm>["value"]
-  >({
+  const [value, setValue] = useState<React.ComponentProps<typeof DocumentForm>["value"]>({
     currency: "CZK",
     amountTotal: -1210,
     totalMode: "entered",
