@@ -1,5 +1,8 @@
 ## DS 2.141.0 (nevydáno)
 
+- [x] Drobná API a vzhled pro APP: přepínač vazby účetního data v nastavení dokladu, daňové číslo u DDPZ, oblíbení partneři ve výběru protistrany, založení partnera z hlavičky ID, rozestupy a „kód – název banky" u protiúčtu pohybu, odznak menu jako ikona s bublinou, zkracování štítků záhlaví trojtečkou s bublinou. 13 nových unit testů 13/13. Nevydáno.
+
+
 ## DS 2.140.0
 
 - [x] Banka I3–I7: rozpis výpisu s návrhy, napojení Fio bez zobrazení tokenu, pravidla banky a dávky plateb; 11 nových komponent, CS/SK, ukázka. Unit DS 1 588/1 588, Chromium bank-reconcile 2/2, check:quick, katalog 503 → 514 / 1 329 → 1 548 props bez odebrání. Nevydáno.
