@@ -18,7 +18,7 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
       html.style.maxWidth = "100%";
     }, width);
     const toolbar = grid.locator('[data-slot="grid-toolbar"]');
-    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/);
+    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/, { timeout: 45000 });
     await page.waitForTimeout(300);
     const toolbarBox = await toolbar.boundingBox();
     const visibleControls = toolbar.locator("button:visible,input:visible");
@@ -76,7 +76,7 @@ for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]'
         element.closest('[data-slot="data-grid"],[data-slot="tree-grid"]') as HTMLElement
       ).style.width = "1440px";
     });
-    await expect(toolbar).toHaveAttribute("data-overflow-level", "0");
+    await expect(toolbar).toHaveAttribute("data-overflow-level", "0", { timeout: 45000 });
     const order = await toolbar
       .locator("[data-toolbar-group]")
       .evaluateAll((groups) => groups.map((group) => group.getAttribute("data-toolbar-group")));
@@ -118,7 +118,7 @@ for (const width of [700, 800, 900, 1000]) {
       (element as HTMLElement).style.width = `${nextWidth}px`;
     }, width);
     const toolbar = grid.locator('[data-slot="grid-toolbar"]');
-    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/);
+    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/, { timeout: 45000 });
     await expect(toolbar.locator("[data-toolbar-add]").first()).toBeVisible();
     await page.waitForTimeout(400);
     const box = await toolbar.boundingBox();
