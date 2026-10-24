@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.139.0 (nevydáno)
+## 2.140.0 (nevydáno)
+
+## 2.139.0
 
 ### DE-2 + DE-3 a drobná API
 

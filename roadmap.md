@@ -1,4 +1,6 @@
-## DS 2.139.0 (nevydáno)
+## DS 2.140.0 (nevydáno)
+
+## DS 2.139.0
 
 - [x] Doplněk DE: categoriesEnabled=false i v účetnictví skryje kategorie v řádcích/nastavení a vypne validaci DS bez změny hodnot; 9 nových regresí, cíleně 62/62, unit DS 1 565/1 565, check:quick --harness + explicitní lint/formát změn OK; katalog 503 / 1 442 props bez odebrání. E2E ani check:full neběžely, nevydáno.
 - [x] DE-2 + DE-3: režim položek v dokladech, nastavení bez účtů, kniha, daňové souhrny, kontrola peněz a propojené zápisy; CS/SK, katalog a cílené testy. Zadání dodáno, oddíl 11 pro DS: názvy položek a žádné technické účty. Nevydávat.
