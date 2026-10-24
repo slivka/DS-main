@@ -56,7 +56,7 @@ export function DimensionValuePicker({
     setOpen(false);
   };
   return (
-    <Tooltip>
+    <Tooltip open={open ? false : undefined}>
       <InlineSearchPopover
         open={open && !disabled}
         onOpenChange={(next) => {
