@@ -92,6 +92,11 @@ Nový modul **`dph`** v `module_permissions` (view = přehledy, edit = vytvořit
 - Izolace firem; člen bez modulu `dph` → 42501.
 - **Výkon:** přiznání a KH za měsíc s 2 000 řádky ≤ 500 ms.
 
+### 1.6 Vazba na generátor XML (hotový, `src/lib/epo/*`, Claude 24. 10.)
+- `vat_code_mappings.xml_attribute` je dnes všude NULL. Doplň ho podle návrhu v `docs/epo/README.md` (atributy DPHDP3 po větách a řádcích) a výstup `vat_return` vracej s `xml_attribute`, ať APP předá data generátoru bez překladu.
+- Výstup `vat_kh` a `vat_sh` tvaruj podle typů v `src/lib/epo/types.ts`, případně uveď rozdíl a Claude typy upraví.
+- Neověřená místa tiskopisů (řádky 40–46, krácení, věty 5 a 6 DPHDP3, oddíly B1–B3 a C DPHKH1) jsou vyjmenovaná v `docs/epo/README.md`. Před prvním podáním je ověří Claude nahráním vzorového XML do kontroly EPO.
+
 ## 2. DPH B – DS (komponenty bez domény, data jen přes props)
 - **`VatReturnView`:** strom řádků přiznání po oddílech (I. zdanitelná plnění, II. ostatní plnění, III. odpočet, IV. … VI. výpočet) s částkami, počtem dokladů a proklikem na řádek. Zvýraznění rozdílu proti podanému (`compare?: Record<row, number>`).
 - **`VatControlStatementView`:** záložky oddílů A1–B3. A4/B2 jako grid dokladů (DIČ, evidenční číslo, datum, základy a daně po sazbách, kód režimu), A5/B3 souhrn. Proklik na doklad. Badge „změněno po podání“.
@@ -110,4 +115,25 @@ Nový modul **`dph`** v `module_permissions` (view = přehledy, edit = vytvořit
 - Chybové kódy DPH A do `lib/db-errors.ts`.
 
 ## 4. Mimo tuto vlnu
-Koeficient § 76 a vypořádání, OSS, DPH v daňové evidenci (DE-4), automatické podání do datové schránky (jen XML ke stažení a ruční podání na EPO).
+Koeficient § 76 a vypořádání, DPH v daňové evidenci (DE-4), automatické podání do datové schránky (jen XML ke stažení a ruční podání na EPO).
+
+## 5. OSS – zvláštní režim jednoho správního místa (Petr 24. 10.: „Zahrň i MiniOneStop“)
+
+Režim Unie (ZDPH, zvláštní režim jednoho správního místa – přesné paragrafy ověří Claude): prodej zboží na dálku a služby konečným spotřebitelům v jiných státech EU s DPH státu spotřeby, přiznání jednou za čtvrtletí přes aplikaci OSS na daňovém portálu (Moje daně). **Termín:** první čtvrtletí, které ostrá Unidata může potřebovat, je 4. Q 2026 s podáním do 31. 1. 2027. OSS proto jde **za DPH A/C** (od ~15. 11.), samostatné kolo „DPH A2 / C2 – OSS“. Dovozní režim (IOSS) a nevládní režim jsou mimo rozsah.
+
+**DB (A2):**
+- **Registrace:** příznak OSS u registrace firmy (`company_oss_registrations`: režim EU, platnost od–do, identifikace = DIČ). Kontrola, že OSS kód smí použít jen firma registrovaná k datu plnění.
+- **Kódy plnění:** nový `regime = 'oss_eu'` ve `vat_codes` pro dodání zboží na dálku a služby B2C. Řádek nese **stát spotřeby** (`documents`, nebo řádek `oss_country`) a **sazbu státu spotřeby** z `vat_rates` (`country`, `rate_type`, platnost). Daň v Kč se nezapočítává do tuzemského přiznání ani do KH a SH. Účetně jde na samostatný technický účet 343 OSS (nastavení kódu po obdobích jako ostatní kódy).
+- **Sazby členských států:** doplnit `vat_rates` o sazby všech států EU platné v roce 2026 (základní a snížené). Číselník je globální, jen ke čtení, mění se migrací.
+- **Přiznání OSS:** výpočet `vat_oss_return(_company_id, _quarter)` po státech spotřeby × druh plnění (zboží / služby) × sazba: základ a daň **v EUR**. Přepočet kurzem ECB posledního dne čtvrtletí (podle pravidel OSS; kurz ECB k datu doplnit do kurzů, zdroj stejný jako ČNB job). Opravy předchozích čtvrtletí po státech a čtvrtletích (oprava se uvádí v pozdějším přiznání, ne dodatečným).
+- **Podání a snímek:** přes `vat_submissions` (`form = 'OSS'`), uzamčení čtvrtletí OSS samostatně od tuzemského DPH.
+- **Limit 10 000 EUR** (společný limit EU pro B2C): přehled obratu B2C do EU za kalendářní rok s upozorněním na překročení.
+
+**DS (B2):** `OssReturnView` (stát × druh × sazba, základ a daň v EUR, opravy minulých období) a varianta `VatFilingBar` pro čtvrtletí OSS.
+
+**APP (C2):**
+- obrazovka „OSS“ v menu DPH (jen u firmy s registrací);
+- volba státu spotřeby na dokladu u OSS kódu;
+- výstup pro aplikaci OSS: přehled k opsání a export CSV/XML, pokud aplikace OSS import nabízí – ověří Claude.
+
+**Claude:** ověří formát podání v aplikaci OSS (ruční vyplnění, nebo import souboru) a sazby členských států k 1. 1. 2026, případně rozšíří `src/lib/epo/` o export OSS.
