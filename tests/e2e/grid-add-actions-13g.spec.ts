@@ -55,11 +55,15 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
   await box.scrollIntoViewIfNeeded();
   const toolbar = box.locator('[data-slot="grid-toolbar"]');
   const modes = new Set<string>();
-  for (const width of [960, 640, 400, 340, 320, 300, 290, 280, 270, 260, 250, 240, 230, 220, 208, 180, 160]) {
+  for (const width of [
+    960, 640, 400, 340, 320, 300, 290, 280, 270, 260, 250, 240, 230, 220, 208, 180, 160,
+  ]) {
     await box.evaluate((node, value) => {
       node.style.width = `${value}px`;
     }, width);
-    await expect.poll(() => toolbar.evaluate(node => Math.round(node.getBoundingClientRect().width))).toBe(width);
+    await expect
+      .poll(() => toolbar.evaluate((node) => Math.round(node.getBoundingClientRect().width)))
+      .toBe(width);
     await expect
       .poll(async () =>
         toolbar.evaluate((node) => {

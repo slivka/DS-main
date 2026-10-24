@@ -22,7 +22,9 @@ for (const width of [360, 480]) {
     await page.evaluate(() => {
       const state = { clicks: 0 };
       Reflect.set(window, "splitPrimaryProbe", state);
-      document.querySelector('[data-slot="data-grid"] [data-toolbar-add]')?.addEventListener("click", () => state.clicks++);
+      document
+        .querySelector('[data-slot="data-grid"] [data-toolbar-add]')
+        ?.addEventListener("click", () => state.clicks++);
     });
     await page.keyboard.press("n");
     expect(await page.evaluate(() => Reflect.get(window, "splitPrimaryProbe").clicks)).toBe(1);
