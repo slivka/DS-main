@@ -68,6 +68,14 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
             r.rates.find((item) => item.rate === rate)?.[field] ?? null,
         })),
       ),
+      // Nesazbový základ jen v A1; nikdy se nepromítá do sloupce 21 %.
+      {
+        id: "unratedBase",
+        label: `${t.unratedBase} · ${currency}`,
+        numeric: true,
+        decimals: 2,
+        value: (r) => r.unratedBase ?? null,
+      },
       { id: "regime", label: t.regime, value: (r) => r.regime },
       { id: "subject", label: t.subject, value: (r) => r.subjectCode },
       {
@@ -100,9 +108,20 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
         value: (r) => r.tax,
       },
     ];
+    const sectionColumns = (section: VatControlSection, docs: VatControlDocument[]) =>
+      columns
+        .filter((c) => c.id !== "subject" || section === "A1" || section === "B1")
+        .filter((c) => c.id !== "unratedBase" || section === "A1")
+        .filter(
+          (c) =>
+            !hideEmptyColumns ||
+            !/^(base|tax)\d+$/.test(c.id) ||
+            docs.some((doc) => c.value(doc) != null),
+        );
     return (
       <div ref={ref} {...props} className={cn("min-w-0 space-y-2", className)}>
-        {changed ? (
+        <VatReportState loading={loading} error={error}>
+          {changed ? (
           <StatusBadge
             status="changed"
             config={{ changed: { label: t.changed, tone: "warning" } }}
