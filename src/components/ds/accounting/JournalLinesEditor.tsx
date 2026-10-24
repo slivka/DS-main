@@ -5,6 +5,7 @@
  * Nesmí: obsahovat výpočty ani logiku řádků – ty patří do modelu a hooků.
  */
 import * as React from "react";
+import { TaxMovementSelect } from "../tax-records/tax-movement-select";
 import { Pin } from "lucide-react";
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -227,6 +228,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             onKeyDown={keyboard.onRootKeyDown}
           >
             <JournalToolbar />
+            {props.bookkeepingMode === "tax_records" && props.mode !== "mainAccount" ? <TaxMovementSelect className="border-b p-3" value={props.taxMovementKind ?? "non_cash_income"} onChange={props.onTaxMovementKindChange ?? (() => {})} disabled={!props.onTaxMovementKindChange || editor.editable.size === 0} /> : null}
             <JournalHeaderDimensions />
             <JournalGrid />
             <JournalDeductionTotals />
@@ -247,6 +249,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
                     ]
                   : props.lines
               }
+              bookkeepingMode={props.bookkeepingMode}
               accounts={props.accounts}
               categories={props.categories ?? legacyDimensionCategories(props.dimensions)}
               documentCurrency={props.documentCurrency}

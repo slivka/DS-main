@@ -1,3 +1,5 @@
+import { useDsTexts } from "../../../ds-texts";
+import type { BookkeepingMode } from "../tax-records/tax-record-types";
 import { ReadOnlyControlValue, useRecordReadOnly } from "../form/record-read-only";
 import { useMemo, useState, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
@@ -30,6 +32,10 @@ export type AccountOption = {
   /** Uložený kód, např. „221001“. */
   code: string;
   name: string;
+  /** Technická strana se nikdy nezobrazuje ani nenabízí. */
+  technical?: boolean;
+  /** Volitelný uživatelský kód položky, nikoli číslo účtu. */
+  displayCode?: string | null;
   type?: AccountType;
   /** Kategorie účtu z osnovy (`accounts.category`) – řídí povinná stranová pole. */
   category?: string;
@@ -49,6 +55,8 @@ export type AccountLevel = "class" | "group" | "synthetic" | "analytic";
 export type AccountCatalogItem = { code: string; name: string };
 
 export interface AccountSelectProps {
+  bookkeepingMode?: BookkeepingMode;
+  ref?: React.Ref<HTMLButtonElement>;
   accounts: AccountOption[];
   value: string | null | undefined;
   onChange: (code: string) => void;
@@ -87,9 +95,9 @@ export function AccountSelect({
   accounts,
   value,
   onChange,
-  placeholder = "Vyberte účet",
-  searchPlaceholder = "Hledat účet nebo číslo…",
-  emptyText = "Žádný účet nenalezen",
+  placeholder,
+  searchPlaceholder,
+  emptyText,
   /** Skrýt neaktivní účty (jinak jsou jen nevolitelné). */
   hideInactive = false,
   /** Zakázat výběr syntetického účtu, který má analytiky. */
@@ -106,7 +114,15 @@ export function AccountSelect({
   ariaLabel,
   id,
   className,
+  bookkeepingMode = "accrual",
+  ref,
 }: AccountSelectProps) {
+  const t = useDsTexts().taxRecords;
+  const taxRecords = bookkeepingMode === "tax_records";
+  placeholder ??= taxRecords ? t.chooseItem : "Vyberte účet";
+  searchPlaceholder ??= taxRecords ? t.searchItem : "Hledat účet nebo číslo…";
+  emptyText ??= taxRecords ? t.emptyItem : "Žádný účet nenalezen";
+  const label = (a: AccountOption) => taxRecords ? a.name : formatCodeName(formatAccountCode(a.code), a.name);
   const readOnly = useRecordReadOnly();
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
@@ -122,14 +138,15 @@ export function AccountSelect({
     const catalogOptions: AccountOption[] = (catalog ?? [])
       .filter((item) => !known.has(normalizeAccountCode(item.code)))
       .map((item) => ({ code: item.code, name: item.name, postable: false }));
-    const merged = [...accounts, ...catalogOptions]
+    const merged = [...accounts, ...(taxRecords ? [] : catalogOptions)]
+      .filter((a) => !a.technical)
       .filter((a) => (hideInactive ? a.active !== false : true))
       .map((a) => {
         const code = normalizeAccountCode(a.code);
         const level = accountLevelOf(code);
         const hasAnalytics =
           code.length === 3 && codes.some((c) => c.length > 3 && c.startsWith(code));
-        const blocked = allowLevels
+        const blocked = taxRecords ? a.active === false || a.postable === false : allowLevels
           ? a.active === false || !allowLevels.includes(level)
           : a.active === false ||
             (a.postable !== undefined
@@ -140,15 +157,15 @@ export function AccountSelect({
     return catalogOptions.length
       ? merged.sort((a, b) => a.code.localeCompare(b.code, "cs"))
       : merged;
-  }, [accounts, catalog, allowLevels, hideInactive, disableSyntheticWithAnalytics]);
+  }, [accounts, catalog, allowLevels, hideInactive, disableSyntheticWithAnalytics, taxRecords]);
 
   const selected = list.find((a) => a.code === normalizeAccountCode(value));
   const normalizedQuery = normalizeAccountCode(query).toLocaleLowerCase("cs");
   const filteredList = query.trim()
     ? list.filter((account) => {
         const numericQuery = /^\s*[\d.]+\s*$/.test(query);
-        if (numericQuery) return account.code.startsWith(normalizedQuery);
-        return `${account.code} ${formatAccountCode(account.code)} ${account.name}`
+        if (numericQuery && !taxRecords) return account.code.startsWith(normalizedQuery);
+        return `${taxRecords ? account.displayCode ?? "" : `${account.code} ${formatAccountCode(account.code)}`} ${account.name}`
           .toLocaleLowerCase("cs")
           .includes(query.trim().toLocaleLowerCase("cs"));
       })
@@ -157,7 +174,7 @@ export function AccountSelect({
   if (readOnly) {
     return (
       <ReadOnlyControlValue id={id}>
-        {selected ? formatCodeName(formatAccountCode(selected.code), selected.name) : (value ?? "")}
+        {selected ? label(selected) : taxRecords || accounts.some(a => a.code === value && a.technical) ? "" : (value ?? "")}
       </ReadOnlyControlValue>
     );
   }
@@ -166,6 +183,7 @@ export function AccountSelect({
     <Popover onSearchChange={setQuery} open={open} onOpenChange={changeOpen}>
       <PopoverTrigger asChild>
         <Button
+          ref={ref}
           type="button"
           variant="outline"
           role="combobox"
@@ -182,11 +200,11 @@ export function AccountSelect({
             data-placeholder={!value ? "" : undefined}
             className={cn(
               "truncate",
-              selected ? "font-mono tabular-nums text-foreground" : "text-muted-foreground",
+              selected ? taxRecords ? "text-foreground" : "font-mono tabular-nums text-foreground" : "text-muted-foreground",
             )}
           >
             {selected
-              ? formatCodeName(formatAccountCode(selected.code), selected.name)
+              ? label(selected)
               : placeholder}
           </span>
           <span className="ml-auto flex shrink-0 items-center gap-2">
@@ -210,7 +228,7 @@ export function AccountSelect({
               {filteredList.map((a) => (
                 <CommandItem
                   key={a.code}
-                  value={`${a.code} ${formatAccountCode(a.code)} ${a.name}`}
+                  value={taxRecords ? `${a.name} ${a.displayCode ?? ""}` : `${a.code} ${formatAccountCode(a.code)} ${a.name}`}
                   disabled={a.blocked}
                   onSelect={() => {
                     if (a.blocked) return;
@@ -220,15 +238,17 @@ export function AccountSelect({
                   className={cn("gap-2", a.blocked && "opacity-50")}
                 >
                   <span
-                    title={formatCodeName(formatAccountCode(a.code), a.name)}
+                    title={label(a)}
                     className={cn(
-                      "min-w-0 flex-1 truncate font-mono tabular-nums",
+                      "min-w-0 flex-1 truncate",
+                      !taxRecords && "font-mono tabular-nums",
                       (a.level === "class" || a.level === "group") && "font-semibold",
                     )}
                   >
-                    {formatCodeName(formatAccountCode(a.code), a.name)}
+                    {label(a)}
+                    {taxRecords && a.displayCode ? <span className="ml-2 text-xs text-muted-foreground">{a.displayCode}</span> : null}
                   </span>
-                  {a.type ? (
+                  {!taxRecords && a.type ? (
                     <span className="shrink-0 text-xs text-muted-foreground">
                       {typeLabels[a.type]}
                     </span>

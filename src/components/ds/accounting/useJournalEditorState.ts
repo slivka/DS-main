@@ -82,6 +82,7 @@ export function useJournalEditorState(
     rateAmount = 1,
     sideFields = "split",
     mode = "internal",
+    bookkeepingMode = "accrual",
     mainSide,
     mainAccount: mainAccountId,
     editableFields,
@@ -159,6 +160,11 @@ export function useJournalEditorState(
       journalColumnDefs({
         t,
         mode,
+        bookkeepingMode,
+        taxItemLabels: dsTexts.taxRecords,
+        taxMovementKind: props.taxMovementKind,
+        mainSide,
+        categoriesEnabled: props.categoriesEnabled,
         labels,
         counterShortLabel,
         counterNameLabel,
@@ -195,6 +201,11 @@ export function useJournalEditorState(
       props.dimensionTypes,
       props.dimensionsBySide,
       dsTexts.dimensions,
+      dsTexts.taxRecords,
+      bookkeepingMode,
+      props.taxMovementKind,
+      props.categoriesEnabled,
+      mainSide,
     ],
   );
   const layout = useJournalLayout({
@@ -205,6 +216,7 @@ export function useJournalEditorState(
     sideFields,
     grossProtected: false,
     rowCount: lines.length,
+    bookkeepingMode,
   });
   const { rootRef, visibleColumns, compactAccountIds } = layout;
   const vatReadOnly = vatOn && (Boolean(vat?.readOnly) || editable.size === 0);
@@ -484,6 +496,7 @@ export function useJournalEditorState(
           column,
           {
             accountByCode,
+            bookkeepingMode,
             dimensions: props.categories ?? [],
             categories: props.categories ?? [],
             partners: props.partners ?? [],

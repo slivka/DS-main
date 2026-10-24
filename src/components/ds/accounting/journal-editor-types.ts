@@ -128,6 +128,12 @@ export type JournalLinesEditorTexts = JournalEditorTexts;
 
 /** Props editoru řádků dokladu. */
 export interface JournalLinesEditorProps {
+  /** Účetnictví je výchozí; DE mění jen prezentaci položek. */
+  bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
+  categoriesEnabled?: boolean;
+  /** U ID přeřazení zobrazí dvě položky, ostatní pohyby jednu. */
+  taxMovementKind?: import("../tax-records/tax-record-types").TaxMovementKind;
+  onTaxMovementKindChange?: (kind: import("../tax-records/tax-record-types").TaxMovementKind) => void;
   /** @deprecated 2.108.0 – Celkem v domácí měně se v rekapitulaci nezobrazuje; ignorováno. */
   recapTotalAmount?: number;
   /** @deprecated 2.108.0 – ignorováno. */

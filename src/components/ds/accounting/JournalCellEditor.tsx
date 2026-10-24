@@ -44,6 +44,7 @@ function AccountCellEditor({ line, column }: JournalCellEditorProps) {
   return (
     <AccountSelect
       defaultOpen
+      bookkeepingMode={editor.props.bookkeepingMode}
       accounts={
         editor.mainAccount && dataColumn === "counterAccount" && mainOption?.category
           ? accounts.filter((account) => account.category !== mainOption.category)

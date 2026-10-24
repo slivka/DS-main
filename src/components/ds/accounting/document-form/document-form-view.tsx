@@ -122,6 +122,7 @@ export function DocumentFormView({ props, model }: DocumentFormViewProps) {
         <section className="rounded-lg border bg-card p-4">
           {props.templateEdit ? <TemplateEditBanner template={props.templateEdit} /> : null}
           <DocumentIdentityLine
+            hideMainAccount={props.hideMainAccount || props.bookkeepingMode === "tax_records"}
             identity={effectiveIdentity}
             direction={props.directionBadge}
             fallback={t.numberPending}

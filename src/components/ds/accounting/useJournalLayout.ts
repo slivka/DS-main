@@ -21,6 +21,7 @@ import type { ColumnId } from "./journal-lines-model";
 
 /** Vstup hooku rozložení. */
 export interface JournalLayoutInput {
+  bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
   /** Ref předaný editoru zvenku. */
   forwardedRef: React.ForwardedRef<HTMLDivElement>;
   /** Klíč uložení sloupců a zoomu. */
@@ -95,10 +96,10 @@ export function useJournalLayout(input: JournalLayoutInput) {
   );
   const { containerWidth, rootRemPx } = useMeasuredWidth(rootRef);
   const normalizeAccountVisibility = React.useCallback(
-    (visible: Record<ColumnId, boolean>) => normalizeJournalAccountVisibility(visible, mode),
-    [mode],
+    (visible: Record<ColumnId, boolean>) => input.bookkeepingMode === "tax_records" ? visible : normalizeJournalAccountVisibility(visible, mode),
+    [mode, input.bookkeepingMode],
   );
-  const columns = useGridColumns(`${storageKey}:v4`, input.columnDefs, {
+  const columns = useGridColumns(`${storageKey}:v4${input.bookkeepingMode === "tax_records" ? ":tax-records" : ""}`, input.columnDefs, {
     normalizeVisible: normalizeAccountVisibility,
   });
   const protectedColumns = columns.columns
