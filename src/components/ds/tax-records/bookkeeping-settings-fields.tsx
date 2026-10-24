@@ -34,28 +34,30 @@ export const BookkeepingSettingsFields = forwardRef<HTMLDivElement, BookkeepingS
         {bookkeepingMode === "accrual" ? (
           accountFields
         ) : scope === "company" ? (
-          <RecordReadOnlyProvider value={!!readOnly}><FieldGrid cols={12}>
-            <Field span={6} label={t.roundingIncome}>
-              <AccountSelect
-                bookkeepingMode="tax_records"
-                accounts={items}
-                value={value.income}
-                onChange={(income) => onValueChange({ ...value, income })}
-                disabled={readOnly}
-                ariaLabel={t.roundingIncome}
-              />
-            </Field>
-            <Field span={6} label={t.roundingExpense}>
-              <AccountSelect
-                bookkeepingMode="tax_records"
-                accounts={items}
-                value={value.expense}
-                onChange={(expense) => onValueChange({ ...value, expense })}
-                disabled={readOnly}
-                ariaLabel={t.roundingExpense}
-              />
-            </Field>
-          </FieldGrid></RecordReadOnlyProvider>
+          <RecordReadOnlyProvider value={!!readOnly}>
+            <FieldGrid cols={12}>
+              <Field span={6} label={t.roundingIncome}>
+                <AccountSelect
+                  bookkeepingMode="tax_records"
+                  accounts={items}
+                  value={value.income}
+                  onChange={(income) => onValueChange({ ...value, income })}
+                  disabled={readOnly}
+                  ariaLabel={t.roundingIncome}
+                />
+              </Field>
+              <Field span={6} label={t.roundingExpense}>
+                <AccountSelect
+                  bookkeepingMode="tax_records"
+                  accounts={items}
+                  value={value.expense}
+                  onChange={(expense) => onValueChange({ ...value, expense })}
+                  disabled={readOnly}
+                  ariaLabel={t.roundingExpense}
+                />
+              </Field>
+            </FieldGrid>
+          </RecordReadOnlyProvider>
         ) : null}
       </div>
     );

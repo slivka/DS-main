@@ -396,3 +396,28 @@ test("slovenské texty DE jsou zapojené do provideru", () => {
   );
   expect(screen.getByRole("radio", { name: "Daňová evidencia" })).toBeDefined();
 });
+
+test("technický účet není platná vybraná položka ani u přeřazení", () => {
+  expect(
+    taxItemAccountRequired(
+      { id: "x", debitAccount: "211001", creditAccount: "602001" },
+      { mode: "internal", taxMovementKind: "transfer", accounts },
+    ),
+  ).toEqual(["debitAccount"]);
+});
+test("DE povolené kategorie zůstávají navázané na položku", () => {
+  const change = mock();
+  render(
+    <TooltipProvider>
+      <JournalLinesEditor
+        {...editor}
+        bookkeepingMode="tax_records"
+        categoriesEnabled
+        categories={[{ id: "cat", name: "Provoz" }]}
+        allowedCategories={() => ["cat"]}
+        onChange={change}
+      />
+    </TooltipProvider>,
+  );
+  expect(change.mock.calls.some((c) => c[0][0]?.categoryId === "cat")).toBe(true);
+});
