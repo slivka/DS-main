@@ -22,6 +22,7 @@ import {
 } from "../../ui/dialog";
 import { SectionHeading } from "../layout/section-heading";
 import { StatusBadge } from "../data-display/status-badge";
+import { TooltipProvider } from "../../ui/tooltip";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
@@ -106,6 +107,7 @@ export function BankConnectionSettings({
   };
 
   return (
+    <TooltipProvider>
     <section
       {...rest}
       data-slot="bank-connection-settings"
@@ -308,5 +310,6 @@ export function BankConnectionSettings({
       {confirmDialog}
       {fetchFromTooOld ? <NoticeBar tone="danger">{t.fetchFromTooOld}</NoticeBar> : null}
     </section>
+    </TooltipProvider>
   );
 }
