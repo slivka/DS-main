@@ -42,6 +42,7 @@ export interface DocumentSettingsDialogTexts {
   vatCalcMode: string;
   vatCalcNet: string;
   vatCalcGross: string;
+  accountingDateFollowsIssue: string;
   cancel: string;
   save: string;
 }
@@ -66,6 +67,7 @@ export const DEFAULT_DOCUMENT_SETTINGS_TEXTS: DocumentSettingsDialogTexts = {
   vatCalcMode: "Zadávat částky",
   vatCalcNet: "Bez DPH",
   vatCalcGross: "S DPH",
+  accountingDateFollowsIssue: "Datum účetního případu podle data vystavení",
   cancel: "Zrušit",
   save: "Uložit",
 };
@@ -77,6 +79,12 @@ export interface DocumentSettingsDialogProps {
   documentTypeLabel: string;
   allowCounterpartySuggestions?: boolean;
   /** Zobrazí volbu „Zadávat částky: Bez DPH / S DPH“. */ showVatCalcMode?: boolean;
+  /** Řízený přepínač vazby účetního data na datum vystavení; bez něj se volba nezobrazí. */
+  accountingDateFollowsIssue?: boolean;
+  /** Změna vazby účetního data; volá se při Uložit spolu s ostatními hodnotami. */
+  onAccountingDateFollowsIssueChange?: (follows: boolean) => void;
+  /** Důvod zakázání přepínače (bublina); hodnota se nemění. */
+  accountingDateFollowsIssueDisabled?: string;
   busy?: boolean;
   texts?: Partial<DocumentSettingsDialogTexts>;
 }
