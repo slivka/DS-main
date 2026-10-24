@@ -65,6 +65,7 @@ export interface DocumentFormProps {
   bookkeepingMode?: import("../../tax-records/tax-record-types").BookkeepingMode;
   /** Skryje hlavní účet a stranu bez změny dat. V DE automaticky. */
   hideMainAccount?: boolean;
+  /** Výchozí true; false vypne kategorie v editoru i v účetnictví, hodnoty zachová. */
   categoriesEnabled?: boolean;
   taxMovementKind?: import("../../tax-records/tax-record-types").TaxMovementKind;
   onTaxMovementKindChange?: (

@@ -23,6 +23,7 @@ export function useJournalCategories(
 ) {
   const { lines, onChange } = props;
   const categoryContext = {
+    categoriesEnabled: props.categoriesEnabled,
     categories: props.categories ?? [],
     accountByCode,
     categoryBySide: props.categoryBySide,

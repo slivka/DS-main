@@ -37,6 +37,8 @@ export interface JournalValidationContext {
   dimensionRequired: boolean;
   categoryRequired?: boolean;
   categoryBySide?: boolean;
+  /** False vypne kontroly kategorií i při povinnosti z pravidel účtu. */
+  categoriesEnabled?: boolean;
   /** DPH zapnuto a editovatelné. */
   vatActive: boolean;
   /** Kódy DPH podle id. */
@@ -80,6 +82,7 @@ export function journalSideIssues(line: JournalLine, ctx: JournalValidationConte
     if (rules.vsRequired && !line[vsColumn])
       issues[vsColumn] = t.missingVs.replace("{side}", sideLabel);
     if (
+      ctx.categoriesEnabled !== false &&
       (rules.categoryRequired ?? rules.dimensionRequired) &&
       !normalizeCategoryLine(line)[dimensionColumn]
     )
