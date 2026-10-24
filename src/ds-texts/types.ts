@@ -50,6 +50,8 @@ import type { InvoicePrintTexts } from "./invoice-print-texts";
 export type { InvoicePrintTexts, InvoicePrintTextKey } from "./invoice-print-texts";
 
 export interface DsTexts {
+  /** Daňová evidence bez výpočtů a persistence. */
+  taxRecords: import("./tax-record-texts").TaxRecordTexts;
   /** Přiznání, hlášení a podání DPH. */
   vatReports: import("./vat-report-texts").VatReportTexts;
   /** Obecné dimenze. */
