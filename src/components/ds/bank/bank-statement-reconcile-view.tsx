@@ -426,8 +426,10 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
         {activeRow
           ? (() => {
               const row = rows.find((r) => r.id === activeRow);
-              if (!row?.suggestion || row.status === "filed") return null;
+              if (!row || row.status === "filed") return null;
               return (
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                  {row.suggestion ? (
                 <BankReconcileSuggestionRow
                   row={row}
                   currencySymbol={summary.currencySymbol}
@@ -438,6 +440,13 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
                     onPatch(rowId, { suggestion: { ...row.suggestion!, candidateId } })
                   }
                 />
+                  ) : null}
+                  {!readOnly ? (
+                    <Button type="button" size="sm" variant="outline" onClick={() => onCreateRule(row.id)}>
+                      {t.createRule}
+                    </Button>
+                  ) : null}
+                </div>
               );
             })()
           : null}
