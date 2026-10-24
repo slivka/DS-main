@@ -13,6 +13,7 @@ import { Route as WorkspaceSettingsRouteImport } from './routes/workspace-settin
 import { Route as GuidelinesRouteImport } from './routes/guidelines'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceSettingsPageRouteImport } from './routes/workspace-settings.$page'
+import { Route as ComponentsVatReportsRouteImport } from './routes/components.vat-reports'
 import { Route as ComponentsRecordPanelRouteImport } from './routes/components.record-panel'
 import { Route as ComponentsPrintRouteImport } from './routes/components.print'
 import { Route as ComponentsNavigationRouteImport } from './routes/components.navigation'
@@ -53,6 +54,11 @@ const WorkspaceSettingsPageRoute = WorkspaceSettingsPageRouteImport.update({
   id: '/$page',
   path: '/$page',
   getParentRoute: () => WorkspaceSettingsRoute,
+} as any)
+const ComponentsVatReportsRoute = ComponentsVatReportsRouteImport.update({
+  id: '/components/vat-reports',
+  path: '/components/vat-reports',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ComponentsRecordPanelRoute = ComponentsRecordPanelRouteImport.update({
   id: '/components/record-panel',
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
   '/components/record-panel': typeof ComponentsRecordPanelRoute
+  '/components/vat-reports': typeof ComponentsVatReportsRoute
   '/workspace-settings/$page': typeof WorkspaceSettingsPageRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
   '/components/record-panel': typeof ComponentsRecordPanelRoute
+  '/components/vat-reports': typeof ComponentsVatReportsRoute
   '/workspace-settings/$page': typeof WorkspaceSettingsPageRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
   '/components/record-panel': typeof ComponentsRecordPanelRoute
+  '/components/vat-reports': typeof ComponentsVatReportsRoute
   '/workspace-settings/$page': typeof WorkspaceSettingsPageRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/components/navigation'
     | '/components/print'
     | '/components/record-panel'
+    | '/components/vat-reports'
     | '/workspace-settings/$page'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/components/navigation'
     | '/components/print'
     | '/components/record-panel'
+    | '/components/vat-reports'
     | '/workspace-settings/$page'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/components/navigation'
     | '/components/print'
     | '/components/record-panel'
+    | '/components/vat-reports'
     | '/workspace-settings/$page'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   ComponentsNavigationRoute: typeof ComponentsNavigationRoute
   ComponentsPrintRoute: typeof ComponentsPrintRoute
   ComponentsRecordPanelRoute: typeof ComponentsRecordPanelRoute
+  ComponentsVatReportsRoute: typeof ComponentsVatReportsRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
   Char91__mockupChar93PreviewSplatRoute: typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -380,6 +393,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspace-settings/$page'
       preLoaderRoute: typeof WorkspaceSettingsPageRouteImport
       parentRoute: typeof WorkspaceSettingsRoute
+    }
+    '/components/vat-reports': {
+      id: '/components/vat-reports'
+      path: '/components/vat-reports'
+      fullPath: '/components/vat-reports'
+      preLoaderRoute: typeof ComponentsVatReportsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/components/record-panel': {
       id: '/components/record-panel'
@@ -557,6 +577,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComponentsNavigationRoute: ComponentsNavigationRoute,
   ComponentsPrintRoute: ComponentsPrintRoute,
   ComponentsRecordPanelRoute: ComponentsRecordPanelRoute,
+  ComponentsVatReportsRoute: ComponentsVatReportsRoute,
   Char91__componentChar93PreviewSplatRoute:
     Char91__componentChar93PreviewSplatRoute,
   Char91__mockupChar93PreviewSplatRoute: Char91__mockupChar93PreviewSplatRoute,

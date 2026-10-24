@@ -15,26 +15,57 @@ export interface VatRecapitulativeViewProps extends ComponentPropsWithoutRef<"di
   /** Klíč nastavení. */ storageKey?: string;
 }
 /** Souhrnné hlášení nebo přehled OSS se součty. */
-export const VatRecapitulativeView = forwardRef<HTMLDivElement, VatRecapitulativeViewProps>(function VatRecapitulativeView(
-  { variant = "recapitulative", rows = [], ossRows = [], currency, onRowOpen, storageKey = "vat-recapitulative", className, ...props }, ref,
-) {
-  const t = useDsTexts().vatReports;
-  const columns: DataGridColumn<VatRecapitulativeRow>[] = [
-    { id: "country", label: t.country, value: r => r.country },
-    { id: "dic", label: t.dic, value: r => r.dic },
-    { id: "supply", label: t.supply, value: r => r.supplyCode, total: "none" },
-    { id: "amount", label: `${t.amount} · ${currency}`, value: r => r.amount, numeric: true },
-  ];
-  const ossColumns: DataGridColumn<OssReturnRow>[] = [
-    { id: "country", label: t.country, value: r => r.country },
-    { id: "supply", label: t.supply, value: r => r.supplyLabel },
-    { id: "period", label: t.period, value: r => r.correctionPeriod },
-    { id: "rate", label: t.rate, value: r => `${r.rate} %` },
-    { id: "base", label: `${t.base} · ${currency}`, value: r => r.base, numeric: true },
-    { id: "tax", label: `${t.tax} · ${currency}`, value: r => r.tax, numeric: true },
-  ];
-  return <div ref={ref} {...props} className={cn("min-w-0", className)}>
-    {variant === "oss" ? <DataGrid title={t.ossTitle} rows={ossRows} columns={ossColumns} storageKey={`${storageKey}:oss`} rowKey={r => r.id} onRowOpen={r => onRowOpen?.(r.id)} /> :
-      <DataGrid title={t.recapitulativeTitle} rows={rows} columns={columns} storageKey={storageKey} rowKey={r => r.id} onRowOpen={r => onRowOpen?.(r.id)} />}
-  </div>;
-});
+export const VatRecapitulativeView = forwardRef<HTMLDivElement, VatRecapitulativeViewProps>(
+  function VatRecapitulativeView(
+    {
+      variant = "recapitulative",
+      rows = [],
+      ossRows = [],
+      currency,
+      onRowOpen,
+      storageKey = "vat-recapitulative",
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const t = useDsTexts().vatReports;
+    const columns: DataGridColumn<VatRecapitulativeRow>[] = [
+      { id: "country", label: t.country, value: (r) => r.country },
+      { id: "dic", label: t.dic, value: (r) => r.dic },
+      { id: "supply", label: t.supply, value: (r) => r.supplyCode, total: "none" },
+      { id: "amount", label: `${t.amount} · ${currency}`, value: (r) => r.amount, numeric: true },
+    ];
+    const ossColumns: DataGridColumn<OssReturnRow>[] = [
+      { id: "country", label: t.country, value: (r) => r.country },
+      { id: "supply", label: t.supply, value: (r) => r.supplyLabel },
+      { id: "period", label: t.period, value: (r) => r.correctionPeriod },
+      { id: "rate", label: t.rate, value: (r) => `${r.rate} %` },
+      { id: "base", label: `${t.base} · ${currency}`, value: (r) => r.base, numeric: true },
+      { id: "tax", label: `${t.tax} · ${currency}`, value: (r) => r.tax, numeric: true },
+    ];
+    return (
+      <div ref={ref} {...props} className={cn("min-w-0", className)}>
+        {variant === "oss" ? (
+          <DataGrid
+            title={t.ossTitle}
+            rows={ossRows}
+            columns={ossColumns}
+            storageKey={`${storageKey}:oss`}
+            rowKey={(r) => r.id}
+            onRowOpen={(r) => onRowOpen?.(r.id)}
+          />
+        ) : (
+          <DataGrid
+            title={t.recapitulativeTitle}
+            rows={rows}
+            columns={columns}
+            storageKey={storageKey}
+            rowKey={(r) => r.id}
+            onRowOpen={(r) => onRowOpen?.(r.id)}
+          />
+        )}
+      </div>
+    );
+  },
+);

@@ -1,3 +1,4 @@
+import { enrichVatReports } from "./vat-report-catalog";
 /** Obnovení autorských údajů katalogu · vlastní odvozené výchozí texty a referenci · nevydává. */
 import { readFileSync, writeFileSync } from "node:fs";
 import { DS_TEXTS_CS } from "../src/ds-texts/cs";
@@ -40,6 +41,7 @@ interface Catalog {
 export function refreshCatalog() {
   const path = ".lovable/design-system.json";
   const catalog = JSON.parse(readFileSync(path, "utf8")) as Catalog;
+  const vatComponents = enrichVatReports(catalog.components);
   enrichExtractionDocumentCatalog(catalog.components);
   const packages = JSON.parse(readFileSync("package.json", "utf8")) as {
     dependencies: Record<string, string>;
@@ -260,6 +262,7 @@ export function refreshCatalog() {
       ...categoryComponents,
       ...dimensionComponents,
       ...gridContractComponents,
+      ...vatComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";

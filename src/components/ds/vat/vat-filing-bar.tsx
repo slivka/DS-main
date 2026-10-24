@@ -32,25 +32,113 @@ export interface VatFilingBarProps extends ComponentPropsWithoutRef<"div"> {
 }
 /** Stav a akce podání; odemknutí vyžaduje neprázdný důvod i opsání. */
 export const VatFilingBar = forwardRef<HTMLDivElement, VatFilingBarProps>(function VatFilingBar(
-  { form, status, kind, onKindChange, filedAt, filedBy, actions = {}, confirmText, disabled, className, ...props }, ref,
+  {
+    form,
+    status,
+    kind,
+    onKindChange,
+    filedAt,
+    filedBy,
+    actions = {},
+    confirmText,
+    disabled,
+    className,
+    ...props
+  },
+  ref,
 ) {
-  const t = useDsTexts().vatReports; const reasonId = useId();
-  const [open, setOpen] = useState(false); const [reason, setReason] = useState("");
+  const t = useDsTexts().vatReports;
+  const reasonId = useId();
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
   const kinds = vatFilingKinds(form);
-  return <div ref={ref} {...props} className={cn("flex min-w-0 flex-wrap items-center gap-3 border-y bg-muted/40 py-3", className)}>
-    <StatusBadge status={status} config={{ open: { label: t.states.open, tone: "neutral" }, filed: { label: t.states.filed, tone: "success" }, changed: { label: t.states.changed, tone: "warning" } }} />
-    {filedAt ? <span className="text-sm">{formatDate(filedAt.slice(0, 10))}{filedBy ? ` · ${filedBy}` : ""}</span> : null}
-    <OptionSelect ariaLabel={t.filingKind} className="w-auto" value={kind} disabled={disabled || !onKindChange} allowEmpty={false}
-      options={kinds.map(value => ({ value, label: t.kinds[value] }))} onChange={value => { const next = kinds.find(k => k === value); if (next) onKindChange?.(next); }} />
-    <div className="flex min-w-0 flex-wrap gap-2">
-      {actions.onCreate ? <Button disabled={disabled} onClick={actions.onCreate}>{t.create}</Button> : null}
-      {actions.onDownloadXml ? <Button variant="outline" disabled={disabled} onClick={actions.onDownloadXml}>{t.download}</Button> : null}
-      {actions.onMarkFiled ? <Button variant="outline" disabled={disabled} onClick={actions.onMarkFiled}>{t.markFiled}</Button> : null}
-      {actions.onCreateCorrection ? <Button variant="outline" disabled={disabled} onClick={actions.onCreateCorrection}>{form === "return" ? t.additional : t.subsequent}</Button> : null}
-      {actions.onUnlock ? <Button variant="outline" disabled={disabled} onClick={() => { setReason(""); setOpen(true); }}>{t.unlock}</Button> : null}
+  return (
+    <div
+      ref={ref}
+      {...props}
+      className={cn(
+        "flex min-w-0 flex-wrap items-center gap-3 border-y bg-muted/40 py-3",
+        className,
+      )}
+    >
+      <StatusBadge
+        status={status}
+        config={{
+          open: { label: t.states.open, tone: "neutral" },
+          filed: { label: t.states.filed, tone: "success" },
+          changed: { label: t.states.changed, tone: "warning" },
+        }}
+      />
+      {filedAt ? (
+        <span className="text-sm">
+          {formatDate(filedAt.slice(0, 10))}
+          {filedBy ? ` · ${filedBy}` : ""}
+        </span>
+      ) : null}
+      <OptionSelect
+        ariaLabel={t.filingKind}
+        className="w-auto"
+        value={kind}
+        disabled={disabled || !onKindChange}
+        allowEmpty={false}
+        options={kinds.map((value) => ({ value, label: t.kinds[value] }))}
+        onChange={(value) => {
+          const next = kinds.find((k) => k === value);
+          if (next) onKindChange?.(next);
+        }}
+      />
+      <div className="flex min-w-0 flex-wrap gap-2">
+        {actions.onCreate ? (
+          <Button disabled={disabled} onClick={actions.onCreate}>
+            {t.create}
+          </Button>
+        ) : null}
+        {actions.onDownloadXml ? (
+          <Button variant="outline" disabled={disabled} onClick={actions.onDownloadXml}>
+            {t.download}
+          </Button>
+        ) : null}
+        {actions.onMarkFiled ? (
+          <Button variant="outline" disabled={disabled} onClick={actions.onMarkFiled}>
+            {t.markFiled}
+          </Button>
+        ) : null}
+        {actions.onCreateCorrection ? (
+          <Button variant="outline" disabled={disabled} onClick={actions.onCreateCorrection}>
+            {form === "return" ? t.additional : t.subsequent}
+          </Button>
+        ) : null}
+        {actions.onUnlock ? (
+          <Button
+            variant="outline"
+            disabled={disabled}
+            onClick={() => {
+              setReason("");
+              setOpen(true);
+            }}
+          >
+            {t.unlock}
+          </Button>
+        ) : null}
+      </div>
+      <ConfirmByTypingDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={t.unlock}
+        confirmText={confirmText}
+        confirmLabel={t.unlock}
+        description={
+          <div className="space-y-3">
+            <p>{t.unlockDescription}</p>
+            <label htmlFor={reasonId}>{t.reason}</label>
+            <Textarea id={reasonId} value={reason} onChange={(e) => setReason(e.target.value)} />
+          </div>
+        }
+        onConfirm={async () => {
+          if (!reason.trim()) throw new Error(t.reason);
+          await actions.onUnlock?.(reason.trim());
+        }}
+      />
     </div>
-    <ConfirmByTypingDialog open={open} onOpenChange={setOpen} title={t.unlock} confirmText={confirmText} confirmLabel={t.unlock}
-      description={<div className="space-y-3"><p>{t.unlockDescription}</p><label htmlFor={reasonId}>{t.reason}</label><Textarea id={reasonId} value={reason} onChange={e => setReason(e.target.value)} /></div>}
-      onConfirm={async () => { if (!reason.trim()) throw new Error(t.reason); await actions.onUnlock?.(reason.trim()); }} />
-  </div>;
+  );
 });
