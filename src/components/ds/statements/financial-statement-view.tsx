@@ -186,7 +186,6 @@ export const FinancialStatementView = forwardRef<HTMLDivElement, FinancialStatem
             printContext={printContext}
             printTitle={heading}
             printParams={[{ label: t.unitsLabel, value: unitText }]}
-            rowClassName={(row: StatementRow) => (row.rounded ? "bg-warning/10" : undefined)}
             toolbarLeft={
               <GridSegmentedToggle
                 ariaLabel={t.unitsLabel}
