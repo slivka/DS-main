@@ -243,9 +243,9 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         padding,
         hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
       };
-      let next = node.clientWidth <= 480 ? 3 : calculateGridToolbarOverflowLevel(widths, current);
+      let next = calculateGridToolbarOverflowLevel(widths, current);
       let labels: "full" | "short" = "full";
-      if (addCount > 1 && next === 3 && node.clientWidth > 480) {
+      if (addCount > 1 && next === 3) {
         const shortLevel = calculateGridToolbarOverflowLevel(
           { ...widths, leftFull: measured.leftShort },
           current,
