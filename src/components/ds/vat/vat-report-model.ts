@@ -5,9 +5,9 @@ export function vatFilingKinds(
   form: VatFilingForm,
   allowed?: readonly VatFilingKind[],
 ): VatFilingKind[] {
-  const kinds =
+  const kinds: VatFilingKind[] =
     form === "oss"
-      ? (["regular", "corrective"] as VatFilingKind[])
+      ? ["regular", "corrective"]
       : ["regular", "corrective", form === "return" ? "additional" : "subsequent"];
   return allowed ? kinds.filter((kind) => allowed.includes(kind)) : kinds;
 }

@@ -116,7 +116,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
           (c) =>
             !hideEmptyColumns ||
             !/^(base|tax)\d+$/.test(c.id) ||
-            docs.some((doc) => c.value(doc) != null),
+            docs.some((doc) => c.value?.(doc) != null),
         );
     return (
       <div ref={ref} {...props} className={cn("min-w-0 space-y-2", className)}>
