@@ -13988,6 +13988,87 @@
           "name": "partners",
           "type": "{ id: string; name: string; ico?: string; active?: boolean }[]",
           "required": true
+        },
+        {
+          "name": "onPatch",
+          "type": "(rowId: string, patch: Partial<BankMovementRow>) => void",
+          "required": true
+        },
+        {
+          "name": "onAcceptSuggestion",
+          "type": "(rowId: string, candidateId?: string) => void",
+          "required": true
+        },
+        {
+          "name": "onRejectSuggestion",
+          "type": "(rowId: string) => void",
+          "required": true
+        },
+        {
+          "name": "onFileCertain",
+          "type": "() => void",
+          "required": true
+        },
+        {
+          "name": "onFileSelected",
+          "type": "(ids: string[]) => void",
+          "required": true
+        },
+        {
+          "name": "onAcceptSelected",
+          "type": "(ids: string[]) => void"
+        },
+        {
+          "name": "onRecognize",
+          "type": "() => void",
+          "required": true
+        },
+        {
+          "name": "onCreateRule",
+          "type": "(rowId: string) => void",
+          "required": true
+        },
+        {
+          "name": "onOpenDocument",
+          "type": "(id: string) => void",
+          "required": true
+        },
+        {
+          "name": "importInfo",
+          "type": "BankImportInfo"
+        },
+        {
+          "name": "summary",
+          "type": "BankReconcileSummary",
+          "required": true
+        },
+        {
+          "name": "bookkeepingMode",
+          "type": "BookkeepingMode"
+        },
+        {
+          "name": "categoriesEnabled",
+          "type": "boolean"
+        },
+        {
+          "name": "categorySelect",
+          "type": "(row: BankMovementRow) => ReactNode"
+        },
+        {
+          "name": "dimensionValues",
+          "type": "(row: BankMovementRow) => { label: string; inactive?: boolean }[]"
+        },
+        {
+          "name": "sourceLabel",
+          "type": "(row: BankMovementRow) => string | null"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
         }
       ],
       "usage": "Rozpis bankovního výpisu s rozpoznáním: filtry stavu, editovatelné řádky, návrh pod aktivním pohybem, souhrn a Ctrl/Cmd+Enter pro přijetí návrhu. Rozpoznání i zařazení provádí APP.",
@@ -14010,6 +14091,29 @@
           "name": "row",
           "type": "BankMovementRow",
           "required": true
+        },
+        {
+          "name": "onAccept",
+          "type": "(rowId: string, candidateId?: string) => void",
+          "required": true
+        },
+        {
+          "name": "onReject",
+          "type": "(rowId: string) => void",
+          "required": true
+        },
+        {
+          "name": "onCandidateChange",
+          "type": "(rowId: string, candidateId: string) => void"
+        },
+        {
+          "name": "currencySymbol",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
         }
       ],
       "usage": "Řádek návrhu pod pohybem: kandidát úhrady a akce Přijmout / Odmítnout.",
@@ -14032,6 +14136,48 @@
           "name": "value",
           "type": "BankConnectionValue",
           "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "(value: BankConnectionValue) => void",
+          "required": true
+        },
+        {
+          "name": "onTokenSave",
+          "type": "(token: string, kind: \"read\" | \"payments\") => void | Promise<void>",
+          "required": true
+        },
+        {
+          "name": "onTest",
+          "type": "() => void"
+        },
+        {
+          "name": "onFetchNow",
+          "type": "() => void"
+        },
+        {
+          "name": "nextAvailableAt",
+          "type": "string | null"
+        },
+        {
+          "name": "onPausedChange",
+          "type": "(paused: boolean) => void"
+        },
+        {
+          "name": "onDisconnect",
+          "type": "() => void"
+        },
+        {
+          "name": "minFetchFrom",
+          "type": "string"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
         },
         {
           "name": "className",
@@ -14058,6 +14204,18 @@
           "name": "state",
           "type": "BankConnectionBannerState",
           "required": true
+        },
+        {
+          "name": "onFetchNow",
+          "type": "() => void"
+        },
+        {
+          "name": "onChangeToken",
+          "type": "() => void"
+        },
+        {
+          "name": "fetchCooldownSeconds",
+          "type": "number"
         },
         {
           "name": "className",
@@ -14116,6 +14274,30 @@
           "required": true
         },
         {
+          "name": "onReorder",
+          "type": "(ids: string[]) => void"
+        },
+        {
+          "name": "onAdd",
+          "type": "() => void"
+        },
+        {
+          "name": "onEdit",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "onDuplicate",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "onActiveChange",
+          "type": "(id: string, active: boolean) => void"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
           "name": "className",
           "type": "string"
         }
@@ -14140,6 +14322,65 @@
           "name": "open",
           "type": "boolean",
           "required": true
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": true
+        },
+        {
+          "name": "isNew",
+          "type": "boolean"
+        },
+        {
+          "name": "value",
+          "type": "Pick<BankRule, \"name\" | \"conditions\" | \"result\">",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "(value: Pick<BankRule, \"name\" | \"conditions\" | \"result\">) => void",
+          "required": true
+        },
+        {
+          "name": "onSubmit",
+          "type": "() => void",
+          "required": true
+        },
+        {
+          "name": "accounts",
+          "type": "AccountOption[]",
+          "required": true
+        },
+        {
+          "name": "partners",
+          "type": "{ id: string; name: string; ico?: string; active?: boolean }[]",
+          "required": true
+        },
+        {
+          "name": "books",
+          "type": "BankRuleBookOption[]",
+          "required": true
+        },
+        {
+          "name": "categorySelect",
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "dimensionSelect",
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "previewCount",
+          "type": "number | null"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
         }
       ],
       "usage": "Dialog pravidla banky: podmínky (protiúčet, text, částka, směr, knihy) a výsledek (účet, partner, popis).",
@@ -14169,6 +14410,63 @@
           "required": true
         },
         {
+          "name": "partnerAccounts",
+          "type": "(row: PaymentOrderRow) => PaymentPartnerAccount[]",
+          "required": true
+        },
+        {
+          "name": "onPatch",
+          "type": "(rowId: string, patch: Partial<PaymentOrderRow>) => void",
+          "required": true
+        },
+        {
+          "name": "formats",
+          "type": "PaymentFileFormat[]",
+          "required": true
+        },
+        {
+          "name": "onCreateFile",
+          "type": "(ids: string[], formatId: string) => void",
+          "required": true
+        },
+        {
+          "name": "canSendFio",
+          "type": "boolean"
+        },
+        {
+          "name": "sendDisabledReason",
+          "type": "string"
+        },
+        {
+          "name": "onSendFio",
+          "type": "(ids: string[]) => void"
+        },
+        {
+          "name": "onSave",
+          "type": "(ids: string[]) => void"
+        },
+        {
+          "name": "today",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dueFilter",
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "bookFilter",
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
           "name": "className",
           "type": "string"
         }
@@ -14196,7 +14494,43 @@
         },
         {
           "name": "onOpenChange",
-          "type": "(open: boolean) => void; count: number; amounts: string[]; payerAccount: string; approver?: { name: string",
+          "type": "(open: boolean) => void",
+          "required": true
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "amounts",
+          "type": "string[]",
+          "required": true
+        },
+        {
+          "name": "payerAccount",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "approver",
+          "type": "{ name: string; status: string } | null"
+        },
+        {
+          "name": "batchLimit",
+          "type": "string"
+        },
+        {
+          "name": "dayLimit",
+          "type": "string"
+        },
+        {
+          "name": "confirmText",
+          "type": "string"
+        },
+        {
+          "name": "onConfirm",
+          "type": "() => Promise<void>",
           "required": true
         }
       ],
@@ -14225,6 +14559,22 @@
           "name": "batches",
           "type": "PaymentBatch[]",
           "required": true
+        },
+        {
+          "name": "onOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "onDownload",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "onCancel",
+          "type": "(id: string, reason: string) => void"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
         },
         {
           "name": "className",
