@@ -9,7 +9,7 @@
 - Nové `TaxInternalMovementFields` (nepeněžní příjem / výdaj nebo přeřazení z položky na položku, částka, důvod; technické položky se nenabízí).
 - Nové `TransportAllowanceGrid` (měsíce × vozidla, počet dní/měsíců, částky z APP, Vytvořit interní doklady, `disabledReason`).
 - Nové `TaxYearCloseWizard` + `taxYearCloseBlocked` (kontroly z APP: blokující / informační / splněno, potvrzení, výsledek), `TaxReturnOutput` (řádky tiskopisu, proklik, export Excel/PDF přes DataGrid), `TaxYearCarryForward` (stav a akce převodu).
-- Texty CS/SK v `DsTexts.taxYear`; ukázky na stránce Daňová evidence (neplátce i plátce DPH). 8 nových unit testů.
+- Texty CS/SK v `DsTexts.taxYear`; ukázky na stránce Daňová evidence (neplátce i plátce DPH). 8 nových unit testů; katalog proti vydané 2.140.0 513 → 524 komponent / 1 416 → 1 632 props, 0 odebrání.
 
 ### Výkazy – rozvaha, výsledovka, uložené výkazy a šablony
 
