@@ -13,11 +13,19 @@ const accounts = [
   { code: "602001", name: "Výnosy", category: "ekonomicka_kategorie" },
 ];
 const line: JournalLine = {
-  id: "r", text: "Položka", debitAccount: "518001", creditAccount: "602001", amount: 100,
+  id: "r",
+  text: "Položka",
+  debitAccount: "518001",
+  creditAccount: "602001",
+  amount: 100,
 };
 const base = {
-  lines: [line], accounts, onChange: () => {},
-  documentCurrency: "EUR", homeCurrency: "EUR", storageKey: "disabled-category-unit",
+  lines: [line],
+  accounts,
+  onChange: () => {},
+  documentCurrency: "EUR",
+  homeCurrency: "EUR",
+  storageKey: "disabled-category-unit",
   categories: [{ id: "a", name: "Provoz" }],
 };
 const categoryIds = ["categoryId", "debitCategoryId", "creditCategoryId"];
@@ -29,29 +37,64 @@ for (const mode of ["internal", "mainAccount"] as const) {
         visible: Object.fromEntries(categoryIds.map((id) => [id, true])),
         visibilityOverrides: categoryIds,
       });
-      const { result } = renderHook(() => useJournalEditorState({
-        ...base, mode, categoryBySide, categoriesEnabled: false,
-      }, null));
-      expect(result.current.layout.columns.columns.some((c) => categoryIds.includes(c.id))).toBe(false);
-      const view = render(<TooltipProvider><JournalLinesEditor
-        {...base} mode={mode} categoryBySide={categoryBySide} categoriesEnabled={false}
-      /></TooltipProvider>);
-      expect(view.queryAllByRole("columnheader").some((c) => c.textContent?.includes("Kategorie"))).toBe(false);
+      const { result } = renderHook(() =>
+        useJournalEditorState(
+          {
+            ...base,
+            mode,
+            categoryBySide,
+            categoriesEnabled: false,
+          },
+          null,
+        ),
+      );
+      expect(result.current.layout.columns.columns.some((c) => categoryIds.includes(c.id))).toBe(
+        false,
+      );
+      const view = render(
+        <TooltipProvider>
+          <JournalLinesEditor
+            {...base}
+            mode={mode}
+            categoryBySide={categoryBySide}
+            categoriesEnabled={false}
+          />
+        </TooltipProvider>,
+      );
+      expect(
+        view.queryAllByRole("columnheader").some((c) => c.textContent?.includes("Kategorie")),
+      ).toBe(false);
     });
   }
 }
 
 test("bez volby jsou kategorie stále zapnuté", () => {
   const { result } = renderHook(() => useJournalEditorState(base, null));
-  expect(result.current.layout.columns.columns.filter((c) => categoryIds.includes(c.id)).map((c) => c.id))
-    .toEqual(["debitCategoryId", "creditCategoryId"]);
+  expect(
+    result.current.layout.columns.columns
+      .filter((c) => categoryIds.includes(c.id))
+      .map((c) => c.id),
+  ).toEqual(["debitCategoryId", "creditCategoryId"]);
 });
 
 test("vypnutí potlačí povinnost účtu i vlastní pravidla, nikoli ostatní validaci", () => {
-  const { result, rerender } = renderHook(({ enabled }) => useJournalEditorState({
-    ...base, categoriesEnabled: enabled, categoryRequired: true,
-    sideFieldRules: () => ({ categoryRequired: true, dimensionRequired: true, vsRequired: true }),
-  }, null), { initialProps: { enabled: true } });
+  const { result, rerender } = renderHook(
+    ({ enabled }) =>
+      useJournalEditorState(
+        {
+          ...base,
+          categoriesEnabled: enabled,
+          categoryRequired: true,
+          sideFieldRules: () => ({
+            categoryRequired: true,
+            dimensionRequired: true,
+            vsRequired: true,
+          }),
+        },
+        null,
+      ),
+    { initialProps: { enabled: true } },
+  );
   expect(result.current.validations.get("r")?.debitCategoryId).toBeTruthy();
   rerender({ enabled: false });
   expect(result.current.validations.get("r")?.debitCategoryId).toBeUndefined();
@@ -61,39 +104,76 @@ test("vypnutí potlačí povinnost účtu i vlastní pravidla, nikoli ostatní v
 
 test("neplatná uložená kategorie se nekontroluje a změna účtu ji nesmaže", () => {
   const change = mock();
-  const saved = { ...line, categoryId: "old", debitCategoryId: "old-md", creditCategoryId: "old-d" };
-  const { result } = renderHook(() => useJournalEditorState({
-    ...base, lines: [saved], categoriesEnabled: false, onChange: change,
-    allowedCategories: () => ["a"],
-  }, null));
+  const saved = {
+    ...line,
+    categoryId: "old",
+    debitCategoryId: "old-md",
+    creditCategoryId: "old-d",
+  };
+  const { result } = renderHook(() =>
+    useJournalEditorState(
+      {
+        ...base,
+        lines: [saved],
+        categoriesEnabled: false,
+        onChange: change,
+        allowedCategories: () => ["a"],
+      },
+      null,
+    ),
+  );
   expect(result.current.validations.get("r")).toEqual({});
   expect(change).not.toHaveBeenCalled();
   act(() => result.current.patch("r", { debitAccount: "602001" }));
   expect(change.mock.calls.at(-1)?.[0]?.[0]).toMatchObject({
-    categoryId: "old", debitCategoryId: "old-md", creditCategoryId: "old-d",
+    categoryId: "old",
+    debitCategoryId: "old-md",
+    creditCategoryId: "old-d",
   });
 });
 
 test("přidání řádku při vypnutí automaticky nedoplní jedinou povolenou kategorii", () => {
-  const { result } = renderHook(() => useJournalEditorState({
-    ...base, categoriesEnabled: false, allowedCategories: () => ["a"],
-    defaults: { debitAccount: "518001", creditAccount: "602001" },
-  }, null));
+  const { result } = renderHook(() =>
+    useJournalEditorState(
+      {
+        ...base,
+        categoriesEnabled: false,
+        allowedCategories: () => ["a"],
+        defaults: { debitAccount: "518001", creditAccount: "602001" },
+      },
+      null,
+    ),
+  );
   let added: JournalLine | undefined;
-  act(() => { added = result.current.addLine(); });
+  act(() => {
+    added = result.current.addLine();
+  });
   expect(added?.debitCategoryId).toBeUndefined();
   expect(added?.creditCategoryId).toBeUndefined();
 });
 
 test("DocumentForm předá false přednostně před vnořenou volbou true", () => {
-  const view = render(<TooltipProvider><DocumentForm
-    title="Doklad" documentType="ID" value={{ currency: "EUR", total: 100 }}
-    onChange={() => {}} onLinesChange={() => {}} lines={[line]} accounts={accounts}
-    homeCurrency="EUR" categoriesEnabled={false}
-    linesEditorProps={{ categoriesEnabled: true, categories: base.categories }}
-  /></TooltipProvider>);
+  const view = render(
+    <TooltipProvider>
+      <DocumentForm
+        title="Doklad"
+        documentType="ID"
+        value={{ currency: "EUR", total: 100 }}
+        onChange={() => {}}
+        onLinesChange={() => {}}
+        lines={[line]}
+        accounts={accounts}
+        homeCurrency="EUR"
+        categoriesEnabled={false}
+        linesEditorProps={{ categoriesEnabled: true, categories: base.categories }}
+      />
+    </TooltipProvider>,
+  );
   const editor = view.container.querySelector('[data-slot="journal-lines-editor"]');
   expect(editor).not.toBeNull();
-  expect(editor?.querySelectorAll('[data-cell-key$="CategoryId"], [data-cell-key$=":categoryId"]').length).toBe(0);
+  expect(
+    editor?.querySelectorAll('[data-cell-key$="CategoryId"], [data-cell-key$=":categoryId"]')
+      .length,
+  ).toBe(0);
   expect(editor?.textContent).not.toContain("Kategorie");
 });

@@ -225,11 +225,11 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     ...(input.categoriesEnabled === false
       ? []
       : (input.categoryBySide ?? true)
-      ? [
-          { id: "debitCategoryId" as const, label: t.debitCategory },
-          { id: "creditCategoryId" as const, label: t.creditCategory },
-        ]
-      : [{ id: "categoryId" as const, label: t.category }]),
+        ? [
+            { id: "debitCategoryId" as const, label: t.debitCategory },
+            { id: "creditCategoryId" as const, label: t.creditCategory },
+          ]
+        : [{ id: "categoryId" as const, label: t.category }]),
     actions,
   ];
 }

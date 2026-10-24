@@ -71,7 +71,8 @@ export function categorySide(line: JournalLine, column: CategoryColumn, ctx: Cat
 export function categoryCellState(line: JournalLine, column: CategoryColumn, ctx: CategoryContext) {
   const side = categorySide(line, column, ctx);
   const accountCode = (side === "MD" ? line.debitAccount : line.creditAccount) ?? "";
-  const enabled = ctx.categoriesEnabled !== false && isCategoryAccount(ctx.accountByCode.get(accountCode));
+  const enabled =
+    ctx.categoriesEnabled !== false && isCategoryAccount(ctx.accountByCode.get(accountCode));
   const allowed = enabled ? (ctx.allowedCategories?.(accountCode, side) ?? null) : null;
   const options = enabled ? selectableCategories(ctx.categories, allowed) : [];
   const normalized = normalizeCategoryLine(line);
