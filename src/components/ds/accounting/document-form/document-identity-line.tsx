@@ -86,11 +86,11 @@ export function DocumentIdentityLine({
       ? "uncertain"
       : "suggested"
     : undefined;
-  const fullAccountLabel = hideMainAccount ? "" : accountLabel ?? identity.account?.label ?? "";
+  const fullAccountLabel = hideMainAccount ? "" : (accountLabel ?? identity.account?.label ?? "");
   const [accountCode, ...accountNameParts] = fullAccountLabel.split(CODE_SEPARATOR);
   const accountName = accountNameParts.join(CODE_SEPARATOR);
   // Interní doklad účet nikdy nezobrazuje, i když jej aplikace pošle.
-  const account = (hideMainAccount || identity.variant === "internal") ? undefined : identity.account;
+  const account = hideMainAccount || identity.variant === "internal" ? undefined : identity.account;
   const items: ReactNode[] = [
     <span key="book" className="ds-identity-book min-w-0">
       <TruncatedText text={identity.book} />

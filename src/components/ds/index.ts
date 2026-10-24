@@ -275,3 +275,5 @@ export * from "./tax-records/tax-book-entries-panel";
 export * from "./tax-records/bookkeeping-mode-select";
 export * from "./tax-records/bookkeeping-settings-fields";
 export * from "./tax-records/tax-movement-select";
+
+export * from "./data-display/vat-period-badge";

@@ -154,14 +154,28 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
   if (input.bookkeepingMode === "tax_records") {
     const label = input.taxItemLabels;
     const transfer = input.mode === "internal" && input.taxMovementKind === "transfer";
-    const itemColumn = input.mode === "mainAccount" ? "counterAccount" : input.mainSide === "D" ? "creditAccount" : "debitAccount";
+    const itemColumn =
+      input.mode === "mainAccount"
+        ? "counterAccount"
+        : input.mainSide === "D"
+          ? "creditAccount"
+          : "debitAccount";
     return [
-      ...head, ...amountColumns,
-      ...(transfer ? [
-        { id: "creditAccount" as const, label: label?.fromItem ?? t.creditAccount, locked: true },
-        { id: "debitAccount" as const, label: label?.toItem ?? t.debitAccount, locked: true },
-      ] : [{ id: itemColumn as ColumnId, label: label?.item ?? t.counterAccount, locked: true }]),
-      ...(input.categoriesEnabled === false ? [] : [{ id: "categoryId" as const, label: t.category }]),
+      ...head,
+      ...amountColumns,
+      ...(transfer
+        ? [
+            {
+              id: "creditAccount" as const,
+              label: label?.fromItem ?? t.creditAccount,
+              locked: true,
+            },
+            { id: "debitAccount" as const, label: label?.toItem ?? t.debitAccount, locked: true },
+          ]
+        : [{ id: itemColumn as ColumnId, label: label?.item ?? t.counterAccount, locked: true }]),
+      ...(input.categoriesEnabled === false
+        ? []
+        : [{ id: "categoryId" as const, label: t.category }]),
       actions,
     ];
   }

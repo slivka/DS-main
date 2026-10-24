@@ -133,7 +133,9 @@ export interface JournalLinesEditorProps {
   categoriesEnabled?: boolean;
   /** U ID přeřazení zobrazí dvě položky, ostatní pohyby jednu. */
   taxMovementKind?: import("../tax-records/tax-record-types").TaxMovementKind;
-  onTaxMovementKindChange?: (kind: import("../tax-records/tax-record-types").TaxMovementKind) => void;
+  onTaxMovementKindChange?: (
+    kind: import("../tax-records/tax-record-types").TaxMovementKind,
+  ) => void;
   /** @deprecated 2.108.0 – Celkem v domácí měně se v rekapitulaci nezobrazuje; ignorováno. */
   recapTotalAmount?: number;
   /** @deprecated 2.108.0 – ignorováno. */

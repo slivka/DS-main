@@ -18,6 +18,7 @@ export interface JournalRecapTab {
   content: React.ReactNode | ((lines: JournalLine[]) => React.ReactNode);
 }
 export interface JournalLinesRecapProps {
+  bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
   /** Celek v domácí měně v záhlaví, i při sbalení. */
   headerTotal?: React.ReactNode;
   lines: JournalLine[];
@@ -91,6 +92,7 @@ const money = (value: number | null) => (value === null ? "" : formatAmount(valu
 /** Řízená nebo lokálně řízená rekapitulace aktuálních účetních řádků. */
 export function JournalLinesRecap({
   lines,
+  bookkeepingMode = "accrual",
   headerTotal,
   accounts,
   dimensions: legacyDimensions,
@@ -218,6 +220,9 @@ export function JournalLinesRecap({
     const accountValue = (id: string, row: Row) => {
       const code = id.startsWith("debit") ? row.debit : row.credit;
       if (!code) return "";
+      const option = accounts.find((a) => a.code === code);
+      if (option?.technical) return "";
+      if (bookkeepingMode === "tax_records") return option?.name ?? "";
       return id.endsWith("Name")
         ? formatCodeName(formatAccountCode(code), accountMap.get(code))
         : formatAccountCode(code);
@@ -231,11 +236,13 @@ export function JournalLinesRecap({
           column.id.startsWith("debit")
             ? {
                 ...column,
+                label: bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
                 value: (row: Row) => withLabel(accountValue(column.id, row), row),
                 render: (row: Row) => renderLabel(accountValue(column.id, row), row),
               }
             : {
                 ...column,
+                label: bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
                 value: (row: Row) => accountValue(column.id, row) || "—",
                 render: (row: Row) =>
                   renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
@@ -268,6 +275,9 @@ export function JournalLinesRecap({
     ];
   }, [
     accountMap,
+    accounts,
+    bookkeepingMode,
+    dsTexts.taxRecords.item,
     accounting,
     documentMark,
     foreign,
@@ -379,12 +389,15 @@ export function JournalLinesRecap({
   );
   const tabs = React.useMemo(
     () => [
-      { id: "accounting", label: t.accounting },
+      {
+        id: "accounting",
+        label: bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : t.accounting,
+      },
       { id: "jobs", label: t.jobs },
       ...(vatSummary ? [{ id: "vat", label: t.vat }] : []),
       ...recapTabs,
     ],
-    [recapTabs, t.accounting, t.jobs, t.vat, vatSummary],
+    [recapTabs, t.accounting, t.jobs, t.vat, vatSummary, bookkeepingMode, dsTexts.taxRecords.item],
   );
   React.useEffect(() => {
     if (!tabs.some((item) => item.id === activeTab)) {

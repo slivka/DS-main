@@ -228,7 +228,14 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             onKeyDown={keyboard.onRootKeyDown}
           >
             <JournalToolbar />
-            {props.bookkeepingMode === "tax_records" && props.mode !== "mainAccount" ? <TaxMovementSelect className="border-b p-3" value={props.taxMovementKind ?? "non_cash_income"} onChange={props.onTaxMovementKindChange ?? (() => {})} disabled={!props.onTaxMovementKindChange || editor.editable.size === 0} /> : null}
+            {props.bookkeepingMode === "tax_records" && props.mode !== "mainAccount" ? (
+              <TaxMovementSelect
+                className="border-b p-3"
+                value={props.taxMovementKind ?? "non_cash_income"}
+                onChange={props.onTaxMovementKindChange ?? (() => {})}
+                disabled={!props.onTaxMovementKindChange || editor.editable.size === 0}
+              />
+            ) : null}
             <JournalHeaderDimensions />
             <JournalGrid />
             <JournalDeductionTotals />

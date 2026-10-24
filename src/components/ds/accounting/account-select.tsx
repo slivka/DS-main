@@ -122,7 +122,8 @@ export function AccountSelect({
   placeholder ??= taxRecords ? t.chooseItem : "Vyberte účet";
   searchPlaceholder ??= taxRecords ? t.searchItem : "Hledat účet nebo číslo…";
   emptyText ??= taxRecords ? t.emptyItem : "Žádný účet nenalezen";
-  const label = (a: AccountOption) => taxRecords ? a.name : formatCodeName(formatAccountCode(a.code), a.name);
+  const label = (a: AccountOption) =>
+    taxRecords ? a.name : formatCodeName(formatAccountCode(a.code), a.name);
   const readOnly = useRecordReadOnly();
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
@@ -146,12 +147,14 @@ export function AccountSelect({
         const level = accountLevelOf(code);
         const hasAnalytics =
           code.length === 3 && codes.some((c) => c.length > 3 && c.startsWith(code));
-        const blocked = taxRecords ? a.active === false || a.postable === false : allowLevels
-          ? a.active === false || !allowLevels.includes(level)
-          : a.active === false ||
-            (a.postable !== undefined
-              ? !a.postable
-              : disableSyntheticWithAnalytics && hasAnalytics);
+        const blocked = taxRecords
+          ? a.active === false || a.postable === false
+          : allowLevels
+            ? a.active === false || !allowLevels.includes(level)
+            : a.active === false ||
+              (a.postable !== undefined
+                ? !a.postable
+                : disableSyntheticWithAnalytics && hasAnalytics);
         return { ...a, code, level, blocked };
       });
     return catalogOptions.length
@@ -165,7 +168,7 @@ export function AccountSelect({
     ? list.filter((account) => {
         const numericQuery = /^\s*[\d.]+\s*$/.test(query);
         if (numericQuery && !taxRecords) return account.code.startsWith(normalizedQuery);
-        return `${taxRecords ? account.displayCode ?? "" : `${account.code} ${formatAccountCode(account.code)}`} ${account.name}`
+        return `${taxRecords ? (account.displayCode ?? "") : `${account.code} ${formatAccountCode(account.code)}`} ${account.name}`
           .toLocaleLowerCase("cs")
           .includes(query.trim().toLocaleLowerCase("cs"));
       })
@@ -174,7 +177,11 @@ export function AccountSelect({
   if (readOnly) {
     return (
       <ReadOnlyControlValue id={id}>
-        {selected ? label(selected) : taxRecords || accounts.some(a => a.code === value && a.technical) ? "" : (value ?? "")}
+        {selected
+          ? label(selected)
+          : taxRecords || accounts.some((a) => a.code === value && a.technical)
+            ? ""
+            : (value ?? "")}
       </ReadOnlyControlValue>
     );
   }
@@ -200,12 +207,14 @@ export function AccountSelect({
             data-placeholder={!value ? "" : undefined}
             className={cn(
               "truncate",
-              selected ? taxRecords ? "text-foreground" : "font-mono tabular-nums text-foreground" : "text-muted-foreground",
+              selected
+                ? taxRecords
+                  ? "text-foreground"
+                  : "font-mono tabular-nums text-foreground"
+                : "text-muted-foreground",
             )}
           >
-            {selected
-              ? label(selected)
-              : placeholder}
+            {selected ? label(selected) : placeholder}
           </span>
           <span className="ml-auto flex shrink-0 items-center gap-2">
             {suffix}
@@ -228,7 +237,11 @@ export function AccountSelect({
               {filteredList.map((a) => (
                 <CommandItem
                   key={a.code}
-                  value={taxRecords ? `${a.name} ${a.displayCode ?? ""}` : `${a.code} ${formatAccountCode(a.code)} ${a.name}`}
+                  value={
+                    taxRecords
+                      ? `${a.name} ${a.displayCode ?? ""}`
+                      : `${a.code} ${formatAccountCode(a.code)} ${a.name}`
+                  }
                   disabled={a.blocked}
                   onSelect={() => {
                     if (a.blocked) return;
@@ -246,7 +259,9 @@ export function AccountSelect({
                     )}
                   >
                     {label(a)}
-                    {taxRecords && a.displayCode ? <span className="ml-2 text-xs text-muted-foreground">{a.displayCode}</span> : null}
+                    {taxRecords && a.displayCode ? (
+                      <span className="ml-2 text-xs text-muted-foreground">{a.displayCode}</span>
+                    ) : null}
                   </span>
                   {!taxRecords && a.type ? (
                     <span className="shrink-0 text-xs text-muted-foreground">

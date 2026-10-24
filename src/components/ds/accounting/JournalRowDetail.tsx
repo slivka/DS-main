@@ -151,7 +151,10 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
             ? (["debitCategoryId", "creditCategoryId"] as const)
             : (["categoryId"] as const)),
         ];
-  const fields = candidates.filter((id) => !shown.has(id) && !(editor.props.categoriesEnabled === false && CATEGORY_COLUMNS.has(id)));
+  const fields = candidates.filter(
+    (id) =>
+      !shown.has(id) && !(editor.props.categoriesEnabled === false && CATEGORY_COLUMNS.has(id)),
+  );
   const errors: Partial<Record<string, string>> = editor.validations.get(line.id) ?? {};
   const warnings: Partial<Record<string, string>> = editor.vatWarnings.get(line.id) ?? {};
   const detailFieldCount = fields.length + (foreign && !shown.has("homeAmount") ? 1 : 0);

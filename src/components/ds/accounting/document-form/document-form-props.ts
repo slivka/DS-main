@@ -67,7 +67,9 @@ export interface DocumentFormProps {
   hideMainAccount?: boolean;
   categoriesEnabled?: boolean;
   taxMovementKind?: import("../../tax-records/tax-record-types").TaxMovementKind;
-  onTaxMovementKindChange?: (kind: import("../../tax-records/tax-record-types").TaxMovementKind) => void;
+  onTaxMovementKindChange?: (
+    kind: import("../../tax-records/tax-record-types").TaxMovementKind,
+  ) => void;
   title: string;
   /** Ovládání panelu úplně vpravo v liště akcí za nabídkou, i při úzké šířce. */
   panelToggle?: ReactNode;

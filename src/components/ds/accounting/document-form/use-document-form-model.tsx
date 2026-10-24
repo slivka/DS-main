@@ -204,7 +204,8 @@ export function useDocumentFormModel(props: DocumentFormProps) {
       bookkeepingMode: props.bookkeepingMode ?? linesEditorProps?.bookkeepingMode,
       categoriesEnabled: props.categoriesEnabled ?? linesEditorProps?.categoriesEnabled,
       taxMovementKind: props.taxMovementKind ?? linesEditorProps?.taxMovementKind,
-      onTaxMovementKindChange: props.onTaxMovementKindChange ?? linesEditorProps?.onTaxMovementKindChange,
+      onTaxMovementKindChange:
+        props.onTaxMovementKindChange ?? linesEditorProps?.onTaxMovementKindChange,
       categoryBySide: linesEditorProps?.categoryBySide ?? internal,
       dimensionTypes: props.dimensionTypes ?? linesEditorProps?.dimensionTypes,
       dimensions: props.dimensionTypes ? (props.dimensions ?? []) : linesEditorProps?.dimensions,

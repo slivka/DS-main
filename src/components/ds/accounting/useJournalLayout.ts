@@ -96,12 +96,19 @@ export function useJournalLayout(input: JournalLayoutInput) {
   );
   const { containerWidth, rootRemPx } = useMeasuredWidth(rootRef);
   const normalizeAccountVisibility = React.useCallback(
-    (visible: Record<ColumnId, boolean>) => input.bookkeepingMode === "tax_records" ? visible : normalizeJournalAccountVisibility(visible, mode),
+    (visible: Record<ColumnId, boolean>) =>
+      input.bookkeepingMode === "tax_records"
+        ? visible
+        : normalizeJournalAccountVisibility(visible, mode),
     [mode, input.bookkeepingMode],
   );
-  const columns = useGridColumns(`${storageKey}:v4${input.bookkeepingMode === "tax_records" ? ":tax-records" : ""}`, input.columnDefs, {
-    normalizeVisible: normalizeAccountVisibility,
-  });
+  const columns = useGridColumns(
+    `${storageKey}:v4${input.bookkeepingMode === "tax_records" ? ":tax-records" : ""}`,
+    input.columnDefs,
+    {
+      normalizeVisible: normalizeAccountVisibility,
+    },
+  );
   const protectedColumns = columns.columns
     .filter(
       (column) =>

@@ -1,4 +1,5 @@
 /** Skupiny dat formuláře dokladu. */
+import { VatPeriodBadge } from "../../data-display/vat-period-badge";
 import type { ReactNode } from "react";
 import { useCompactDateGeometry } from "../../form/use-compact-date-geometry";
 import type { ComponentProps } from "react";
@@ -86,13 +87,20 @@ export function DocumentDatesSection({
                           : vat.dateLink.lockedHint,
                       }
                     : undefined,
-                  hint: filedVatDateWarning ? undefined : vat?.periodLabel,
+                  hint: undefined,
                   warning:
                     [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
                     undefined,
                 })
               : null}
           </div>
+          {showVatFields && vat?.periodLabel ? (
+            <VatPeriodBadge
+              label={vat.periodLabel}
+              filed={!!filedVatDateWarning}
+              filedWarning={filedVatDateWarning}
+            />
+          ) : null}
         </div>
       </div>
     </>
