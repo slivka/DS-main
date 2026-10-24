@@ -3,6 +3,7 @@ import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { TreeGrid } from "../grid/TreeGrid";
 import type { TreeGridColumn } from "../grid/tree-grid-types";
 import { AmountCell } from "../accounting/amount";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import type { VatReturnRow } from "./vat-report-types";
@@ -47,16 +48,12 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
       render: (row: DisplayRow) => {
         if (!("key" in row)) return null;
         const delta = vatRowDifference(row, compare?.[row.key])[field];
-        return (
-          <div className={cn(delta && "bg-warning/15")}>
+        if (delta === undefined || delta === 0) return <AmountCell value={row[field]} />;
+        return <TooltipProvider><Tooltip><TooltipTrigger asChild>
+          <div tabIndex={0} className="bg-warning/15 outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <AmountCell value={row[field]} />
-            {delta !== undefined && delta !== 0 ? (
-              <span className="text-xs text-warning-foreground">
-                {t.difference}: <AmountCell value={delta} />
-              </span>
-            ) : null}
           </div>
-        );
+        </TooltipTrigger><TooltipContent>{t.difference}: <AmountCell value={delta} /></TooltipContent></Tooltip></TooltipProvider>;
       },
     })),
     {

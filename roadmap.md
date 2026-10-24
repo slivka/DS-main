@@ -1,5 +1,6 @@
 ## DS 2.139.0 (nevydáno)
 
+- [ ] DPH B: šest přehledů, varianta OSS, CS/SK, ukázky a katalog; unit, jeden Chromium spec a check:quick. Nevydávat, zbytek D6 bez dalších zásahů.
 - [x] D1 a D3 už bylo: menuActions, SplitButton a N; doplněny regrese.
 - [x] D2/D4: obecný lockedReason s legacy aliasy; tooltip/směr sloupce, fulltext a pevné skupiny.
 - [x] D5: hledání v jediné nabídce 360/480 px; stromové rozbalení/sbalení; skutečný přesah Firefox na 260 px opraven.

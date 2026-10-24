@@ -36,6 +36,7 @@
 Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">`. Bez provideru čeština; priorita prop → provider → `DS_TEXTS_CS`. Každý nový text má klíč v `DsTexts` a překlady `DS_TEXTS_CS`/`DS_TEXTS_SK`; žádné pevné UI texty.
 
 - Keep preview examples in excluded showcase modules. Why: no preview dependencies in consumers.
+- VAT views compose shared grids, tabs and confirmation; APP owns totals, sections, permissions and filings. Why: no second tax engine.
 - Export bank-account utilities directly from the root barrel and preserve their existing component-barrel re-export. Why: stable utility imports.
 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
