@@ -1,8 +1,10 @@
 ## DS 2.138.0 (nevydáno)
 
-- [ ] B1: nové category API a deprecated aliasy, oba DB tvary a nové výstupy.
-- [ ] B1: categoryBySide, povolené potomky, jediná zamčená kategorie a změna účtu.
-- [ ] B1: CS/SK, ukázka ID, unit a jeden Chromium spec, katalog bez odebrání, migrace v CHANGELOGu.
+- [x] B1: nové category API a deprecated aliasy, oba DB tvary a nové výstupy.
+- [x] B1: categoryBySide, povolené potomky, jediná zamčená kategorie a změna účtu.
+- [x] B1: CS/SK, ukázka ID, unit a jeden Chromium spec, katalog bez odebrání, migrace v CHANGELOGu.
+
+- [x] B1 ověření: 24 nových regresí, unit DS 1 475/1 475 v 152 souborech; jeden Chromium spec 1/1, průběžně check:quick --harness. Katalog 486 → 486 / 1 230 → 1 306 props, 0 odebrání. Nevydáno, plná E2E a check:full neběžely.
 
 ## DS 2.137.0
 

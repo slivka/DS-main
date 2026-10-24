@@ -117,7 +117,9 @@ export interface JournalEditorTexts {
   dimension: string;
   vs: string;
   partner: string;
+  /** @deprecated Od 2.138.0 debitCategory; odstranění ve 3.0.0. */
   debitDimension: string;
+  /** @deprecated Od 2.138.0 creditCategory; odstranění ve 3.0.0. */
   creditDimension: string;
   debitVs: string;
   creditVs: string;
@@ -157,6 +159,7 @@ export interface JournalEditorTexts {
   creditRequired: string;
   amountRequired: string;
   missingVs: string;
+  /** @deprecated Od 2.138.0 missingCategory; odstranění ve 3.0.0. */
   missingDimension: string;
   search: string;
   searchResult: string;
