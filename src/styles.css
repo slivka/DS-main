@@ -2718,6 +2718,14 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   font-size: inherit;
   vertical-align: middle;
 }
+/* Štítky záhlaví (např. „Zamčeno do …“) se zkracují trojtečkou, celý text je v bublině. */
+.page-title-badge,
+[data-slot="document-title-badges"] [data-slot="badge"] {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .document-identity-account,
 [data-slot="document-identity"] span:has(> .document-identity-account) {
   flex: 1 1 auto;
