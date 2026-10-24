@@ -69,7 +69,7 @@ describe("editor kalendáře – záporný a smíšený doklad", () => {
         totalToPay={-500}
       /></TooltipProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Přidat" }));
+    fireEvent.click(screen.getByRole("button", { name: "Přidat (N)" }));
     expect(next[0]?.amount).toBe(-500);
   });
   it("kontrola součtu splátek platí se znaménkem (záporný celek vyrovnan)", () => {
