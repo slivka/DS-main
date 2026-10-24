@@ -1,4 +1,6 @@
-## DS 2.137.0 (nevydáno)
+## DS 2.138.0 (nevydáno)
+
+## DS 2.137.0
 
 - [x] Doplněk 6: stav identity nikdy nepřetéká řádek (max-width + ořez, oprava přetékajícího čísla výpisu při max zoomu); testy zúženy na živý řádek identity a nový název ovladače panelu. Unit DS 1 451/1 451, pět požadovaných Chromium speců 21/21. Plná E2E neběžela, nevydáno.
 - [x] Doplňky 4–5: jediný řádek identity, fallbackShort CS/SK; ústup přes kód knihy, kód účtu, ikonu stavu a ořez levé části. Jeden ResizeObserver s hysterezí, bez změny písma/měřítka. Unit DS 1 451/1 451 (151 souborů), dva požadované Chromium specy 6/6; katalog 485 → 486 / 1 213 → 1 274, 0 odebrání. check:quick --harness a samostatný lint/formát; plná E2E a check:full neběžely. Nevydáno.

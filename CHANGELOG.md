@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.137.0 (nevydáno)
+## 2.138.0 (nevydáno)
+
+## 2.137.0
 
 - Doplněk 6 (po plné E2E v GitHubu, 8 padlých): pravá část identity (`.ds-identity-status`) má `max-width: 100%` a `overflow: hidden`, takže vstup čísla výpisu při maximálním zoomu v 360 px formuláři nikdy nepřetéká přes formulář (skutečná regrese, oprava kódu). Testy zúženy na živý řádek: `design-three.spec.ts` měří `.document-identity-account-box` jen uvnitř `[data-slot="identity-line-row"]` (měřicí kopie `ds-identity-measure` nesou stejné třídy, ale jsou bez id/aria/data atributů, inert a mimo přístupný strom); `record-panel.spec.ts` hledá ovladač pod novým přístupným názvem „Zavřít panel“ v liště akcí. Ověření: unit DS **1 451/1 451**, Chromium specy `design-three`, `edit-document-thirteen`, `record-panel`, `vs-lock-2108`, `identity-line-overlap` **21/21**. Plná E2E sada neběžela, pustí ji Claude v GitHubu. Nevydáno.
 - Doplněk 4 (nové rozhodnutí Petra): IdentityLine never wraps; jediná výška --control-h. Pořadí ústupu: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy; rok, strana a kód účtu zůstávají celé. `data-stacked` odstraněno; měření vlastní jeden hook s jediným ResizeObserverem a hysterezí. Písmo ani měřítko se nezmenšují.
