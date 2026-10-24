@@ -10,7 +10,7 @@ import type { DataGridColumn } from "../grid/data-grid-types";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { NoticeBar } from "../feedback/notice-bar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { AccountSelect, type AccountOption } from "../accounting/account-select";
 import { PartnerSelect } from "../accounting/partner-select";
 import { MultiValueCell } from "../data-display/multi-value-cell";
@@ -296,6 +296,7 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
   ];
 
   return (
+    <TooltipProvider>
     <div
       data-slot="bank-statement-reconcile-view"
       className="min-w-0 space-y-3"
@@ -427,5 +428,6 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
       </div>
       <p className="text-xs text-muted-foreground">{t.acceptShortcut}</p>
     </div>
+    </TooltipProvider>
   );
 }

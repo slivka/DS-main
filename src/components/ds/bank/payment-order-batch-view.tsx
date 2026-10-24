@@ -12,7 +12,7 @@ import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { FileSeverityIcon } from "../feedback/file-severity";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { formatAmount, formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -197,6 +197,7 @@ export function PaymentOrderBatchView({
   ];
 
   return (
+    <TooltipProvider>
     <div {...rest} data-slot="payment-order-batch-view" className={cn("min-w-0 space-y-3", className)}>
       <div className="flex flex-wrap items-center gap-2">
         {dueFilter}
@@ -276,5 +277,6 @@ export function PaymentOrderBatchView({
         )}
       />
     </div>
+    </TooltipProvider>
   );
 }
