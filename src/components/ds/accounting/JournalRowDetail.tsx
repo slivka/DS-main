@@ -74,7 +74,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
     return (
       <PartnerSelect
         partners={props.partners ?? []}
-        value={state.value}
+        value={line[id]}
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
       />

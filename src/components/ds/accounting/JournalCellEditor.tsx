@@ -174,7 +174,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
       <PartnerSelect
         {...selectProps}
         partners={props.partners ?? []}
-        value={editor.categoryState(line, column).value}
+        value={line[column]}
         onChange={(value) => choose({ [column]: value })}
       />
     );
