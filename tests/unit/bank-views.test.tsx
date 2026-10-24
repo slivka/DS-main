@@ -8,7 +8,16 @@ import type { BankMovementRow, PaymentOrderRow } from "../../src/components/ds/b
 afterEach(cleanup);
 
 const rows: BankMovementRow[] = [
-  { id: "a", order: 1, date: "2026-10-10", direction: "in", amount: 12100, currency: "CZK", status: "certain", message: "Úhrada A" },
+  {
+    id: "a",
+    order: 1,
+    date: "2026-10-10",
+    direction: "in",
+    amount: 12100,
+    currency: "CZK",
+    status: "certain",
+    message: "Úhrada A",
+  },
   {
     id: "b",
     order: 2,
@@ -18,9 +27,22 @@ const rows: BankMovementRow[] = [
     currency: "CZK",
     status: "suggestion",
     message: "Záloha B",
-    suggestion: { accountCode: "311001", candidates: [{ id: "c1", label: "FV1", amount: 500, remaining: 500 }], candidateId: "c1" },
+    suggestion: {
+      accountCode: "311001",
+      candidates: [{ id: "c1", label: "FV1", amount: 500, remaining: 500 }],
+      candidateId: "c1",
+    },
   },
-  { id: "c", order: 3, date: "2026-10-12", direction: "out", amount: 90, currency: "CZK", status: "unrecognized", message: "Poplatek C" },
+  {
+    id: "c",
+    order: 3,
+    date: "2026-10-12",
+    direction: "out",
+    amount: 90,
+    currency: "CZK",
+    status: "unrecognized",
+    message: "Poplatek C",
+  },
 ];
 
 function renderView(over: Partial<Parameters<typeof BankStatementReconcileView>[0]> = {}) {
@@ -37,7 +59,14 @@ function renderView(over: Partial<Parameters<typeof BankStatementReconcileView>[
     onRecognize: mock(() => {}),
     onCreateRule: mock(() => {}),
     onOpenDocument: mock(() => {}),
-    summary: { opening: 1000, income: 12100, expense: 590, closing: 12510, bankClosing: 12500, currencySymbol: "Kč" },
+    summary: {
+      opening: 1000,
+      income: 12100,
+      expense: 590,
+      closing: 12510,
+      bankClosing: 12500,
+      currencySymbol: "Kč",
+    },
     ...over,
   };
   return { props, ...render(<BankStatementReconcileView {...props} />) };
@@ -70,7 +99,18 @@ describe("BankStatementReconcileView", () => {
 });
 
 const payments: PaymentOrderRow[] = [
-  { id: "p1", partnerName: "Alza", documentNumber: "FP1", dueDate: "2026-10-20", amount: 1000, remaining: 1000, currency: "CZK", currencySymbol: "Kč", partnerAccountId: "acc1", paymentDate: "2026-10-24" },
+  {
+    id: "p1",
+    partnerName: "Alza",
+    documentNumber: "FP1",
+    dueDate: "2026-10-20",
+    amount: 1000,
+    remaining: 1000,
+    currency: "CZK",
+    currencySymbol: "Kč",
+    partnerAccountId: "acc1",
+    paymentDate: "2026-10-24",
+  },
   {
     id: "p2",
     partnerName: "Karet",
@@ -105,7 +145,9 @@ function renderBatch() {
 describe("PaymentOrderBatchView", () => {
   it("bez výběru je Vytvořit soubor zakázané", () => {
     const { getByRole } = renderBatch();
-    expect((getByRole("button", { name: "Vytvořit soubor příkazu" }) as HTMLButtonElement).disabled).toBe(true);
+    expect(
+      (getByRole("button", { name: "Vytvořit soubor příkazu" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
   });
 
   it("chybová kontrola blokuje soubor, bezchybný řádek ho povolí", () => {
@@ -118,6 +160,8 @@ describe("PaymentOrderBatchView", () => {
     expect(create.disabled).toBe(true);
     fireEvent.click(within(rowOf("Karet")).getByRole("checkbox"));
     fireEvent.click(within(rowOf("Alza")).getByRole("checkbox"));
-    expect((getByRole("button", { name: "Vytvořit soubor příkazu" }) as HTMLButtonElement).disabled).toBe(false);
+    expect(
+      (getByRole("button", { name: "Vytvořit soubor příkazu" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
   });
 });
