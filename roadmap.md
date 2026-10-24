@@ -1,5 +1,6 @@
 ## DS 2.139.0 (nevydáno)
 
+- [ ] DE-2 + DE-3 a drobná API: čeká na dodání `docs/zadani/danova-evidence.md` (oddíly 5, 6 a zejména prioritní oddíl 11). Soubor v pracovní kopii ani v dostupných přílohách není; bez něj nelze ověřit konečné kontrakty a výjimky. Nevydávat, D6 ponechat plné E2E uživatele.
 - [x] DPH B: šest přehledů, varianta OSS, CS/SK a ukázky. 13 nových unit testů, unit DS 1 527/1 527, Chromium nový spec 1/1, check:quick. Katalog proti D1–D7 489 → 495 / 1 339 → 1 383 props, 0 odebrání. Nevydáno; plná E2E a zbytek D6 ponechány uživateli.
 - [x] D1 a D3 už bylo: menuActions, SplitButton a N; doplněny regrese.
 - [x] D2/D4: obecný lockedReason s legacy aliasy; tooltip/směr sloupce, fulltext a pevné skupiny.
