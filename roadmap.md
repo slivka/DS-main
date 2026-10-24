@@ -1,5 +1,11 @@
 ## DS 2.139.0 (nevydáno)
 
+- [ ] D1–D4: ověřit existující API; doplnit obecný lockedReason a kompatibilitu.
+- [ ] D5: úzká lišta 360/480 px a stromové rozbalení/sbalení.
+- [ ] D6: cílené Firefox/WebKit regrese, strop 2 hodiny; zbývající příčiny zaznamenat.
+- [ ] D7: panel bez vodorovného přetečení při 600/760 px.
+- [ ] Unit DS, cílený Chromium D3/D5/D7, check:quick a katalog; nevydávat.
+
 ## DS 2.138.0
 
 - [x] B2: DimensionBar / MultiValueCell, CS/SK a řízené hledání.
