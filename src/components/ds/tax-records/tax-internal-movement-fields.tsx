@@ -27,7 +27,7 @@ export const TaxInternalMovementFields = forwardRef<HTMLDivElement, TaxInternalM
     const r = texts.taxRecords;
     const options = items
       .filter((i) => !i.technical)
-      .map((i) => ({ value: i.id, label: i.label, description: i.displayCode }));
+      .map((i) => ({ value: i.id, label: i.label, trailingLabel: i.displayCode }));
     const item = (key: "itemId" | "fromItemId" | "toItemId", label: string) => (
       <Field label={label} error={errors[key]}>
         <OptionSelect

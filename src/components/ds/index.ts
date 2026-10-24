@@ -276,6 +276,12 @@ export * from "./tax-records/tax-book-entries-panel";
 export * from "./tax-records/bookkeeping-mode-select";
 export * from "./tax-records/bookkeeping-settings-fields";
 export * from "./tax-records/tax-movement-select";
+export * from "./tax-records/tax-asset-card";
+export * from "./tax-records/tax-internal-movement-fields";
+export * from "./tax-records/transport-allowance-grid";
+export * from "./tax-records/tax-year-close-wizard";
+export * from "./tax-records/tax-return-output";
+export * from "./tax-records/tax-year-carry-forward";
 
 export * from "./data-display/vat-period-badge";
 
