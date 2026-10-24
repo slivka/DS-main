@@ -75,6 +75,8 @@ export interface DocumentBasicSectionProps {
   lockReason?: (key: DocumentHeaderField) => string | undefined;
   /** Daňové číslo vedle Popisu. */
   taxNumberField?: ReactNode;
+  /** Dobropis: vazba na původní doklad; data a zápis vlastní APP. */
+  correctsDocument?: import("./document-form-props").DocumentCorrectsDocumentField;
   /** Interní doklad (2.108.0: partner / ručně, IČO a DIČ jako u faktur, bez adresy). */
   internal?: boolean;
   /** Pokladna drží číslo vedle partnera a Popis přes celou šířku. */
@@ -295,6 +297,18 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               )
             : null}
           {p.taxNumberField}
+          {p.correctsDocument
+            ? field(
+                "document-correctsDocument",
+                t.correctsDocument,
+                <CorrectsDocumentControl
+                  field={p.correctsDocument}
+                  readOnly={readOnly}
+                  openLabel={t.correctsDocument}
+                />,
+                6,
+              )
+            : null}
           {receivedDocument && f.externalNumber ? externalNumberField : null}
         </div>
       </>
