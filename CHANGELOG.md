@@ -20,7 +20,7 @@
 - `VatReturnView`: členění podle šesti oddílů tiskopisu DPHDP3 (I–VI; II „Ostatní plnění a plnění s místem mimo tuzemsko", III „Odpočet daně", IV „Vyrovnání a změna odpočtu", V „Výpočet koeficientu", VI „Výpočet daně"); u odpočtu samostatné sloupce „V plné výši" a „Krácený odpočet" (`VatReturnRow.fullDeduction` / `reducedDeduction`). DS nic nepočítá, strukturu řádků dodává APP.
 - Všechny přehledy (`VatReturnView`, `VatControlStatementView`, `VatRecapitulativeView`, `VatChecksPanel`) mají nové `loading` (kostra), `error` (pruh chyby se zprávou) a `exportMeta` (období, firma, druh podání v titulu exportu Excel/PDF); sdílené v `vat-report-state`.
 - Texty CS/SK v `DsTexts.vatReports` (oddíly I–VI, `fullDeduction`, `reducedDeduction`, `unratedBase`, `loading`). Ukázky: šest oddílů, sazba 10 % s nesazbovým základem, SH jen řádné/následné, načítání a chyba.
-- Ověření: 11 nových unit testů (`vat-reports-2141.test.tsx`) 11/11, unit DS **1 612/1 612**. Nevydáno.
+- Ověření: 11 nových unit testů (`vat-reports-2141.test.tsx`) 11/11, unit DS **1 612/1 612**; `check:quick` OK. Katalog proti vydané 2.140.0 **513 → 513 komponent / 1 416 → 1 544 props**, 0 odebrání. Nevydáno; E2E ani check:full neběžely.
 
 
 ## 2.140.0
