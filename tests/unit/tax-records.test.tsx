@@ -18,7 +18,8 @@ import {
   type JournalLine,
   type TaxBookEntry,
 } from "../../src/components/ds";
-import { DS_TEXTS_CS, DsTextsProvider } from "../../src/ds-texts";
+import { TooltipProvider } from "../../src/components/ui/tooltip";
+import { DsTextsProvider } from "../../src/ds-texts";
 import {
   filterTaxBook,
   visibleTaxItems,
@@ -125,7 +126,9 @@ test("DE čtení technické hodnoty ji neprozradí", () => {
 });
 test("DE grid má Položku, nemá MD/DAL ani účtové formy", () => {
   render(
-    <JournalLinesEditor {...editor} bookkeepingMode="tax_records" categoriesEnabled={false} />,
+    <TooltipProvider>
+      <JournalLinesEditor {...editor} bookkeepingMode="tax_records" categoriesEnabled={false} />
+    </TooltipProvider>,
   );
   const heads = screen.getAllByRole("columnheader").map((h) => h.textContent);
   expect(heads.some((h) => h?.startsWith("Položka"))).toBe(true);
@@ -134,7 +137,11 @@ test("DE grid má Položku, nemá MD/DAL ani účtové formy", () => {
   expect(screen.queryByText("211.001")).toBeNull();
 });
 test("accrual výchozí zachovává původní účetní sloupec", () => {
-  render(<JournalLinesEditor {...editor} />);
+  render(
+    <TooltipProvider>
+      <JournalLinesEditor {...editor} />
+    </TooltipProvider>,
+  );
   expect(screen.getAllByRole("columnheader").some((h) => h.textContent?.startsWith("DAL"))).toBe(
     true,
   );
@@ -169,13 +176,15 @@ test("DE kategorie vypnuté nevynucují kategorii a nezapínají MD/DAL", () => 
 });
 test("DE interní přeřazení dvě položky a žádný technický účet", () => {
   render(
-    <JournalLinesEditor
-      {...editor}
-      mode="internal"
-      bookkeepingMode="tax_records"
-      taxMovementKind="transfer"
-      categoriesEnabled={false}
-    />,
+    <TooltipProvider>
+      <JournalLinesEditor
+        {...editor}
+        mode="internal"
+        bookkeepingMode="tax_records"
+        taxMovementKind="transfer"
+        categoriesEnabled={false}
+      />
+    </TooltipProvider>,
   );
   const heads = screen.getAllByRole("columnheader").map((h) => h.textContent);
   expect(heads.some((h) => h?.startsWith("Z položky"))).toBe(true);
@@ -229,7 +238,7 @@ test("souhrn nepřepočítává hotový paušál a proklikne kategorii", () => {
   );
   fireEvent.doubleClick(screen.getByText("Služby §7"));
   expect(open).toHaveBeenCalledWith("s7");
-  expect(screen.getByText("599,00")).toBeDefined();
+  expect(screen.getAllByText("599,00").length).toBeGreaterThan(0);
 });
 test("souhrn má nezamlčený řádek nezařazených a proklik", () => {
   const open = mock();
@@ -263,7 +272,11 @@ test("kontrola peněz používá přesný dodaný rozdíl bez nové matematiky",
 });
 test("zápisy v Propojených otevírají původní entry", () => {
   const open = mock();
-  render(<TaxBookEntriesPanel entries={[entry]} currency="EUR" onEntryOpen={open} />);
+  render(
+    <TooltipProvider>
+      <TaxBookEntriesPanel entries={[entry]} currency="EUR" onEntryOpen={open} />
+    </TooltipProvider>,
+  );
   fireEvent.click(screen.getByText("PO1"));
   expect(open.mock.calls[0]?.[0]).toBe(entry);
 });
