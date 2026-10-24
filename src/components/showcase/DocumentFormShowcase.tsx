@@ -143,6 +143,12 @@ export function DocumentFormShowcase() {
               load: suggestDescriptions,
             }}
             onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)}
+            favoriteIds={favoriteIds}
+            onToggleFavorite={(id) =>
+              setFavoriteIds((current) =>
+                current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+              )
+            }
           />
         </RecordSidePanel>
         <DocumentSettingsDialog
@@ -157,6 +163,8 @@ export function DocumentFormShowcase() {
           documentTypeLabel="Pokladní doklad – výdaj"
           allowCounterpartySuggestions
           showVatCalcMode
+          accountingDateFollowsIssue={accountingDateFollows}
+          onAccountingDateFollowsIssueChange={setAccountingDateFollows}
         />
       </ShowcaseSection>
       <ShowcaseSection
