@@ -41,7 +41,7 @@ for (const documentType of ["FP", "ZFP", "ID"]) {
     fireEvent.click(screen.getByRole("combobox", { name: "Vozidlo: Auto A" }));
     fireEvent.click(await screen.findByRole("option", { name: "Auto B" }));
     expect(headerChanges).toBe(1);
-    fireEvent.click(screen.getByRole("button", { name: "Zobrazit detail řádku" }));
+    fireEvent.click(screen.getByRole("button", { name: "Zobrazit detail řádku (Alt+↓)" }));
     await waitFor(() =>
       expect(screen.getAllByRole("combobox", { name: "Vozidlo: Auto A" }).length).toBe(
         documentType === "ID" ? 3 : 2,
