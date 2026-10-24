@@ -66,3 +66,5 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Grid auto zoom recalculates only on width or column changes, never on its own zoom value. Why: manual zoom must survive until the next real resize.
 
 - Economic categories use the canonical CategorySelect; DimensionSelect remains a deprecated alias until 3.0.0. Why: future dimensions must not inherit the economic-category API.
+
+- Tax-record views compose shared DataGrid and LinkedRecordsPanel; journal-tax-records owns presentation-side mapping while APP owns technical counterpart completion and every tax calculation. Why: both bookkeeping modes keep one journal contract without exposing hidden accounts.

@@ -88,12 +88,17 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
   const { editor, keyboard } = useJournalEditor();
   const { t, editing, accountByCode, layout } = editor;
   const validationColumn = dataColumnOf(column);
-  const columnLabel = isAccountColumn(column)
-    ? journalAccountColumnLabel(column, t, {
-        short: editor.counterShortLabel,
-        name: editor.counterNameLabel,
-      })
-    : editor.labels[validationColumn];
+  const taxRecords = editor.props.bookkeepingMode === "tax_records";
+  const columnLabel =
+    taxRecords && isAccountColumn(column)
+      ? (layout.visibleColumns.find((c) => c.id === column)?.label ??
+        editor.dsTexts.taxRecords.item)
+      : isAccountColumn(column)
+        ? journalAccountColumnLabel(column, t, {
+            short: editor.counterShortLabel,
+            name: editor.counterNameLabel,
+          })
+        : editor.labels[validationColumn];
   const category = CATEGORY_COLUMNS.has(column)
     ? editor.categoryState(line, column as CategoryColumn)
     : undefined;
@@ -107,13 +112,16 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       : [line.debitAccount, line.creditAccount]
           .map((code) => accountByCode.get(code ?? ""))
           .find((account) => isResultAccountType(account));
-  const nonTaxAllowed = editor.props.isNonTaxAllowed?.(line) ?? isResultAccountType(taxAccount);
+  const nonTaxAllowed =
+    !taxRecords && (editor.props.isNonTaxAllowed?.(line) ?? isResultAccountType(taxAccount));
   const toggleNonTax = () =>
     editor.patch(line.id, { nonTax: nonTaxAllowed ? !line.nonTax : false });
   const accountCode = isAccountColumn(column) ? editor.accountFor(line, column) : null;
   const accountTitle =
     accountCode && (!isAccountNameColumn(column) || layout.compactAccountIds.has(column))
-      ? accountByCode.get(accountCode)?.name
+      ? accountByCode.get(accountCode)?.technical
+        ? undefined
+        : accountByCode.get(accountCode)?.name
       : undefined;
   const errorMessage = editor.validations.get(line.id)?.[validationColumn];
   const warningMessage = editor.vatWarnings.get(line.id)?.[validationColumn];
@@ -214,7 +222,17 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
         ) : isEditing ? (
           <JournalCellEditor line={line} column={column} />
         ) : (
-          editor.displayValue(line, column)
+          <>
+            {editor.displayValue(line, column)}
+            {taxRecords &&
+            accountCode &&
+            !accountByCode.get(accountCode)?.technical &&
+            accountByCode.get(accountCode)?.displayCode ? (
+              <span className="ml-2 text-xs text-muted-foreground">
+                {accountByCode.get(accountCode)?.displayCode}
+              </span>
+            ) : null}
+          </>
         )}
       </span>
       {suggestion?.uncertain ? (

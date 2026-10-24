@@ -4,6 +4,7 @@
  *   součty, validaci a všechny úpravy řádků (přidání, duplikace, odebrání, přesun, změny hodnot).
  * Nesmí: vykreslovat; nesmí kopírovat props do stavu – řádky jsou vždy řízené volajícím.
  */
+import { taxItemAccountRequired } from "./journal-tax-records";
 import * as React from "react";
 import { type DragEndEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
@@ -82,6 +83,7 @@ export function useJournalEditorState(
     rateAmount = 1,
     sideFields = "split",
     mode = "internal",
+    bookkeepingMode = "accrual",
     mainSide,
     mainAccount: mainAccountId,
     editableFields,
@@ -99,6 +101,17 @@ export function useJournalEditorState(
     () => ({
       ...dsTexts.journalEditor,
       ...texts,
+      ...(bookkeepingMode === "tax_records"
+        ? {
+            debitAccount: dsTexts.taxRecords.item,
+            creditAccount: dsTexts.taxRecords.item,
+            counterAccount: dsTexts.taxRecords.item,
+            sideDebit: dsTexts.taxRecords.toItem,
+            sideCredit: dsTexts.taxRecords.fromItem,
+            debitRequired: dsTexts.taxRecords.chooseItem,
+            creditRequired: dsTexts.taxRecords.chooseItem,
+          }
+        : {}),
       category: texts?.category ?? texts?.dimension ?? dsTexts.journalEditor.category,
       debitCategory:
         texts?.debitCategory ?? texts?.debitDimension ?? dsTexts.journalEditor.debitCategory,
@@ -107,7 +120,7 @@ export function useJournalEditorState(
       missingCategory:
         texts?.missingCategory ?? texts?.missingDimension ?? dsTexts.journalEditor.missingCategory,
     }),
-    [dsTexts, texts],
+    [dsTexts, texts, bookkeepingMode],
   );
   const accountFormRequired =
     texts?.accountFormRequired ?? dsTexts.columnPicker.accountFormRequired;
@@ -134,11 +147,12 @@ export function useJournalEditorState(
       ? { accountId: mainAccountId, side: mainSide }
       : undefined;
   const mainOption = mainAccount ? accountByCode.get(mainAccount.accountId) : undefined;
-  const counterColumn: "debitAccount" | "creditAccount" | null = mainAccount
-    ? mainAccount.side === "MD"
-      ? "creditAccount"
-      : "debitAccount"
-    : null;
+  const counterColumn: "debitAccount" | "creditAccount" | null =
+    mode === "mainAccount" && mainSide
+      ? mainSide === "MD"
+        ? "creditAccount"
+        : "debitAccount"
+      : null;
   const documentMark = props.documentCurrencySymbol ?? documentCurrency;
   const homeMark = props.homeCurrencySymbol ?? homeCurrency;
   const amountLabels = journalAmountLabels(t, documentMark, homeMark);
@@ -159,6 +173,11 @@ export function useJournalEditorState(
       journalColumnDefs({
         t,
         mode,
+        bookkeepingMode,
+        taxItemLabels: dsTexts.taxRecords,
+        taxMovementKind: props.taxMovementKind,
+        mainSide: mainSide ?? (props.taxMovementKind === "non_cash_expense" ? "D" : "MD"),
+        categoriesEnabled: props.categoriesEnabled,
         labels,
         counterShortLabel,
         counterNameLabel,
@@ -195,6 +214,11 @@ export function useJournalEditorState(
       props.dimensionTypes,
       props.dimensionsBySide,
       dsTexts.dimensions,
+      dsTexts.taxRecords,
+      bookkeepingMode,
+      props.taxMovementKind,
+      props.categoriesEnabled,
+      mainSide,
     ],
   );
   const layout = useJournalLayout({
@@ -205,6 +229,7 @@ export function useJournalEditorState(
     sideFields,
     grossProtected: false,
     rowCount: lines.length,
+    bookkeepingMode,
   });
   const { rootRef, visibleColumns, compactAccountIds } = layout;
   const vatReadOnly = vatOn && (Boolean(vat?.readOnly) || editable.size === 0);
@@ -407,13 +432,22 @@ export function useJournalEditorState(
     foreign,
     documentMark,
     isCodeRequired: vat?.isCodeRequired,
-    withoutAccounts: props.withoutAccounts,
+    withoutAccounts: props.withoutAccounts || bookkeepingMode === "tax_records",
     missingVatAccounts: totals.missingVatAccounts,
   };
   const validations = validateJournalLines(lines, validationContext, {
     showAllErrors: props.showAllErrors ?? false,
     touched: touchedRows.current,
-    validate: props.validate,
+    validate: (line) => {
+      const extra = props.validate?.(line);
+      if (bookkeepingMode !== "tax_records") return extra ?? {};
+      return {
+        ...Object.fromEntries(
+          taxItemAccountRequired(line, props).map((key) => [key, dsTexts.taxRecords.chooseItem]),
+        ),
+        ...extra,
+      };
+    },
   });
   const vatWarnings = new Map(
     lines
@@ -425,6 +459,16 @@ export function useJournalEditorState(
       ? ["debitCategoryId", "creditCategoryId"]
       : ["categoryId"];
     for (const column of columns) {
+      const state = categoryState(line, column);
+      if (
+        bookkeepingMode === "tax_records" &&
+        props.categoriesEnabled !== false &&
+        props.categoryRequired &&
+        state.enabled &&
+        !state.value
+      ) {
+        validations.set(line.id, { ...validations.get(line.id), [column]: t.missingCategory });
+      }
       if (categoryState(line, column).invalid) {
         validations.set(line.id, {
           ...validations.get(line.id),
@@ -484,6 +528,7 @@ export function useJournalEditorState(
           column,
           {
             accountByCode,
+            bookkeepingMode,
             dimensions: props.categories ?? [],
             categories: props.categories ?? [],
             partners: props.partners ?? [],

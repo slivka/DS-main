@@ -151,6 +151,16 @@ export function FormIssuesBar({
                   <span className="font-semibold">{issue.label}</span>: {issue.message}
                 </span>
               )}
+              {issue.action ? (
+                <Button
+                  type="button"
+                  variant="link"
+                  className="ml-2 h-auto p-0"
+                  onClick={issue.action.onClick}
+                >
+                  {issue.action.label}
+                </Button>
+              ) : null}
             </li>
           ))}
         </ul>

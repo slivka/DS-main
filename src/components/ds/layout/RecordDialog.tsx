@@ -62,9 +62,14 @@ export interface RecordDialogLifecycleAction {
   /** Např. „Deaktivovat“ / „Aktivovat“. */
   label: string;
   /** `saveFirst: true` = uživatel potvrdil „Uložit změny a …“. */
-  onClick: (opts: { saveFirst: boolean }) => void | Promise<void>;
+  onClick: (opts: { saveFirst: boolean; reason?: string }) => void | Promise<void>;
   /** Potvrzení před spuštěním. */
-  confirm?: { title: string; description?: string; confirmLabel?: string };
+  confirm?: {
+    title: string;
+    description?: string;
+    confirmLabel?: string;
+    reason?: { label: string; required?: boolean; placeholder?: string };
+  };
   /** Akce je zakázaná. */
   disabled?: boolean;
   /** Důvod zákazu. */
@@ -76,9 +81,14 @@ export interface RecordDialogDeleteAction {
   /** Popisek; výchozí „Odstranit“ z DsTexts. */
   label?: string;
   /** Spustí se po potvrzení. */
-  onClick: () => void | Promise<void>;
+  onClick: (reason?: string) => void | Promise<void>;
   /** Text potvrzení. */
-  confirm: { title: string; description?: string; confirmLabel?: string };
+  confirm: {
+    title: string;
+    description?: string;
+    confirmLabel?: string;
+    reason?: { label: string; required?: boolean; placeholder?: string };
+  };
   /** Akce je zakázaná. */
   disabled?: boolean;
   /** Důvod zákazu (tooltip, tlačítko zůstává zaměřitelné). */
@@ -271,7 +281,12 @@ export function RecordDialog({
       ...(plan.description ? { description: plan.description } : {}),
       confirmLabel: plan.confirmLabel,
       cancelLabel: cancelText,
-      onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }),
+      reason: lifecycleAction.confirm?.reason,
+      onConfirm: (reason) =>
+        void lifecycleAction.onClick({
+          saveFirst: plan.saveFirst,
+          ...(lifecycleAction.confirm?.reason ? { reason } : {}),
+        }),
     });
   };
   const deleteText = deleteAction?.label ?? dsTexts.recordDialog.deleteLabel;
@@ -285,7 +300,9 @@ export function RecordDialog({
       confirmLabel: deleteAction.confirm.confirmLabel ?? deleteText,
       cancelLabel: cancelText,
       destructive: true,
-      onConfirm: () => void deleteAction.onClick(),
+      reason: deleteAction.confirm.reason,
+      onConfirm: (reason) =>
+        void (deleteAction.confirm.reason ? deleteAction.onClick(reason) : deleteAction.onClick()),
     });
   };
   const statusBadge = status ? (

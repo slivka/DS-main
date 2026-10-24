@@ -4863,7 +4863,7 @@
           "type": "any"
         }
       ],
-      "usage": "Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky. Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS. submitDisabled blokuje uložení i klávesou; zavření zůstává dostupné. size xl (80 rem) pro import a rozsáhlé pracovní dialogy; menší velikosti beze změny.",
+      "usage": "Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky. Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS. submitDisabled blokuje uložení i klávesou; zavření zůstává dostupné. size xl (80 rem) pro import a rozsáhlé pracovní dialogy; menší velikosti beze změny. lifecycleAction.confirm.reason a deleteAction.confirm.reason vyžadují důvod a předají jej callbacku po jediném potvrzení.",
       "examples": [
         {
           "label": "Detail prostoru jen pro čtení",
@@ -9465,7 +9465,7 @@
           "default": "form-issues-bar"
         }
       ],
-      "usage": "Živý seznam toho, co zbývá opravit, nad formulářem; RecordActionBar a DocumentForm ho skládají z issues. Každá položka odkazuje na pole.",
+      "usage": "Živý seznam toho, co zbývá opravit, nad formulářem; RecordActionBar a DocumentForm ho skládají z issues. Každá položka odkazuje na pole. FormIssue.action {label, onClick} je samostatná akce vedle odkazu na pole.",
       "examples": [
         {
           "label": "Serverová chyba DUZP",
@@ -10194,9 +10194,17 @@
           "name": "className",
           "type": "string",
           "default": "ml-auto flex shrink-0 items-center gap-2"
+        },
+        {
+          "name": "bookkeepingMode",
+          "type": "accrual | tax_records"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>"
         }
       ],
-      "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
+      "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.",
       "examples": [
         {
           "label": "Třída nebo skupina",
@@ -10567,9 +10575,13 @@
         {
           "name": "texts",
           "type": "any"
+        },
+        {
+          "name": "bookkeepingMode",
+          "type": "accrual | tax_records"
         }
       ],
-      "usage": "Obsah záložky Zaúčtování: grid jen ke čtení se všemi stranami deníku dokladu z DB; účty v rozšířené formě, automatické řádky se štítkem (DPH, Bez nároku, Záloha, Zaokrouhlení, Kurzové zaokrouhlení). U zálohových listů se záložka nepřidává.",
+      "usage": "Obsah záložky Zaúčtování: grid jen ke čtení se všemi stranami deníku dokladu z DB; účty v rozšířené formě, automatické řádky se štítkem (DPH, Bez nároku, Záloha, Zaokrouhlení, Kurzové zaokrouhlení). U zálohových listů se záložka nepřidává. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.",
       "examples": [
         {
           "label": "Záložka Zaúčtování",
@@ -11590,7 +11602,7 @@
       "name": "JournalLinesEditor",
       "file": "src/components/ds/accounting/JournalLinesEditor",
       "import_path": "",
-      "usage": "Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka (2.118.0). Enter skáče dál a vyplněná/zakotvená pole přeskakuje, na konci řádku založí řádek s kódem DPH a účty, Shift+Enter zpět; špendlík zakotví sloupec v otevřeném dokladu. Rekapitulace DPH po oddílech a patička Součet · Odečtené zálohy · Zaokrouhlení · K úhradě · Rozdíl. withoutAccounts pro zálohové listy. Slot afterVatRecap umístí odečty pod rekapitulaci; patička používá samostatné advanceDeduction APP. Detail řádku nabízí nárok na odpočet a khLimitExcluded; vat.rowDetails.canEdit/disabledReason dodává APP. withoutAccounts skryje účetní pole bez smazání hodnot; změny jdou přes onChange. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním.",
+      "usage": "Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka (2.118.0). Enter skáče dál a vyplněná/zakotvená pole přeskakuje, na konci řádku založí řádek s kódem DPH a účty, Shift+Enter zpět; špendlík zakotví sloupec v otevřeném dokladu. Rekapitulace DPH po oddílech a patička Součet · Odečtené zálohy · Zaokrouhlení · K úhradě · Rozdíl. withoutAccounts pro zálohové listy. Slot afterVatRecap umístí odečty pod rekapitulaci; patička používá samostatné advanceDeduction APP. Detail řádku nabízí nárok na odpočet a khLimitExcluded; vat.rowDetails.canEdit/disabledReason dodává APP. withoutAccounts skryje účetní pole bez smazání hodnot; změny jdou přes onChange. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.",
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
@@ -11703,6 +11715,22 @@
         {
           "name": "dimensionsBySide",
           "type": "boolean (internal=true)"
+        },
+        {
+          "name": "bookkeepingMode",
+          "type": "accrual | tax_records"
+        },
+        {
+          "name": "categoriesEnabled",
+          "type": "boolean"
+        },
+        {
+          "name": "taxMovementKind",
+          "type": "TaxMovementKind"
+        },
+        {
+          "name": "onTaxMovementKindChange",
+          "type": "(kind: TaxMovementKind) => void"
         }
       ]
     },
@@ -11788,9 +11816,21 @@
         {
           "name": "vatSummary",
           "type": "any"
+        },
+        {
+          "name": "bookkeepingMode",
+          "type": "accrual | tax_records"
+        },
+        {
+          "name": "categoriesEnabled",
+          "type": "boolean"
+        },
+        {
+          "name": "taxMovementKind",
+          "type": "TaxMovementKind"
         }
       ],
-      "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním.",
+      "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.",
       "examples": [
         {
           "label": "Rekapitulace",
@@ -11819,7 +11859,7 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0. Formulář dokladu se sdílenými sekcemi a pruhy. FV/ZFV mají daňové číslo s vazbou; účetní datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift. Navázané účetní datum a u FP/ZFP/DDPOZ ručně neměněné DUZP se zapisují přes onChange (při změně vystavení a jednou při otevření dokladu), takže zobrazené = uložené. Neplatné datum a varování čísla dodavatele pro VS jsou ⚠ v poli a celý text v pruhu nad formulářem; chybějící kurz DPH se hlásí jednou a ne u dokladu jen pro čtení. onAddBankAccount dostává hledaný text. Úvodní zápis odvozených datumů přes onChange probíhá jen u upravitelného dokladu; readOnly, posted, locked a cancelled zachovávají uložená data bez callbacku. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors. Pruh vzoru přes templateEdit sdílí faktury i ZL nad identitou. panelToggle předává ovladač do RecordActionBar úplně vpravo za nabídku akcí ve všech šířkách, nikdy do záhlaví; společné pro faktury i zálohové listy. fieldLockedReasons: jen needitovatelná pole přes FieldValue lockedReason; obecný důvod předchází součtu Σ, currencyDisabledReason a counterpartyInputLockedReason. IBAN režim: bankIban před bankAccount, bankSwift před bankCode; paymentReference pro referenci. Ruční protistrana: counterpartyName před partnerId. Zamčené datum sdílí šířku DateField; odkaz chyby zaměří zámek. Platí pro faktury i zálohové listy. FV a ZFV mají customerOrderRef v základních údajích. Tisk dostává hotová InvoicePrintData z APP; DS nepočítá součty faktury ani záloh. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. identity.fallbackShort volitelně přepíše krátký stav, výchozí DsTexts CS/SK je Koncept. Platí společně pro faktury i zálohové listy. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. lockedReason (2.139.0) přímo zakáže úpravu libovolného pole hlavičky a má přednost před fieldLockedReasons i vat.dateLockReadOnly; oba staré vstupy zůstávají aliasy do 3.0.0. Platí pro faktury i zálohové listy.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0. Formulář dokladu se sdílenými sekcemi a pruhy. FV/ZFV mají daňové číslo s vazbou; účetní datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift. Navázané účetní datum a u FP/ZFP/DDPOZ ručně neměněné DUZP se zapisují přes onChange (při změně vystavení a jednou při otevření dokladu), takže zobrazené = uložené. Neplatné datum a varování čísla dodavatele pro VS jsou ⚠ v poli a celý text v pruhu nad formulářem; chybějící kurz DPH se hlásí jednou a ne u dokladu jen pro čtení. onAddBankAccount dostává hledaný text. Úvodní zápis odvozených datumů přes onChange probíhá jen u upravitelného dokladu; readOnly, posted, locked a cancelled zachovávají uložená data bez callbacku. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors. Pruh vzoru přes templateEdit sdílí faktury i ZL nad identitou. panelToggle předává ovladač do RecordActionBar úplně vpravo za nabídku akcí ve všech šířkách, nikdy do záhlaví; společné pro faktury i zálohové listy. fieldLockedReasons: jen needitovatelná pole přes FieldValue lockedReason; obecný důvod předchází součtu Σ, currencyDisabledReason a counterpartyInputLockedReason. IBAN režim: bankIban před bankAccount, bankSwift před bankCode; paymentReference pro referenci. Ruční protistrana: counterpartyName před partnerId. Zamčené datum sdílí šířku DateField; odkaz chyby zaměří zámek. Platí pro faktury i zálohové listy. FV a ZFV mají customerOrderRef v základních údajích. Tisk dostává hotová InvoicePrintData z APP; DS nepočítá součty faktury ani záloh. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. identity.fallbackShort volitelně přepíše krátký stav, výchozí DsTexts CS/SK je Koncept. Platí společně pro faktury i zálohové listy. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. lockedReason (2.139.0) přímo zakáže úpravu libovolného pole hlavičky a má přednost před fieldLockedReasons i vat.dateLockReadOnly; oba staré vstupy zůstávají aliasy do 3.0.0. Platí pro faktury i zálohové listy. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
@@ -11945,6 +11985,26 @@
         {
           "name": "dimensionsBySide",
           "type": "boolean (internal=true)"
+        },
+        {
+          "name": "bookkeepingMode",
+          "type": "accrual | tax_records"
+        },
+        {
+          "name": "hideMainAccount",
+          "type": "boolean"
+        },
+        {
+          "name": "categoriesEnabled",
+          "type": "boolean"
+        },
+        {
+          "name": "taxMovementKind",
+          "type": "TaxMovementKind"
+        },
+        {
+          "name": "onTaxMovementKindChange",
+          "type": "(kind: TaxMovementKind) => void"
         }
       ]
     },
@@ -13518,6 +13578,318 @@
       ],
       "antipatterns": [
         "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
+    },
+    {
+      "name": "TaxBookView",
+      "file": "src/components/ds/tax-records/tax-book-view.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Kniha hotových zápisů APP. Filtry období, položky, daňovosti a ekonomické kategorie; standardní Excel tabulka a součty.",
+      "props": [
+        {
+          "name": "rows",
+          "type": "TaxBookEntry[]"
+        },
+        {
+          "name": "homeCurrency",
+          "type": "string"
+        },
+        {
+          "name": "filters",
+          "type": "TaxBookFilters"
+        },
+        {
+          "name": "onFiltersChange",
+          "type": "(filters: TaxBookFilters) => void"
+        },
+        {
+          "name": "periods",
+          "type": "{id: string; label: string; from: string; to: string}[]"
+        },
+        {
+          "name": "onDocumentOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "onUnassignedOpen",
+          "type": "(row: TaxBookEntry) => void"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<TaxBookView rows={entries} homeCurrency={currency} filters={filters} onFiltersChange={setFilters} onDocumentOpen={openDocument} onUnassignedOpen={resolvePayment} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "TaxCategorySummary",
+      "file": "src/components/ds/tax-records/tax-category-summary.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Přehled § 7–10 z hotových příjmů a výdajů APP, včetně výsledku výdajů procentem a stropu; nezařazené úhrady odděleně.",
+      "props": [
+        {
+          "name": "rows",
+          "type": "TaxCategoryRow[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "unassignedAmount",
+          "type": "number"
+        },
+        {
+          "name": "onCategoryOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "onUnassignedOpen",
+          "type": "() => void"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<TaxCategorySummary rows={summary} currency={currency} unassignedAmount={unassigned} onCategoryOpen={openCategory} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "CashCheckPanel",
+      "file": "src/components/ds/tax-records/cash-check-panel.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Kontrola peněz po pokladnách/bankách. Počáteční stav, pohyby, zůstatek a červený rozdíl dodává APP.",
+      "props": [
+        {
+          "name": "rows",
+          "type": "CashCheckRow[]"
+        },
+        {
+          "name": "onAccountOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<CashCheckPanel rows={cashChecks} onAccountOpen={openCashBook} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "TaxBookEntriesPanel",
+      "file": "src/components/ds/tax-records/tax-book-entries-panel.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Sekce Zápisy v knize pro Propojené; skládá LinkedRecordsPanel a předává proklik původního zápisu.",
+      "props": [
+        {
+          "name": "entries",
+          "type": "TaxBookEntry[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "onEntryOpen",
+          "type": "(entry: TaxBookEntry) => void"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<TaxBookEntriesPanel entries={entries} currency={currency} onEntryOpen={openTaxEntry} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "BookkeepingModeSelect",
+      "file": "src/components/ds/tax-records/bookkeeping-mode-select.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Řízená volba režimu nové firmy s vysvětlením, že pozdější změna znamená novou firmu.",
+      "props": [
+        {
+          "name": "value",
+          "type": "BookkeepingMode"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: BookkeepingMode) => void"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<BookkeepingModeSelect value={mode} onChange={setMode} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "BookkeepingSettingsFields",
+      "file": "src/components/ds/tax-records/bookkeeping-settings-fields.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Nastavení knihy v DE vynechá účetní pole; firma nabídne příjmovou a výdajovou položku zaokrouhlení. Skrytí nemaže data.",
+      "props": [
+        {
+          "name": "bookkeepingMode",
+          "type": "BookkeepingMode"
+        },
+        {
+          "name": "scope",
+          "type": "book | company"
+        },
+        {
+          "name": "accountFields",
+          "type": "ReactNode"
+        },
+        {
+          "name": "items",
+          "type": "AccountOption[]"
+        },
+        {
+          "name": "value",
+          "type": "{income?: string | null; expense?: string | null}"
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: {income?: string | null; expense?: string | null}) => void"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<BookkeepingSettingsFields bookkeepingMode={mode} scope=\"company\" items={items} value={roundingItems} onValueChange={setRoundingItems} accountFields={accountControls} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "TaxMovementSelect",
+      "file": "src/components/ds/tax-records/tax-movement-select.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Řízený druh interního pohybu: nepeněžní příjem, výdaj nebo přeřazení. Technickou protistranu řeší APP.",
+      "props": [
+        {
+          "name": "value",
+          "type": "TaxMovementKind"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: TaxMovementKind) => void"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<TaxMovementSelect value={movementKind} onChange={setMovementKind} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
+      ]
+    },
+    {
+      "name": "VatPeriodBadge",
+      "file": "src/components/ds/tax-records/../data-display/vat-period-badge.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Štítek období DPH; podané období nahradí výstrahou APP.",
+      "props": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "filed",
+          "type": "boolean"
+        },
+        {
+          "name": "filedWarning",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Řízená data aplikace",
+          "code": "<VatPeriodBadge label={period.label} filed={period.filed} filedWarning={filedWarning} />"
+        }
+      ],
+      "antipatterns": [
+        "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty."
       ]
     }
   ],

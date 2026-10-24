@@ -68,7 +68,11 @@ function ToolbarRight() {
               : (`${dataId}Name` as const)
             : null;
           const disableToggleReason =
-            dataId && columns.columnVisible[column.id] && pairId && !columns.columnVisible[pairId]
+            editor.props.bookkeepingMode !== "tax_records" &&
+            dataId &&
+            columns.columnVisible[column.id] &&
+            pairId &&
+            !columns.columnVisible[pairId]
               ? editor.accountFormRequired
               : undefined;
           return {

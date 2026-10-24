@@ -90,3 +90,4 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - DocumentForm resolves header suggestions through an opt-in Field context; journal columns map to shared suggestion keys and report first manual changes. Why: all document variants share presentation without owning application proposals.
 
 - DimensionBar owns controlled chip/search interaction; journal-dimensions-model owns header inheritance and manual-only serialization, while B1 category aliases are separated by structural guards. Why: new dimensions cannot silently become economic categories or overwrite manual exceptions.
+

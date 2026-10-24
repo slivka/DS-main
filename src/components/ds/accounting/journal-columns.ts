@@ -73,6 +73,11 @@ export function journalColumnLabels(
 export interface JournalColumnDefsInput {
   /** Texty. */
   t: JournalEditorTexts;
+  bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
+  taxItemLabels?: { item: string; fromItem: string; toItem: string };
+  taxMovementKind?: import("../tax-records/tax-record-types").TaxMovementKind;
+  mainSide?: "MD" | "D";
+  categoriesEnabled?: boolean;
   /** Režim editoru. */
   mode: JournalLinesMode;
   /** Popisky datových sloupců. */
@@ -146,6 +151,34 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     locked: true,
     align: "right",
   };
+  if (input.bookkeepingMode === "tax_records") {
+    const label = input.taxItemLabels;
+    const transfer = input.mode === "internal" && input.taxMovementKind === "transfer";
+    const itemColumn =
+      input.mode === "mainAccount"
+        ? "counterAccount"
+        : input.mainSide === "D"
+          ? "creditAccount"
+          : "debitAccount";
+    return [
+      ...head,
+      ...amountColumns,
+      ...(transfer
+        ? [
+            {
+              id: "creditAccount" as const,
+              label: label?.fromItem ?? t.creditAccount,
+              locked: true,
+            },
+            { id: "debitAccount" as const, label: label?.toItem ?? t.debitAccount, locked: true },
+          ]
+        : [{ id: itemColumn as ColumnId, label: label?.item ?? t.counterAccount, locked: true }]),
+      ...(input.categoriesEnabled === false
+        ? []
+        : [{ id: "categoryId" as const, label: t.category }]),
+      actions,
+    ];
+  }
   if (input.withoutAccounts)
     return [
       ...head,
@@ -229,6 +262,7 @@ export function journalAccountFor(
 
 /** Číselníky a kurz, které potřebuje zobrazení hodnoty buňky. */
 export interface JournalDisplayContext {
+  bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
   /** Účty podle čísla. */
   accountByCode: Map<string, AccountOption>;
   /** Ekonomické kategorie. */
@@ -290,6 +324,8 @@ export function journalDisplayValue(
   if (isAccountColumn(column)) {
     const code = journalAccountFor(line, column, ctx.counterColumn);
     const account = code ? ctx.accountByCode.get(code) : undefined;
+    if (account?.technical) return "";
+    if (ctx.bookkeepingMode === "tax_records") return account?.name ?? "";
     const extended = isAccountNameColumn(column) && !ctx.compactAccountIds.has(column);
     return code ? formatJournalAccountDisplay(code, account?.name, extended) : "";
   }

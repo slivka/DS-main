@@ -5,6 +5,8 @@
 
 /** Jedna položka živého pruhu – co zbývá opravit. */
 export interface FormIssue {
+  /** Samostatná akce řešení; klik na odkaz pole zůstává navigací. */
+  action?: { label: string; onClick: () => void };
   /** Id ovládání pole (fokus a rámeček); u hlavičky dokladu klíč hlavičky nebo document-klíč. */
   fieldId?: string;
   /** Řádek mřížky dokladu. */

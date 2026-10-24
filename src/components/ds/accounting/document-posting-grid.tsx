@@ -40,6 +40,7 @@ export interface DocumentPostingEntry {
 
 /** Props záložky Zaúčtování. */
 export interface DocumentPostingGridProps extends React.ComponentPropsWithoutRef<"div"> {
+  bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
   /** Řádky deníku v pořadí z DB. */
   entries: DocumentPostingEntry[];
   /** Účtový rozvrh pro rozšířenou formu účtu. */
@@ -59,14 +60,22 @@ const AUTO_LABEL: Record<DocumentPostingAutoKind, keyof VatFiveTexts> = {
 
 /** Grid zaúčtování dokladu jen ke čtení. */
 export const DocumentPostingGrid = React.forwardRef<HTMLDivElement, DocumentPostingGridProps>(
-  function DocumentPostingGrid({ entries, accounts, texts, className, ...props }, ref) {
-    const t = { ...useDsTexts().vatFive, ...texts };
+  function DocumentPostingGrid(
+    { entries, accounts, texts, className, bookkeepingMode = "accrual", ...props },
+    ref,
+  ) {
+    const dsTexts = useDsTexts();
+    const t = { ...dsTexts.vatFive, ...texts };
     const byCode = React.useMemo(
       () => new Map(accounts.map((account) => [account.code, account])),
       [accounts],
     );
-    const account = (code?: string | null) =>
-      code ? formatJournalAccountDisplay(code, byCode.get(code)?.name, true) : "";
+    const account = (code?: string | null) => {
+      const option = code ? byCode.get(code) : undefined;
+      if (option?.technical) return "";
+      if (bookkeepingMode === "tax_records") return option?.name ?? "";
+      return code ? formatJournalAccountDisplay(code, option?.name, true) : "";
+    };
     return (
       <div
         ref={ref}
@@ -84,8 +93,12 @@ export const DocumentPostingGrid = React.forwardRef<HTMLDivElement, DocumentPost
           <TableHeader className="grid-column-header">
             <TableRow>
               <TableHead>{t.postingText}</TableHead>
-              <TableHead>{t.postingDebit}</TableHead>
-              <TableHead>{t.postingCredit}</TableHead>
+              <TableHead>
+                {bookkeepingMode === "tax_records" ? dsTexts.taxRecords.toItem : t.postingDebit}
+              </TableHead>
+              <TableHead>
+                {bookkeepingMode === "tax_records" ? dsTexts.taxRecords.fromItem : t.postingCredit}
+              </TableHead>
               <TableHead className="text-right">{t.postingAmount}</TableHead>
             </TableRow>
           </TableHeader>

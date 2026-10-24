@@ -2,6 +2,17 @@
 
 ## 2.139.0 (nevydáno)
 
+### DE-2 + DE-3 a drobná API
+
+- Nové `TaxBookView` (hotové `rows`, `homeCurrency`, řízené `filters`/`onFiltersChange`, `periods`, `onDocumentOpen`/`onUnassignedOpen`), `TaxCategorySummary` (`rows`, `currency`, `unassignedAmount`, prokliky), `CashCheckPanel` (`rows`, `onAccountOpen`) a `TaxBookEntriesPanel` (`entries`, `currency`, `onEntryOpen`) pro sekci Zápisy v knize v Propojených.
+- Nové `BookkeepingModeSelect`, `BookkeepingSettingsFields` a `TaxMovementSelect`: řízená volba režimu nové firmy, skryté účty knihy a příjmová/výdajová položka zaokrouhlení firmy. Nové texty CS/SK v `DsTexts.taxRecords`.
+- `JournalLinesEditor` a `DocumentForm` přijímají `bookkeepingMode="accrual" | "tax_records"` (výchozí accrual), `categoriesEnabled`, `taxMovementKind` a `onTaxMovementKindChange`; `DocumentForm.hideMainAccount` skrývá hlavní účet/stranu bez změny dat, v DE automaticky. Platí pro faktury i zálohové listy. Přeřazení interního dokladu má Z položky / Na položku, ostatní jeden sloupec Položka.
+- `AccountOption.technical` vyřadí technickou hodnotu z nabídky i zobrazení; `displayCode` je pouze tlumený doplněk názvu. `AccountSelect.bookkeepingMode` hledá položky podle názvu, nikoli interního čísla. Rekapitulace a `DocumentPostingGrid.bookkeepingMode` také skrývají technické účty; uložené účetní formy nelze v DE obnovit. DS předává stejný řádek, technickou protistranu doplňuje APP.
+- Kniha používá standardní DataGrid a Excel tabulku se součty domácích částek; částky pohybu různých měn se nesčítají. Paušál, strop, uplatněný výdaj a kontrolní rozdíl dodává APP, DS nemá nový daňový engine. Nezařazená úhrada má výstrahu, samostatný proklik a samostatný řádek souhrnu.
+- Drobná API: už bylo `PageHeader.panelToggle`, Série ze vzoru (`onTemplate(id, "series")`), jediné potvrzení `LinkedRecordsPanel`, `openLinkedTab`, `BankStatementForm.menuActions`/důvody a panel v sousedním okně. Doplněno `FormIssue.action`, důvod v `RecordDialog.lifecycleAction.confirm.reason` / `deleteAction.confirm.reason` (callback dostává důvod) a `VatPeriodBadge` ve formuláři místo pouhé nápovědy období; podané období má přednost.
+- Ukázka Daňová evidence: položky, interní pohyby, kniha s cizí měnou/nezařazenou úhradou, souhrn § 7 a kontrola peněz. Nové jednotky jsou pod 300 řádky; stávající orchestrátory editoru/rekapitulace se jen napojují bez nesouvisejícího přestavování.
+- Ověření: **29 nových unit regresí**, unit DS **1 556/1 556** ve 157 souborech, `check:quick --harness` OK (cílený lint 0 chyb, stávající varování orchestrátorů), cílený Chromium `tax-records.spec.ts` **1/1**, pouze nový spec (desktop 1280 / mobil 480 px). Katalog před DE proti DPH B **495 → 503 komponent / 1 383 → 1 442 props**, podle checkeru proti vydané základně **489 → 503 / 1 248 → 1 442**, **0 odebrání**. Nic nevydáno; plná E2E a D6 ponechány uživateli.
+
 ### DPH B – přiznání, hlášení, kontroly a podání
 
 - D1–D7 jsou v pracovní kopii po sloučení přítomné; zbytek D6 v tomto kole beze změn.

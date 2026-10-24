@@ -1,5 +1,14 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Daňová evidence
+
+- Každá nová funkce a nastavení zohledňuje bookkeepingMode. Výchozí accrual zachovává účetnictví; tax_records vybírá položky podle názvu. AccountOption.technical nikdy nenabízej ani nezobrazuj, displayCode je jen tlumený uživatelský doplněk. Neodhaduj technické účty z čísla.
+- DocumentForm předává bookkeepingMode, categoriesEnabled a taxMovementKind do společného editoru; hideMainAccount skryje účet i stranu bez změny uložených hodnot. Toto platí pro faktury i zálohové listy. APP doplní technickou protistranu; při přeřazení ID jsou viditelné obě položky.
+- TaxBookView dostává hotové zápisy, TaxCategorySummary hotové výdaje procentem včetně stropu a CashCheckPanel hotové kontrolní výsledky. DS nevytváří zápisy ani nepřepočítává daně. Kniha exportuje přes standardní DataGrid, nesčítej pohyby různých měn. TaxBookEntriesPanel patří do Propojených.
+- BookkeepingSettingsFields skryje účty knihy v DE a u firmy nabídne položky zaokrouhlení; BookkeepingModeSelect patří do Nové firmy. Pozdější změna znamená novou firmu, rozhodnutí a persistence jsou v APP.
+- FormIssue.action je samostatná akce řešení, nikoli náhrada navigace na pole. RecordDialog akce sbírají důvod přes confirm.reason a předají jej callbacku po jediném potvrzení.
+
+
 ## Dimenze dokladů
 
 - DimensionBar dostává řízené types/value/onChange/loadOptions; typ k vyplnění má valueId=null. APP dodává aktivní typy, hotové popisky, inactive uložené hodnoty a kind=value/vehicle. Neodvozujte platnost vozidel v DS.

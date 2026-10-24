@@ -62,6 +62,14 @@ export interface DocumentVatRateField {
 }
 
 export interface DocumentFormProps {
+  bookkeepingMode?: import("../../tax-records/tax-record-types").BookkeepingMode;
+  /** Skryje hlavní účet a stranu bez změny dat. V DE automaticky. */
+  hideMainAccount?: boolean;
+  categoriesEnabled?: boolean;
+  taxMovementKind?: import("../../tax-records/tax-record-types").TaxMovementKind;
+  onTaxMovementKindChange?: (
+    kind: import("../../tax-records/tax-record-types").TaxMovementKind,
+  ) => void;
   title: string;
   /** Ovládání panelu úplně vpravo v liště akcí za nabídkou, i při úzké šířce. */
   panelToggle?: ReactNode;

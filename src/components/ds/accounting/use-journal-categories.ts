@@ -90,12 +90,17 @@ export function useJournalCategories(
   const singleSignature = JSON.stringify(singleUpdates.map((item) => [item.line.id, item.values]));
   const appliedSingle = React.useRef("");
   React.useLayoutEffect(() => {
-    if (editable.size === 0 || !singleUpdates.length || appliedSingle.current === singleSignature)
+    if (
+      props.categoriesEnabled === false ||
+      editable.size === 0 ||
+      !singleUpdates.length ||
+      appliedSingle.current === singleSignature
+    )
       return;
     appliedSingle.current = singleSignature;
     for (const item of singleUpdates) pins.markInherited(item.line.id, item.changed);
     const byId = new Map(singleUpdates.map((item) => [item.line.id, item.values]));
     onChange(lines.map((line) => ({ ...line, ...byId.get(line.id) })));
-  }, [singleSignature, editable.size]); // eslint-disable-line react-hooks/exhaustive-deps -- synchronizace nové nabídky účtu do řízených dat, jen při konkrétní změně
+  }, [singleSignature, editable.size, props.categoriesEnabled]); // eslint-disable-line react-hooks/exhaustive-deps -- synchronizace nové nabídky účtu do řízených dat, jen při konkrétní změně
   return { patch, categoryState, categoryContext, categoryWarnings, createCategory };
 }
