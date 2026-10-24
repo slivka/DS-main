@@ -8052,7 +8052,7 @@ Strom přiznání s hotovými částkami a souhrnem APP, rozdíly compare a onRo
 **Přehled DPH z dat APP:**
 
 ```tsx
-<VatReturnView {...appProps} />
+<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />
 ```
 
 **Avoid:**
@@ -8085,7 +8085,7 @@ Oddíly A1–B3, prázdné ztlumené; doklady a souhrny výhradně od APP.
 **Přehled DPH z dat APP:**
 
 ```tsx
-<VatControlStatementView {...appProps} />
+<VatControlStatementView sections={khSections} currency={currency} onDocumentOpen={openDocument} changed={changedSinceFiled} />
 ```
 
 **Avoid:**
@@ -8117,7 +8117,7 @@ SH nebo varianta oss s opravami minulých období, součty dodaných částek be
 **Přehled DPH z dat APP:**
 
 ```tsx
-<VatRecapitulativeView {...appProps} />
+<VatRecapitulativeView variant="oss" ossRows={ossRows} currency={ossCurrency} onRowOpen={openOssDocuments} />
 ```
 
 **Avoid:**
@@ -8147,7 +8147,7 @@ Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neb
 **Přehled DPH z dat APP:**
 
 ```tsx
-<VatChecksPanel {...appProps} />
+<VatChecksPanel items={checks} severity={severity} onSeverityChange={setSeverity} onDocumentOpen={openDocument} />
 ```
 
 **Avoid:**
@@ -8182,7 +8182,7 @@ import { VatFilingBar } from "@/design-system/{slug}";
 **Přehled DPH z dat APP:**
 
 ```tsx
-<VatFilingBar {...appProps} />
+<VatFilingBar form="control" status={filing.status} kind={filing.kind} onKindChange={setKind} confirmText={period.label} actions={permittedActions} />
 ```
 
 **Avoid:**
@@ -8214,7 +8214,7 @@ import { VatPeriodPicker } from "@/design-system/{slug}";
 **Přehled DPH z dat APP:**
 
 ```tsx
-<VatPeriodPicker {...appProps} />
+<VatPeriodPicker periods={periods} value={period} onChange={setPeriod} label={periodSummary} />
 ```
 
 **Avoid:**

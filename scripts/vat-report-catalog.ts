@@ -99,7 +99,21 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
           ]
         : []),
     ].map(([name, type]) => ({ name, type }));
-    component.examples = [{ label: "Přehled DPH z dat APP", code: `<${name} {...appProps} />` }];
+    const examples: Record<string, string> = {
+      VatReturnView:
+        "<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />",
+      VatControlStatementView:
+        "<VatControlStatementView sections={khSections} currency={currency} onDocumentOpen={openDocument} changed={changedSinceFiled} />",
+      VatRecapitulativeView:
+        '<VatRecapitulativeView variant="oss" ossRows={ossRows} currency={ossCurrency} onRowOpen={openOssDocuments} />',
+      VatChecksPanel:
+        "<VatChecksPanel items={checks} severity={severity} onSeverityChange={setSeverity} onDocumentOpen={openDocument} />",
+      VatFilingBar:
+        '<VatFilingBar form="control" status={filing.status} kind={filing.kind} onKindChange={setKind} confirmText={period.label} actions={permittedActions} />',
+      VatPeriodPicker:
+        "<VatPeriodPicker periods={periods} value={period} onChange={setPeriod} label={periodSummary} />",
+    };
+    component.examples = [{ label: "Přehled DPH z dat APP", code: examples[name] ?? "" }];
     component.antipatterns = [
       "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.",
     ];

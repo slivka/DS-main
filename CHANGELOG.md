@@ -2,6 +2,15 @@
 
 ## 2.139.0 (nevydáno)
 
+### DPH B – přiznání, hlášení, kontroly a podání
+
+- D1–D7 jsou v pracovní kopii po sloučení přítomné; zbytek D6 v tomto kole beze změn.
+- Nové `VatReturnView` (oddíly I–V, `rows`, `compare`, `summary`, `onRowOpen`), `VatControlStatementView` (`sections`, řízený `activeSection`/`onSectionChange`, `onDocumentOpen`, `changed`) a `VatRecapitulativeView` (`rows`, `variant="oss"`, `ossRows`, opravy minulých období).
+- Nové `VatChecksPanel` (`items`, řízený filtr `severity`/`onSeverityChange`, proklik), `VatFilingBar` (`form`, `status`, `kind`, `actions`, datum/kdo, `confirmText`, potvrzení odemknutí s neprázdným důvodem) a `VatPeriodPicker` (`periods`, `value`, `onChange`, `label`, `disabled`/`readOnly`).
+- Částky, souhrn přiznání, rozdělení KH, registraci, oprávnění a operace dodává APP. Přítomnost callbacků `actions` určuje dostupné akce; DS nepočítá daně, nezamyká období ani negeneruje XML. Měna se předává přes `currency`.
+- CS/SK v `DsTexts.vatReports`; ukázka DPH a OSS zahrnuje měsíční/čtvrtletní období, PDP, EU služby, A4/A5 a opravu OSS. Rozdíl přiznání je zvýrazněný s bublinou, která nemění výšku řádku.
+- Ověření: 13 nových unit testů, cílený Chromium `vat-reports.spec.ts` **1/1**; desktop 1280 px a mobil 480 px bez přetečení celé stránky. Samostatný lint nových souborů a `check:quick --harness`. Katalog proti D1–D7 **489 → 495 komponent / 1 339 → 1 383 props**, proti vydané základně checkeru **489 → 495 / 1 248 → 1 383**, **0 odebrání**. Plná E2E ani check:full neběžely, nevydáno.
+
 ### Drobné opravy 4 (D1–D7)
 
 - D1 už bylo: `BankStatementForm.menuActions` přidává položky do nabídky výpisu; regresní test zachován.

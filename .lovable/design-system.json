@@ -13280,7 +13280,7 @@
       "examples": [
         {
           "label": "Přehled DPH z dat APP",
-          "code": "<VatReturnView {...appProps} />"
+          "code": "<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />"
         }
       ],
       "antipatterns": [
@@ -13329,7 +13329,7 @@
       "examples": [
         {
           "label": "Přehled DPH z dat APP",
-          "code": "<VatControlStatementView {...appProps} />"
+          "code": "<VatControlStatementView sections={khSections} currency={currency} onDocumentOpen={openDocument} changed={changedSinceFiled} />"
         }
       ],
       "antipatterns": [
@@ -13374,7 +13374,7 @@
       "examples": [
         {
           "label": "Přehled DPH z dat APP",
-          "code": "<VatRecapitulativeView {...appProps} />"
+          "code": "<VatRecapitulativeView variant=\"oss\" ossRows={ossRows} currency={ossCurrency} onRowOpen={openOssDocuments} />"
         }
       ],
       "antipatterns": [
@@ -13411,7 +13411,7 @@
       "examples": [
         {
           "label": "Přehled DPH z dat APP",
-          "code": "<VatChecksPanel {...appProps} />"
+          "code": "<VatChecksPanel items={checks} severity={severity} onSeverityChange={setSeverity} onDocumentOpen={openDocument} />"
         }
       ],
       "antipatterns": [
@@ -13468,7 +13468,7 @@
       "examples": [
         {
           "label": "Přehled DPH z dat APP",
-          "code": "<VatFilingBar {...appProps} />"
+          "code": "<VatFilingBar form=\"control\" status={filing.status} kind={filing.kind} onKindChange={setKind} confirmText={period.label} actions={permittedActions} />"
         }
       ],
       "antipatterns": [
@@ -13513,7 +13513,7 @@
       "examples": [
         {
           "label": "Přehled DPH z dat APP",
-          "code": "<VatPeriodPicker {...appProps} />"
+          "code": "<VatPeriodPicker periods={periods} value={period} onChange={setPeriod} label={periodSummary} />"
         }
       ],
       "antipatterns": [
