@@ -12,6 +12,8 @@ import { cn } from "../../../lib/utils";
 import { moveTemplateRow, removeTemplateRow, templateRowDepth } from "./statement-template-model";
 import type { StatementMappingOption, StatementTemplateRow } from "./statement-types";
 
+const ROOT = "__root__";
+
 /** Parametry editoru šablony. */
 export interface StatementTemplateEditorProps extends Omit<
   ComponentPropsWithoutRef<"div">,
@@ -51,7 +53,7 @@ export const StatementTemplateEditor = forwardRef<HTMLDivElement, StatementTempl
     const update = (id: string, patch: Partial<StatementTemplateRow>) =>
       onChange(rows.map((row) => (row.id === id ? { ...row, ...patch } : row)));
     const parentOptions = (id: string) => [
-      { value: "", label: t.noParent },
+      { value: ROOT, label: t.noParent },
       ...rows
         .filter((row) => row.id !== id && row.kind === "sum")
         .map((row) => ({ value: row.id, label: `${row.mark} ${row.label}`.trim() })),
@@ -122,11 +124,11 @@ export const StatementTemplateEditor = forwardRef<HTMLDivElement, StatementTempl
                     />
                     <OptionSelect
                       ariaLabel={t.parent}
-                      value={row.parentId ?? ""}
+                      value={row.parentId ?? ROOT}
                       allowEmpty={false}
                       disabled={readOnly}
                       className="w-44"
-                      onChange={(next) => update(row.id, { parentId: next || null })}
+                      onChange={(next) => update(row.id, { parentId: next === ROOT ? null : next })}
                       options={parentOptions(row.id)}
                     />
                     {row.kind === "mapped" ? (
