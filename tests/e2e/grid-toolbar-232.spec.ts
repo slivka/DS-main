@@ -51,7 +51,11 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
     if (width < 620) {
       await expect(toolbar.getByRole("button", { name: /Hledat/ })).toHaveCount(0);
       await toolbar.getByRole("button", { name: "Další akce" }).click();
-      await expect(page.locator('[data-slot="grid-more-content"]').getByRole("button", { name: "Hledat", exact: true })).toBeVisible();
+      await expect(
+        page
+          .locator('[data-slot="grid-more-content"]')
+          .getByRole("button", { name: "Hledat", exact: true }),
+      ).toBeVisible();
       await expect(page.getByText("Parametry", { exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Stav k datu" }).last()).toBeVisible();
     }
@@ -147,7 +151,8 @@ test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
   const toolbar = grid.locator('[data-slot="grid-toolbar"]');
   await expect(toolbar).toHaveAttribute("data-overflow-level", "3");
   await toolbar.getByRole("button", { name: "Další akce" }).click();
-  await page.locator('[data-slot="grid-more-content"]')
+  await page
+    .locator('[data-slot="grid-more-content"]')
     .getByRole("button", { name: /Hledat/ })
     .first()
     .click();

@@ -123,9 +123,7 @@ describe("DocumentForm fieldLockedReasons", () => {
           lockedReason={{ companyBankAccountId: REASON, paymentMethodId: REASON }}
         />,
       );
-      expect(view.getByRole("group", { name: "Bankovní účet" }).textContent).toContain(
-        "123/0800",
-      );
+      expect(view.getByRole("group", { name: "Bankovní účet" }).textContent).toContain("123/0800");
       expect(view.getByRole("group", { name: "Způsob platby" }).textContent).toBe("Převodem");
       expect(view.getAllByRole("button", { name: REASON })).toHaveLength(2);
     });

@@ -69,7 +69,12 @@ export function GridMoreMenu({
           <MoreHorizontal className="size-[1.25em]" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent data-slot="grid-more-content" align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
+      <PopoverContent
+        data-slot="grid-more-content"
+        align="end"
+        className="w-[18em] p-[0.35em]"
+        style={{ fontSize }}
+      >
         {shownCompact ? (
           <div
             className={`grid-more-compact pb-[0.5em] ${shownTools || shownSecondary || shownItems.length ? "mb-[0.35em] border-b border-border/50" : ""}`}
