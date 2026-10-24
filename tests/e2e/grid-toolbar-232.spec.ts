@@ -51,7 +51,7 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
     if (width < 620) {
       await expect(toolbar.getByRole("button", { name: /Hledat/ })).toHaveCount(0);
       await toolbar.getByRole("button", { name: "Další akce" }).click();
-      await expect(page.getByRole("button", { name: "Hledat", exact: true })).toBeVisible();
+      await expect(page.locator('[data-slot="grid-more-content"]').getByRole("button", { name: "Hledat", exact: true })).toBeVisible();
       await expect(page.getByText("Parametry", { exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Stav k datu" }).last()).toBeVisible();
     }
@@ -147,7 +147,7 @@ test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
   const toolbar = grid.locator('[data-slot="grid-toolbar"]');
   await expect(toolbar).toHaveAttribute("data-overflow-level", "3");
   await toolbar.getByRole("button", { name: "Další akce" }).click();
-  await page
+  await page.locator('[data-slot="grid-more-content"]')
     .getByRole("button", { name: /Hledat/ })
     .first()
     .click();
@@ -168,10 +168,11 @@ for (const width of [360, 480]) {
     const toolbar = grid.locator('[data-slot="grid-toolbar"]');
     await expect(toolbar).toHaveAttribute("data-overflow-level", "3", { timeout: 45000 });
     await toolbar.getByRole("button", { name: "Další akce" }).click();
-    await page.getByRole("button", { name: "Rozbalit vše", exact: true }).click();
+    const menu = page.locator('[data-slot="grid-more-content"]');
+    await menu.getByRole("button", { name: "Rozbalit vše", exact: true }).click();
     await page.getByRole("menuitem", { name: "Vše", exact: true }).click();
     await expect(grid.locator('[data-row-id="a221001"]')).toBeVisible();
-    await page.getByRole("button", { name: "Sbalit vše", exact: true }).click();
+    await menu.getByRole("button", { name: "Sbalit vše", exact: true }).click();
     await expect(grid.locator('[data-row-id="a221001"]')).toHaveCount(0);
     expect(await toolbar.evaluate((node) => node.scrollWidth - node.clientWidth)).toBe(0);
   });

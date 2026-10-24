@@ -106,6 +106,9 @@ test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespust
   await expect(item).toHaveAttribute("aria-disabled", "true");
   await expect(item.locator('[data-slot="disabled-reason-text"]')).toHaveText(reason);
   await item.click({ force: true });
+  // Po případné obnově modulů WebKit může zavřít původní portál; znovu otevřeme živý.
+  if (!(await item.isVisible())) await menu.click();
+  await expect(item).toBeVisible();
   await item.focus();
   await item.press("Enter");
   await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");
