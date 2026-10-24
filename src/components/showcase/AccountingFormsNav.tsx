@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 const PAGES = [
+  { to: "/components/vat-reports", label: "DPH a OSS" },
   { to: "/components/accounting-forms", label: "Editor dokladů" },
   { to: "/components/accounting-documents", label: "Další doklady" },
   { to: "/components/accounting-advances", label: "Zálohy" },

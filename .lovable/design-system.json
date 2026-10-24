@@ -13241,6 +13241,284 @@
       "antipatterns": [
         "Nevytvářejte vlastní paletu nebo ukládání mimo GridLayout.styles."
       ]
+    },
+    {
+      "name": "VatReturnView",
+      "file": "src/components/ds/vat/vat-return-view.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Strom přiznání s hotovými částkami a souhrnem APP, rozdíly compare a onRowOpen.",
+      "props": [
+        {
+          "name": "rows",
+          "type": "VatReturnRow[]"
+        },
+        {
+          "name": "compare",
+          "type": "Record<string, {base?: number; tax?: number}>"
+        },
+        {
+          "name": "summary",
+          "type": "{liability?: number; excess?: number}"
+        },
+        {
+          "name": "onRowOpen",
+          "type": "(row: VatReturnRow) => void"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Přehled DPH z dat APP",
+          "code": "<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
+    },
+    {
+      "name": "VatControlStatementView",
+      "file": "src/components/ds/vat/vat-control-statement-view.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Oddíly A1–B3, prázdné ztlumené; doklady a souhrny výhradně od APP.",
+      "props": [
+        {
+          "name": "sections",
+          "type": "Partial<Record<VatControlSection, VatControlSectionData>>"
+        },
+        {
+          "name": "activeSection",
+          "type": "VatControlSection"
+        },
+        {
+          "name": "onSectionChange",
+          "type": "(section: VatControlSection) => void"
+        },
+        {
+          "name": "onDocumentOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "changed",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Přehled DPH z dat APP",
+          "code": "<VatControlStatementView sections={khSections} currency={currency} onDocumentOpen={openDocument} changed={changedSinceFiled} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
+    },
+    {
+      "name": "VatRecapitulativeView",
+      "file": "src/components/ds/vat/vat-recapitulative-view.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "SH nebo varianta oss s opravami minulých období, součty dodaných částek bez přepočtu měn.",
+      "props": [
+        {
+          "name": "variant",
+          "type": "recapitulative | oss"
+        },
+        {
+          "name": "rows",
+          "type": "VatRecapitulativeRow[]"
+        },
+        {
+          "name": "ossRows",
+          "type": "OssReturnRow[]"
+        },
+        {
+          "name": "onRowOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Přehled DPH z dat APP",
+          "code": "<VatRecapitulativeView variant=\"oss\" ossRows={ossRows} currency={ossCurrency} onRowOpen={openOssDocuments} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
+    },
+    {
+      "name": "VatChecksPanel",
+      "file": "src/components/ds/vat/vat-checks-panel.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neblokuje.",
+      "props": [
+        {
+          "name": "items",
+          "type": "VatCheckItem[]"
+        },
+        {
+          "name": "severity",
+          "type": "all | error | warning | info"
+        },
+        {
+          "name": "onSeverityChange",
+          "type": "(severity: string) => void"
+        },
+        {
+          "name": "onDocumentOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Přehled DPH z dat APP",
+          "code": "<VatChecksPanel items={checks} severity={severity} onSeverityChange={setSeverity} onDocumentOpen={openDocument} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
+    },
+    {
+      "name": "VatFilingBar",
+      "file": "src/components/ds/vat/vat-filing-bar.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Řízený stav a druh podání; oprávnění určuje přítomnost callbacku actions. Odemknutí vyžaduje důvod a opsání confirmText.",
+      "props": [
+        {
+          "name": "form",
+          "type": "return | control | recapitulative | oss"
+        },
+        {
+          "name": "status",
+          "type": "open | filed | changed"
+        },
+        {
+          "name": "kind",
+          "type": "VatFilingKind"
+        },
+        {
+          "name": "onKindChange",
+          "type": "(kind: VatFilingKind) => void"
+        },
+        {
+          "name": "actions",
+          "type": "VatFilingActions"
+        },
+        {
+          "name": "filedAt",
+          "type": "string"
+        },
+        {
+          "name": "filedBy",
+          "type": "string"
+        },
+        {
+          "name": "confirmText",
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Přehled DPH z dat APP",
+          "code": "<VatFilingBar form=\"control\" status={filing.status} kind={filing.kind} onKindChange={setKind} confirmText={period.label} actions={permittedActions} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
+    },
+    {
+      "name": "VatPeriodPicker",
+      "file": "src/components/ds/vat/vat-period-picker.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Řízený hledatelný výběr období APP; label zachová smíšenou periodicitu DPH a KH.",
+      "props": [
+        {
+          "name": "periods",
+          "type": "VatPeriod[]"
+        },
+        {
+          "name": "value",
+          "type": "{from: string; to: string} | null"
+        },
+        {
+          "name": "onChange",
+          "type": "(period: VatPeriod) => void"
+        },
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Přehled DPH z dat APP",
+          "code": "<VatPeriodPicker periods={periods} value={period} onChange={setPeriod} label={periodSummary} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP."
+      ]
     }
   ],
   "assets": [

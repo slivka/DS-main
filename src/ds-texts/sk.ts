@@ -1,3 +1,4 @@
+import { VAT_REPORTS_SK } from "./sk-vat-reports";
 import { DIMENSION_TEXTS_SK } from "./dimension-texts";
 import { PRINT_TEXTS_SK } from "./sk-print";
 import { INVOICE_PRINT_SK } from "./invoice-print-texts";
@@ -30,6 +31,7 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  vatReports: VAT_REPORTS_SK,
   dimensions: DIMENSION_TEXTS_SK,
   invoicePrint: INVOICE_PRINT_SK,
   fileImport: FILE_IMPORT_SK,

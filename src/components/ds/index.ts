@@ -257,3 +257,11 @@ export * from "./print/invoice/invoice-pdf";
 export * from "./print/invoice/invoice-format";
 export * from "./print/invoice/invoice-spayd";
 export * from "./print/invoice/invoice-print-dialog";
+
+export * from "./vat/vat-report-types";
+export * from "./vat/vat-return-view";
+export * from "./vat/vat-control-statement-view";
+export * from "./vat/vat-recapitulative-view";
+export * from "./vat/vat-checks-panel";
+export * from "./vat/vat-filing-bar";
+export * from "./vat/vat-period-picker";
