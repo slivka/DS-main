@@ -152,7 +152,7 @@ export function BankConnectionSettings({
               <span className="text-sm">{t.fetchDaily}</span>
               <TimeInputRight
                 value={value.fetchTime}
-                onChange={(fetchTime) => onChange({ ...value, fetchTime })}
+                onChange={(event) => onChange({ ...value, fetchTime: event.target.value })}
                 disabled={readOnly}
                 aria-label={t.fetchDaily}
               />
