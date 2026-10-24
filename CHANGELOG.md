@@ -2,6 +2,18 @@
 
 ## 2.141.0 (nevydáno)
 
+### Drobná API a vzhled pro APP
+
+- `DocumentSettingsDialog`: nové řízené props `accountingDateFollowsIssue`, `onAccountingDateFollowsIssueChange` a `accountingDateFollowsIssueDisabled` (důvod v bublině); přepínač „Datum účetního případu podle data vystavení" se ukládá tlačítkem Uložit. Zámek pole Datum účetního případu ve formuláři řídí APP přes `lockedReason` jako dosud.
+- DDPZ: `DocumentForm` zobrazí pole „Číslo daňového dokladu" (`TaxDocumentNumberField` s vazbou na číslo dokladu a zámkem) stejně jako FV/ZFV.
+- Oblíbení partneři: `PartnerSelect.favoriteIds` / `onToggleFavorite` (oblíbení nahoře, hvězdička s přepnutím, texty `DsTexts.selectCreate.favoriteAdd` / `favoriteRemove` CS/SK); `DocumentForm` je předává do výběru protistrany přes `CounterpartyInputField`.
+- Interní doklad: výběr partnera v hlavičce ID nabízí `onCreatePartner` (založení partnera přímo z výběru) – ověřeno testem.
+- Bankovní pohyb: sekce Protiúčet má stejný rozestup pod nadpisem jako ostatní sekce (`mt-3` mřížka); výběr kódu banky zobrazuje „kód – název banky" z `bankCodeOptions` (ověřeno testem).
+- Menu: textový odznak položky (např. „Připravujeme") se zmenší na ikonu s bublinou, aby nikdy nezkracoval název položky.
+- Záhlaví: štítky v `PageHeader.titleBadge` i ve štítcích dokladu se zkracují trojtečkou (max. 16 rem) a textový štítek nese celý text v bublině.
+- Ověření: 13 nových unit testů (`document-api-2141.test.tsx`) 13/13. Nevydáno.
+
+
 ## 2.140.0
 
 ### Banka I3–I7 – rozpis výpisu, napojení Fio, pravidla a platby
