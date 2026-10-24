@@ -8,7 +8,10 @@ export function useDimensionOptions(
   loadOptions: LoadDimensionOptions,
 ) {
   const [result, setResult] = useState<{
-    key: string; options: DimensionOptionItem[]; failed: boolean; loading: boolean;
+    key: string;
+    options: DimensionOptionItem[];
+    failed: boolean;
+    loading: boolean;
   }>({ key: "", options: [], failed: false, loading: false });
   const key = `${typeId ?? ""}:${query}`;
   useEffect(() => {
@@ -16,12 +19,21 @@ export function useDimensionOptions(
     let active = true;
     const timer = setTimeout(() => {
       setResult({ key, options: [], failed: false, loading: true });
-      Promise.resolve().then(() => loadOptions(typeId, query)).then(
-        (options) => { if (active) setResult({ key, options, failed: false, loading: false }); },
-        () => { if (active) setResult({ key, options: [], failed: true, loading: false }); },
-      );
+      Promise.resolve()
+        .then(() => loadOptions(typeId, query))
+        .then(
+          (options) => {
+            if (active) setResult({ key, options, failed: false, loading: false });
+          },
+          () => {
+            if (active) setResult({ key, options: [], failed: true, loading: false });
+          },
+        );
     }, 150);
-    return () => { active = false; clearTimeout(timer); };
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, [typeId, query, loadOptions, key]);
   return result.key === key ? result : { options: [], failed: false, loading: Boolean(typeId) };
 }

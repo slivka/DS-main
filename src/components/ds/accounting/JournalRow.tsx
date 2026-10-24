@@ -12,6 +12,7 @@ import { cn } from "../../../lib/utils";
 import { TableCell, TableRow } from "../../ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { GridAction, GridActions } from "../grid/grid-action";
+import { JournalDimensionCell, JournalDimensionIndicator } from "./journal-dimensions-view";
 import { JournalCell } from "./JournalCell";
 import { JournalRowDetail } from "./JournalRowDetail";
 import { useJournalEditor } from "./journal-editor-context";
@@ -94,6 +95,7 @@ function RowNumberCell({
           handle
         )}
         <span className="min-w-[2ch] text-center tabular-nums">{pinned ? "" : rowIndex + 1}</span>
+        <JournalDimensionIndicator line={line} />
         {!pinned ? (
           <button
             type="button"
@@ -183,6 +185,21 @@ export function JournalRow({ line, rowIndex }: { line: JournalLine; rowIndex: nu
                 return (
                   <TableCell key="homeAmount" className="amount-cell text-right tabular-nums">
                     {editor.displayValue(line, "homeAmount")}
+                  </TableCell>
+                );
+              if (["dimensions", "debitDimensions", "creditDimensions"].includes(column.id))
+                return (
+                  <TableCell key={column.id}>
+                    <JournalDimensionCell
+                      line={line}
+                      side={
+                        column.id === "debitDimensions"
+                          ? "MD"
+                          : column.id === "creditDimensions"
+                            ? "D"
+                            : "both"
+                      }
+                    />
                   </TableCell>
                 );
               const id = column.id;

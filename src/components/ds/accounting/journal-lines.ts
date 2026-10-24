@@ -1,5 +1,10 @@
 /** Řádky zápisu · vlastní veřejný kontrakt a převody DB · bez persistence. */
-import { dimensionsToRow, dimensionsFromRow, type JournalDimensions, type JournalDimensionsRow } from "./journal-dimensions-model";
+import {
+  dimensionsToRow,
+  dimensionsFromRow,
+  type JournalDimensions,
+  type JournalDimensionsRow,
+} from "./journal-dimensions-model";
 import { normalizeCategoryLine } from "./journal-category-model";
 export type JournalLineColumn =
   | "debitAccount"

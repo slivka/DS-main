@@ -30,36 +30,61 @@ export interface JournalDimensionsRow {
 }
 /** Nejvýše jedna hodnota na typ; první hodnota má přednost. */
 export function uniqueDimensions(values: DimensionValue[]): DimensionValue[] {
-  return values.filter((value, index) => values.findIndex((item) => item.typeId === value.typeId) === index);
+  return values.filter(
+    (value, index) => values.findIndex((item) => item.typeId === value.typeId) === index,
+  );
 }
 /** Hlavička přepíše pouze převzaté hodnoty, včetně odebrání typu. */
-export function inheritDimensions(own: DimensionValue[], header: DimensionValue[]): DimensionValue[] {
+export function inheritDimensions(
+  own: DimensionValue[],
+  header: DimensionValue[],
+): DimensionValue[] {
   const manual = uniqueDimensions(own).filter((item) => item.inherited === false);
-  return [...manual, ...uniqueDimensions(header).filter((item) => !manual.some((value) => value.typeId === item.typeId)).map((item) => ({ ...item, inherited: true }))];
+  return [
+    ...manual,
+    ...uniqueDimensions(header)
+      .filter((item) => !manual.some((value) => value.typeId === item.typeId))
+      .map((item) => ({ ...item, inherited: true })),
+  ];
 }
 /** Účinné dimenze obou stran; bez hlavičky ponechá načtené převzaté hodnoty. */
-export function effectiveDimensions(line: JournalLine, header?: DimensionValue[]): JournalDimensions {
+export function effectiveDimensions(
+  line: JournalLine,
+  header?: DimensionValue[],
+): JournalDimensions {
   const own = line.dimensions ?? { MD: [], D: [] };
-  return header === undefined ? own : { MD: inheritDimensions(own.MD, header), D: inheritDimensions(own.D, header) };
+  return header === undefined
+    ? own
+    : { MD: inheritDimensions(own.MD, header), D: inheritDimensions(own.D, header) };
 }
 /** Propsání hlavičky na všechny řádky bez mutace vstupu. */
-export function applyHeaderDimensions(lines: JournalLine[], header?: DimensionValue[]): JournalLine[] {
+export function applyHeaderDimensions(
+  lines: JournalLine[],
+  header?: DimensionValue[],
+): JournalLine[] {
   if (header === undefined) return lines;
   return lines.map((line) => ({ ...line, dimensions: effectiveDimensions(line, header) }));
 }
 /** Vrácení typu na hlavičku; bez hlavičky odstraní ruční výjimku. */
 export function resetDimension(own: DimensionValue[], header: DimensionValue[], typeId: string) {
-  return inheritDimensions(own.filter((item) => item.typeId !== typeId), header);
+  return inheritDimensions(
+    own.filter((item) => item.typeId !== typeId),
+    header,
+  );
 }
 /** Počet řádků s ruční odlišnou hodnotou; řádek se počítá jen jednou. */
-export function dimensionOverrides(lines: JournalLine[], header: DimensionValue[]): Record<string, number> {
+export function dimensionOverrides(
+  lines: JournalLine[],
+  header: DimensionValue[],
+): Record<string, number> {
   const result: Record<string, number> = {};
   for (const line of lines) {
     const types = new Set<string>();
     for (const item of [...(line.dimensions?.MD ?? []), ...(line.dimensions?.D ?? [])]) {
       if (item.inherited !== false) continue;
       const inherited = header.find((value) => value.typeId === item.typeId);
-      if (item.valueId !== inherited?.valueId || item.kind !== inherited?.kind) types.add(item.typeId);
+      if (item.valueId !== inherited?.valueId || item.kind !== inherited?.kind)
+        types.add(item.typeId);
     }
     for (const typeId of types) result[typeId] = (result[typeId] ?? 0) + 1;
   }
@@ -67,17 +92,30 @@ export function dimensionOverrides(lines: JournalLine[], header: DimensionValue[
 }
 /** Jen ruční neprázdné hodnoty odcházejí do DB. */
 export function dimensionsToRow(dimensions: JournalDimensions): JournalDimensionsRow {
-  const convert = (values: DimensionValue[]) => uniqueDimensions(values).flatMap((item) =>
-    item.inherited === false && item.valueId ? [{ type_id: item.typeId, ...(item.kind === "vehicle" ? { vehicle_id: item.valueId } : { value_id: item.valueId }) }] : [],
-  );
+  const convert = (values: DimensionValue[]) =>
+    uniqueDimensions(values).flatMap((item) =>
+      item.inherited === false && item.valueId
+        ? [
+            {
+              type_id: item.typeId,
+              ...(item.kind === "vehicle"
+                ? { vehicle_id: item.valueId }
+                : { value_id: item.valueId }),
+            },
+          ]
+        : [],
+    );
   return { MD: convert(dimensions.MD), D: convert(dimensions.D) };
 }
 /** Načtení DB dimenzí; popisky lze následně doplnit aplikací. */
 export function dimensionsFromRow(row: JournalDimensionsRow): JournalDimensions {
-  const convert = (values: JournalDimensionRowValue[]): DimensionValue[] => values.map((item) => ({
-    typeId: item.type_id, valueId: item.vehicle_id ?? item.value_id ?? null,
-    label: item.label ?? "", inherited: item.inherited ?? false,
-    kind: item.vehicle_id ? "vehicle" : "value",
-  }));
+  const convert = (values: JournalDimensionRowValue[]): DimensionValue[] =>
+    values.map((item) => ({
+      typeId: item.type_id,
+      valueId: item.vehicle_id ?? item.value_id ?? null,
+      label: item.label ?? "",
+      inherited: item.inherited ?? false,
+      kind: item.vehicle_id ? "vehicle" : "value",
+    }));
   return { MD: uniqueDimensions(convert(row.MD)), D: uniqueDimensions(convert(row.D)) };
 }

@@ -92,6 +92,10 @@ export interface JournalColumnDefsInput {
   /** Režim polí stran. */
   sideFields: "shared" | "split";
   categoryBySide?: boolean;
+  /** Popisky volitelných sloupců dimenzí; bez nich se sloupce nenabízí. */
+  dimensionLabels?: { title: string; debit: string; credit: string };
+  /** Dimenze zvlášť podle stran. */
+  dimensionsBySide?: boolean;
   /** Bez zaúčtování MD / DAL v řádcích (zálohový list, 2.118.0). */
   withoutAccounts?: boolean;
   /** Sloupec má v některém řádku hodnotu (rozhoduje o výchozí viditelnosti polí stran). */
@@ -106,7 +110,16 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
   const vatColumns: GridColumn<ColumnId>[] = input.vatOn
     ? [{ id: "vatCodeId", label: t.vatCode }]
     : [];
+  const dimensionColumns: GridColumn<ColumnId>[] = input.dimensionLabels
+    ? input.dimensionsBySide
+      ? [
+          { id: "debitDimensions", label: input.dimensionLabels.debit, defaultVisible: false },
+          { id: "creditDimensions", label: input.dimensionLabels.credit, defaultVisible: false },
+        ]
+      : [{ id: "dimensions", label: input.dimensionLabels.title, defaultVisible: false }]
+    : [];
   const amountColumns: GridColumn<ColumnId>[] = [
+    ...dimensionColumns,
     ...vatColumns,
     { id: "amount", label: input.vatOn ? t.amountNet : t.amount, locked: true, align: "right" },
     { id: "quantity", label: t.quantity, defaultVisible: quantity },

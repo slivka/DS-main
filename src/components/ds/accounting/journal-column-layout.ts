@@ -11,6 +11,9 @@ export type JournalLinesMode = "internal" | "mainAccount";
 
 /** Výchozí šířky sloupců v rem při zoomu 100 %. */
 export const JOURNAL_COLUMN_WIDTHS: Record<ColumnId, number> = {
+  dimensions: 14,
+  debitDimensions: 14,
+  creditDimensions: 14,
   row: 4.25,
   text: 15,
   quantity: 7,
@@ -146,6 +149,7 @@ export function resolveJournalColumnLayout({
     });
   };
 
+  hideGroup(["dimensions", "debitDimensions", "creditDimensions"]);
   hideGroup([...QUANTITY_COLUMNS]);
   hideGroup(["vatRate", "grossAmount"]);
   // Účty po stranách: má-li strana viditelnou krátkou formu, rozšířená se přesune do detailu

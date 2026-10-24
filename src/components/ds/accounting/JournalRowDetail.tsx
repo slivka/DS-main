@@ -6,6 +6,7 @@
  */
 import type * as React from "react";
 
+import { JournalRowDimensions } from "./journal-dimensions-view";
 import { DetailField } from "./journal-detail-field";
 import { VatDetail } from "./journal-vat-detail";
 import { Input } from "../../ui/input";
@@ -174,6 +175,7 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
         </DetailField>
       ))}
       {editor.vatOn ? <VatDetail line={line} shown={shown} /> : null}
+      <JournalRowDimensions line={line} />
       {foreign && !shown.has("homeAmount") ? (
         <DetailField label={homeAmountLabel} width="w-[9.5rem] flex-none">
           <Input

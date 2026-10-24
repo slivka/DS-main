@@ -14,7 +14,11 @@ import type { AccountOption } from "../account-select";
 import type { BankAccountOption } from "../bank-account-field";
 import type { BookOption } from "../book-select";
 import type { CurrencyOption } from "../currency-amount";
-import type { DimensionType, DimensionValue, LoadDimensionOptions } from "../../form/dimension-types";
+import type {
+  DimensionType,
+  DimensionValue,
+  LoadDimensionOptions,
+} from "../../form/dimension-types";
 import type { DimensionOption } from "../dimension-select";
 import type { DocumentFields, DocumentTypeCode } from "../document-fields";
 import type { JournalLinesEditorProps } from "../journal-lines-editor";

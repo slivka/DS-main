@@ -202,7 +202,7 @@ export function useDocumentFormModel(props: DocumentFormProps) {
       ...linesEditorProps,
       categoryBySide: linesEditorProps?.categoryBySide ?? internal,
       dimensionTypes: props.dimensionTypes ?? linesEditorProps?.dimensionTypes,
-      dimensions: props.dimensionTypes ? props.dimensions ?? [] : linesEditorProps?.dimensions,
+      dimensions: props.dimensionTypes ? (props.dimensions ?? []) : linesEditorProps?.dimensions,
       onDimensionsChange: props.onDimensionsChange ?? linesEditorProps?.onDimensionsChange,
       loadDimensionOptions: props.loadDimensionOptions ?? linesEditorProps?.loadDimensionOptions,
       dimensionsBySide: props.dimensionsBySide ?? linesEditorProps?.dimensionsBySide ?? internal,

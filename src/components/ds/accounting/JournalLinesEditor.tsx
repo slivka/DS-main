@@ -105,7 +105,9 @@ function JournalHeader() {
               ) : (
                 <span>{heading}</span>
               )}
-              {column.id !== "row" && column.id !== "actions" ? (
+              {column.id !== "row" &&
+              column.id !== "actions" &&
+              !["dimensions", "debitDimensions", "creditDimensions"].includes(column.id) ? (
                 <JournalPinButton columnId={column.id} label={column.label} />
               ) : null}
               {column.id !== "row" && column.id !== "actions" ? (
