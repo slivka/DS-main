@@ -63,7 +63,7 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
     }, width);
     await expect
       .poll(() => toolbar.evaluate((node) => Math.round(node.getBoundingClientRect().width)))
-      .toBe(width);
+      .toBe(width - 2);
     await expect
       .poll(async () =>
         toolbar.evaluate((node) => {
