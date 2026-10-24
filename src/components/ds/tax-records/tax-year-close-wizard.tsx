@@ -49,7 +49,7 @@ export const TaxYearCloseWizard = forwardRef<HTMLDivElement, TaxYearCloseWizardP
         {result ? (
           <section>
             <SectionHeading>{t.result}</SectionHeading>
-            <NoticeBar tone={result.status === "success" ? "success" : "error"}>
+            <NoticeBar tone={result.status === "success" ? "success" : "danger"}>
               {result.message ?? (result.status === "success" ? t.resultSuccess : t.resultError)}
             </NoticeBar>
           </section>
