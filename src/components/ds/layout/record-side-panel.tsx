@@ -114,7 +114,7 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
       const element = host.current;
       if (!element) return;
       const measure = () => {
-        setNarrow(element.clientWidth < 640);
+        setNarrow(element.clientWidth < 768);
         const font = parseFloat(getComputedStyle(element).fontSize) || 16;
         setBounds(panelSizeBounds(element.clientWidth, font));
         setBaseSize(24 * font);

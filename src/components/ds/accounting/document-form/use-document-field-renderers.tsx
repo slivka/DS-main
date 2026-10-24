@@ -8,6 +8,7 @@ import { Textarea } from "../../../ui/textarea";
 import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
 import { LockedDocumentDate } from "./locked-document-date";
+import { FieldValue } from "../../form/field-value";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
 import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
@@ -67,7 +68,11 @@ export function useDocumentFieldRenderers({
       span={span as 3 | 4 | 5 | 6 | 14 | 20}
       className={cn("col-span-20", mobileHalf && "col-span-10", className)}
     >
-      {control}
+      {lockReason?.(headerFieldKey(id)) && !["issueDate", "accountingDate", "taxDate", "dueDate", "vatDate"].includes(headerFieldKey(id)) ? (
+        <FieldValue id={id} aria-labelledby={`${id}-label`} lockedReason={lockReason(headerFieldKey(id))}>
+          {String(value[headerFieldKey(id)] ?? "")}
+        </FieldValue>
+      ) : control}
     </Field>
   );
   const date = (

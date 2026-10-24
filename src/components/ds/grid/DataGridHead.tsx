@@ -5,6 +5,7 @@
  * Nesmí: počítat data ani filtry – nabídky a stav filtrů dostává od DataGrid.
  */
 import type { CSSProperties } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
 import { Checkbox } from "../../ui/checkbox";
 import { TableHead, TableHeader, TableRow } from "../../ui/table";
@@ -196,7 +197,10 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
                       : "inline-flex items-center gap-1"
                 }
               >
-                {c.label}
+                {c.headerTooltip ? (
+                  <Tooltip><TooltipTrigger asChild><span tabIndex={0}>{c.label}</span></TooltipTrigger>
+                    <TooltipContent>{c.headerTooltip}</TooltipContent></Tooltip>
+                ) : c.label}
                 {props.columnFilters && c.type !== "record-indicators" ? filter : null}
               </span>
               {resize}
@@ -206,6 +210,7 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
               key={c.id}
               id={c.id}
               label={c.label}
+              headerTooltip={c.headerTooltip}
               sort={sort}
               align={c.align ?? (c.numeric ? "right" : "left")}
               className={headClass}

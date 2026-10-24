@@ -4,6 +4,7 @@ import { TableHead } from "../../ui/table";
 import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
 import { useGridLayoutChange } from "./use-grid-layout-change";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
 export type SortDir = "asc" | "desc";
 
@@ -17,6 +18,7 @@ export function useGridSort<Id extends string>(
   storageKey: string,
   defaultKey: Id | null = null,
   defaultDir: SortDir = "asc",
+  directionForKey?: (key: Id) => SortDir,
 ) {
   const [state, setState] = useState<SortState<Id>>({ key: defaultKey, dir: defaultDir });
 
@@ -40,12 +42,12 @@ export function useGridSort<Id extends string>(
         const next: SortState<Id> =
           prev.key === key
             ? { key, dir: prev.dir === "asc" ? "desc" : "asc" }
-            : { key, dir: "asc" };
+            : { key, dir: directionForKey?.(key) ?? "asc" };
         updateGridLayout(storageKey, { sort: next });
         return next;
       });
     },
-    [storageKey],
+    [storageKey, directionForKey],
   );
 
   return { key: state.key, dir: state.dir, toggle };
@@ -130,6 +132,8 @@ export function sortWithinSegments<T>(
 type SortHeadProps<Id extends string> = {
   id: Id;
   label: string;
+  /** Vysvětlení záhlaví sloupce. */
+  headerTooltip?: string;
   sort: { key: Id | null; dir: SortDir; toggle: (key: Id) => void };
   align?: "left" | "right" | "center";
   className?: string;
@@ -149,6 +153,7 @@ type SortHeadProps<Id extends string> = {
 export function SortHead<Id extends string>({
   id,
   label,
+  headerTooltip,
   sort,
   align = "left",
   className = "",
@@ -175,6 +180,8 @@ export function SortHead<Id extends string>({
         }
         style={{ textAlign: align === "right" ? "right" : align === "center" ? "center" : "left" }}
       >
+        <Tooltip>
+        <TooltipTrigger asChild>
         <button
           type="button"
           onClick={() => sort.toggle(id)}
@@ -191,6 +198,9 @@ export function SortHead<Id extends string>({
               <ArrowDown className="size-3 shrink-0" />
             ))}
         </button>
+        </TooltipTrigger>
+        {headerTooltip ? <TooltipContent>{headerTooltip}</TooltipContent> : null}
+        </Tooltip>
         {children}
       </span>
     </TableHead>

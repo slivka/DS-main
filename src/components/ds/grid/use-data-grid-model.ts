@@ -86,6 +86,8 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
   const sort = useGridSort<string>(
     storageKey,
     defaultSort === null ? null : (defaultSort ?? effectiveColumns[0]?.id ?? null),
+    byId.get(defaultSort ?? effectiveColumns[0]?.id ?? "")?.defaultSortDirection ?? "asc",
+    (id) => byId.get(id)?.defaultSortDirection ?? "asc",
   );
   const valueOf = (row: Row, id: string) => {
     const col = byId.get(id);
@@ -99,6 +101,7 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
     byId,
     texts,
     onSearchChange: props.onSearchChange,
+    searchText: props.searchText,
     onColumnFiltersChange: props.onColumnFiltersChange,
   });
   const sortedAll = useSortedRows(filter.filtered, sort, valueOf);
@@ -152,6 +155,7 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
     storageKey,
     groupable,
     defaultGroupBy,
+    fixedGroupBy: props.fixedGroupBy,
     groupTotals,
     paginated,
     effectiveColumns,
@@ -249,7 +253,7 @@ export function useDataGridModel<Row>(props: DataGridProps<Row>) {
     exportName,
     exportMeta,
     onEditRow,
-    groupable,
+    groupable: groupable && !props.fixedGroupBy,
     paginated,
     selectable,
     groupTotals,

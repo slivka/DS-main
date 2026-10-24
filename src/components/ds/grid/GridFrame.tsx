@@ -192,13 +192,13 @@ export function GridFrame({
                 data-toolbar-group="find"
                 className="flex shrink-0 items-center gap-2"
               >
-                <GridSearch
+                <GridToolbarCollapsible><GridSearch
                   value={search.value}
                   onChange={search.onChange}
                   {...(search.placeholder ? { placeholder: search.placeholder } : {})}
                   zoom={zoom}
                   texts={texts}
-                />
+                /></GridToolbarCollapsible>
                 {filters ? (
                   <GridFilterToggle
                     open={filters.open}
@@ -243,6 +243,7 @@ export function GridFrame({
                   texts={texts}
                   compact={
                     <>
+                      <GridSearch value={search.value} onChange={search.onChange} zoom={zoom} texts={texts} />
                       {viewToggle}
                       {expand?.compact}
                       {asOf ? <AsOfDateToggle {...asOf} /> : null}
