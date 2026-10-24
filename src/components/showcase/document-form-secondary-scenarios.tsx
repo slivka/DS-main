@@ -401,10 +401,12 @@ function CreditNoteShowcase() {
     totalMode: "entered" as const,
   });
   const [corrects, setCorrects] = useState<string | null>("fv-1");
-  const [schedule, setSchedule] = useState(() => [
-    { kind: "installment" as const, dueDate: "2026-11-15", amount: -403.33 },
-    { kind: "installment" as const, dueDate: "2026-12-15", amount: -403.33 },
-    { kind: "installment" as const, dueDate: "2027-01-15", amount: -403.34 },
+  const [schedule, setSchedule] = useState<
+    import("@/components/ds/accounting/payment-schedule").PaymentScheduleItem[]
+  >(() => [
+    { kind: "installment", dueDate: "2026-11-15", amount: -403.33 },
+    { kind: "installment", dueDate: "2026-12-15", amount: -403.33 },
+    { kind: "installment", dueDate: "2027-01-15", amount: -403.34 },
   ]);
   return (
     <ShowcaseSection
