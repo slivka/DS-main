@@ -58,6 +58,8 @@ export type DocumentFormTexts = {
   rounding: string;
   /** Stálý název vazby data DPH na DUZP. */
   vatDateLinkLabel: string;
+  /** Popisek vazby dobropisu na původní doklad (FV/FP). */
+  correctsDocument: string;
   vatDateLockedHint: string;
   filedWarning: string;
   excludeFromPaymentOrders: string;
@@ -141,6 +143,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   sumFromLines: "Sčítá se z rozpisu",
   rounding: "Zaokrouhlení",
   vatDateLinkLabel: "Svázat s DUZP",
+  correctsDocument: "Opravuje doklad",
   vatDateLockedHint: "Daň na výstupu patří do období DUZP",
   filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
