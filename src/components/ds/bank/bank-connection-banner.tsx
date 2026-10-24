@@ -7,7 +7,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { NoticeBar } from "../feedback/notice-bar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
@@ -87,18 +87,20 @@ export interface BankOngoingBadgeProps extends ComponentPropsWithoutRef<"span"> 
 export function BankOngoingBadge({ label, className, ...rest }: BankOngoingBadgeProps) {
   const t = useDsTexts().bankConnection;
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Badge
-          variant="outline"
-          {...rest}
-          data-slot="bank-ongoing-badge"
-          className={cn("cursor-help", className)}
-        >
-          {label ?? t.ongoing}
-        </Badge>
-      </TooltipTrigger>
-      <TooltipContent>{t.ongoingHint}</TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Badge
+            variant="outline"
+            {...rest}
+            data-slot="bank-ongoing-badge"
+            className={cn("cursor-help", className)}
+          >
+            {label ?? t.ongoing}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>{t.ongoingHint}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

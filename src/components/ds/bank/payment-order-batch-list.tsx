@@ -9,7 +9,7 @@ import type { DataGridColumn } from "../grid/data-grid-types";
 import { StatusBadge } from "../data-display/status-badge";
 import { GridAction } from "../grid/grid-action";
 import { Badge } from "../../ui/badge";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
@@ -131,18 +131,20 @@ export interface PaymentSentBadgeProps extends ComponentPropsWithoutRef<"span"> 
 export function PaymentSentBadge({ label, className, ...rest }: PaymentSentBadgeProps) {
   const t = useDsTexts().bankPayments;
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Badge
-          variant="outline"
-          {...rest}
-          data-slot="payment-sent-badge"
-          className={cn("cursor-help", className)}
-        >
-          {label ?? t.sentBadge}
-        </Badge>
-      </TooltipTrigger>
-      <TooltipContent>{t.sentBadgeHint}</TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Badge
+            variant="outline"
+            {...rest}
+            data-slot="payment-sent-badge"
+            className={cn("cursor-help", className)}
+          >
+            {label ?? t.sentBadge}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>{t.sentBadgeHint}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
