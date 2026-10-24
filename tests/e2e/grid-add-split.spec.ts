@@ -19,7 +19,13 @@ for (const width of [360, 480]) {
     await expect(page.getByText("Prázdný doklad", { exact: true })).toBeVisible({ timeout: 45000 });
     await expect(page.getByRole("menu")).toHaveCount(0);
     await main.focus();
+    await page.evaluate(() => {
+      const state = { clicks: 0 };
+      Reflect.set(window, "splitPrimaryProbe", state);
+      document.querySelector('[data-slot="data-grid"] [data-toolbar-add]')?.addEventListener("click", () => state.clicks++);
+    });
     await page.keyboard.press("n");
+    expect(await page.evaluate(() => Reflect.get(window, "splitPrimaryProbe").clicks)).toBe(1);
     await expect(page.getByRole("menu")).toHaveCount(0);
     await grid.getByRole("button", { name: "Další možnosti – Nový", exact: true }).click();
     await expect(page.getByRole("menuitem", { name: "Prázdný doklad", exact: true })).toBeVisible();
