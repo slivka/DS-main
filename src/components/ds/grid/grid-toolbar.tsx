@@ -13,7 +13,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { DateField } from "../form/date-field";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
-import { GridAddLabelContext, GridToolbarOverflowContext, GridSearchInMenuContext } from "./grid-toolbar-context";
+import {
+  GridAddLabelContext,
+  GridToolbarOverflowContext,
+  GridSearchInMenuContext,
+} from "./grid-toolbar-context";
 export { GridToolbarOverflowContext };
 export { GridAddActions, type GridAddAction, type GridAddActionsProps } from "./grid-add-actions";
 
@@ -308,38 +312,38 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
       <GridSearchInMenuContext.Provider value={searchInMenu || overflowLevel >= 3}>
-      <GridAddLabelContext.Provider value={addLabelMode}>
-        <div
-          ref={setRefs}
-          data-slot="grid-toolbar"
-          data-density={density}
-          className={cn(
-            "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
-            right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
-            className,
-          )}
-          style={{ fontSize: gridFontSize(zoom) }}
-          {...props}
-        >
+        <GridAddLabelContext.Provider value={addLabelMode}>
           <div
-            data-toolbar-measure="left"
+            ref={setRefs}
+            data-slot="grid-toolbar"
+            data-density={density}
             className={cn(
-              "grid-toolbar-left items-center gap-2",
-              right ? "flex shrink-0 flex-nowrap" : "contents",
+              "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
+              right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
+              className,
             )}
+            style={{ fontSize: gridFontSize(zoom) }}
+            {...props}
           >
-            {left ?? children}
-          </div>
-          {right ? (
             <div
-              data-slot="grid-toolbar-right"
-              className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+              data-toolbar-measure="left"
+              className={cn(
+                "grid-toolbar-left items-center gap-2",
+                right ? "flex shrink-0 flex-nowrap" : "contents",
+              )}
             >
-              {right}
+              {left ?? children}
             </div>
-          ) : null}
-        </div>
-      </GridAddLabelContext.Provider>
+            {right ? (
+              <div
+                data-slot="grid-toolbar-right"
+                className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+              >
+                {right}
+              </div>
+            ) : null}
+          </div>
+        </GridAddLabelContext.Provider>
       </GridSearchInMenuContext.Provider>
     </GridToolbarOverflowContext.Provider>
   );

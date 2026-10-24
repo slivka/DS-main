@@ -259,7 +259,14 @@ export function GridFrame({
                   }
                   tools={
                     <>
-                      <GridFrameSearch inMenu><GridSearch value={search.value} onChange={search.onChange} zoom={zoom} texts={texts} /></GridFrameSearch>
+                      <GridFrameSearch inMenu>
+                        <GridSearch
+                          value={search.value}
+                          onChange={search.onChange}
+                          zoom={zoom}
+                          texts={texts}
+                        />
+                      </GridFrameSearch>
                       {groupControl}
                       {basicPicker}
                       {zoomControl}
