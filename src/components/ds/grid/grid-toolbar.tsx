@@ -261,6 +261,11 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
           labels = "short";
         }
       }
+      // Hystereze nesmí ponechat ani drobný skutečný přesah (Firefox zaokrouhluje jinak).
+      if (node.scrollWidth > node.clientWidth && next < 3) {
+        if (addCount > 1 && labels === "full") labels = "short";
+        else next = 3;
+      }
       setAddLabelMode(labels);
       node.dataset.addLabels = labels;
       setOverflowLevel(next);
