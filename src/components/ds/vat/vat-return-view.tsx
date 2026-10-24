@@ -132,6 +132,7 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
           </dd>
         </div>
       </dl>
+      </VatReportState>
     </div>
   );
 });
