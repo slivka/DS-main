@@ -106,6 +106,10 @@ export interface DsTexts {
     emptyQuery: string;
     /** Důvod zašedlého ＋ při shodném názvu nebo kódu. */
     duplicate: string;
+    /** Přidání partnera do oblíbených (hvězdička ve výběru). */
+    favoriteAdd: string;
+    /** Odebrání partnera z oblíbených. */
+    favoriteRemove: string;
   };
   /** Rychlé termíny splatnosti. */
   dateQuick: { sevenDays: string; fourteenDays: string; oneMonth: string };

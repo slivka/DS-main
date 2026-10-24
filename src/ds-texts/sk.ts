@@ -73,6 +73,8 @@ export const DS_TEXTS_SK: DsTexts = {
     tag: "Nový štítok",
     emptyQuery: "Najprv napíšte hľadaný text",
     duplicate: "Záznam s týmto názvom alebo kódom už existuje",
+    favoriteAdd: "Pridať do obľúbených",
+    favoriteRemove: "Odobrať z obľúbených",
   },
   dateQuick: { sevenDays: "+7 dní", fourteenDays: "+14 dní", oneMonth: "+1 mesiac" },
   documentEdit: {
