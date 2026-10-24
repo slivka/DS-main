@@ -55,5 +55,6 @@
 - Výpis skládá nabídku „…“ ze slotu `menuActions` za stávajícími položkami. Why: aplikace přidává akce (import) bez druhé nabídky.
 
 - Category cell, detail and account changes share journal-category-model and useJournalCategories; normalize deprecated aliases at input boundaries. Why: allowed descendants, postability and single locks must never diverge.
+- Propagate categoriesEnabled through shared columns, category state and validation; false also disables reconciliation in invoices and advance lists. Why: hidden categories must not cause errors or alter stored values.
 
 - Dimenze hlavičky odvozuj přes applyHeaderDimensions a ruční výjimky přes journal-dimensions-model; DocumentForm je stejný pro faktury i zálohové listy. Why: render read-only nikdy nezapisuje a ruční MD/DAL zůstávají zachované.

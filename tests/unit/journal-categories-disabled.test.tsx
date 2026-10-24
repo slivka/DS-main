@@ -158,11 +158,12 @@ test("DocumentForm předá false přednostně před vnořenou volbou true", () =
       <DocumentForm
         title="Doklad"
         documentType="ID"
-        value={{ currency: "EUR", total: 100 }}
+        value={{ currency: "EUR", amountTotal: 100 }}
         onChange={() => {}}
         onLinesChange={() => {}}
         lines={[line]}
         accounts={accounts}
+        books={[]}
         homeCurrency="EUR"
         categoriesEnabled={false}
         linesEditorProps={{ categoriesEnabled: true, categories: base.categories }}
