@@ -76,12 +76,14 @@ export function VatReportsShowcase() {
               key: "40",
               section: "III",
               label: "Nárok na odpočet",
-              base: 50000,
+              fullDeduction: 50000,
+              reducedDeduction: 12000,
               tax: 10500,
               documentCount: 5,
             },
-            { key: "52", section: "IV", label: "Krácení a vyrovnání", tax: 0 },
-            { key: "64", section: "V", label: "Vlastní daňová povinnost", tax: 14700 },
+            { key: "52", section: "IV", label: "Vyrovnání a změna odpočtu", tax: 0 },
+            { key: "60", section: "V", label: "Koeficient", base: null },
+            { key: "64", section: "VI", label: "Vlastní daňová povinnost", tax: 14700 },
           ]}
           compare={{ "1": { base: 90000, tax: 18900 } }}
           summary={{ liability: 14700, excess: 0 }}
@@ -103,7 +105,11 @@ export function VatReportsShowcase() {
                   dic: "CZ12345678",
                   number: "FV2026002",
                   date: "2026-10-10",
-                  rates: [{ rate: 21, base: 20000, tax: 0 }],
+                  rates: [
+                    { rate: 21, base: 20000, tax: 0 },
+                    { rate: 10, base: 5000, tax: 500 },
+                  ],
+                  unratedBase: 1500,
                   subjectCode: "4",
                   regime: "0",
                 },
