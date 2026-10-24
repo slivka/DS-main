@@ -6,8 +6,6 @@
  */
 import type * as React from "react";
 
-import { formatAmount } from "../../../lib/format";
-import { cn } from "../../../lib/utils";
 import { DetailField } from "./journal-detail-field";
 import { VatDetail } from "./journal-vat-detail";
 import { Input } from "../../ui/input";
@@ -24,7 +22,6 @@ import {
   SHARED_COLUMNS,
   SPLIT_COLUMNS,
   VS_COLUMNS,
-  type ColumnId,
 } from "./journal-lines-model";
 import { PartnerSelect } from "./partner-select";
 import { UnitSelect } from "./unit-select";
