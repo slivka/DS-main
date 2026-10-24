@@ -13044,6 +13044,22 @@
           "type": "(row: VatReturnRow) => void"
         },
         {
+          "name": "loading",
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "type": "enum",
+          "values": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "name": "exportMeta",
+          "type": "VatReportExportMeta"
+        },
+        {
           "name": "className",
           "type": "string"
         },
@@ -13093,6 +13109,26 @@
           "type": "boolean"
         },
         {
+          "name": "hideEmptyColumns",
+          "type": "boolean"
+        },
+        {
+          "name": "loading",
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "type": "enum",
+          "values": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "name": "exportMeta",
+          "type": "VatReportExportMeta"
+        },
+        {
           "name": "className",
           "type": "string"
         },
@@ -13140,6 +13176,22 @@
         {
           "name": "onRowOpen",
           "type": "(id: string) => void"
+        },
+        {
+          "name": "loading",
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "type": "enum",
+          "values": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "name": "exportMeta",
+          "type": "VatReportExportMeta"
         },
         {
           "name": "className",
@@ -13193,6 +13245,22 @@
           "type": "(id: string) => void"
         },
         {
+          "name": "loading",
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "type": "enum",
+          "values": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "name": "exportMeta",
+          "type": "VatReportExportMeta"
+        },
+        {
           "name": "className",
           "type": "string"
         }
@@ -13239,6 +13307,10 @@
         {
           "name": "onKindChange",
           "type": "(kind: VatFilingKind) => void"
+        },
+        {
+          "name": "allowedKinds",
+          "type": "VatFilingKind[]"
         },
         {
           "name": "actions",

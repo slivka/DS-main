@@ -8421,6 +8421,9 @@ Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neb
 | `severity` | enum | `—` |
 | `onSeverityChange` | (severity: string) => void | `—` |
 | `onDocumentOpen` | (id: string) => void | `—` |
+| `loading` | boolean | `—` |
+| `error` | enum | `—` |
+| `exportMeta` | VatReportExportMeta | `—` |
 | `className` | string | `—` |
 
 **Examples:**
@@ -8492,6 +8495,10 @@ Oddíly A1–B3, prázdné ztlumené; doklady a souhrny výhradně od APP.
 | `onSectionChange` | (section: VatControlSection) => void | `—` |
 | `onDocumentOpen` | (id: string) => void | `—` |
 | `changed` | boolean | `—` |
+| `hideEmptyColumns` | boolean | `—` |
+| `loading` | boolean | `—` |
+| `error` | enum | `—` |
+| `exportMeta` | VatReportExportMeta | `—` |
 | `className` | string | `—` |
 | `currency` | string | `—` |
 | `storageKey` | string | `—` |
@@ -8524,6 +8531,7 @@ import { VatFilingBar } from "@/design-system/{slug}";
 | `status` | enum | `—` |
 | `kind` | VatFilingKind | `—` |
 | `onKindChange` | (kind: VatFilingKind) => void | `—` |
+| `allowedKinds` | VatFilingKind[] | `—` |
 | `actions` | VatFilingActions | `—` |
 | `filedAt` | string | `—` |
 | `filedBy` | string | `—` |
@@ -8620,6 +8628,9 @@ SH nebo varianta oss s opravami minulých období, součty dodaných částek be
 | `rows` | VatRecapitulativeRow[] | `—` |
 | `ossRows` | OssReturnRow[] | `—` |
 | `onRowOpen` | (id: string) => void | `—` |
+| `loading` | boolean | `—` |
+| `error` | enum | `—` |
+| `exportMeta` | VatReportExportMeta | `—` |
 | `className` | string | `—` |
 | `currency` | string | `—` |
 | `storageKey` | string | `—` |
@@ -8652,6 +8663,9 @@ Strom přiznání s hotovými částkami a souhrnem APP, rozdíly compare a onRo
 | `compare` | Record<string, {base?: number; tax?: number}> | `—` |
 | `summary` | {liability?: number; excess?: number} | `—` |
 | `onRowOpen` | (row: VatReturnRow) => void | `—` |
+| `loading` | boolean | `—` |
+| `error` | enum | `—` |
+| `exportMeta` | VatReportExportMeta | `—` |
 | `className` | string | `—` |
 | `currency` | string | `—` |
 | `storageKey` | string | `—` |
