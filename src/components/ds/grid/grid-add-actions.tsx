@@ -93,7 +93,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
         document.activeElement instanceof HTMLElement
           ? document.activeElement.closest('[data-slot="data-grid"]')
           : null;
-      if (focusedGrid && own && focusedGrid !== own) return;
+      if (focusedGrid && focusedGrid !== own) return;
       const action = list[0];
       if (!action || action.disabled) return;
       event.preventDefault();
