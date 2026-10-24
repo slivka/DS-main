@@ -2,6 +2,7 @@
 
 - [x] Banka I3–I7: rozpis výpisu s návrhy, napojení Fio bez zobrazení tokenu, pravidla banky a dávky plateb; 11 nových komponent, CS/SK, ukázka. Unit DS 1 588/1 588, Chromium bank-reconcile 2/2, check:quick, katalog 503 → 514 / 1 329 → 1 548 props bez odebrání. Nevydáno.
 - [ ] Návrh pod pohybem se zobrazuje pod gridem (DataGrid nemá rozbalovací podřádky); přesun přímo pod řádek až se sdíleným rozbalením gridu.
+- [ ] Rozdělit `BankStatementReconcileView` (482 ř.) a `BankConnectionSettings` (323 ř.) pod limit 300 řádků bez změny API.
 - [ ] `BankRuleList.onReorder`: přetažení pořadí čeká na sdílené přesouvání řádků v DataGrid.
 
 ## DS 2.139.0
