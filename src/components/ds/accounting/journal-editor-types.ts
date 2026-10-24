@@ -135,13 +135,13 @@ export interface JournalLinesEditorProps {
   lines: JournalLine[];
   /** Nové řádky po každé změně. */
   onChange: (lines: JournalLine[]) => void;
-  /** Návrhy účtu, zakázky, kódu DPH, částky a textu podle id řádku. */
+  /** Návrhy účtu, kategorie, kódu DPH, částky a textu podle id řádku. */
   rowSuggestions?: JournalRowSuggestions;
   /** První ruční změna navržené buňky; APP odebere návrh. */
   onSuggestionCleared?: (key: string, rowId?: string) => void;
   /** Účtový rozvrh. */
   accounts: AccountOption[];
-  /** Zakázky. */
+  /** Ekonomické kategorie. */
   /** Ekonomické kategorie; mají přednost před dimensions. */
   categories?: CategoryOption[];
   /** Kategorie zvlášť MD / DAL; výchozí true pro internal, false pro mainAccount. */
@@ -158,14 +158,14 @@ export interface JournalLinesEditorProps {
   onCreateUnit?: (code: string) => Promise<UnitOption>;
   /** Otevře úpravu vybrané měrné jednotky z buňky nebo detailu řádku. */
   onEditUnit?: (unitId: string) => void;
-  /** Otevře úpravu vybrané zakázky z buňky nebo detailu řádku. */
+  /** Otevře úpravu vybrané kategorie z buňky nebo detailu řádku. */
   /** Ekonomické kategorie. */
   onEditCategory?: (categoryId: string) => void;
   /** @deprecated Od 2.138.0 onEditCategory; odstranění ve 3.0.0. */
   onEditDimension?: (dimensionId: string) => void;
   /**
-   * Přidá zakázku z hledání (＋ v buňce i v detailu řádku); dostane hledaný text.
-   * Vrátí-li Promise zakázku, DS ji vybere v řádku, ze kterého se zakládalo;
+   * Přidá kategorii z hledání (＋ v buňce i v detailu řádku); dostane hledaný text.
+   * Vrátí-li Promise kategorii, DS ji vybere v řádku, ze kterého se zakládalo;
    * `null` / `undefined` / zamítnutí nic nemění.
    */
   /** Ekonomické kategorie. */
@@ -196,7 +196,7 @@ export interface JournalLinesEditorProps {
   mainAccount?: string | null;
   /** Pravidla stran podle účtu. */
   sideFieldRules?: SideFieldRulesFn;
-  /** Zakázka povinná pro celou knihu. */
+  /** Kategorie povinná pro celou knihu. */
   /** Ekonomické kategorie. */
   categoryRequired?: boolean;
   /** @deprecated Od 2.138.0 categoryRequired; odstranění ve 3.0.0. */

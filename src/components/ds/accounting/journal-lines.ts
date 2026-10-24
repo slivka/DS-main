@@ -69,7 +69,7 @@ export type VatCodeOption = {
 /** Předmět plnění v režimu přenesení daňové povinnosti. */
 export type VatPdpSubject = { code: string; name: string };
 
-/** Strana, na kterou se zapisují společné údaje (VS, partner, zakázka). */
+/** Strana, na kterou se zapisují společné údaje (VS, partner, kategorie). */
 export type JournalSharedSide = "debit" | "credit" | "both";
 
 export type JournalLine = {

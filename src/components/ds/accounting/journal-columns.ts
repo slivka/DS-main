@@ -101,7 +101,7 @@ export interface JournalColumnDefsInput {
 /** Definice sloupců gridu podle režimu: jen protiúčet, nebo MD i DAL. */
 export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<ColumnId>[] {
   const { t, showQuantityColumns: quantity } = input;
-  // 2.118.0 (DPH 5 B): Popis · Kód DPH · Částka bez DPH · účty · Zakázka. Sazba, DPH a Celkem
+  // 2.118.0 (DPH 5 B): Popis · Kód DPH · Částka bez DPH · účty · Kategorie. Sazba, DPH a Celkem
   // s DPH v gridu nejsou (patří do rekapitulace); množstevní sloupce jen přes nastavení sloupců.
   const vatColumns: GridColumn<ColumnId>[] = input.vatOn
     ? [{ id: "vatCodeId", label: t.vatCode }]
@@ -218,7 +218,7 @@ export function journalAccountFor(
 export interface JournalDisplayContext {
   /** Účty podle čísla. */
   accountByCode: Map<string, AccountOption>;
-  /** Zakázky. */
+  /** Ekonomické kategorie. */
   dimensions: CategoryOption[];
   categories?: CategoryOption[];
   /** Partneři. */

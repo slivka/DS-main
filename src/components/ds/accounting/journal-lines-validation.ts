@@ -1,6 +1,6 @@
 /**
  * Platnost řádků editoru dokladu.
- * Vlastní: povinné účty a částku, pravidla stran (VS, zakázka), kontroly DPH a varování.
+ * Vlastní: povinné účty a částku, pravidla stran (VS, kategorie), kontroly DPH a varování.
  * Nesmí: používat React ani DOM; texty dostává hotové z DsTexts.
  */
 import { normalizeCategoryLine } from "./journal-category-model";
@@ -33,7 +33,7 @@ export interface JournalValidationContext {
   sharedSide: JournalSharedSide;
   /** Pravidla stran podle účtu. */
   sideFieldRules: SideFieldRulesFn;
-  /** Zakázka povinná pro celou knihu. */
+  /** Kategorie povinná pro celou knihu. */
   dimensionRequired: boolean;
   categoryRequired?: boolean;
   categoryBySide?: boolean;
@@ -55,7 +55,7 @@ export interface JournalValidationContext {
   missingVatAccounts: Map<string, string>;
 }
 
-/** Chybějící VS nebo zakázka podle pravidel účtů na stranách MD / DAL. */
+/** Chybějící VS nebo kategorie podle pravidel účtů na stranách MD / DAL. */
 export function journalSideIssues(line: JournalLine, ctx: JournalValidationContext) {
   const { texts: t, sideFields } = ctx;
   const issues: JournalLineErrors = {};

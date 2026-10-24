@@ -1,6 +1,6 @@
 /**
  * Editor jedné buňky řádku dokladu.
- * Vlastní: volbu editoru podle typu sloupce (účet, zakázka, partner, MJ, kód DPH, částka, text)
+ * Vlastní: volbu editoru podle typu sloupce (účet, kategorie, partner, MJ, kód DPH, částka, text)
  *   a zápis hodnoty do řádku.
  * Nesmí: měnit pořadí řádků ani řešit fokus mimo svou buňku (to dělá useJournalKeyboard).
  */

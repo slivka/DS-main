@@ -1,6 +1,6 @@
 /**
  * Rozbalený detail řádku dokladu.
- * Vlastní: pole skrytá z mřížky (množství, MJ, VS, partner, zakázka), údaje DPH řádku
+ * Vlastní: pole skrytá z mřížky (množství, MJ, VS, partner, kategorie), údaje DPH řádku
  *   (sazba, s DPH, nárok na odpočet, PDP, domácí částky) a částku v domácí měně.
  * Nesmí: zobrazovat pole, které je viditelné v mřížce; nesmí počítat daň jinak než journal-vat.
  */

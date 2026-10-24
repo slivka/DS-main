@@ -86,7 +86,7 @@ export const dataColumnOf = (column: ColumnId): JournalLineColumn =>
     ? accountDataColumn(column)
     : // Systémové sloupce (row, homeAmount, actions) v datech nejsou; vyhledání v mapách vrátí undefined.
       (column as JournalLineColumn);
-/** Sloupce zakázky. */
+/** Sloupce kategorie. */
 export const CATEGORY_COLUMNS = new Set<string>([
   "categoryId",
   "debitCategoryId",
