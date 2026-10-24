@@ -265,3 +265,13 @@ export * from "./vat/vat-recapitulative-view";
 export * from "./vat/vat-checks-panel";
 export * from "./vat/vat-filing-bar";
 export * from "./vat/vat-period-picker";
+
+export * from "./tax-records/tax-record-types";
+export * from "./tax-records/tax-record-model";
+export * from "./tax-records/tax-book-view";
+export * from "./tax-records/tax-category-summary";
+export * from "./tax-records/cash-check-panel";
+export * from "./tax-records/tax-book-entries-panel";
+export * from "./tax-records/bookkeeping-mode-select";
+export * from "./tax-records/bookkeeping-settings-fields";
+export * from "./tax-records/tax-movement-select";
