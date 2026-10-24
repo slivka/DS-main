@@ -290,3 +290,6 @@ export * from "./bank/bank-rule-dialog";
 export * from "./bank/payment-order-batch-view";
 export * from "./bank/payment-order-send-dialog";
 export * from "./bank/payment-order-batch-list";
+
+/* Výkazy */
+export * from "./statements";

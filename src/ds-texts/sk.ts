@@ -1,4 +1,5 @@
 import { TAX_RECORDS_SK } from "./sk-tax-records";
+import { STATEMENTS_SK } from "./sk-statements";
 import { VAT_REPORTS_SK } from "./sk-vat-reports";
 import { DIMENSION_TEXTS_SK } from "./dimension-texts";
 import { PRINT_TEXTS_SK } from "./sk-print";
@@ -39,6 +40,7 @@ export const DS_TEXTS_SK: DsTexts = {
   bankRules: BANK_RULE_SK,
   bankPayments: BANK_PAYMENT_SK,
   vatReports: VAT_REPORTS_SK,
+  statements: STATEMENTS_SK,
   dimensions: DIMENSION_TEXTS_SK,
   invoicePrint: INVOICE_PRINT_SK,
   fileImport: FILE_IMPORT_SK,

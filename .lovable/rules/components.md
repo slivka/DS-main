@@ -8824,3 +8824,180 @@ import { ZoomGrid } from "@/design-system/{slug}";
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+### FinancialStatementView
+
+```tsx
+import { FinancialStatementView } from "@/design-system/{slug}";
+```
+
+Rozvaha nebo výsledovka jako strom řádků s přepínačem jednotek, kontrolami, prokliky a exportem; editable povolí jen hodnoty nesoučtových řádků.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `kind` | enum | `—` |
+| `rows` | StatementRow[] | `—` |
+| `columns` | StatementValueColumn[] | `—` |
+| `currency` | string | `—` |
+| `unit` | enum | `—` |
+| `defaultUnit` | enum | `—` |
+| `onUnitChange` | (unit: StatementUnit) => void | `—` |
+| `checks` | StatementCheck[] | `—` |
+| `onRowOpen` | (row: StatementRow) => void | `—` |
+| `editable` | boolean | `—` |
+| `onValuesChange` | (patch: StatementValuePatch) => void | `—` |
+| `title` | string | `—` |
+| `printContext` | PrintContext | `—` |
+| `exportName` | string | `—` |
+| `storageKey` | string | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Výkaz z dat APP:**
+
+```tsx
+<FinancialStatementView kind="balance" rows={rows} columns={columns} currency={currency} checks={checks} onRowOpen={openAccounts} />
+```
+
+**Avoid:**
+
+- Neměňte strukturu řádků v režimu úprav; součtové řádky vrací APP.
+- Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.
+
+### StatementChecksBar
+
+```tsx
+import { StatementChecksBar } from "@/design-system/{slug}";
+```
+
+Pruh kontrol Aktiva = Pasiva a HV rozvaha = HV výsledovka se stavem a rozdílem od APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `checks` | StatementCheck[] | `—` |
+| `decimals` | number | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Výkaz z dat APP:**
+
+```tsx
+<StatementChecksBar checks={[{ kind: "balance", ok: true }]} />
+```
+
+**Avoid:**
+
+- Kontroly nevyhodnocujte v DS.
+- Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.
+
+### SavedStatementList
+
+```tsx
+import { SavedStatementList } from "@/design-system/{slug}";
+```
+
+Grid uložených výkazů s akcemi Otevřít, Přejmenovat, Duplikovat, Smazat (potvrzení) a Nový z účetnictví.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | SavedStatement[] | `—` |
+| `currency` | string | `—` |
+| `onOpen` | (item: SavedStatement) => void | `—` |
+| `onRename` | (item: SavedStatement) => void | `—` |
+| `onDuplicate` | (item: SavedStatement) => void | `—` |
+| `onDelete` | (item: SavedStatement) => void | `—` |
+| `onCreateFromLedger` | () => void | `—` |
+| `loading` | boolean | `—` |
+| `storageKey` | string | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Výkaz z dat APP:**
+
+```tsx
+<SavedStatementList items={saved} currency={currency} onOpen={openSaved} onDelete={deleteSaved} onCreateFromLedger={createNew} />
+```
+
+**Avoid:**
+
+- Nemažte bez potvrzení; ukládání a mazání provádí APP.
+- Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.
+
+### StatementSaveDialog
+
+```tsx
+import { StatementSaveDialog } from "@/design-system/{slug}";
+```
+
+RecordDialog uložení výkazu pod názvem s druhem, obdobím a jednotkami.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | (open: boolean) => void | `—` |
+| `value` | StatementSaveValue | `—` |
+| `onChange` | (value: StatementSaveValue) => void | `—` |
+| `onSubmit` | () => void | `—` |
+| `periods` | SelectOption[] | `—` |
+| `currency` | string | `—` |
+| `errors` | Partial<Record<keyof StatementSaveValue, string>> | `—` |
+| `error` | enum | `—` |
+| `busy` | boolean | `—` |
+| `lockStructure` | boolean | `—` |
+
+**Examples:**
+
+**Výkaz z dat APP:**
+
+```tsx
+<StatementSaveDialog open={open} onOpenChange={setOpen} value={draft} onChange={setDraft} periods={periods} currency={currency} onSubmit={save} />
+```
+
+**Avoid:**
+
+- Nezavírejte dialog před úspěšným uložením v APP.
+- Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.
+
+### StatementTemplateEditor
+
+```tsx
+import { StatementTemplateEditor } from "@/design-system/{slug}";
+```
+
+Správa šablony výkazu: strom řádků, typ součet / mapovaný, mapování účtů a skupin, přidání, odebrání a pořadí přetažením; validace z props.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | StatementTemplateRow[] | `—` |
+| `onChange` | (rows: StatementTemplateRow[]) => void | `—` |
+| `mappingOptions` | StatementMappingOption[] | `—` |
+| `issues` | Record<string, string> | `—` |
+| `createRowId` | () => string | `—` |
+| `readOnly` | boolean | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Výkaz z dat APP:**
+
+```tsx
+<StatementTemplateEditor rows={template} onChange={setTemplate} mappingOptions={accounts} issues={issues} />
+```
+
+**Avoid:**
+
+- Nevalidujte šablonu v DS; chyby předává APP v issues.
+- Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.

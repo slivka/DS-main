@@ -1,4 +1,5 @@
 import { TAX_RECORDS_CS } from "./cs-tax-records";
+import { STATEMENTS_CS } from "./cs-statements";
 import { VAT_REPORTS_CS } from "./cs-vat-reports";
 import { DIMENSION_TEXTS_CS } from "./dimension-texts";
 import { PRINT_TEXTS_CS } from "./cs-print";
@@ -33,6 +34,7 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 export const DS_TEXTS_CS: DsTexts = {
   taxRecords: TAX_RECORDS_CS,
   vatReports: VAT_REPORTS_CS,
+  statements: STATEMENTS_CS,
   dimensions: DIMENSION_TEXTS_CS,
   invoicePrint: INVOICE_PRINT_CS,
   fileImport: FILE_IMPORT_CS,

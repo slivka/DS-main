@@ -10,6 +10,7 @@ import type { FileImportTexts } from "./file-import-texts";
 export type { FileImportTexts } from "./file-import-texts";
 export type { AdvanceTexts } from "./advance-texts";
 export type { TemplateTexts } from "./template-texts";
+export type { StatementTexts } from "./statement-texts";
 export type { LinkedRecordTexts } from "./linked-record-texts";
 import type { BankStatementTexts } from "./bank-statement-texts";
 export type { BankStatementTexts } from "./bank-statement-texts";
@@ -54,6 +55,8 @@ export interface DsTexts {
   taxRecords: import("./tax-record-texts").TaxRecordTexts;
   /** Přiznání, hlášení a podání DPH. */
   vatReports: import("./vat-report-texts").VatReportTexts;
+  /** Výkazy – rozvaha, výsledovka, uložené výkazy a šablony. */
+  statements: import("./statement-texts").StatementTexts;
   /** Obecné dimenze. */
   dimensions: import("./dimension-texts").DimensionTexts;
   /** Tisk vydané faktury a jeho pole. */

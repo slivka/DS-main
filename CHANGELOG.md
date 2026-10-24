@@ -1,5 +1,18 @@
 # Changelog – Slivka Design System
 
+## 2.142.0 (nevydáno)
+
+### Výkazy – rozvaha, výsledovka, uložené výkazy a šablony
+
+- Nové `FinancialStatementView`: stromový výkaz (označení, název, sloupce období / brutto–korekce–netto z `columns`), sbalení a „Rozbalit vše“ přes TreeGrid, tučné součtové řádky, dorovnaný řádek (`rounded`, `roundedNote`) s ikonou a bublinou, přepínač jednotek celé / tisíce (`unit`, `defaultUnit`, `onUnitChange`; hodnoty obou jednotek dodává APP, měna z `currency`), proklik `onRowOpen`, kontrolní pruh `checks`, export Excel/PDF (`exportName`, `printContext`), režim úprav `editable` + `onValuesChange(patch)` jen pro nesoučtové řádky.
+- Nové `StatementChecksBar` (Aktiva = Pasiva, HV rozvaha = HV výsledovka, stav a rozdíl od APP).
+- Nové `SavedStatementList` (název, druh, období, jednotky, uložil, uloženo; Otevřít, Přejmenovat, Duplikovat, Smazat s potvrzením, Nový z účetnictví).
+- Nové `StatementSaveDialog` (RecordDialog: název, druh, období, jednotky; `lockStructure`, chyby z props).
+- Nové `StatementTemplateEditor` (strom řádků, typ součet / mapovaný, nadřazený řádek, mapování účtů a skupin z `mappingOptions`, přidat / odebrat, pořadí přetažením i tlačítky, validace `issues`) a čisté funkce `moveTemplateRow`, `removeTemplateRow`, `templateRowDepth`.
+- DS nic nepočítá: součty, přepočet po úpravě i dorovnání HV po zaokrouhlení dodává APP/DB. Excel export proto nese hodnoty od APP bez vzorců SUBTOTAL (vzorec by přepočítal součty a rozbil dorovnání).
+- Texty CS/SK v `DsTexts.statements`; ukázky na stránce Výkazy.
+- Ověření: 11 nových unit testů (`statements-2142.test.tsx`) 11/11; katalog proti vydané 2.140.0 **513 → 518 komponent / 1 416 → 1 591 props**, 0 odebrání. `check:catalog` hlásí jen očekávané pořadí sekcí (2.141.0 čeká na vydání). Nevydáno.
+
 ## 2.141.0 (nevydáno)
 
 ### Dobropisy – záporné částky a vazba na původní doklad
