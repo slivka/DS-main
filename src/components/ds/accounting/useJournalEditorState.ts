@@ -147,11 +147,12 @@ export function useJournalEditorState(
       ? { accountId: mainAccountId, side: mainSide }
       : undefined;
   const mainOption = mainAccount ? accountByCode.get(mainAccount.accountId) : undefined;
-  const counterColumn: "debitAccount" | "creditAccount" | null = mainAccount
-    ? mainAccount.side === "MD"
-      ? "creditAccount"
-      : "debitAccount"
-    : null;
+  const counterColumn: "debitAccount" | "creditAccount" | null =
+    mode === "mainAccount" && mainSide
+      ? mainSide === "MD"
+        ? "creditAccount"
+        : "debitAccount"
+      : null;
   const documentMark = props.documentCurrencySymbol ?? documentCurrency;
   const homeMark = props.homeCurrencySymbol ?? homeCurrency;
   const amountLabels = journalAmountLabels(t, documentMark, homeMark);

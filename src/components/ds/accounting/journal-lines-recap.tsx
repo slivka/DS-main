@@ -19,6 +19,8 @@ export interface JournalRecapTab {
 }
 export interface JournalLinesRecapProps {
   bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
+  categoriesEnabled?: boolean;
+  taxMovementKind?: import("../tax-records/tax-record-types").TaxMovementKind;
   /** Celek v domácí měně v záhlaví, i při sbalení. */
   headerTotal?: React.ReactNode;
   lines: JournalLine[];
@@ -93,6 +95,8 @@ const money = (value: number | null) => (value === null ? "" : formatAmount(valu
 export function JournalLinesRecap({
   lines,
   bookkeepingMode = "accrual",
+  categoriesEnabled = true,
+  taxMovementKind,
   headerTotal,
   accounts,
   dimensions: legacyDimensions,
@@ -227,27 +231,56 @@ export function JournalLinesRecap({
         ? formatCodeName(formatAccountCode(code), accountMap.get(code))
         : formatAccountCode(code);
     };
+    const taxColumns: DataGridColumn<Row>[] =
+      taxMovementKind === "transfer"
+        ? [
+            {
+              id: "fromItem",
+              label: dsTexts.taxRecords.fromItem,
+              value: (row) => accountValue("creditAccountName", row),
+            },
+            {
+              id: "toItem",
+              label: dsTexts.taxRecords.toItem,
+              value: (row) => accountValue("debitAccountName", row),
+            },
+          ]
+        : [
+            {
+              id: "item",
+              label: dsTexts.taxRecords.item,
+              value: (row) =>
+                accountValue("debitAccountName", row) ||
+                accountValue("creditAccountName", row) ||
+                row.label ||
+                "",
+            },
+          ];
     return [
-      // Rekapitulace záměrně vůbec neposkytuje krátké účetní sloupce. Staré
-      // uložené viditelnosti je proto nemohou obnovit bez dostupné lišty.
-      ...base
-        .filter((column) => column.id.endsWith("Name"))
-        .map((column) =>
-          column.id.startsWith("debit")
-            ? {
-                ...column,
-                label: bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
-                value: (row: Row) => withLabel(accountValue(column.id, row), row),
-                render: (row: Row) => renderLabel(accountValue(column.id, row), row),
-              }
-            : {
-                ...column,
-                label: bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
-                value: (row: Row) => accountValue(column.id, row) || "—",
-                render: (row: Row) =>
-                  renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
-              },
-        ),
+      ...(bookkeepingMode === "tax_records"
+        ? taxColumns
+        : // Rekapitulace záměrně vůbec neposkytuje krátké účetní sloupce. Staré
+          // uložené viditelnosti je proto nemohou obnovit bez dostupné lišty.
+          base
+            .filter((column) => column.id.endsWith("Name"))
+            .map((column) =>
+              column.id.startsWith("debit")
+                ? {
+                    ...column,
+                    label:
+                      bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
+                    value: (row: Row) => withLabel(accountValue(column.id, row), row),
+                    render: (row: Row) => renderLabel(accountValue(column.id, row), row),
+                  }
+                : {
+                    ...column,
+                    label:
+                      bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
+                    value: (row: Row) => accountValue(column.id, row) || "—",
+                    render: (row: Row) =>
+                      renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
+                  },
+            )),
       {
         id: "amount",
         label: `${t.total} (${homeMark})`,
@@ -277,7 +310,8 @@ export function JournalLinesRecap({
     accountMap,
     accounts,
     bookkeepingMode,
-    dsTexts.taxRecords.item,
+    dsTexts.taxRecords,
+    taxMovementKind,
     accounting,
     documentMark,
     foreign,
@@ -393,7 +427,7 @@ export function JournalLinesRecap({
         id: "accounting",
         label: bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : t.accounting,
       },
-      { id: "jobs", label: t.jobs },
+      ...(categoriesEnabled ? [{ id: "jobs", label: t.jobs }] : []),
       ...(vatSummary ? [{ id: "vat", label: t.vat }] : []),
       ...recapTabs,
     ],

@@ -260,6 +260,8 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
                   : props.lines
               }
               bookkeepingMode={props.bookkeepingMode}
+              categoriesEnabled={props.categoriesEnabled}
+              taxMovementKind={props.taxMovementKind}
               accounts={props.accounts}
               categories={props.categories ?? legacyDimensionCategories(props.dimensions)}
               documentCurrency={props.documentCurrency}

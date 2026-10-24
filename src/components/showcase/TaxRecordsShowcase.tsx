@@ -14,7 +14,7 @@ import {
   type TaxMovementKind,
 } from "../ds";
 import { useDsTexts } from "../../ds-texts";
-export const taxItems = [
+const taxItems = [
   {
     code: "602001",
     name: "Tržby za služby",
@@ -122,7 +122,9 @@ export function TaxRecordsShowcase() {
           documentCurrency="CZK"
           storageKey="tax-showcase-lines"
         />
-        <output data-testid="tax-line-value">{lines[0]?.creditAccount}</output>
+        <output className="sr-only" data-testid="tax-line-value">
+          {lines[0]?.creditAccount}
+        </output>
       </section>
       <section>
         <h2 className="mb-3 text-lg font-semibold">{t.movement}</h2>
