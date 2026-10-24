@@ -147,6 +147,7 @@ export type DocumentVatConfig = {
     lockedHint?: string;
     unlockedHint?: string;
   };
+  /** @deprecated Od 2.139.0 použijte DocumentForm.lockedReason.vatDate; odstranění ve 3.0.0. */
   dateLockReadOnly?: boolean;
   filedWarning?: string;
 };

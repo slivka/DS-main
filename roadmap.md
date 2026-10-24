@@ -1,5 +1,12 @@
 ## DS 2.139.0 (nevydáno)
 
+- [x] D1 a D3 už bylo: menuActions, SplitButton a N; doplněny regrese.
+- [x] D2/D4: obecný lockedReason s legacy aliasy; tooltip/směr sloupce, fulltext a pevné skupiny.
+- [x] D5: hledání v jediné nabídce 360/480 px; stromové rozbalení/sbalení; skutečný přesah Firefox na 260 px opraven.
+- [x] D7: místní overlay pod 768 px; 600/760 px bez vodorovného posuvu.
+- [x] Unit DS 1 514/1 514; konečný Chromium D3/D5/D7 20/20; check:quick OK; katalog 489 → 489 / 1 248 → 1 339 props / 0 odebrání. Nevydáno.
+- [ ] D6 částečně: opravené čekání dialogu/tooltipu/hydratace a Firefox hranice ověřeny. Cílená FF/WebKit sada 29/30, zbývající hranice po opravě 3/3 napříč prohlížeči; WebKit další sada 29/30, zbývající browser-page-errors po opravě 3/3; kurz/dialog/tooltip 4/4. V limitu nezbylo opakované CI ověření a samostatný FF browser-page-errors/document-controls/design-three. Blokuje časový strop, ne chybějící oprava; pokračovat samostatným kolem. Rozsáhlé accounting-forms se ve WebKitu připojují déle než 10 s; přerušení Vite importů/page.goto nelze považovat za trvale vyřešené z jednoho čistého běhu. Plná E2E ponechána uživateli.
+
 ## DS 2.138.0
 
 - [x] B2: DimensionBar / MultiValueCell, CS/SK a řízené hledání.

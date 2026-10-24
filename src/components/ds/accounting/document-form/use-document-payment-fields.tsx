@@ -27,6 +27,8 @@ export interface DocumentPaymentFieldsContext {
   patch: (next: Partial<DocumentHeaderValue>) => void;
   /** Pole lze měnit. */
   can: (key: DocumentHeaderField) => boolean;
+  /** Obecný zámek pole. */
+  lockReason?: (key: DocumentHeaderField) => string | undefined;
   /** Vykreslovač pole. */
   field: (
     id: string,
@@ -107,6 +109,7 @@ export function useDocumentPaymentFields(
           t.payToBankAccount,
           props.paymentMethodOptions,
           t.paymentMethod,
+          c.lockReason,
         )
       : null;
   return {

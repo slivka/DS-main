@@ -16,6 +16,7 @@ import { enrichSplitButtonCatalog } from "./split-button-catalog";
 import { enrichDimensionsCatalog } from "./dimensions-catalog";
 import { enrichCategoryCatalog } from "./category-catalog";
 import { enrichIdentityCatalog } from "./identity-catalog";
+import { enrichGridContracts } from "./grid-contract-catalog";
 
 interface CatalogProp {
   name: string;
@@ -194,6 +195,7 @@ export function refreshCatalog() {
   const identityComponents = enrichIdentityCatalog(catalog.components);
   const categoryComponents = enrichCategoryCatalog(catalog.components);
   const dimensionComponents = enrichDimensionsCatalog(catalog.components);
+  const gridContractComponents = enrichGridContracts(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -257,6 +259,7 @@ export function refreshCatalog() {
       ...identityComponents,
       ...categoryComponents,
       ...dimensionComponents,
+      ...gridContractComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";

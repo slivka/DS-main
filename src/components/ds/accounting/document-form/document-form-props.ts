@@ -177,7 +177,10 @@ export interface DocumentFormProps {
   rowSuggestions?: JournalRowSuggestions;
   /** První ruční změna navržené hodnoty; rodič příslušný návrh odebere. */
   onSuggestionCleared?: (key: string, rowId?: string) => void;
+  /** Obecný zámek libovolného pole hlavičky; důvod sám zakáže úpravu. Nový klíč má přednost. */
+  lockedReason?: Partial<Record<DocumentHeaderField, string>>;
   /**
+   * @deprecated Od 2.139.0 použijte lockedReason; odstranění ve 3.0.0.
    * Obecný důvod uzamčení pole mimo editableFields (2.128.0): pole se vykreslí jen pro čtení
    * přes FieldValue se zámkem a důvodem v bublině. Texty dodává aplikace (např. „Převzato
    * z banky“). Jednotlivé důvody (counterpartyInputLockedReason, accountDisabledReason,

@@ -1,5 +1,5 @@
 /** Pomocné vykreslení polí formuláře dokladu. */
-import type { ReactNode } from "react";
+import { isValidElement, type ReactNode } from "react";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { useDsTexts } from "../../../../ds-texts";
 import { shiftDocumentDate } from "../../../../lib/date-quick-options";
@@ -8,6 +8,8 @@ import { Textarea } from "../../../ui/textarea";
 import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
 import { LockedDocumentDate } from "./locked-document-date";
+import { FieldValue } from "../../form/field-value";
+import { fmtAmount } from "../../../../lib/format";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
 import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
@@ -67,7 +69,23 @@ export function useDocumentFieldRenderers({
       span={span as 3 | 4 | 5 | 6 | 14 | 20}
       className={cn("col-span-20", mobileHalf && "col-span-10", className)}
     >
-      {control}
+      {lockReason?.(headerFieldKey(id)) &&
+      !(isValidElement(control) && control.type === FieldValue) &&
+      !["issueDate", "accountingDate", "taxDate", "dueDate", "vatDate"].includes(
+        headerFieldKey(id),
+      ) ? (
+        <FieldValue
+          id={id}
+          aria-labelledby={`${id}-label`}
+          lockedReason={lockReason(headerFieldKey(id))}
+        >
+          {typeof value[headerFieldKey(id)] === "number"
+            ? fmtAmount(Number(value[headerFieldKey(id)]), headerFieldKey(id) === "rate" ? 4 : 2)
+            : String(value[headerFieldKey(id)] ?? "")}
+        </FieldValue>
+      ) : (
+        control
+      )}
     </Field>
   );
   const date = (

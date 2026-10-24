@@ -55,10 +55,15 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
   await box.scrollIntoViewIfNeeded();
   const toolbar = box.locator('[data-slot="grid-toolbar"]');
   const modes = new Set<string>();
-  for (const width of [960, 640, 400, 340, 320, 300, 290, 280, 270, 260, 250, 240, 230, 220, 208]) {
+  for (const width of [
+    960, 640, 400, 340, 320, 300, 290, 280, 270, 260, 250, 240, 230, 220, 208, 180, 160,
+  ]) {
     await box.evaluate((node, value) => {
       node.style.width = `${value}px`;
     }, width);
+    await expect
+      .poll(() => toolbar.evaluate((node) => Math.round(node.getBoundingClientRect().width)))
+      .toBe(width - 2);
     await expect
       .poll(async () =>
         toolbar.evaluate((node) => {
@@ -80,6 +85,9 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
     );
     modes.add(mode);
   }
+  // Přesun hledání uvolní místo: poslední stupeň nyní nastává při menší šířce.
+  await expect(toolbar).toHaveAttribute("data-overflow-level", "3");
+  modes.add("menu");
   expect([...modes]).toEqual(["full", "short", "menu"]);
   await toolbar.screenshot({ path: "/tmp/13h/toolbar-boundary.png" });
 });
@@ -106,6 +114,9 @@ test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespust
   await expect(item).toHaveAttribute("aria-disabled", "true");
   await expect(item.locator('[data-slot="disabled-reason-text"]')).toHaveText(reason);
   await item.click({ force: true });
+  // Po případné obnově modulů WebKit může zavřít původní portál; znovu otevřeme živý.
+  if (!(await item.isVisible())) await menu.click();
+  await expect(item).toBeVisible();
   await item.focus();
   await item.press("Enter");
   await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");

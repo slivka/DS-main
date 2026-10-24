@@ -3,8 +3,9 @@ import { useRef, type RefObject } from "react";
 import { useDsTexts } from "../../../../ds-texts";
 /** Meze velikosti v pixelech odvozené od hostitele a jeho písma. */
 export function panelSizeBounds(hostWidth: number, fontSize: number) {
-  const min = 20 * fontSize;
-  return { min, max: Math.max(min, hostWidth * 0.75) };
+  const max = Math.max(0, hostWidth * 0.75);
+  const min = Math.min(20 * fontSize, max);
+  return { min, max };
 }
 /** Omezení řízené šířky. */
 export function clampPanelSize(size: number, min: number, max: number) {

@@ -276,6 +276,8 @@ export const DS_TEXTS_SK: DsTexts = {
     sortBy: (l) => `Zoradiť podľa ${l}`,
     expand: "Rozbaliť",
     collapse: "Zbaliť",
+    expandAll: "Rozbaliť všetko",
+    collapseAll: "Zbaliť všetko",
     expandLevel: (n, l) => `Úroveň ${n} – ${l}`,
     exportSearch: (q) => `Hľadanie: ${q}`,
     recordsCount: (c) => `${c} záznamov`,

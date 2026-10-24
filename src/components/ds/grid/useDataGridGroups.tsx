@@ -17,6 +17,8 @@ export interface DataGridGroupsOptions<Row> {
   storageKey: string;
   groupable: boolean;
   defaultGroupBy?: string | undefined;
+  /** Pevná skupina dodaná aplikací. */
+  fixedGroupBy?: string;
   groupTotals: "header" | "row";
   paginated: boolean;
   effectiveColumns: DataGridColumn<Row>[];
@@ -36,10 +38,19 @@ export function useDataGridGroups<Row>(o: DataGridGroupsOptions<Row>) {
   const { texts, shown, groupTotals, paginated } = o;
   const [depth, setDepth] = useState<number | null>(null);
   const defaultGroups = useMemo(
-    () => (o.defaultGroupBy ? [{ id: o.defaultGroupBy, granularity: "month" as const }] : []),
-    [o.defaultGroupBy],
+    () =>
+      (o.fixedGroupBy ?? o.defaultGroupBy)
+        ? [{ id: o.fixedGroupBy ?? o.defaultGroupBy ?? "", granularity: "month" as const }]
+        : [],
+    [o.defaultGroupBy, o.fixedGroupBy],
   );
-  const grouping = useGridGrouping(o.storageKey, { disabled: !o.groupable, defaultGroups });
+  const storedGrouping = useGridGrouping(o.storageKey, {
+    disabled: !o.groupable || Boolean(o.fixedGroupBy),
+    defaultGroups,
+  });
+  const grouping = o.fixedGroupBy
+    ? { ...storedGrouping, enabled: false, active: true, groups: defaultGroups }
+    : storedGrouping;
   // Vývojové varování je vedlejší efekt mimo React (konzole).
   useEffect(() => {
     if (process.env.NODE_ENV !== "production" && groupTotals === "row" && paginated) {

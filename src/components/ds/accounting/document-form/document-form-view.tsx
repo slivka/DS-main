@@ -147,6 +147,7 @@ export function DocumentFormView({ props, model }: DocumentFormViewProps) {
             }}
             onAccountClose={identityAccount.closeIdentityAccount}
             accountOptions={allowedMainAccounts}
+            lockedReason={lockReason("mainAccountId")}
           />
           <DocumentSections
             companyAccountField={companyAccountField}

@@ -16,6 +16,7 @@ import {
 import { LockedAccountValue } from "../locked-account-value";
 import { OptionSelect } from "../../form/option-select";
 import { Field } from "../../layout/RecordDialog";
+import { FieldValue } from "../../form/field-value";
 
 /** Vlastnosti účtu přijatého dokladu. */
 export interface ReceivedAccountControlProps {
@@ -153,6 +154,10 @@ export interface CompanyAccountControlProps {
   disabled?: boolean;
   /** Důvod prázdného zakázaného pole. */
   disabledReason?: string;
+  /** Obecný zámek hodnoty; přednost před důvodem prázdného pole. */
+  lockedReason?: string;
+  /** Obecný zámek způsobu platby. */
+  paymentMethodLockedReason?: string;
   /** Popisek. */
   label: string;
   /** Nabídka způsobů platby; s ní účet zabírá pravých 14 sloupců. */
@@ -177,7 +182,17 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
         htmlFor="document-companyBankAccountId"
         span={props.paymentMethodOptions ? 14 : 20}
       >
-        {props.disabledReason ? (
+        {props.lockedReason ? (
+          <FieldValue
+            id="document-companyBankAccountId"
+            aria-labelledby="document-companyBankAccountId-label"
+            lockedReason={props.lockedReason}
+          >
+            {props.options.find((option) => option.id === props.value)?.account ??
+              props.value ??
+              ""}
+          </FieldValue>
+        ) : props.disabledReason ? (
           <LockedAccountValue
             id="document-companyBankAccountId"
             aria-label={props.label}
@@ -203,14 +218,27 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
           htmlFor="document-paymentMethodId"
           span={6}
         >
-          <OptionSelect
-            id="document-paymentMethodId"
-            value={props.paymentMethodId}
-            onChange={(id) => props.onPaymentMethodChange?.(id)}
-            options={props.paymentMethodOptions}
-            searchable
-            disabled={props.paymentMethodDisabled}
-          />
+          {props.paymentMethodLockedReason ? (
+            <FieldValue
+              id="document-paymentMethodId"
+              aria-labelledby="document-paymentMethodId-label"
+              lockedReason={props.paymentMethodLockedReason}
+            >
+              {props.paymentMethodOptions.find((option) => option.value === props.paymentMethodId)
+                ?.label ??
+                props.paymentMethodId ??
+                ""}
+            </FieldValue>
+          ) : (
+            <OptionSelect
+              id="document-paymentMethodId"
+              value={props.paymentMethodId}
+              onChange={(id) => props.onPaymentMethodChange?.(id)}
+              options={props.paymentMethodOptions}
+              searchable
+              disabled={props.paymentMethodDisabled}
+            />
+          )}
         </Field>
       ) : null}
     </>
@@ -231,6 +259,7 @@ export function companyAccountControlForForm(
   label: string,
   paymentOptions?: Array<{ value: string; label: string }>,
   paymentMethodLabel?: string,
+  lockReason?: (key: import("./document-form-types").DocumentHeaderField) => string | undefined,
 ): ReactNode {
   if (!props.companyBankAccountOptions) return null;
   return (
@@ -240,6 +269,8 @@ export function companyAccountControlForForm(
       options={props.companyBankAccountOptions}
       disabled={!can("companyBankAccountId")}
       disabledReason={props.companyBankAccountDisabledReason}
+      lockedReason={lockReason?.("companyBankAccountId")}
+      paymentMethodLockedReason={lockReason?.("paymentMethodId")}
       label={label}
       paymentMethodOptions={paymentOptions ?? props.paymentMethodOptions}
       paymentMethodId={props.value.paymentMethodId}

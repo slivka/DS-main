@@ -26,9 +26,11 @@ async function choose(page: Page, label: string, option: string) {
 async function openScenario(page: Page, size: keyof typeof WIDTHS, inPane: boolean, name: string) {
   await choose(page, "Velikost", SIZE_LABEL[size]);
   await choose(page, "Umístění", inPane ? "V panelu" : "Mimo panel");
-  await page.getByRole("button", { name, exact: true }).click();
   const dialog = page.getByRole("dialog", { name: /Kniha|Nová kniha/ }).first();
-  await expect(dialog).toBeVisible();
+  await expect(async () => {
+    if (!(await dialog.isVisible())) await page.getByRole("button", { name, exact: true }).click();
+    await expect(dialog).toBeVisible({ timeout: 1000 });
+  }).toPass();
   return dialog;
 }
 
