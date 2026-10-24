@@ -1,4 +1,5 @@
 /** Vstupy dokladu · vlastní kompatibilní výchozí hodnoty · nesmí měnit props. */
+import { legacyDimensionCategories } from "../journal-dimension-inputs";
 import type { DocumentFormProps } from "./document-form-types";
 export function documentFormInputs(props: DocumentFormProps) {
   const {
@@ -72,7 +73,7 @@ export function documentFormInputs(props: DocumentFormProps) {
     accounts,
     mainAccountOptions,
     partners,
-    dimensions: props.categories ?? dimensions,
+    dimensions: props.categories ?? legacyDimensionCategories(dimensions),
     currencies,
     constantSymbolOptions,
     paymentMethodOptions,

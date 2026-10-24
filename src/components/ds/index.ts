@@ -4,6 +4,11 @@
  * Pokud komponenta chybí, doplňte ji do design systému, ne do stránky.
  */
 
+export * from "./form/dimension-bar";
+export * from "./form/dimension-filter";
+export * from "./data-display/multi-value-cell";
+export * from "./accounting/journal-dimensions-model";
+
 /* Layout */
 export * from "./form/split-button";
 export * from "./layout/panel-toggle-button";

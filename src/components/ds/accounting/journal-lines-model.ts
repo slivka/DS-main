@@ -51,6 +51,9 @@ export type ColumnId =
   | JournalLineColumn
   | JournalAccountColumnId
   | "row"
+  | "dimensions"
+  | "debitDimensions"
+  | "creditDimensions"
   | "homeAmount"
   | "actions";
 /** Rozpracovaná editace buňky; `original` slouží k vrácení přes Esc. */

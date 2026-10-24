@@ -53,6 +53,8 @@ import { useJournalVatGroups } from "./useJournalVatGroups";
 import { inheritedLineValues, useJournalPins } from "./useJournalPins";
 import { vatCodeCellLabel } from "./vat-code-labels";
 import { useJournalCategories } from "./use-journal-categories";
+import { applyHeaderDimensions } from "./journal-dimensions-model";
+import { headerDimensionValues } from "./journal-dimension-inputs";
 import { journalCategoryInputs } from "./journal-category-inputs";
 import { categoryLabel, reconcileCategories, type CategoryColumn } from "./journal-category-model";
 import { CATEGORY_COLUMNS } from "./journal-lines-model";
@@ -63,7 +65,13 @@ export function useJournalEditorState(
   props: JournalLinesEditorProps,
   forwardedRef: React.ForwardedRef<HTMLDivElement>,
 ) {
-  props = journalCategoryInputs(props);
+  const headerDimensions = headerDimensionValues(props.dimensions, Boolean(props.dimensionTypes));
+  const originalChange = props.onChange;
+  props = journalCategoryInputs({
+    ...props,
+    lines: applyHeaderDimensions(props.lines, headerDimensions),
+    onChange: (next) => originalChange(applyHeaderDimensions(next, headerDimensions)),
+  });
   const {
     lines,
     onChange,
@@ -160,6 +168,8 @@ export function useJournalEditorState(
         homeAmountLabel,
         sideFields,
         categoryBySide: props.categoryBySide,
+        dimensionLabels: props.dimensionTypes ? dsTexts.dimensions : undefined,
+        dimensionsBySide: props.dimensionsBySide ?? mode === "internal",
         withoutAccounts: props.withoutAccounts,
         hasValue: (column: JournalLineColumn) =>
           lines.some(
@@ -182,6 +192,9 @@ export function useJournalEditorState(
       vatOn,
       props.withoutAccounts,
       props.categoryBySide,
+      props.dimensionTypes,
+      props.dimensionsBySide,
+      dsTexts.dimensions,
     ],
   );
   const layout = useJournalLayout({
@@ -356,6 +369,7 @@ export function useJournalEditorState(
       const state = categoryState(line, dataColumn as CategoryColumn);
       if (!state.enabled || (state.single && !state.invalid)) return false;
     }
+    if (["dimensions", "debitDimensions", "creditDimensions"].includes(column)) return false;
     if (line.isFxRounding) return false;
     if (line.isRounding)
       return column === "amount" && Boolean(rounding?.onChange) && rounding?.readOnly !== true;

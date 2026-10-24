@@ -2386,6 +2386,11 @@ Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavate
 | `panelToggle` | ReactNode | `—` |
 | `templateEdit` | TemplateEditState | `—` |
 | `categories` | CategoryOption[] | `—` |
+| `dimensionTypes` | DimensionType[] | `—` |
+| `dimensions` | DimensionValue[]  /  CategoryOption[] (@deprecated pouze B1 číselník do 3.0.0) | `—` |
+| `onDimensionsChange` | (values: DimensionValue[]) => void | `—` |
+| `loadDimensionOptions` | LoadDimensionOptions | `—` |
+| `dimensionsBySide` | boolean (internal=true) | `—` |
 
 **Examples:**
 
@@ -2461,6 +2466,12 @@ const blob = await buildInvoicePdf(printData, { homeCurrency: companyCurrency })
 <DocumentForm {...props} categories={categories} />
 ```
 
+**Dimenze hlavičky a řádků:**
+
+```tsx
+<DocumentForm {...props} dimensionTypes={types} dimensions={dimensions} onDimensionsChange={setDimensions} loadDimensionOptions={loadOptions} dimensionsBySide />
+```
+
 **Avoid:**
 
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
@@ -2475,6 +2486,7 @@ const blob = await buildInvoicePdf(printData, { homeCurrency: companyCurrency })
 - Nepočítejte tiskové daně ani odečty v DS; nepřidávejte druhý PDF systém ani generované firemní logo.
 - Návrhy nemažte při pouhém otevření pole; záporné částky nepřevádějte na absolutní hodnotu.
 - Nepoužívejte nové DimensionBar pro ekonomickou kategorii; neodstraňujte deprecated aliasy před 3.0.0.
+- Hlavička přepisuje jen inherited hodnoty; ruční MD/DAL nikdy nepřepisujte. toJournalRow zapisuje jen inherited=false a kind z APP určuje value_id/vehicle_id.
 
 ### DocumentNewMenu
 
@@ -4280,6 +4292,11 @@ Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH 
 | `categoryRequired` | boolean | `—` |
 | `onEditCategory` | (id: string) => void | `—` |
 | `onCreateCategory` | (searchText: string) => void / Promise<CategoryOption / null / undefined> | `—` |
+| `dimensionTypes` | DimensionType[] | `—` |
+| `dimensions` | DimensionValue[]  /  CategoryOption[] (@deprecated pouze B1 číselník do 3.0.0) | `—` |
+| `onDimensionsChange` | (values: DimensionValue[]) => void | `—` |
+| `loadDimensionOptions` | LoadDimensionOptions | `—` |
+| `dimensionsBySide` | boolean (internal=true) | `—` |
 
 **Examples:**
 
@@ -4339,6 +4356,12 @@ Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH 
 <JournalLinesEditor {...documentRows} categories={categories} categoryBySide allowedCategories={allowedCategories} onEditCategory={editCategory} />
 ```
 
+**Dimenze hlavičky a řádků:**
+
+```tsx
+<JournalLinesEditor {...props} dimensionTypes={types} dimensions={dimensions} onDimensionsChange={setDimensions} loadDimensionOptions={loadOptions} dimensionsBySide />
+```
+
 **Avoid:**
 
 - Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
@@ -4352,6 +4375,7 @@ Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH 
 - Nenabízejte formát v nabídce záhlaví ani volnou barvu; nepřebarvujte odznaky a odkazy.
 - Návrhy nemažte při pouhém otevření pole; záporné částky nepřevádějte na absolutní hodnotu.
 - Nepoužívejte nové DimensionBar pro ekonomickou kategorii; neodstraňujte deprecated aliasy před 3.0.0.
+- Hlavička přepisuje jen inherited hodnoty; ruční MD/DAL nikdy nepřepisujte. toJournalRow zapisuje jen inherited=false a kind z APP určuje value_id/vehicle_id.
 
 ### JournalLinesRecap
 
@@ -7897,3 +7921,98 @@ import { ZoomGrid } from "@/design-system/{slug}";
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+### DimensionBar
+
+```tsx
+import { DimensionBar } from "@/design-system/{slug}";
+```
+
+Řízené chipy pouze přidaných typů dimenzí. Typ s valueId=null je k vyplnění. Enter volí typ a otevře hodnoty; Delete/Backspace odebere chip, Escape zavře bez volby. loadOptions dodává APP; stale odpovědi se ignorují. inactive uložená hodnota je tlumená s bublinou a znovu se nenabízí. variant=bar nebo inline, výška control-h.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `types` | DimensionType[] | `—` |
+| `value` | DimensionValue[] | `—` |
+| `onChange` | (values: DimensionValue[]) => void | `—` |
+| `loadOptions` | LoadDimensionOptions | `—` |
+| `overrides` | Record<string, number> | `—` |
+| `onReset` | (typeId: string) => void | `—` |
+| `readOnly` | boolean | `—` |
+| `disabled` | boolean | `—` |
+| `variant` | bar  /  inline | `—` |
+| `size` | default  /  sm | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Dimenze B2:**
+
+```tsx
+<DimensionBar types={dimensionTypes} value={dimensions} onChange={setDimensions} loadOptions={loadDimensionOptions} overrides={overrides} />
+```
+
+**Avoid:**
+
+- Nezaměňujte dimenze s ekonomickými kategoriemi; nenabízejte ukončené hodnoty a nepersistujte data v komponentě.
+
+### MultiValueCell
+
+```tsx
+import { MultiValueCell } from "@/design-system/{slug}";
+```
+
+Obecná buňka první hodnoty + další, plný seznam v bublině myší i klávesnicí. values i additionalCount dodává APP; variant=all ukáže celý seznam.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `values` | MultiValueItem[] | `—` |
+| `additionalCount` | number | `—` |
+| `variant` | compact  /  all | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Dimenze B2:**
+
+```tsx
+<MultiValueCell values={dimensionLabels} additionalCount={otherRowsCount} />
+```
+
+**Avoid:**
+
+- Nezaměňujte dimenze s ekonomickými kategoriemi; nenabízejte ukončené hodnoty a nepersistujte data v komponentě.
+
+### DimensionFilter
+
+```tsx
+import { DimensionFilter } from "@/design-system/{slug}";
+```
+
+Adaptér dimenzí na stávající ColumnFilter: hledání a checklist, prázdný Set znamená bez filtru. APP dodává možnosti a provádí filtrování seznamu dokladů.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | DimensionOptionItem[] | `—` |
+| `selected` | Set<string> | `—` |
+| `onSelectionChange` | (value: Set<string>) => void | `—` |
+| `label` | string | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Dimenze B2:**
+
+```tsx
+<DimensionFilter label={type.label} options={options} selected={selectedIds} onSelectionChange={setSelectedIds} />
+```
+
+**Avoid:**
+
+- Nezaměňujte dimenze s ekonomickými kategoriemi; nenabízejte ukončené hodnoty a nepersistujte data v komponentě.

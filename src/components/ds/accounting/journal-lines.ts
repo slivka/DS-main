@@ -1,4 +1,10 @@
 /** Řádky zápisu · vlastní veřejný kontrakt a převody DB · bez persistence. */
+import {
+  dimensionsToRow,
+  dimensionsFromRow,
+  type JournalDimensions,
+  type JournalDimensionsRow,
+} from "./journal-dimensions-model";
 import { normalizeCategoryLine } from "./journal-category-model";
 export type JournalLineColumn =
   | "debitAccount"
@@ -74,6 +80,8 @@ export type JournalSharedSide = "debit" | "credit" | "both";
 
 export type JournalLine = {
   id: string;
+  /** Účinné hodnoty dimenzí; inherited=false je ruční výjimka. */
+  dimensions?: JournalDimensions;
   /** Automatický řádek zálohy dodaný APP, pouze prezentační štítek. */
   autoKind?: "advance" | "advance_fx";
   debitAccount?: string | null;
@@ -145,6 +153,8 @@ export type JournalLine = {
 
 /** Databázový řádek zápisu – jedna předkontace = jeden řádek. */
 export type JournalRow = {
+  /** Jen ruční hodnoty při zápisu, obě strany. */
+  dimensions?: JournalDimensionsRow;
   debit_account_id: string | null;
   credit_account_id: string | null;
   counter_account_id: string | null;
@@ -312,6 +322,7 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     (options.mainSide === "MD" ? credit : options.mainSide === "D" ? debit : null);
 
   return {
+    ...(line.dimensions ? { dimensions: dimensionsToRow(line.dimensions) } : {}),
     debit_account_id: debit,
     credit_account_id: credit,
     counter_account_id: counter,
@@ -394,6 +405,7 @@ export function toJournalRows(lines: JournalLine[], options: JournalRowOptions =
 export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
   return {
     id: id ?? `row-${Math.random().toString(36).slice(2, 10)}`,
+    ...(row.dimensions ? { dimensions: dimensionsFromRow(row.dimensions) } : {}),
     debitAccount: row.debit_account_id,
     creditAccount: row.credit_account_id,
     counterAccount: row.counter_account_id,

@@ -50,6 +50,8 @@ import type { InvoicePrintTexts } from "./invoice-print-texts";
 export type { InvoicePrintTexts, InvoicePrintTextKey } from "./invoice-print-texts";
 
 export interface DsTexts {
+  /** Obecné dimenze. */
+  dimensions: import("./dimension-texts").DimensionTexts;
   /** Tisk vydané faktury a jeho pole. */
   invoicePrint: InvoicePrintTexts;
   /** Obecné importní prvky. */

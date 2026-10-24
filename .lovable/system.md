@@ -1,5 +1,13 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Dimenze dokladů
+
+- DimensionBar dostává řízené types/value/onChange/loadOptions; typ k vyplnění má valueId=null. APP dodává aktivní typy, hotové popisky, inactive uložené hodnoty a kind=value/vehicle. Neodvozujte platnost vozidel v DS.
+- DocumentForm a JournalLinesEditor přijímají dimensionTypes, dimensions, onDimensionsChange, loadDimensionOptions a dimensionsBySide (výchozí true pro interní doklad). Stejné napojení platí pro faktury i zálohové listy.
+- applyHeaderDimensions odvozuje obě strany; hlavička přepisuje pouze inherited hodnoty, ruční inherited=false zachovává. Render nikdy nevolá onChange jen kvůli propsání; při jiné změně editor předá účinné hodnoty. Pro samostatné sestavení dat lze volat čistý model. toJournalRow posílá jen ruční neprázdné dimenze, podle kind do value_id/vehicle_id.
+- B1 dimensions:CategoryOption[] je jen deprecated alias categories do 3.0.0; B2 dimensions:DimensionValue[] je nový nezávislý význam. Rozlišení je strukturální, categories mají vždy přednost. Nová aplikace předává kategorie jen v categories.
+- Seznamy skládají MultiValueCell a DimensionFilter nad společným ColumnFilter; filtrování a persistence jsou odpovědností APP.
+
 ## Vytěžení a znaménka dokladů
 
 - Dobropis a storno zachovávají záporné částky na původních stranách zápisu. `toJournalRow` znaménko nemění; APP nesmí spoléhat na kladný amount. Nula běžného řádku je neplatná.

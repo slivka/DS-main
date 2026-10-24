@@ -14,6 +14,11 @@ import type { AccountOption } from "../account-select";
 import type { BankAccountOption } from "../bank-account-field";
 import type { BookOption } from "../book-select";
 import type { CurrencyOption } from "../currency-amount";
+import type {
+  DimensionType,
+  DimensionValue,
+  LoadDimensionOptions,
+} from "../../form/dimension-types";
 import type { DimensionOption } from "../dimension-select";
 import type { DocumentFields, DocumentTypeCode } from "../document-fields";
 import type { JournalLinesEditorProps } from "../journal-lines-editor";
@@ -78,8 +83,16 @@ export interface DocumentFormProps {
   partners?: PartnerOption[];
   /** Ekonomické kategorie; mají přednost před dimensions. */
   categories?: DimensionOption[];
-  /** @deprecated Od 2.138.0 categories; odstranění ve 3.0.0. */
-  dimensions?: DimensionOption[];
+  /** Hodnoty dimenzí B2; starý CategoryOption[] je deprecated alias categories do 3.0.0. */
+  dimensions?: DimensionOption[] | DimensionValue[];
+  /** Typy dimenzí lišty nad řádky. */
+  dimensionTypes?: DimensionType[];
+  /** Změna řízené hlavičky dimenzí. */
+  onDimensionsChange?: (values: DimensionValue[]) => void;
+  /** APP načítá vlastní hodnoty nebo vozidla. */
+  loadDimensionOptions?: LoadDimensionOptions;
+  /** Samostatné dimenze stran; výchozí true u internal. */
+  dimensionsBySide?: boolean;
   currencies?: CurrencyOption[];
   /** Účty nabídnuté aplikací. Pole samo výchozí účet nikdy nepředvyplňuje. */
   bankAccountOptions?: BankAccountOption[];
@@ -181,14 +194,7 @@ export interface DocumentFormProps {
   linesEditorProps?: Partial<
     Omit<
       JournalLinesEditorProps,
-      | "lines"
-      | "onChange"
-      | "accounts"
-      | "partners"
-      | "dimensions"
-      | "mode"
-      | "mainSide"
-      | "mainAccount"
+      "lines" | "onChange" | "accounts" | "partners" | "mode" | "mainSide" | "mainAccount"
     >
   >;
   roundingLimit?: number;

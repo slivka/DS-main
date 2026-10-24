@@ -1,3 +1,4 @@
+import { JournalDimensionsShowcase } from "./journal-dimensions-showcase";
 /** Ukázky řádků zápisu (preview-only). */
 import { JournalCategoriesShowcase } from "./journal-categories-showcase";
 import { useState } from "react";
@@ -198,6 +199,7 @@ export function JournalExamplesShowcase() {
 
   return (
     <>
+      <JournalDimensionsShowcase />
       <JournalCategoriesShowcase />
       <ShowcaseSection
         title="Řádky zápisu v Kč"
