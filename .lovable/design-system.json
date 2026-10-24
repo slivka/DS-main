@@ -13938,6 +13938,309 @@
       "antipatterns": [
         "Nevytvářejte vlastní paletu nebo ukládání mimo GridLayout.styles."
       ]
+    },
+    {
+      "name": "BankStatementReconcileView",
+      "file": "src/components/ds/bank/bank-statement-reconcile-view.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "storageKey",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "rows",
+          "type": "BankMovementRow[]",
+          "required": true
+        },
+        {
+          "name": "accounts",
+          "type": "AccountOption[]",
+          "required": true
+        },
+        {
+          "name": "partners",
+          "type": "{ id: string; name: string; ico?: string; active?: boolean }[]",
+          "required": true
+        }
+      ],
+      "usage": "Rozpis bankovního výpisu s rozpoznáním: filtry stavu, editovatelné řádky, návrh pod aktivním pohybem, souhrn a Ctrl/Cmd+Enter pro přijetí návrhu. Rozpoznání i zařazení provádí APP.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankStatementReconcileView rows={rows} summary={summary} currencySymbol={currency} accounts={accounts} partners={partners} onRowChange={update} onAcceptSuggestion={accept} onRejectSuggestion={reject} onFileSelected={file} />"
+        }
+      ],
+      "antipatterns": [
+        "Nerozpoznávejte ani nepárujte pohyby v DS; kandidáty a stav dodává APP."
+      ]
+    },
+    {
+      "name": "BankReconcileSuggestionRow",
+      "file": "src/components/ds/bank/bank-reconcile-suggestion.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "row",
+          "type": "BankMovementRow",
+          "required": true
+        }
+      ],
+      "usage": "Řádek návrhu pod pohybem: kandidát úhrady a akce Přijmout / Odmítnout.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankReconcileSuggestionRow row={row} currencySymbol={currency} onAccept={accept} onReject={reject} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte pro pohyb bez návrhu; komponenta pak nic nevykreslí."
+      ]
+    },
+    {
+      "name": "BankConnectionSettings",
+      "file": "src/components/ds/bank/bank-connection-settings.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "value",
+          "type": "BankConnectionValue",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Nastavení napojení banky (Fio): token se jen zadává a po uložení se nikdy nezobrazí, zobrazí se jen kdy a kdo ho uložil; interval, stahování od data a ochranná lhůta.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankConnectionSettings value={connection} onChange={setConnection} onTokenSave={saveToken} onTokenRemove={removeToken} />"
+        }
+      ],
+      "antipatterns": [
+        "Nikdy nezobrazujte, nelogujte ani nepředvyplňujte uložený token."
+      ]
+    },
+    {
+      "name": "BankConnectionBanner",
+      "file": "src/components/ds/bank/bank-connection-banner.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "state",
+          "type": "BankConnectionBannerState",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Pruh stavu napojení banky (chyba, neplatný token, čekání) s akcemi dodanými APP.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankConnectionBanner state=\"tokenInvalid\" onSettings={openSettings} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte do textu pruhu token ani technické chyby banky."
+      ]
+    },
+    {
+      "name": "BankOngoingBadge",
+      "file": "src/components/ds/bank/bank-connection-banner.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Štítek průběžného výpisu stahovaného z banky s vysvětlením v bublině.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankOngoingBadge />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte pro uzavřený výpis."
+      ]
+    },
+    {
+      "name": "BankRuleList",
+      "file": "src/components/ds/bank/bank-rule-list.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "storageKey",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "rules",
+          "type": "BankRule[]",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Seřazený seznam pravidel účtování banky na DataGrid: pořadí, podmínky, výsledek, duplikace a vypnutí.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankRuleList rules={rules} onOpen={edit} onDuplicate={duplicate} onToggle={toggle} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevyhodnocujte pravidla v DS; pořadí a shodu řeší APP."
+      ]
+    },
+    {
+      "name": "BankRuleDialog",
+      "file": "src/components/ds/bank/bank-rule-dialog.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": true
+        }
+      ],
+      "usage": "Dialog pravidla banky: podmínky (protiúčet, text, částka, směr, knihy) a výsledek (účet, partner, popis).",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<BankRuleDialog open={open} value={rule} onChange={setRule} onSave={save} onCancel={close} accounts={accounts} books={books} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepřidávejte vlastní select; účty vybírejte AccountSelect s bookkeepingMode."
+      ]
+    },
+    {
+      "name": "PaymentOrderBatchView",
+      "file": "src/components/ds/bank/payment-order-batch-view.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "storageKey",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "rows",
+          "type": "PaymentOrderRow[]",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Dávka platebních příkazů: výběr závazků, účet partnera jen z dodaných účtů, součty podle měn, kontroly blokující soubor a akce Vytvořit soubor / Odeslat.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<PaymentOrderBatchView rows={rows} partnerAccounts={accounts} formats={formats} onCreateFile={create} onSend={send} />"
+        }
+      ],
+      "antipatterns": [
+        "Nesčítejte částky různých měn do jednoho součtu."
+      ]
+    },
+    {
+      "name": "PaymentOrderSendDialog",
+      "file": "src/components/ds/bank/payment-order-send-dialog.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void; count: number; amounts: string[]; payerAccount: string; approver?: { name: string",
+          "required": true
+        }
+      ],
+      "usage": "Potvrzení odeslání plateb do banky opsáním textu; počet a součty podle měn dodává APP.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<PaymentOrderSendDialog open={open} onOpenChange={setOpen} bankName=\"Fio\" amounts={amounts} onConfirm={send} />"
+        }
+      ],
+      "antipatterns": [
+        "Neodesílejte platby bez opsání potvrzovacího textu."
+      ]
+    },
+    {
+      "name": "PaymentOrderBatchList",
+      "file": "src/components/ds/bank/payment-order-batch-list.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "storageKey",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "batches",
+          "type": "PaymentBatch[]",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Seznam dávek plateb se stavem, staženým souborem a zrušením s povinným důvodem.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<PaymentOrderBatchList batches={batches} onOpen={open} onDownload={download} onCancel={cancel} />"
+        }
+      ],
+      "antipatterns": [
+        "Nerušte odeslanou dávku bez důvodu."
+      ]
+    },
+    {
+      "name": "PaymentSentBadge",
+      "file": "src/components/ds/bank/payment-order-batch-list.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Štítek „Odesláno“ u závazku zařazeného do odeslané dávky.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<PaymentSentBadge />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte jako stav úhrady; zaplacení potvrzuje výpis."
+      ]
     }
   ],
   "assets": [
