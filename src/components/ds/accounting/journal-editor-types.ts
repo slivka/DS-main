@@ -9,6 +9,7 @@ import type * as React from "react";
 import type { AccountOption } from "./account-select";
 import type { CategoryOption } from "./category-select";
 import type { AllowedCategories } from "./journal-category-model";
+import type { DimensionType, DimensionValue, LoadDimensionOptions } from "../form/dimension-types";
 import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
 import type { UnitOption } from "./unit-select";
@@ -148,8 +149,16 @@ export interface JournalLinesEditorProps {
   categoryBySide?: boolean;
   /** Povolené uzly účtu včetně potomků; null = všechny. */
   allowedCategories?: AllowedCategories;
-  /** @deprecated Od 2.138.0 categories; odstranění ve 3.0.0. */
-  dimensions?: DimensionOption[];
+  /** Hodnoty B2; CategoryOption[] je @deprecated B1 alias categories do 3.0.0. */
+  dimensions?: DimensionOption[] | DimensionValue[];
+  /** Typy skutečných dimenzí B2, oddělené od ekonomických kategorií. */
+  dimensionTypes?: DimensionType[];
+  /** Změna dimenzí hlavičky. */
+  onDimensionsChange?: (values: DimensionValue[]) => void;
+  /** Hledání hodnot a vozidel dodané APP. */
+  loadDimensionOptions?: LoadDimensionOptions;
+  /** Dvě lišty MD/DAL; výchozí true pro internal. */
+  dimensionsBySide?: boolean;
   /** Partneři. */
   partners?: PartnerOption[];
   /** Měrné jednotky. */

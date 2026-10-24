@@ -53,6 +53,8 @@ import { useJournalVatGroups } from "./useJournalVatGroups";
 import { inheritedLineValues, useJournalPins } from "./useJournalPins";
 import { vatCodeCellLabel } from "./vat-code-labels";
 import { useJournalCategories } from "./use-journal-categories";
+import { applyHeaderDimensions } from "./journal-dimensions-model";
+import { headerDimensionValues } from "./journal-dimension-inputs";
 import { journalCategoryInputs } from "./journal-category-inputs";
 import { categoryLabel, reconcileCategories, type CategoryColumn } from "./journal-category-model";
 import { CATEGORY_COLUMNS } from "./journal-lines-model";
@@ -63,7 +65,9 @@ export function useJournalEditorState(
   props: JournalLinesEditorProps,
   forwardedRef: React.ForwardedRef<HTMLDivElement>,
 ) {
-  props = journalCategoryInputs(props);
+  const headerDimensions = headerDimensionValues(props.dimensions, Boolean(props.dimensionTypes));
+  const originalChange = props.onChange;
+  props = journalCategoryInputs({ ...props, lines: applyHeaderDimensions(props.lines, headerDimensions), onChange: (next) => originalChange(applyHeaderDimensions(next, headerDimensions)) });
   const {
     lines,
     onChange,

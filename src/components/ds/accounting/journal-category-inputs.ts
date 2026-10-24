@@ -1,5 +1,6 @@
 /** Vstupy kategorií · vlastní přednost nových názvů · nesmí měnit původní props. */
 import type { JournalLinesEditorProps } from "./journal-editor-types";
+import { legacyDimensionCategories } from "./journal-dimension-inputs";
 import { normalizeCategoryLine } from "./journal-category-model";
 /** Převod uložených id sloupců a editovatelných polí. */
 export function categoryColumnAlias(column: string) {
@@ -28,7 +29,7 @@ export function journalCategoryInputs(props: JournalLinesEditorProps): JournalLi
         lines.map((line) => {
           const original = props.lines.find((item) => item.id === line.id);
           if (
-            props.dimensions === undefined &&
+            legacyDimensionCategories(props.dimensions).length === 0 &&
             !original?.dimensionId &&
             !original?.debitDimensionId &&
             !original?.creditDimensionId
@@ -43,7 +44,7 @@ export function journalCategoryInputs(props: JournalLinesEditorProps): JournalLi
         }),
       ),
     lines: props.lines.map(normalizeCategoryLine),
-    categories: props.categories ?? props.dimensions ?? [],
+    categories: props.categories ?? legacyDimensionCategories(props.dimensions),
     onEditCategory: props.onEditCategory ?? props.onEditDimension,
     onCreateCategory: props.onCreateCategory ?? props.onCreateDimension,
     categoryRequired: props.categoryRequired ?? props.dimensionRequired,

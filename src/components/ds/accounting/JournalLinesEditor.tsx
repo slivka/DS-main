@@ -22,6 +22,8 @@ import { JournalDifferenceBar } from "./journal-difference-bar";
 import { JournalVatRecap } from "./journal-vat-recap";
 import { vatSummaryWithGroupTax } from "./journal-vat-summary-groups";
 import { JournalRow } from "./JournalRow";
+import { JournalHeaderDimensions } from "./journal-dimensions-view";
+import { legacyDimensionCategories } from "./journal-dimension-inputs";
 import { JournalToolbar } from "./JournalToolbar";
 import { JournalEditorContext, useJournalEditor } from "./journal-editor-context";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
@@ -223,6 +225,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             onKeyDown={keyboard.onRootKeyDown}
           >
             <JournalToolbar />
+            <JournalHeaderDimensions />
             <JournalGrid />
             <JournalDeductionTotals />
             <JournalVatRecap />
@@ -243,7 +246,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
                   : props.lines
               }
               accounts={props.accounts}
-              categories={props.categories ?? props.dimensions ?? []}
+              categories={props.categories ?? legacyDimensionCategories(props.dimensions)}
               documentCurrency={props.documentCurrency}
               documentCurrencySymbol={props.documentCurrencySymbol}
               homeCurrency={props.homeCurrency}
