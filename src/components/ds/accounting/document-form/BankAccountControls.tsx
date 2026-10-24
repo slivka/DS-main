@@ -183,8 +183,14 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
         span={props.paymentMethodOptions ? 14 : 20}
       >
         {props.lockedReason ? (
-          <FieldValue id="document-companyBankAccountId" aria-labelledby="document-companyBankAccountId-label" lockedReason={props.lockedReason}>
-            {props.options.find(option => option.id === props.value)?.account ?? props.value ?? ""}
+          <FieldValue
+            id="document-companyBankAccountId"
+            aria-labelledby="document-companyBankAccountId-label"
+            lockedReason={props.lockedReason}
+          >
+            {props.options.find((option) => option.id === props.value)?.account ??
+              props.value ??
+              ""}
           </FieldValue>
         ) : props.disabledReason ? (
           <LockedAccountValue
@@ -213,17 +219,26 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
           span={6}
         >
           {props.paymentMethodLockedReason ? (
-            <FieldValue id="document-paymentMethodId" aria-labelledby="document-paymentMethodId-label" lockedReason={props.paymentMethodLockedReason}>
-              {props.paymentMethodOptions.find(option => option.value === props.paymentMethodId)?.label ?? props.paymentMethodId ?? ""}
+            <FieldValue
+              id="document-paymentMethodId"
+              aria-labelledby="document-paymentMethodId-label"
+              lockedReason={props.paymentMethodLockedReason}
+            >
+              {props.paymentMethodOptions.find((option) => option.value === props.paymentMethodId)
+                ?.label ??
+                props.paymentMethodId ??
+                ""}
             </FieldValue>
-          ) : <OptionSelect
-            id="document-paymentMethodId"
-            value={props.paymentMethodId}
-            onChange={(id) => props.onPaymentMethodChange?.(id)}
-            options={props.paymentMethodOptions}
-            searchable
-            disabled={props.paymentMethodDisabled}
-          />}
+          ) : (
+            <OptionSelect
+              id="document-paymentMethodId"
+              value={props.paymentMethodId}
+              onChange={(id) => props.onPaymentMethodChange?.(id)}
+              options={props.paymentMethodOptions}
+              searchable
+              disabled={props.paymentMethodDisabled}
+            />
+          )}
         </Field>
       ) : null}
     </>
