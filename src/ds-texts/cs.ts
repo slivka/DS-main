@@ -1,3 +1,4 @@
+import { DIMENSION_TEXTS_CS } from "./dimension-texts";
 import { PRINT_TEXTS_CS } from "./cs-print";
 import { INVOICE_PRINT_CS } from "./invoice-print-texts";
 /**
@@ -27,6 +28,7 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  dimensions: DIMENSION_TEXTS_CS,
   invoicePrint: INVOICE_PRINT_CS,
   fileImport: FILE_IMPORT_CS,
   advances: ADVANCES_CS,
