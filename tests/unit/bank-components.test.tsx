@@ -15,7 +15,11 @@ import {
   PaymentSentBadge,
 } from "../../src/components/ds/bank/payment-order-batch-list";
 import { PaymentOrderSendDialog } from "../../src/components/ds/bank/payment-order-send-dialog";
-import type { BankConnectionValue, BankMovementRow, BankRule } from "../../src/components/ds/bank/bank-types";
+import type {
+  BankConnectionValue,
+  BankMovementRow,
+  BankRule,
+} from "../../src/components/ds/bank/bank-types";
 import { DS_TEXTS_CS } from "../../src/ds-texts";
 
 afterEach(cleanup);
