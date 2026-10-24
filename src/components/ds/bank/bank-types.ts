@@ -121,12 +121,7 @@ export interface BankReconcileSummary {
 }
 
 /** Stav spojení s bankou. */
-export type BankConnectionStatus =
-  | "active"
-  | "tokenError"
-  | "error"
-  | "paused"
-  | "disconnected";
+export type BankConnectionStatus = "active" | "tokenError" | "error" | "paused" | "disconnected";
 
 /** Hodnota napojení knihy na banku. */
 export interface BankConnectionValue {

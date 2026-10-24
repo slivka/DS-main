@@ -44,7 +44,10 @@ export function PaymentOrderBatchList({
 }: PaymentOrderBatchListProps) {
   const t = useDsTexts().bankPayments;
   const { confirm, confirmDialog } = useConfirmDialog();
-  const statusConfig: Record<PaymentBatchStatus, { label: string; tone: "neutral" | "info" | "success" | "warning" | "danger" }> = {
+  const statusConfig: Record<
+    PaymentBatchStatus,
+    { label: string; tone: "neutral" | "info" | "success" | "warning" | "danger" }
+  > = {
     created: { label: t.statusCreated, tone: "neutral" },
     downloaded: { label: t.statusDownloaded, tone: "info" },
     sent: { label: t.statusSent, tone: "info" },

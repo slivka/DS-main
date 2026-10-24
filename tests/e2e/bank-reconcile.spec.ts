@@ -35,7 +35,10 @@ test.describe("Banka – rozpis výpisu a dávka plateb", () => {
     const fileSelected = view.getByRole("button", { name: "Zařadit vybrané" });
     await expect(fileSelected).toBeDisabled();
     await view.getByRole("button", { name: "Vybrat více" }).click();
-    await view.getByRole("row", { name: /Poplatek za vedení účtu/ }).getByRole("checkbox").click();
+    await view
+      .getByRole("row", { name: /Poplatek za vedení účtu/ })
+      .getByRole("checkbox")
+      .click();
     await expect(fileSelected).toBeEnabled();
   });
 
@@ -45,12 +48,21 @@ test.describe("Banka – rozpis výpisu a dávka plateb", () => {
     await batch.getByRole("button", { name: "Vybrat více" }).click();
 
     // Řádek s chybou (chybí účet partnera) blokuje vytvoření souboru.
-    await batch.getByRole("row", { name: /Karet s\.r\.o\./ }).getByRole("checkbox").click();
+    await batch
+      .getByRole("row", { name: /Karet s\.r\.o\./ })
+      .getByRole("checkbox")
+      .click();
     await expect(batch.getByRole("button", { name: "Vytvořit soubor příkazu" })).toBeDisabled();
 
     // Bezchybný řádek soubor povolí.
-    await batch.getByRole("row", { name: /Karet s\.r\.o\./ }).getByRole("checkbox").click();
-    await batch.getByRole("row", { name: /Alza a\.s\./ }).getByRole("checkbox").click();
+    await batch
+      .getByRole("row", { name: /Karet s\.r\.o\./ })
+      .getByRole("checkbox")
+      .click();
+    await batch
+      .getByRole("row", { name: /Alza a\.s\./ })
+      .getByRole("checkbox")
+      .click();
     await expect(batch.getByRole("button", { name: "Vytvořit soubor příkazu" })).toBeEnabled();
 
     // Dialog odeslání vyžaduje opsání textu.

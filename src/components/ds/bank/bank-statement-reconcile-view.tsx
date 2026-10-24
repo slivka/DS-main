@@ -135,11 +135,23 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
     { status: "unrecognized", count: counts.get("unrecognized") ?? 0 },
     { status: "filed", count: counts.get("filed") ?? 0 },
   ];
-  const filterLabels = [t.filterAll, t.filterCertain, t.filterSuggestions, t.filterUnrecognized, t.filterFiled];
+  const filterLabels = [
+    t.filterAll,
+    t.filterCertain,
+    t.filterSuggestions,
+    t.filterUnrecognized,
+    t.filterFiled,
+  ];
 
   const columns: DataGridColumn<BankMovementRow>[] = [
     { id: "order", label: t.order, value: (r) => r.order, numeric: true, width: 64 },
-    { id: "date", label: t.date, value: (r) => formatDate(r.date), sortValue: (r) => r.date, fitContent: true },
+    {
+      id: "date",
+      label: t.date,
+      value: (r) => formatDate(r.date),
+      sortValue: (r) => r.date,
+      fitContent: true,
+    },
     {
       id: "direction",
       label: t.direction,
@@ -171,9 +183,7 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
       render: (r) => (
         <span className="block min-w-0">
           <span className="block truncate font-mono tabular-nums">{r.counterAccount}</span>
-          <span className="block truncate text-xs text-muted-foreground">
-            {r.counterpartyName}
-          </span>
+          <span className="block truncate text-xs text-muted-foreground">{r.counterpartyName}</span>
         </span>
       ),
     },
@@ -297,137 +307,162 @@ export function BankStatementReconcileView(props: BankStatementReconcileViewProp
 
   return (
     <TooltipProvider>
-    <div
-      data-slot="bank-statement-reconcile-view"
-      className="min-w-0 space-y-3"
-      onKeyDown={(event) => {
-        if (event.defaultPrevented || !(event.ctrlKey || event.metaKey)) return;
-        if (event.key !== "Enter" || !activeRow) return;
-        const row = rows.find((r) => r.id === activeRow);
-        if (row?.suggestion && editable(row)) {
-          event.preventDefault();
-          onAcceptSuggestion(row.id, row.suggestion.candidateId ?? undefined);
-        }
-      }}
-    >
-      {importInfo ? (
-        <NoticeBar tone="info">
-          <span className="flex flex-wrap items-center gap-2">
-            {importInfo.kind === "file"
-              ? t.importFile.replace("{date}", importInfo.date).replace("{file}", importInfo.file)
-              : t.importApi
-                  .replace("{date}", importInfo.date)
-                  .replace("{count}", String(importInfo.newCount))}
-            {importInfo.kind === "file" && importInfo.onDownload ? (
-              <Button type="button" variant="link" className="h-auto p-0" onClick={importInfo.onDownload}>
-                {t.downloadOriginal}
+      <div
+        data-slot="bank-statement-reconcile-view"
+        className="min-w-0 space-y-3"
+        // Zachycení: grid Ctrl+Enter sám spotřebuje, přijetí návrhu má u řádku s návrhem přednost.
+        onKeyDownCapture={(event) => {
+          if (!(event.ctrlKey || event.metaKey)) return;
+          if (event.key !== "Enter" || !activeRow) return;
+          const row = rows.find((r) => r.id === activeRow);
+          if (row?.suggestion && editable(row)) {
+            event.preventDefault();
+            event.stopPropagation();
+            onAcceptSuggestion(row.id, row.suggestion.candidateId ?? undefined);
+          }
+        }}
+      >
+        {importInfo ? (
+          <NoticeBar tone="info">
+            <span className="flex flex-wrap items-center gap-2">
+              {importInfo.kind === "file"
+                ? t.importFile.replace("{date}", importInfo.date).replace("{file}", importInfo.file)
+                : t.importApi
+                    .replace("{date}", importInfo.date)
+                    .replace("{count}", String(importInfo.newCount))}
+              {importInfo.kind === "file" && importInfo.onDownload ? (
+                <Button
+                  type="button"
+                  variant="link"
+                  className="h-auto p-0"
+                  onClick={importInfo.onDownload}
+                >
+                  {t.downloadOriginal}
+                </Button>
+              ) : null}
+              {importInfo.kind === "file" && importInfo.onCancel ? (
+                <Button
+                  type="button"
+                  variant="link"
+                  className="h-auto p-0"
+                  onClick={importInfo.onCancel}
+                >
+                  {t.cancelImport}
+                </Button>
+              ) : null}
+            </span>
+          </NoticeBar>
+        ) : null}
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t.status}>
+          {filters.map((f, i) => (
+            <Button
+              key={f.status ?? "all"}
+              type="button"
+              size="sm"
+              variant={statusFilter === f.status ? "default" : "outline"}
+              aria-pressed={statusFilter === f.status}
+              onClick={() => setStatusFilter(f.status)}
+            >
+              {filterLabels[i]} ({f.count})
+            </Button>
+          ))}
+          <span className="ml-auto flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={!certainCount || busy || readOnly}
+              onClick={onFileCertain}
+            >
+              {t.fileAllCertain.replace("{count}", String(certainCount))}
+            </Button>
+            {onAcceptSelected ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!selected.length || busy || readOnly}
+                onClick={() => onAcceptSelected(selected)}
+              >
+                {t.acceptSelected}
               </Button>
             ) : null}
-            {importInfo.kind === "file" && importInfo.onCancel ? (
-              <Button type="button" variant="link" className="h-auto p-0" onClick={importInfo.onCancel}>
-                {t.cancelImport}
-              </Button>
-            ) : null}
-          </span>
-        </NoticeBar>
-      ) : null}
-      <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t.status}>
-        {filters.map((f, i) => (
-          <Button
-            key={f.status ?? "all"}
-            type="button"
-            size="sm"
-            variant={statusFilter === f.status ? "default" : "outline"}
-            aria-pressed={statusFilter === f.status}
-            onClick={() => setStatusFilter(f.status)}
-          >
-            {filterLabels[i]} ({f.count})
-          </Button>
-        ))}
-        <span className="ml-auto flex flex-wrap items-center gap-2">
-          <Button type="button" size="sm" disabled={!certainCount || busy || readOnly} onClick={onFileCertain}>
-            {t.fileAllCertain.replace("{count}", String(certainCount))}
-          </Button>
-          {onAcceptSelected ? (
             <Button
               type="button"
               size="sm"
               variant="outline"
               disabled={!selected.length || busy || readOnly}
-              onClick={() => onAcceptSelected(selected)}
+              onClick={() => onFileSelected(selected)}
             >
-              {t.acceptSelected}
+              {t.fileSelected}
             </Button>
-          ) : null}
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            disabled={!selected.length || busy || readOnly}
-            onClick={() => onFileSelected(selected)}
-          >
-            {t.fileSelected}
-          </Button>
-          <Button type="button" size="sm" variant="outline" disabled={busy || readOnly} onClick={onRecognize}>
-            {t.recognizeAgain}
-          </Button>
-        </span>
-      </div>
-      <DataGrid
-        storageKey={storageKey}
-        title={t.title}
-        rows={filtered}
-        columns={columns}
-        rowKey={(r) => r.id}
-        selectable
-        selectedKeys={selected}
-        onSelectedKeysChange={setSelected}
-        onRowClick={(r) => setActiveRow(r.id)}
-        onRowOpen={(r) => {
-          if (r.status === "filed" && r.documentId) onOpenDocument(r.documentId);
-        }}
-        emptyTitle={t.empty}
-        rowClassName={(r) => (r.status === "filed" ? "text-muted-foreground" : undefined)}
-        searchText={(r) => `${r.message ?? ""} ${r.counterpartyName ?? ""} ${r.vs ?? ""}`}
-      />
-      {activeRow
-        ? (() => {
-            const row = rows.find((r) => r.id === activeRow);
-            if (!row?.suggestion || row.status === "filed") return null;
-            return (
-              <BankReconcileSuggestionRow
-                row={row}
-                currencySymbol={summary.currencySymbol}
-                readOnly={readOnly}
-                onAccept={onAcceptSuggestion}
-                onReject={onRejectSuggestion}
-                onCandidateChange={(rowId, candidateId) =>
-                  onPatch(rowId, { suggestion: { ...row.suggestion!, candidateId } })
-                }
-              />
-            );
-          })()
-        : null}
-      <div
-        data-slot="bank-reconcile-summary"
-        className="flex flex-wrap items-center gap-x-6 gap-y-1 rounded-lg border bg-muted/40 px-4 py-2 text-sm"
-      >
-        {summaryItems.map(([label, value, isDifference]) => (
-          <span key={label} className="flex items-baseline gap-1">
-            <span className="text-muted-foreground">{label}</span>
-            <span
-              className={cn(
-                "font-mono tabular-nums",
-                isDifference && value !== 0 ? "font-semibold text-destructive" : amountClass(value),
-              )}
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={busy || readOnly}
+              onClick={onRecognize}
             >
-              {formatAmount(value)} {summary.currencySymbol}
-            </span>
+              {t.recognizeAgain}
+            </Button>
           </span>
-        ))}
+        </div>
+        <DataGrid
+          storageKey={storageKey}
+          title={t.title}
+          rows={filtered}
+          columns={columns}
+          rowKey={(r) => r.id}
+          selectable
+          selectedKeys={selected}
+          onSelectedKeysChange={setSelected}
+          onRowClick={(r) => setActiveRow(r.id)}
+          onRowOpen={(r) => {
+            if (r.status === "filed" && r.documentId) onOpenDocument(r.documentId);
+          }}
+          emptyTitle={t.empty}
+          rowClassName={(r) => (r.status === "filed" ? "text-muted-foreground" : undefined)}
+          searchText={(r) => `${r.message ?? ""} ${r.counterpartyName ?? ""} ${r.vs ?? ""}`}
+        />
+        {activeRow
+          ? (() => {
+              const row = rows.find((r) => r.id === activeRow);
+              if (!row?.suggestion || row.status === "filed") return null;
+              return (
+                <BankReconcileSuggestionRow
+                  row={row}
+                  currencySymbol={summary.currencySymbol}
+                  readOnly={readOnly}
+                  onAccept={onAcceptSuggestion}
+                  onReject={onRejectSuggestion}
+                  onCandidateChange={(rowId, candidateId) =>
+                    onPatch(rowId, { suggestion: { ...row.suggestion!, candidateId } })
+                  }
+                />
+              );
+            })()
+          : null}
+        <div
+          data-slot="bank-reconcile-summary"
+          className="flex flex-wrap items-center gap-x-6 gap-y-1 rounded-lg border bg-muted/40 px-4 py-2 text-sm"
+        >
+          {summaryItems.map(([label, value, isDifference]) => (
+            <span key={label} className="flex items-baseline gap-1">
+              <span className="text-muted-foreground">{label}</span>
+              <span
+                className={cn(
+                  "font-mono tabular-nums",
+                  isDifference && value !== 0
+                    ? "font-semibold text-destructive"
+                    : amountClass(value),
+                )}
+              >
+                {formatAmount(value)} {summary.currencySymbol}
+              </span>
+            </span>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">{t.acceptShortcut}</p>
       </div>
-      <p className="text-xs text-muted-foreground">{t.acceptShortcut}</p>
-    </div>
     </TooltipProvider>
   );
 }

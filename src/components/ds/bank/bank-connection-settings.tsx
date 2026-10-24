@@ -13,13 +13,7 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { NoticeBar } from "../feedback/notice-bar";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { SectionHeading } from "../layout/section-heading";
 import { StatusBadge } from "../data-display/status-badge";
 import { TooltipProvider } from "../../ui/tooltip";
@@ -29,8 +23,10 @@ import { cn } from "../../../lib/utils";
 import type { BankConnectionValue } from "./bank-types";
 
 /** Props sekce napojení na banku. */
-export interface BankConnectionSettingsProps
-  extends Omit<ComponentPropsWithoutRef<"section">, "onChange"> {
+export interface BankConnectionSettingsProps extends Omit<
+  ComponentPropsWithoutRef<"section">,
+  "onChange"
+> {
   /** Hodnota napojení. */
   value: BankConnectionValue;
   /** Změna hodnoty. */
@@ -109,208 +105,219 @@ export function BankConnectionSettings({
 
   return (
     <TooltipProvider>
-    <section
-      {...rest}
-      data-slot="bank-connection-settings"
-      className={cn("min-w-0 space-y-4", className)}
-    >
-      <SectionHeading>{t.title}</SectionHeading>
-      <div className="grid max-w-xl gap-3">
-        <OptionSelect
-          ariaLabel={t.method}
-          value={value.method}
-          onChange={(method) => onChange({ ...value, method: method as "manual" | "fio" })}
-          options={[
-            { value: "manual", label: t.methodManual },
-            { value: "fio", label: t.methodFio },
-            { value: "other", label: `${t.methodOther} (${t.comingSoon})`, disabled: true },
-          ]}
-          allowEmpty={false}
-          disabled={readOnly}
-        />
-        {value.method === "fio" ? (
-          <>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-muted-foreground">{t.token}</span>
-              <FieldValue>
-                {value.tokenSaved
-                  ? t.tokenSaved
-                      .replace("{date}", value.tokenSavedAt ?? "")
-                      .replace("{who}", value.tokenSavedBy ?? "")
-                  : t.tokenMissing}
-              </FieldValue>
-              {!readOnly ? (
-                <Button type="button" variant="outline" size="sm" onClick={() => setTokenOpen(true)}>
-                  {t.changeToken}
-                </Button>
-              ) : null}
-            </div>
-            {value.tokenValidTo ? (
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">{t.tokenValidTo}</span>
-                <FieldValue>{value.tokenValidTo}</FieldValue>
-              </div>
-            ) : null}
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm text-muted-foreground">{t.fetchSchedule}</span>
-              <span className="text-sm">{t.fetchDaily}</span>
-              <TimeInputRight
-                value={value.fetchTime}
-                onChange={(event) => onChange({ ...value, fetchTime: event.target.value })}
-                disabled={readOnly}
-                aria-label={t.fetchDaily}
-              />
-              <CheckboxField
-                checked={value.fetchWorkdays}
-                onCheckedChange={(fetchWorkdays) => onChange({ ...value, fetchWorkdays })}
-                label={t.fetchWorkdays}
-                disabled={readOnly}
-              />
-            </div>
-            <div className="grid max-w-xs gap-1">
-              <span className="text-sm text-muted-foreground">{t.fetchFrom}</span>
-              <DateField
-                value={value.fetchFrom}
-                onChange={(fetchFrom) => onChange({ ...value, fetchFrom })}
-                disabled={readOnly}
-                error={fetchFromTooOld ? t.fetchFromTooOld : undefined}
-              />
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">{t.statements}</span>
-              <FieldValue>{t.statementsNote}</FieldValue>
-            </div>
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="text-muted-foreground">{t.status}</span>
-              <StatusBadge
-                status={value.status}
-                config={{
-                  active: { label: statusLabels.active, tone: "success" },
-                  tokenError: { label: statusLabels.tokenError, tone: "danger" },
-                  error: { label: statusLabels.error, tone: "danger" },
-                  paused: { label: statusLabels.paused, tone: "warning" },
-                  disconnected: { label: statusLabels.disconnected, tone: "neutral" },
-                }}
-              />
-              {value.lastError ? (
-                <span className="text-destructive">
-                  {t.lastError}: {value.lastError}
-                </span>
-              ) : null}
-              {value.lastSuccess ? (
-                <span className="text-muted-foreground">
-                  {t.lastSuccess}: {value.lastSuccess}
-                </span>
-              ) : null}
-            </div>
-            {!readOnly ? (
+      <section
+        {...rest}
+        data-slot="bank-connection-settings"
+        className={cn("min-w-0 space-y-4", className)}
+      >
+        <SectionHeading>{t.title}</SectionHeading>
+        <div className="grid max-w-xl gap-3">
+          <OptionSelect
+            ariaLabel={t.method}
+            value={value.method}
+            onChange={(method) => onChange({ ...value, method: method as "manual" | "fio" })}
+            options={[
+              { value: "manual", label: t.methodManual },
+              { value: "fio", label: t.methodFio },
+              { value: "other", label: `${t.methodOther} (${t.comingSoon})`, disabled: true },
+            ]}
+            allowEmpty={false}
+            disabled={readOnly}
+          />
+          {value.method === "fio" ? (
+            <>
               <div className="flex flex-wrap items-center gap-2">
-                {onTest ? (
-                  <Button type="button" variant="outline" size="sm" disabled={busy} onClick={onTest}>
-                    {t.testConnection}
-                  </Button>
-                ) : null}
-                {onFetchNow ? (
-                  <DisabledReasonTooltip
-                    blocked={cooldownSeconds > 0}
-                    content={
-                      cooldownSeconds
-                        ? t.fetchCooldown.replace("{seconds}", String(cooldownSeconds))
-                        : undefined
-                    }
-                  >
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={busy || cooldownSeconds > 0}
-                      onClick={onFetchNow}
-                    >
-                      {cooldownSeconds
-                        ? t.fetchCooldown.replace("{seconds}", String(cooldownSeconds))
-                        : t.fetchNow}
-                    </Button>
-                  </DisabledReasonTooltip>
-                ) : null}
-                {onPausedChange ? (
+                <span className="text-sm text-muted-foreground">{t.token}</span>
+                <FieldValue>
+                  {value.tokenSaved
+                    ? t.tokenSaved
+                        .replace("{date}", value.tokenSavedAt ?? "")
+                        .replace("{who}", value.tokenSavedBy ?? "")
+                    : t.tokenMissing}
+                </FieldValue>
+                {!readOnly ? (
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    disabled={busy}
-                    onClick={() => onPausedChange(!paused)}
+                    onClick={() => setTokenOpen(true)}
                   >
-                    {paused ? t.resume : t.pause}
-                  </Button>
-                ) : null}
-                {onDisconnect && connected ? (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    disabled={busy}
-                    onClick={() =>
-                      confirm({
-                        title: t.disconnect,
-                        description: t.disconnectConfirm,
-                        confirmLabel: t.disconnect,
-                        destructive: true,
-                        onConfirm: () => onDisconnect(),
-                      })
-                    }
-                  >
-                    {t.disconnect}
+                    {t.changeToken}
                   </Button>
                 ) : null}
               </div>
-            ) : null}
-          </>
-        ) : null}
-      </div>
-      <Dialog open={tokenOpen} onOpenChange={setTokenOpen}>
-        <DialogContent className="sm:max-w-md" data-slot="bank-token-dialog">
-          <DialogHeader>
-            <DialogTitle>{t.tokenDialogTitle}</DialogTitle>
-          </DialogHeader>
-          <form
-            className="space-y-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void saveToken();
-            }}
-          >
-            <Input
-              type="password"
-              autoComplete="new-password"
-              aria-label={t.tokenField}
-              value={tokenValue}
-              onChange={(event) => setTokenValue(event.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">{t.tokenHint}</p>
-            <OptionSelect
-              ariaLabel={t.tokenKind}
-              value={tokenKind}
-              onChange={(kind) => setTokenKind(kind as "read" | "payments")}
-              options={[
-                { value: "read", label: t.tokenKindRead },
-                { value: "payments", label: t.tokenKindPayments },
-              ]}
-              allowEmpty={false}
-            />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setTokenOpen(false)}>
-                {ds.confirmByTyping.cancel}
-              </Button>
-              <Button type="submit" disabled={!tokenValue.trim()}>
-                {t.changeToken}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-      {confirmDialog}
-      {fetchFromTooOld ? <NoticeBar tone="danger">{t.fetchFromTooOld}</NoticeBar> : null}
-    </section>
+              {value.tokenValidTo ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">{t.tokenValidTo}</span>
+                  <FieldValue>{value.tokenValidTo}</FieldValue>
+                </div>
+              ) : null}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-sm text-muted-foreground">{t.fetchSchedule}</span>
+                <span className="text-sm">{t.fetchDaily}</span>
+                <TimeInputRight
+                  value={value.fetchTime}
+                  onChange={(event) => onChange({ ...value, fetchTime: event.target.value })}
+                  disabled={readOnly}
+                  aria-label={t.fetchDaily}
+                />
+                <CheckboxField
+                  checked={value.fetchWorkdays}
+                  onCheckedChange={(fetchWorkdays) => onChange({ ...value, fetchWorkdays })}
+                  label={t.fetchWorkdays}
+                  disabled={readOnly}
+                />
+              </div>
+              <div className="grid max-w-xs gap-1">
+                <span className="text-sm text-muted-foreground">{t.fetchFrom}</span>
+                <DateField
+                  value={value.fetchFrom}
+                  onChange={(fetchFrom) => onChange({ ...value, fetchFrom })}
+                  disabled={readOnly}
+                  error={fetchFromTooOld ? t.fetchFromTooOld : undefined}
+                />
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">{t.statements}</span>
+                <FieldValue>{t.statementsNote}</FieldValue>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="text-muted-foreground">{t.status}</span>
+                <StatusBadge
+                  status={value.status}
+                  config={{
+                    active: { label: statusLabels.active, tone: "success" },
+                    tokenError: { label: statusLabels.tokenError, tone: "danger" },
+                    error: { label: statusLabels.error, tone: "danger" },
+                    paused: { label: statusLabels.paused, tone: "warning" },
+                    disconnected: { label: statusLabels.disconnected, tone: "neutral" },
+                  }}
+                />
+                {value.lastError ? (
+                  <span className="text-destructive">
+                    {t.lastError}: {value.lastError}
+                  </span>
+                ) : null}
+                {value.lastSuccess ? (
+                  <span className="text-muted-foreground">
+                    {t.lastSuccess}: {value.lastSuccess}
+                  </span>
+                ) : null}
+              </div>
+              {!readOnly ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  {onTest ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={busy}
+                      onClick={onTest}
+                    >
+                      {t.testConnection}
+                    </Button>
+                  ) : null}
+                  {onFetchNow ? (
+                    <DisabledReasonTooltip
+                      blocked={cooldownSeconds > 0}
+                      content={
+                        cooldownSeconds
+                          ? t.fetchCooldown.replace("{seconds}", String(cooldownSeconds))
+                          : undefined
+                      }
+                    >
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={busy || cooldownSeconds > 0}
+                        onClick={onFetchNow}
+                      >
+                        {cooldownSeconds
+                          ? t.fetchCooldown.replace("{seconds}", String(cooldownSeconds))
+                          : t.fetchNow}
+                      </Button>
+                    </DisabledReasonTooltip>
+                  ) : null}
+                  {onPausedChange ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={busy}
+                      onClick={() => onPausedChange(!paused)}
+                    >
+                      {paused ? t.resume : t.pause}
+                    </Button>
+                  ) : null}
+                  {onDisconnect && connected ? (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      disabled={busy}
+                      onClick={() =>
+                        confirm({
+                          title: t.disconnect,
+                          description: t.disconnectConfirm,
+                          confirmLabel: t.disconnect,
+                          destructive: true,
+                          onConfirm: () => onDisconnect(),
+                        })
+                      }
+                    >
+                      {t.disconnect}
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+        <Dialog open={tokenOpen} onOpenChange={setTokenOpen}>
+          <DialogContent className="sm:max-w-md" data-slot="bank-token-dialog">
+            <DialogHeader>
+              <DialogTitle>{t.tokenDialogTitle}</DialogTitle>
+            </DialogHeader>
+            <form
+              className="space-y-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void saveToken();
+              }}
+            >
+              <Input
+                type="password"
+                autoComplete="new-password"
+                aria-label={t.tokenField}
+                value={tokenValue}
+                onChange={(event) => setTokenValue(event.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">{t.tokenHint}</p>
+              <OptionSelect
+                ariaLabel={t.tokenKind}
+                value={tokenKind}
+                onChange={(kind) => setTokenKind(kind as "read" | "payments")}
+                options={[
+                  { value: "read", label: t.tokenKindRead },
+                  { value: "payments", label: t.tokenKindPayments },
+                ]}
+                allowEmpty={false}
+              />
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setTokenOpen(false)}>
+                  {ds.confirmByTyping.cancel}
+                </Button>
+                <Button type="submit" disabled={!tokenValue.trim()}>
+                  {t.changeToken}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+        {confirmDialog}
+        {fetchFromTooOld ? <NoticeBar tone="danger">{t.fetchFromTooOld}</NoticeBar> : null}
+      </section>
     </TooltipProvider>
   );
 }

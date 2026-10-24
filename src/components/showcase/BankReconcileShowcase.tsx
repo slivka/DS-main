@@ -154,7 +154,11 @@ const RULES: BankRule[] = [
     order: 2,
     name: "Sociální pojištění",
     conditions: { counterAccount: "115510001/5500", direction: "out" },
-    result: { accountCode: "524001", certainty: "suggestion", description: "Pojistné {měsíc}/{rok}" },
+    result: {
+      accountCode: "524001",
+      certainty: "suggestion",
+      description: "Pojistné {měsíc}/{rok}",
+    },
     active: true,
     conditionsText: "protiúčet 115510001/5500 A směr = výdaj",
     resultText: "524.001 · popis se značkami",
@@ -408,7 +412,15 @@ export function BankReconcileShowcase() {
               setRules((prev) => {
                 const rule = prev.find((r) => r.id === id);
                 return rule
-                  ? [...prev, { ...rule, id: `${id}-copy`, order: prev.length + 1, name: `${rule.name} (kopie)` }]
+                  ? [
+                      ...prev,
+                      {
+                        ...rule,
+                        id: `${id}-copy`,
+                        order: prev.length + 1,
+                        name: `${rule.name} (kopie)`,
+                      },
+                    ]
                   : prev;
               })
             }
