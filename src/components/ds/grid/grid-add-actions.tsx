@@ -87,6 +87,13 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
       if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]"))
         return;
       if (document.querySelector('[role="dialog"], [role="alertdialog"]')) return;
+      // Více gridů v jednom panelu: N patří gridu s fokusem, ostatní jej nechají být.
+      const own = primaryActionRef.current?.closest('[data-slot="data-grid"]');
+      const focusedGrid =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement.closest('[data-slot="data-grid"]')
+          : null;
+      if (focusedGrid && focusedGrid !== own) return;
       const action = list[0];
       if (!action || action.disabled) return;
       event.preventDefault();
