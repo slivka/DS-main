@@ -12,7 +12,7 @@ import { FieldValue } from "../form/field-value";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { NoticeBar } from "../feedback/notice-bar";
-import { ConfirmDialog } from "../feedback/confirm-dialog";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
 import {
   Dialog,
   DialogContent,
@@ -73,7 +73,7 @@ export function BankConnectionSettings({
   const [tokenOpen, setTokenOpen] = useState(false);
   const [tokenValue, setTokenValue] = useState("");
   const [tokenKind, setTokenKind] = useState<"read" | "payments">(value.tokenKind ?? "read");
-  const [confirmDisconnect, setConfirmDisconnect] = useState(false);
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [now, setNow] = useState(() => Date.now());
 
   const cooldownSeconds = nextAvailableAt
@@ -206,7 +206,8 @@ export function BankConnectionSettings({
                 ) : null}
                 {onFetchNow ? (
                   <DisabledReasonTooltip
-                    reason={
+                    blocked={cooldownSeconds > 0}
+                    content={
                       cooldownSeconds
                         ? t.fetchCooldown.replace("{seconds}", String(cooldownSeconds))
                         : undefined
@@ -242,7 +243,15 @@ export function BankConnectionSettings({
                     variant="destructive"
                     size="sm"
                     disabled={busy}
-                    onClick={() => setConfirmDisconnect(true)}
+                    onClick={() =>
+                      confirm({
+                        title: t.disconnect,
+                        description: t.disconnectConfirm,
+                        confirmLabel: t.disconnect,
+                        destructive: true,
+                        onConfirm: () => onDisconnect(),
+                      })
+                    }
                   >
                     {t.disconnect}
                   </Button>
@@ -293,18 +302,7 @@ export function BankConnectionSettings({
           </form>
         </DialogContent>
       </Dialog>
-      <ConfirmDialog
-        open={confirmDisconnect}
-        onOpenChange={setConfirmDisconnect}
-        title={t.disconnect}
-        description={t.disconnectConfirm}
-        confirmLabel={t.disconnect}
-        destructive
-        onConfirm={() => {
-          onDisconnect?.();
-          setConfirmDisconnect(false);
-        }}
-      />
+      {confirmDialog}
       {fetchFromTooOld ? <NoticeBar tone="danger">{t.fetchFromTooOld}</NoticeBar> : null}
     </section>
   );
