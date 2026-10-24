@@ -1,4 +1,5 @@
 /** Ukázky řádků zápisu (preview-only). */
+import { JournalCategoriesShowcase } from "./journal-categories-showcase";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -197,6 +198,7 @@ export function JournalExamplesShowcase() {
 
   return (
     <>
+      <JournalCategoriesShowcase />
       <ShowcaseSection
         title="Řádky zápisu v Kč"
         description="Psaní začne úpravu, F2 nebo dvojklik zachová hodnotu. Enter a Tab uloží a pokračují, Esc vrátí původní hodnotu. Ctrl+D duplikuje a Ctrl+Delete odebere řádek."
@@ -217,7 +219,7 @@ export function JournalExamplesShowcase() {
           showQuantityColumns
           units={[{ id: "piece", code: "ks", name: "kus", isActive: true }]}
           onEditUnit={(id) => toast.info(`Úprava měrné jednotky ${id}`)}
-          onEditDimension={(id) => toast.info(`Úprava zakázky ${id}`)}
+          onEditDimension={(id) => toast.info(`Úprava kategorie ${id}`)}
         />
         <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
           {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmount(roundtrip.amount, 2)}.`}
@@ -247,7 +249,7 @@ export function JournalExamplesShowcase() {
 
       <ShowcaseSection
         title="Interní doklad – oddělené strany"
-        description="Režim split zobrazuje VS, partnera i zakázku zvlášť pro stranu MD a DAL."
+        description="Režim split zobrazuje VS, partnera i kategorii zvlášť pro stranu MD a DAL."
       >
         <JournalLinesEditor
           lines={splitLines}
@@ -289,7 +291,7 @@ export function JournalExamplesShowcase() {
 
       <ShowcaseSection
         title="Zaúčtovaný doklad"
-        description="U zaúčtovaného dokladu zůstávají upravitelné pouze text, VS, partner, zakázka a příznak Nedaňový."
+        description="U zaúčtovaného dokladu zůstávají upravitelné pouze text, VS, partner, kategorie a příznak Nedaňový."
       >
         <JournalLinesEditor
           lines={postedLines}
@@ -319,7 +321,7 @@ export function JournalExamplesShowcase() {
           partners={MOCK_PARTNERS}
           validate={(line) => ({
             vs: line.vs ? undefined : "Variabilní symbol je pro tento doklad povinný",
-            dimensionId: line.dimensionId ? undefined : "Vyberte zakázku",
+            dimensionId: line.dimensionId ? undefined : "Vyberte kategorii",
           })}
           sideFields="shared"
           storageKey="showcase-journal-validation"

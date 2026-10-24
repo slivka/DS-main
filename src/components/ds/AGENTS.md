@@ -63,3 +63,5 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Build pane menus through buildTabMenuActions with a surface ("tab" context menu, "header" ⋯); the header ✕ closes the tab. Why: one menu source without duplicate close actions.
 - Hide optional pill details by wrapping them onto a clipped second line, never by viewport breakpoints or ellipsis. Why: the decision follows real space at every font size.
 - Grid auto zoom recalculates only on width or column changes, never on its own zoom value. Why: manual zoom must survive until the next real resize.
+
+- Economic categories use the canonical CategorySelect; DimensionSelect remains a deprecated alias until 3.0.0. Why: future dimensions must not inherit the economic-category API.

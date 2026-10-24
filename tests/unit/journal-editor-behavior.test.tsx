@@ -296,7 +296,7 @@ describe("JournalLinesEditor – režimy", () => {
     );
     expect(cell(view.container, "p1:counterAccount")?.textContent).toContain("321.100");
     expect(cell(view.container, "p1:debitAccount")).toBeNull();
-    expect(cell(view.container, "p1:dimensionId")).not.toBeNull();
+    expect(cell(view.container, "p1:categoryId")).not.toBeNull();
     fireEvent.click(view.getByRole("button", { name: "Přidat řádek (Ctrl+Enter)" }));
     expect(latest[1]?.debitAccount).toBe("211000");
     expect(latest[1]?.creditAccount).toBeNull();

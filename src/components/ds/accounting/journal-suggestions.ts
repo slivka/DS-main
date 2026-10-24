@@ -2,10 +2,17 @@
 import { useRef } from "react";
 import type { FieldSuggestion } from "../form/field-feedback";
 import type { JournalLine } from "./journal-lines";
-import { isAccountColumn, DIMENSION_COLUMNS } from "./journal-lines-model";
+import { isAccountColumn, CATEGORY_COLUMNS } from "./journal-lines-model";
 
 /** Klíče návrhů buněk, nezávislé na režimu MD/DAL/protiúčet. */
-export type JournalSuggestionKey = "account" | "dimension" | "vatCode" | "amount" | "text";
+export type JournalSuggestionKey =
+  | "account"
+  | "category"
+  /** @deprecated Od 2.138.0 category; odstranění ve 3.0.0. */
+  | "dimension"
+  | "vatCode"
+  | "amount"
+  | "text";
 /** Návrhy podle id řádku; vlastníkem je aplikace. */
 export type JournalRowSuggestions = Record<
   string,
@@ -15,7 +22,11 @@ export type JournalRowSuggestions = Record<
 /** Klíč návrhu odpovídající sloupci editoru. */
 export function journalSuggestionKey(column: string): JournalSuggestionKey | undefined {
   if (isAccountColumn(column)) return "account";
-  if (DIMENSION_COLUMNS.has(column)) return "dimension";
+  if (
+    CATEGORY_COLUMNS.has(column) ||
+    ["dimensionId", "debitDimensionId", "creditDimensionId"].includes(column)
+  )
+    return "category";
   if (column === "vatCodeId") return "vatCode";
   if (column === "amount" || column === "foreignAmount") return "amount";
   if (column === "text") return "text";
@@ -35,7 +46,10 @@ export function useJournalSuggestionClear(
   return (line: JournalLine, values: Partial<JournalLine>) => {
     for (const column of Object.keys(values) as (keyof JournalLine)[]) {
       const key = journalSuggestionKey(column);
-      const suggestion = key ? suggestions?.[line.id]?.[key] : undefined;
+      const suggestion = key
+        ? (suggestions?.[line.id]?.[key] ??
+          (key === "category" ? suggestions?.[line.id]?.dimension : undefined))
+        : undefined;
       if (!key || !suggestion || values[column] === line[column]) continue;
       const id = JSON.stringify([line.id, key]);
       const signature = JSON.stringify(suggestion);

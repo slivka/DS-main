@@ -79,7 +79,7 @@ export function buildDocumentTabs(a: BuildDocumentTabsArgs): DocumentFormTab[] {
           lines={lines}
           onChange={onLinesChange}
           accounts={accounts}
-          dimensions={dimensions}
+          categories={dimensions}
           partners={partners}
           mode={mode}
           mainSide={mainSide}

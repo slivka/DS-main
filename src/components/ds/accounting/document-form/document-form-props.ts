@@ -76,6 +76,9 @@ export interface DocumentFormProps {
   /** Účty povolené pro změnu hlavního účtu přímo v identifikačním řádku. */
   mainAccountOptions?: AccountOption[];
   partners?: PartnerOption[];
+  /** Ekonomické kategorie; mají přednost před dimensions. */
+  categories?: DimensionOption[];
+  /** @deprecated Od 2.138.0 categories; odstranění ve 3.0.0. */
   dimensions?: DimensionOption[];
   currencies?: CurrencyOption[];
   /** Účty nabídnuté aplikací. Pole samo výchozí účet nikdy nepředvyplňuje. */

@@ -4,7 +4,8 @@
  * Nesmí: držet stav ani měnit řádky; vše je čistý výpočet ze vstupu.
  */
 import type { AccountOption } from "./account-select";
-import type { DimensionOption } from "./dimension-select";
+import { categoryLabel } from "./journal-category-model";
+import type { CategoryOption } from "./category-select";
 import type { PartnerOption } from "./partner-select";
 import type { UnitOption } from "./unit-select";
 import type { GridColumn } from "../grid/grid-columns";
@@ -42,11 +43,14 @@ export function journalColumnLabels(
     quantity: t.quantity,
     unitId: t.unit,
     unitPrice: t.unitPrice,
-    dimensionId: t.dimension,
+    categoryId: t.category,
+    dimensionId: t.category,
+    debitDimensionId: t.debitCategory,
+    creditDimensionId: t.creditCategory,
     vs: t.vs,
     partnerId: t.partner,
-    debitDimensionId: t.debitDimension,
-    creditDimensionId: t.creditDimension,
+    debitCategoryId: t.debitCategory,
+    creditCategoryId: t.creditCategory,
     debitVs: t.debitVs,
     creditVs: t.creditVs,
     debitPartnerId: t.debitPartner,
@@ -87,6 +91,7 @@ export interface JournalColumnDefsInput {
   homeAmountLabel: string;
   /** Režim polí stran. */
   sideFields: "shared" | "split";
+  categoryBySide?: boolean;
   /** Bez zaúčtování MD / DAL v řádcích (zálohový list, 2.118.0). */
   withoutAccounts?: boolean;
   /** Sloupec má v některém řádku hodnotu (rozhoduje o výchozí viditelnosti polí stran). */
@@ -96,7 +101,7 @@ export interface JournalColumnDefsInput {
 /** Definice sloupců gridu podle režimu: jen protiúčet, nebo MD i DAL. */
 export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<ColumnId>[] {
   const { t, showQuantityColumns: quantity } = input;
-  // 2.118.0 (DPH 5 B): Popis · Kód DPH · Částka bez DPH · účty · Zakázka. Sazba, DPH a Celkem
+  // 2.118.0 (DPH 5 B): Popis · Kód DPH · Částka bez DPH · účty · Kategorie. Sazba, DPH a Celkem
   // s DPH v gridu nejsou (patří do rekapitulace); množstevní sloupce jen přes nastavení sloupců.
   const vatColumns: GridColumn<ColumnId>[] = input.vatOn
     ? [{ id: "vatCodeId", label: t.vatCode }]
@@ -132,9 +137,7 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     return [
       ...head,
       ...amountColumns,
-      ...(input.sideFields === "shared"
-        ? [{ id: "dimensionId" as const, label: t.dimension }]
-        : []),
+      ...(input.sideFields === "shared" ? [{ id: "categoryId" as const, label: t.category }] : []),
       actions,
     ];
   if (input.mode === "mainAccount")
@@ -143,7 +146,7 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
       ...amountColumns,
       { id: "counterAccount", label: input.counterShortLabel },
       { id: "counterAccountName", label: input.counterNameLabel, defaultVisible: false },
-      { id: "dimensionId", label: t.dimension },
+      { id: "categoryId", label: t.category },
       { id: "vs", label: t.vs, defaultVisible: false, align: "left" },
       { id: "partnerId", label: t.partner, defaultVisible: false },
       actions,
@@ -156,17 +159,25 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     { id: "creditAccount", label: t.sideCredit },
     { id: "creditAccountName", label: t.creditAccount, defaultVisible: false },
     ...(input.sideFields === "shared"
-      ? SHARED_COLUMNS.map((id) => ({
+      ? SHARED_COLUMNS.filter((id) => id !== "categoryId").map((id) => ({
           id,
           label: input.labels[id],
           align: id === "vs" ? ("left" as const) : undefined,
         }))
-      : SPLIT_COLUMNS.map((id) => ({
-          id,
-          label: input.labels[id],
-          defaultVisible: input.hasValue(id),
-          align: id === "debitVs" || id === "creditVs" ? ("left" as const) : undefined,
-        }))),
+      : SPLIT_COLUMNS.filter((id) => id !== "debitCategoryId" && id !== "creditCategoryId").map(
+          (id) => ({
+            id,
+            label: input.labels[id],
+            defaultVisible: input.hasValue(id),
+            align: id === "debitVs" || id === "creditVs" ? ("left" as const) : undefined,
+          }),
+        )),
+    ...((input.categoryBySide ?? true)
+      ? [
+          { id: "debitCategoryId" as const, label: t.debitCategory },
+          { id: "creditCategoryId" as const, label: t.creditCategory },
+        ]
+      : [{ id: "categoryId" as const, label: t.category }]),
     actions,
   ];
 }
@@ -207,8 +218,9 @@ export function journalAccountFor(
 export interface JournalDisplayContext {
   /** Účty podle čísla. */
   accountByCode: Map<string, AccountOption>;
-  /** Zakázky. */
-  dimensions: DimensionOption[];
+  /** Ekonomické kategorie. */
+  dimensions: CategoryOption[];
+  categories?: CategoryOption[];
   /** Partneři. */
   partners: PartnerOption[];
   /** Měrné jednotky. */
@@ -268,8 +280,8 @@ export function journalDisplayValue(
     const extended = isAccountNameColumn(column) && !ctx.compactAccountIds.has(column);
     return code ? formatJournalAccountDisplay(code, account?.name, extended) : "";
   }
-  if (column === "dimensionId" || column === "debitDimensionId" || column === "creditDimensionId")
-    return ctx.dimensions.find((item) => item.id === line[column])?.name ?? "";
+  if (column === "categoryId" || column === "debitCategoryId" || column === "creditCategoryId")
+    return categoryLabel(ctx.categories ?? ctx.dimensions, line[column]);
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")
     return ctx.partners.find((item) => item.id === line[column])?.name ?? "";
   if (column === "unitId") return ctx.units.find((item) => item.id === line.unitId)?.code ?? "";

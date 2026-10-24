@@ -231,7 +231,7 @@ describe("Souhrn chyb", () => {
         <JournalLinesEditor
           accounts={[
             { code: "321100", name: "Závazky" },
-            { code: "518001", name: "Služby" },
+            { code: "518001", name: "Služby", category: "ekonomicka_kategorie" },
           ]}
           documentCurrency="CZK"
           homeCurrency="CZK"
@@ -300,7 +300,7 @@ describe("A9 – přidání zakázky a partnera", () => {
         <JournalLinesEditor
           accounts={[
             { code: "321100", name: "Závazky" },
-            { code: "518001", name: "Služby" },
+            { code: "518001", name: "Služby", category: "ekonomicka_kategorie" },
           ]}
           documentCurrency="CZK"
           homeCurrency="CZK"
@@ -317,7 +317,7 @@ describe("A9 – přidání zakázky a partnera", () => {
     );
     fireEvent.click(view.getAllByRole("button", { name: "Zobrazit detail řádku (Alt+↓)" })[0]!);
     const field = view.container.querySelector<HTMLElement>(
-      '[data-journal-field^="l1:"][data-journal-field$="imensionId"] [role="combobox"]',
+      '[data-journal-field^="l1:"][data-journal-field$="ategoryId"] [role="combobox"]',
     );
     expect(field).toBeTruthy();
     fireEvent.click(field!);
@@ -327,7 +327,7 @@ describe("A9 – přidání zakázky a partnera", () => {
       return input;
     });
     fireEvent.change(search, { target: { value: "Nová Z9" } });
-    fireEvent.click(await view.findByRole("button", { name: "Nová zakázka" }));
+    fireEvent.click(await view.findByRole("button", { name: "Nová kategorie" }));
     expect(created).toEqual(["Nová Z9"]);
   });
 

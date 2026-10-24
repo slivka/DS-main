@@ -55,7 +55,7 @@ describe("oznámení zrušení návrhu", () => {
     for (const column of ["debitAccount", "creditAccountName", "counterAccountName"])
       expect(journalSuggestionKey(column)).toBe("account");
     for (const column of ["dimensionId", "debitDimensionId", "creditDimensionId"])
-      expect(journalSuggestionKey(column)).toBe("dimension");
+      expect(journalSuggestionKey(column)).toBe("category");
   });
   it("řádek s ekvivalentním návrhem při dalším psaní hlásí jen jednou", () => {
     const cleared = mock();

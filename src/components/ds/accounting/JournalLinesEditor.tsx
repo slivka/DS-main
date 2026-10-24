@@ -243,7 +243,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
                   : props.lines
               }
               accounts={props.accounts}
-              dimensions={props.dimensions ?? []}
+              categories={props.categories ?? props.dimensions ?? []}
               documentCurrency={props.documentCurrency}
               documentCurrencySymbol={props.documentCurrencySymbol}
               homeCurrency={props.homeCurrency}

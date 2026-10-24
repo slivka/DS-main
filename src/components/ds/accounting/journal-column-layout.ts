@@ -24,11 +24,14 @@ export const JOURNAL_COLUMN_WIDTHS: Record<ColumnId, number> = {
   debitAccountName: 13,
   creditAccount: 6,
   creditAccountName: 13,
+  categoryId: 11,
   dimensionId: 11,
-  vs: 8,
-  partnerId: 13,
   debitDimensionId: 11,
   creditDimensionId: 11,
+  vs: 8,
+  partnerId: 13,
+  debitCategoryId: 11,
+  creditCategoryId: 11,
   debitVs: 8,
   creditVs: 8,
   debitPartnerId: 13,
@@ -124,10 +127,10 @@ export function resolveJournalColumnLayout({
   const compact = new Set<ColumnId>();
   const sideColumns: ColumnId[] =
     mode === "mainAccount"
-      ? ["dimensionId"]
+      ? ["categoryId"]
       : sharedSideFields
-        ? ["partnerId", "vs", "dimensionId"]
-        : ["debitDimensionId", "creditDimensionId"];
+        ? ["partnerId", "vs", "categoryId"]
+        : ["debitCategoryId", "creditCategoryId"];
   const widthFor = (id: ColumnId) => {
     if (id === "text") return textMin;
     if (compact.has(id)) return COMPACT_ACCOUNT_WIDTH_REM;
@@ -160,7 +163,14 @@ export function resolveJournalColumnLayout({
     if (visibleColumnIds.includes(shortId) && !hidden.has(shortId)) hidden.add(nameId);
     else compact.add(nameId);
   }
-  hideGroup(sideColumns);
+  hideGroup(
+    sideColumns.flatMap((id) => {
+      const legacy = id
+        .replace("Category", "Dimension")
+        .replace("category", "dimension") as ColumnId;
+      return visibleColumnIds.includes(id) ? [id] : [legacy];
+    }),
+  );
   // Ručně rozšířené sloupce se při nedostatku místa vrátí na výchozí šířku.
   if (required() > availableWidthRem) useCustomWidths = false;
   // Poslední krok: zúžit Text (obsah se zkrátí se třemi tečkami a celý je v tooltipu).

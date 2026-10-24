@@ -1,9 +1,10 @@
+import { normalizeCategoryLine } from "./journal-category-model";
 import * as React from "react";
 import { JournalRecapHeader } from "./journal-recap-header";
 import { Tabs, TabsContent } from "../../ui/tabs";
 import { formatAmount } from "../../../lib/format";
 import type { AccountOption } from "./account-select";
-import type { DimensionOption } from "./dimension-select";
+import type { CategoryOption } from "./category-select";
 import type { JournalLine } from "./journal-lines";
 import type { VatSummaryRow } from "./journal-vat";
 import { DataGrid, type DataGridColumn } from "../grid/DataGrid";
@@ -21,7 +22,9 @@ export interface JournalLinesRecapProps {
   headerTotal?: React.ReactNode;
   lines: JournalLine[];
   accounts: AccountOption[];
-  dimensions?: DimensionOption[];
+  dimensions?: CategoryOption[];
+  /** Ekonomické kategorie mají přednost před dimensions. */
+  categories?: CategoryOption[];
   documentCurrency: string;
   documentCurrencySymbol?: string;
   homeCurrency: string;
@@ -63,13 +66,13 @@ export interface JournalLinesRecapTexts {
 }
 export const DEFAULT_JOURNAL_LINES_RECAP_TEXTS: JournalLinesRecapTexts = {
   accounting: "Účtování",
-  jobs: "Zakázky",
+  jobs: "Ekonomické kategorie",
   debitShort: "MD",
   creditShort: "DAL",
   debitAccount: "MD účet",
   creditAccount: "DAL účet",
   total: "Celkem",
-  dimension: "Zakázka",
+  dimension: "Kategorie",
   side: "Strana",
   rounding: "Zaokrouhlení",
   fxRounding: "Kurzové zaokrouhlení",
@@ -90,7 +93,8 @@ export function JournalLinesRecap({
   lines,
   headerTotal,
   accounts,
-  dimensions = [],
+  dimensions: legacyDimensions,
+  categories,
   documentCurrency,
   documentCurrencySymbol,
   homeCurrency,
@@ -105,6 +109,7 @@ export function JournalLinesRecap({
   texts,
   vatSummary,
 }: JournalLinesRecapProps) {
+  const dimensions = categories ?? legacyDimensions ?? [];
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_JOURNAL_LINES_RECAP_TEXTS, ...dsTexts.journalRecap, ...texts };
   const [localOpen, setLocalOpen] = React.useState(true);
@@ -172,10 +177,12 @@ export function JournalLinesRecap({
   }, [lines, t.fxRounding, t.rounding]);
   const jobs = React.useMemo(() => {
     const grouped = new Map<string, { id: string; side: "MD" | "DAL"; amount: number }>();
-    for (const line of lines.filter((item) => !item.isRounding && !item.isFxRounding)) {
+    for (const line of lines
+      .filter((item) => !item.isRounding && !item.isFxRounding)
+      .map(normalizeCategoryLine)) {
       const entries: [string | null | undefined, "MD" | "DAL"][] = [
-        [line.debitDimensionId ?? line.dimensionId, "MD"],
-        [line.creditDimensionId ?? line.dimensionId, "DAL"],
+        [line.debitCategoryId ?? line.categoryId, "MD"],
+        [line.creditCategoryId ?? line.categoryId, "DAL"],
       ];
       for (const [id, side] of entries)
         if (id) {

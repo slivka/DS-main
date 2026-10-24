@@ -1,13 +1,14 @@
 /**
  * Editor jedné buňky řádku dokladu.
- * Vlastní: volbu editoru podle typu sloupce (účet, zakázka, partner, MJ, kód DPH, částka, text)
+ * Vlastní: volbu editoru podle typu sloupce (účet, kategorie, partner, MJ, kód DPH, částka, text)
  *   a zápis hodnoty do řádku.
  * Nesmí: měnit pořadí řádků ani řešit fokus mimo svou buňku (to dělá useJournalKeyboard).
  */
+import { categoryColumnAlias } from "./journal-category-inputs";
 import { Input } from "../../ui/input";
 import { DecimalInput } from "../form/decimal-input";
 import { AccountSelect } from "./account-select";
-import { DimensionSelect } from "./dimension-select";
+import { CategorySelect } from "./category-select";
 import { useJournalEditor } from "./journal-editor-context";
 import { isResultAccountType, type JournalLine } from "./journal-lines";
 import {
@@ -139,6 +140,7 @@ function NumericCellEditor({ line, column }: JournalCellEditorProps) {
 
 /** Editor buňky podle typu sloupce. */
 export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
+  column = categoryColumnAlias(column) as ColumnId;
   const { editor, keyboard } = useJournalEditor();
   if (isAccountColumn(column)) return <AccountCellEditor line={line} column={column} />;
   if (VAT_NUMERIC.has(column) || NUMERIC_COLUMNS.has(column))
@@ -156,15 +158,15 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
     editor.patch(line.id, values);
     editor.finish();
   };
-  if (column === "dimensionId" || column === "debitDimensionId" || column === "creditDimensionId")
+  if (column === "categoryId" || column === "debitCategoryId" || column === "creditCategoryId")
     return (
-      <DimensionSelect
+      <CategorySelect
         {...selectProps}
-        options={props.dimensions ?? []}
-        value={line[column]}
+        options={editor.categoryState(line, column).options}
+        value={editor.categoryState(line, column).value}
         onChange={(value) => choose({ [column]: value })}
-        onEditSelected={props.onEditDimension}
-        onCreate={props.onCreateDimension}
+        onEditSelected={props.onEditCategory}
+        onCreate={editor.createCategory(line, column)}
       />
     );
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")

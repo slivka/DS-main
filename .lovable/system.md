@@ -394,7 +394,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ## Doklady, číselníky a navigace
 
-- Číselníky (partneři, zakázky, knihy) se editují v `RecordDialog`; doklady vždy
+- Číselníky (partneři, kategorie, knihy) se editují v `RecordDialog`; doklady vždy
   v celostránkovém `DocumentForm` (hlavička, `JournalLinesEditor`, stav a akce).
 - `DocumentForm.identity` nahrazuje viditelný nadpis identifikačním řádkem a
   `directionBadge` zobrazuje Příjem/Výdaj vlevo v pruhu akcí. Kurz cizí měny
@@ -406,12 +406,12 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   Celkem s DPH; teprve potom se rozšířená forma strany bez viditelné krátké
   formy zkrátí na číslo (krátký nadpis jen v záhlaví, ve Sloupce původní název),
   je-li krátká forma strany viditelná, rozšířená se přesune do detailu. Pak
-  následují stranová pole a nakonec Text. Částka přes `DecimalInput`, zakázka přes `DimensionSelect`, partner přes
+  následují stranová pole a nakonec Text. Částka přes `DecimalInput`, kategorie přes `DimensionSelect`, partner přes
   `PartnerSelect`, variabilní symbol přes `VsField`. Rozdíl proti částce dokladu
   se hlídá průběžně; režim jen pro čtení se předává propem `readOnly`.
 - Částka v cizí měně vždy `CurrencyAmount` (částka 2 desetinná místa, kurz 6).
 - Výkazy: úrovně rozbalení přes `TreeGrid.expandLevels`, výběr třídy / skupiny přes `AccountSelect allowLevels + catalog`, rozbor po skupinách přes `BarBreakdownChart`, aktivní filtry přes `FilterChips`. Export stromu má souhrn pod dětmi se vzorci SUBTOTAL.
-- Stromová data (účtová osnova, zakázky) zobrazuj přes `TreeGrid` – součty za uzel,
+- Stromová data (účtová osnova, kategorie) zobrazuj přes `TreeGrid` – součty za uzel,
   hledání zachová cestu k nalezeným uzlům, export do Excelu nese úrovně osnovy.
 - Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ
   `disabled` (štítek „Připravujeme“), viditelnost položek řeší aplikace.
@@ -471,13 +471,13 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Řádek obrazovky je předkontace MD účet / DAL účet / částka a odpovídá právě jednomu řádku v `journal_lines`. Ukládání vždy přes `toJournalRow`, načítání přes `fromJournalRow` (camelCase v komponentě, snake_case v databázi).
 - Převod řádků jen přes `toJournalRow` / `fromJournalRow` (1:1 s databází). JournalLinesEditor: `mode` ('internal' | 'mainAccount'), `mainSide` ('MD' | 'D'), `mainAccount` (číslo účtu), `sideFieldRules` (vlastní pravidla stranových polí). DocumentForm tyto props předává editoru přímo.
 - Dva režimy jedné komponenty: bez `mainAccount` jde o interní doklad (MD i DAL účet na řádku, `sideFields="split"` je výchozí); s `mainAccount` je hlavní strana jen ke čtení a zadává se pouze protiúčet.
-- `sideFields="split"` (výchozí) má oddělené sloupce MD/DAL, ve výběru sloupců výchozí skryté, pokud nemají hodnotu. `sideFields="shared"` má jeden sloupec VS / Partner / Zakázka a zapisuje jej podle `sharedSide` ("debit" | "credit" | "both", výchozí "both").
-- `mainAccount={{ accountId, side }}` používá `side: 'MD' | 'D'` (shodně s `documents.main_account_side`). Hlavní strana (účet, VS, partner, zakázka) je jen pro čtení a šedá; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
-- Povinnost stranových polí určuje `sideFieldRules(account, { dimensionRequired })` podle `account.category` a `account.accountType`: VS u `pohledavky` / `zavazky` / `poskytnute_zalohy` / `prijate_zalohy` / `saldokonto`, zakázka u `bilance` při `dimensionRequired`, partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany, rozhoduje databáze.
+- `sideFields="split"` (výchozí) má oddělené sloupce MD/DAL, ve výběru sloupců výchozí skryté, pokud nemají hodnotu. `sideFields="shared"` má jeden sloupec VS / Partner / Kategorie a zapisuje jej podle `sharedSide` ("debit" | "credit" | "both", výchozí "both").
+- `mainAccount={{ accountId, side }}` používá `side: 'MD' | 'D'` (shodně s `documents.main_account_side`). Hlavní strana (účet, VS, partner, kategorie) je jen pro čtení a šedá; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
+- Povinnost stranových polí určuje `sideFieldRules(account, { dimensionRequired })` podle `account.category` a `account.accountType`: VS u `pohledavky` / `zavazky` / `poskytnute_zalohy` / `prijate_zalohy` / `saldokonto`, kategorie u `bilance` při `dimensionRequired`, partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany, rozhoduje databáze.
 - Stranová pole jsou i v rozbalitelném detailu řádku (Alt+↓); chybějící povinné pole se v řádku ukazuje jako kompaktní štítek.
 - Nedaňový (`non_tax`) nemá vlastní sloupec – je to přepínací značka u částky (jen u nákladových / výnosových účtů, zkratka Alt+N) a zaškrtávátko v detailu řádku; výjimky určuje `isNonTaxAllowed(line)`.
 - Řádek zaokrouhlení (`isRounding`) je vždy poslední, šedý, jen pro čtení a bez akcí, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu". U dokladu s hlavním účtem a `totalMode="entered"` se proti `totalAmount` ukazuje „Zbývá rozepsat" a při rozdílu do `roundingLimit` tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`).
-- U zaúčtovaných dokladů se upravitelnost řídí přes `editableFields` (typicky text, VS, partneři, zakázky, Nedaňový); uzamčený doklad předá prázdné pole. Ukládají se jen změněné klíče.
+- U zaúčtovaných dokladů se upravitelnost řídí přes `editableFields` (typicky text, VS, partneři, kategorie, Nedaňový); uzamčený doklad předá prázdné pole. Ukládají se jen změněné klíče.
 - Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.
 - Účet se hledá číselným prefixem; neaktivní a `postable: false` účty jsou viditelné, ale nevolitelné.
 - Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `totalAmount` předvyplní částku.
@@ -636,7 +636,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 ## DPH 5 B – řádky a rekapitulace (2.118.0)
 
-- Grid: Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka; Sazba, DPH a Celkem jen v rekapitulaci. Kód v buňce „Z 21 %“, ve výběru „Z – název (21 %)“; doklady bez pevného směru `vat.bidirectional` + `defaultDirection`. Kódy klíčuj `id`, kód sám není unikátní.
+- Grid: Popis · Kód DPH · Částka bez DPH · MD · DAL · Kategorie; Sazba, DPH a Celkem jen v rekapitulaci. Kód v buňce „Z 21 %“, ve výběru „Z – název (21 %)“; doklady bez pevného směru `vat.bidirectional` + `defaultDirection`. Kódy klíčuj `id`, kód sám není unikátní.
 - Klávesnice: Enter dál (vyplněné / zakotvené přeskočí), na konci řádku nový řádek s kódem DPH a účty, Shift+Enter zpět; špendlík zakotví sloupec jen v otevřeném dokladu.
 - Rekapitulace a patička dostávají hodnoty z DB (`nonDeductibleByCode`, `advanceDeduction`); DS nic nepřepočítává. Vydané doklady `vat.overrideInMenu`. Záložku Zaúčtování skládá aplikace z `DocumentPostingGrid`.
 
@@ -654,3 +654,9 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Klik předává `onOpen(item, modifiers)`: bez Ctrl/Cmd `adjacentPane`, s Ctrl/Cmd `replace`. Jde o výslovnou konvenci vazeb; základní `PaneLink` se nemění. Navigaci a ochranu cílového panelu provádí aplikace.
 - `LinkedRecordEntry` sdílí seznam, tok a návrhy. Zakázané odebrání zůstává zaměřitelné s důvodem přes `DisabledReasonTooltip`, povolené vždy potvrzuje `useConfirmDialog`.
 - `LinkRecordDialog` skládá `RecordDialog size="md"`, `FieldGrid` a `OptionSelect`; callbacky aplikace hledají a ukládají. Opožděné odpovědi hledání se ignorují, při chybě uložení zůstává rozpracovaná vazba otevřená. Všechny ovládací texty jsou `DsTexts.linkedRecords` CS/SK.
+
+## Ekonomické kategorie
+
+- Nový kód používá CategorySelect / CategoryOption, categoryId, debitCategoryId / creditCategoryId, categories, categoryRequired, onEditCategory a rowSuggestions.category. Dimension názvy jsou jen deprecated aliasy do 3.0.0; nové hodnoty mají přednost včetně null a false.
+- ID používá categoryBySide, ostatní doklady společnou kategorii navázanou na ekonomický účet. Povolení dodá APP přes allowedCategories; DS zahrne potomky a vyloučí nevykazovatelné uzly. Jedinou povolenou doplní a zamkne; nepovolenou uloženou ukáže jako chybu. Změna účtu zachová povolenou hodnotu, jinak ji změní s upozorněním.
+- DB výstup je debit_category_id / credit_category_id; legacy výstup jen categoryFormat=dimension. Žádné schéma DB ani B2 DimensionBar nepatří do tohoto kroku.

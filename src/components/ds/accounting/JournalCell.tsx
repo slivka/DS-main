@@ -13,6 +13,9 @@ import { cn } from "../../../lib/utils";
 import { formatAmount } from "../../../lib/format";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useCellStatusTooltip } from "../grid/cell-status-tooltip";
+import { FieldValue } from "../form/field-value";
+import { CATEGORY_COLUMNS } from "./journal-lines-model";
+import { categoryLabel, type CategoryColumn } from "./journal-category-model";
 import { JournalCellEditor } from "./JournalCellEditor";
 import { JournalGrossHelper } from "./journal-gross-helper";
 import { journalAccountColumnLabel } from "./journal-columns";
@@ -91,6 +94,9 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
         name: editor.counterNameLabel,
       })
     : editor.labels[validationColumn];
+  const category = CATEGORY_COLUMNS.has(column)
+    ? editor.categoryState(line, column as CategoryColumn)
+    : undefined;
   const canEdit = editor.canEditCell(line, column);
   const isEditing = editing?.rowId === line.id && editing.column === column;
   const calculated =
@@ -120,7 +126,10 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
     ? (suggestion.message ?? editor.dsTexts.extraction.suggestionUncertain(suggestion.source))
     : undefined;
   const rowEditing = editing?.rowId === line.id;
-  const hint = accountTitle ?? (calculated ? t.quantityPriceHint : undefined);
+  const hint =
+    category && !category.enabled
+      ? editor.dsTexts.economicCategory.disabledAccount
+      : (accountTitle ?? (calculated ? t.quantityPriceHint : undefined));
   // Bublina chyby vzniká líně až při hover/focus; původní informace jde do téže bubliny.
   const status = useCellStatusTooltip({
     error: errorMessage,
@@ -148,6 +157,7 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       role="gridcell"
       data-cell-key={`${line.id}:${column}`}
       aria-label={`${columnLabel} ${rowIndex + 1}`}
+      aria-disabled={(category && !category.enabled) || undefined}
       data-invalid={errorMessage ? true : undefined}
       data-warning={warningMessage ? true : undefined}
       data-suggestion={suggestion ? (suggestion.uncertain ? "uncertain" : "suggested") : undefined}
@@ -156,7 +166,7 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       className={cn(
         "journal-grid-cell flex min-h-[1.8em] items-center truncate rounded-sm px-1 outline-none",
         canEdit && "cursor-cell",
-        suggestion && "bg-suggestion-soft",
+        suggestion && "bg-suggestion-soft text-muted-foreground",
         suggestion?.uncertain && "ring-1 ring-inset ring-warning-strong",
         // Převzatá hodnota zakotveného sloupce je světlejší, dokud do ní uživatel nesáhne.
         editor.pins.isInherited(line.id, column) && "text-muted-foreground",
@@ -191,7 +201,17 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
             "text-left font-mono tabular-nums",
         )}
       >
-        {isEditing ? (
+        {category?.single && !category.invalid ? (
+          <FieldValue
+            variant="plain"
+            className="h-auto text-muted-foreground"
+            lockedReason={editor.dsTexts.economicCategory.singleAllowed}
+          >
+            {categoryLabel(editor.props.categories ?? [], category.single.id)}
+          </FieldValue>
+        ) : category && !category.enabled ? (
+          ""
+        ) : isEditing ? (
           <JournalCellEditor line={line} column={column} />
         ) : (
           editor.displayValue(line, column)

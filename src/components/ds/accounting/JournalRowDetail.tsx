@@ -1,28 +1,27 @@
 /**
  * Rozbalený detail řádku dokladu.
- * Vlastní: pole skrytá z mřížky (množství, MJ, VS, partner, zakázka), údaje DPH řádku
+ * Vlastní: pole skrytá z mřížky (množství, MJ, VS, partner, kategorie), údaje DPH řádku
  *   (sazba, s DPH, nárok na odpočet, PDP, domácí částky) a částku v domácí měně.
  * Nesmí: zobrazovat pole, které je viditelné v mřížce; nesmí počítat daň jinak než journal-vat.
  */
 import type * as React from "react";
 
-import { formatAmount } from "../../../lib/format";
-import { cn } from "../../../lib/utils";
 import { DetailField } from "./journal-detail-field";
 import { VatDetail } from "./journal-vat-detail";
 import { Input } from "../../ui/input";
 import { DecimalInput } from "../form/decimal-input";
-import { DimensionSelect } from "./dimension-select";
+import { FieldValue } from "../form/field-value";
+import { categoryLabel } from "./journal-category-model";
+import { CategorySelect } from "./category-select";
 import { JournalGrossHelper } from "./journal-gross-helper";
 import { useJournalEditor } from "./journal-editor-context";
 import type { JournalLine, JournalLineColumn } from "./journal-lines";
 import {
-  DIMENSION_COLUMNS,
+  CATEGORY_COLUMNS,
   PARTNER_COLUMNS,
   SHARED_COLUMNS,
   SPLIT_COLUMNS,
   VS_COLUMNS,
-  type ColumnId,
 } from "./journal-lines-model";
 import { PartnerSelect } from "./partner-select";
 import { UnitSelect } from "./unit-select";
@@ -39,7 +38,7 @@ const widthClass = (id: JournalLineColumn) =>
         ? "flex-none w-[6rem]"
         : id === "unitPrice"
           ? "flex-none w-[8rem]"
-          : PARTNER_COLUMNS.has(id) || DIMENSION_COLUMNS.has(id)
+          : PARTNER_COLUMNS.has(id) || CATEGORY_COLUMNS.has(id)
             ? "min-w-[12rem] flex-1 basis-[14rem]"
             : "flex-none w-auto";
 
@@ -49,17 +48,28 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
   const { props } = editor;
   const disabled = !editor.canEditCell(line, id);
   const set = (values: Partial<JournalLine>) => editor.patch(line.id, values);
-  if (id === "dimensionId" || id === "debitDimensionId" || id === "creditDimensionId")
+  if (id === "categoryId" || id === "debitCategoryId" || id === "creditCategoryId") {
+    const state = editor.categoryState(line, id);
+    if (state.single && !state.invalid)
+      return (
+        <FieldValue
+          className="text-muted-foreground"
+          lockedReason={editor.dsTexts.economicCategory.singleAllowed}
+        >
+          {categoryLabel(props.categories ?? [], state.single.id)}
+        </FieldValue>
+      );
     return (
-      <DimensionSelect
-        options={props.dimensions ?? []}
-        value={line[id]}
+      <CategorySelect
+        options={state.options}
+        value={state.value}
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
-        onEditSelected={props.onEditDimension}
-        onCreate={props.onCreateDimension}
+        onEditSelected={props.onEditCategory}
+        onCreate={editor.createCategory(line, id)}
       />
     );
+  }
   if (id === "partnerId" || id === "debitPartnerId" || id === "creditPartnerId")
     return (
       <PartnerSelect
@@ -128,12 +138,17 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
   const shown = new Set(editor.layout.visibleColumns.map((column) => column.id));
   const candidates: JournalLineColumn[] =
     editor.mode === "mainAccount"
-      ? ["quantity", "unitId", "unitPrice", "vs", "partnerId", "dimensionId"]
+      ? ["quantity", "unitId", "unitPrice", "vs", "partnerId", "categoryId"]
       : [
           "quantity",
           "unitId",
           "unitPrice",
-          ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS),
+          ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS).filter(
+            (id) => !CATEGORY_COLUMNS.has(id),
+          ),
+          ...(editor.props.categoryBySide
+            ? (["debitCategoryId", "creditCategoryId"] as const)
+            : (["categoryId"] as const)),
         ];
   const fields = candidates.filter((id) => !shown.has(id));
   const errors: Partial<Record<string, string>> = editor.validations.get(line.id) ?? {};

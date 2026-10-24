@@ -1,8 +1,9 @@
 /**
  * Platnost řádků editoru dokladu.
- * Vlastní: povinné účty a částku, pravidla stran (VS, zakázka), kontroly DPH a varování.
+ * Vlastní: povinné účty a částku, pravidla stran (VS, kategorie), kontroly DPH a varování.
  * Nesmí: používat React ani DOM; texty dostává hotové z DsTexts.
  */
+import { normalizeCategoryLine } from "./journal-category-model";
 import type { AccountOption } from "./account-select";
 import type {
   JournalLine,
@@ -32,8 +33,10 @@ export interface JournalValidationContext {
   sharedSide: JournalSharedSide;
   /** Pravidla stran podle účtu. */
   sideFieldRules: SideFieldRulesFn;
-  /** Zakázka povinná pro celou knihu. */
+  /** Kategorie povinná pro celou knihu. */
   dimensionRequired: boolean;
+  categoryRequired?: boolean;
+  categoryBySide?: boolean;
   /** DPH zapnuto a editovatelné. */
   vatActive: boolean;
   /** Kódy DPH podle id. */
@@ -52,7 +55,7 @@ export interface JournalValidationContext {
   missingVatAccounts: Map<string, string>;
 }
 
-/** Chybějící VS nebo zakázka podle pravidel účtů na stranách MD / DAL. */
+/** Chybějící VS nebo kategorie podle pravidel účtů na stranách MD / DAL. */
 export function journalSideIssues(line: JournalLine, ctx: JournalValidationContext) {
   const { texts: t, sideFields } = ctx;
   const issues: JournalLineErrors = {};
@@ -61,19 +64,26 @@ export function journalSideIssues(line: JournalLine, ctx: JournalValidationConte
     const code = side === "debit" ? line.debitAccount : line.creditAccount;
     const account = code ? ctx.accountByCode.get(code) : undefined;
     if (!account) return;
-    const rules = ctx.sideFieldRules(account, { dimensionRequired: ctx.dimensionRequired });
+    const rules = ctx.sideFieldRules(account, {
+      categoryRequired: ctx.categoryRequired ?? ctx.dimensionRequired,
+      dimensionRequired: ctx.categoryRequired ?? ctx.dimensionRequired,
+    });
     const sideLabel = side === "debit" ? t.sideDebit : t.sideCredit;
     const shared = sideFields === "shared";
     const vsColumn = shared ? "vs" : side === "debit" ? "debitVs" : "creditVs";
-    const dimensionColumn = shared
-      ? "dimensionId"
-      : side === "debit"
-        ? "debitDimensionId"
-        : "creditDimensionId";
+    const dimensionColumn =
+      (ctx.categoryBySide ?? !shared) === false
+        ? "categoryId"
+        : side === "debit"
+          ? "debitCategoryId"
+          : "creditCategoryId";
     if (rules.vsRequired && !line[vsColumn])
       issues[vsColumn] = t.missingVs.replace("{side}", sideLabel);
-    if (rules.dimensionRequired && !line[dimensionColumn])
-      issues[dimensionColumn] = t.missingDimension.replace("{side}", sideLabel);
+    if (
+      (rules.categoryRequired ?? rules.dimensionRequired) &&
+      !normalizeCategoryLine(line)[dimensionColumn]
+    )
+      issues[dimensionColumn] = t.missingCategory.replace("{side}", sideLabel);
   });
   return issues;
 }

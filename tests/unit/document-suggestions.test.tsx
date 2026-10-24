@@ -212,14 +212,15 @@ describe("DocumentForm návrhy hlavičky", () => {
 describe("návrhy buněk řádků", () => {
   it("účty, zakázka a kód DPH mají společné klíče návrhu", () => {
     updateGridLayout("suggestions-test:v4", {
-      visible: { debitAccount: true, creditAccount: true, dimensionId: true, vatCodeId: true },
-      visibilityOverrides: ["dimensionId"],
+      visible: { debitAccount: true, creditAccount: true, categoryId: true, vatCodeId: true },
+      visibilityOverrides: ["categoryId"],
     });
     const view = render(
       <Editor
         withoutAccounts={false}
         dimensions={[]}
         sideFields="shared"
+        categoryBySide={false}
         lines={[
           {
             id: "r1",
@@ -249,7 +250,7 @@ describe("návrhy buněk řádků", () => {
         }}
       />,
     );
-    for (const key of ["debitAccount", "creditAccount", "dimensionId", "vatCodeId"]) {
+    for (const key of ["debitAccount", "creditAccount", "categoryId", "vatCodeId"]) {
       const cell = view.container.querySelector(`[data-cell-key="r1:${key}"]`);
       expect(cell).not.toBeNull();
       expect(cell?.getAttribute("data-suggestion")).toBe("uncertain");

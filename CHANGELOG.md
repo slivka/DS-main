@@ -2,6 +2,29 @@
 
 ## 2.138.0 (nevydáno)
 
+### B1 – ekonomické kategorie, přechod API
+
+- Kanonický stromový `CategorySelect` / `CategoryOption` sdílí dosavadní hledání a Enter. Kód může být `null`; zobrazí se „kód – název“, bez kódu pouze název. `postable=false` uzel lze zobrazit, nikoli vybrat. Staré názvy jsou deprecated od 2.138.0 do 3.0.0; nový název má přednost včetně `null`, `false` a prázdného seznamu.
+- Interní doklad má `categoryBySide` (výchozí true v `internal`): Kategorie MD / Kategorie DAL, každá jen pro účet druhu `ekonomicka_kategorie` nebo přechodového `bilance`. DocumentForm určí výchozí hodnotu podle druhu dokladu; faktury i zálohové listy a ostatní doklady mají jedinou kategorii na ekonomické straně.
+- `allowedCategories(accountCode, side)` zahrnuje potomky povoleného uzlu, jen aktivní vykazovatelné; `null` = všechny, `[]` = žádná. Jediná povolená se doplní a zamkne přes FieldValue; uložená nepovolená zůstane s chybou. Změna účtu zachová povolenou, jinak ji vyprázdní/nahradí s upozorněním, druhá strana zůstává nedotčena. Vytvoření z hledání respektuje stejná omezení. Převzaté hodnoty mají tlumený text.
+- **Migrace DB výstupu:** `toJournalRow` / `toJournalRows` nyní výchozí zapisují `debit_category_id` / `credit_category_id`; původní sloupce pouze při `{ categoryFormat: "dimension" }`. `fromJournalRow` přijímá oba tvary, nový má přednost, a zachovává i přechodové aliasy editoru. Výslovné `null` strany se nepřepisuje společnou kategorií. Žádné změny DB ani DimensionBar B2.
+- Oprava nalezená při Chromium ověření: Enter za poslední buňkou přidává další řádek z aktuálních hodnot, nikoli z uzavřeného starého stavu; poslední právě vybraná kategorie se neztratí.
+
+| Starý název (deprecated do 3.0.0) | Nový název |
+| --- | --- |
+| `dimensionId` | `categoryId` |
+| `debitDimensionId` / `creditDimensionId` | `debitCategoryId` / `creditCategoryId` |
+| `DimensionSelect` / `DimensionOption` | `CategorySelect` / `CategoryOption` |
+| `dimensions` | `categories` |
+| `onEditDimension` / `onCreateDimension` | `onEditCategory` / `onCreateCategory` |
+| `dimensionRequired` | `categoryRequired` |
+| `rowSuggestions.dimension` | `rowSuggestions.category` |
+| `debit_dimension_id` / `credit_dimension_id` | `debit_category_id` / `credit_category_id` |
+| `bilance` (druh účtu) | `ekonomicka_kategorie` |
+
+- Zpětná volání návrhů při původním `rowSuggestions.dimension` dál oznamují `dimension`; při novém `category` oznamují `category`. Props `texts` respektují nové i původní názvy s předností nových.
+- Ověření B1: **24 nových regresí, všechny unit DS 1 475/1 475 v 152 souborech**, jediný nový Chromium spec `journal-categories.spec.ts` **1/1** (psaní + Enter na MD i DAL); průběžný `check:quick --harness` prošel. Katalog proti vydané 2.137.0 **486 → 486 komponent, 1 230 → 1 306 props, 0 odebrání**; CategorySelect již existoval a nyní je společný kanonický výběr. Generovaná reference obnovená z katalogu. Plná E2E a check:full neběžely; package/meta/release-base ponechány na vydané 2.137.0. Nevydáno.
+
 ## 2.137.0
 
 - Doplněk 6 (po plné E2E v GitHubu, 8 padlých): pravá část identity (`.ds-identity-status`) má `max-width: 100%` a `overflow: hidden`, takže vstup čísla výpisu při maximálním zoomu v 360 px formuláři nikdy nepřetéká přes formulář (skutečná regrese, oprava kódu). Testy zúženy na živý řádek: `design-three.spec.ts` měří `.document-identity-account-box` jen uvnitř `[data-slot="identity-line-row"]` (měřicí kopie `ds-identity-measure` nesou stejné třídy, ale jsou bez id/aria/data atributů, inert a mimo přístupný strom); `record-panel.spec.ts` hledá ovladač pod novým přístupným názvem „Zavřít panel“ v liště akcí. Ověření: unit DS **1 451/1 451**, Chromium specy `design-three`, `edit-document-thirteen`, `record-panel`, `vs-lock-2108`, `identity-line-overlap` **21/21**. Plná E2E sada neběžela, pustí ji Claude v GitHubu. Nevydáno.

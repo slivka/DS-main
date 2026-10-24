@@ -5,10 +5,11 @@
  * Nesmí: registrovat globální posluchače na window; vše běží přes onKeyDown kořene a buněk.
  */
 import type * as React from "react";
+import { useRef } from "react";
 
 import type { JournalLine } from "./journal-lines";
 import {
-  DIMENSION_COLUMNS,
+  CATEGORY_COLUMNS,
   NUMERIC_COLUMNS,
   PARTNER_COLUMNS,
   VAT_COLUMNS,
@@ -21,6 +22,8 @@ import type { JournalEditorState } from "./useJournalEditorState";
 
 /** Klávesové akce editoru nad sdíleným stavem. */
 export function useJournalKeyboard(editor: JournalEditorState) {
+  const latestEditor = useRef(editor);
+  latestEditor.current = editor;
   const { layout } = editor;
   const { lines } = editor.props;
 
@@ -43,7 +46,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       while (skipPinned && all[cursor] && pinnedCell(all[cursor])) cursor += step;
       const target = all[cursor];
       if (target) target.focus();
-      else if (delta > 0 && index >= 0) editor.addLine(true, skipPinned);
+      else if (delta > 0 && index >= 0) latestEditor.current.addLine(true, skipPinned);
     });
 
   /** Fokus do rekapitulace pod gridem (po zahození prázdného řádku). */
@@ -85,7 +88,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
     } else if (
       !VAT_COLUMNS.has(dataColumn) &&
       !isAccountColumn(column) &&
-      !DIMENSION_COLUMNS.has(dataColumn) &&
+      !CATEGORY_COLUMNS.has(dataColumn) &&
       !PARTNER_COLUMNS.has(dataColumn) &&
       column !== "unitId" &&
       !NUMERIC_COLUMNS.has(column)

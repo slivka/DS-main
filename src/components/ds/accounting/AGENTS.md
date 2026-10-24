@@ -53,3 +53,5 @@
 - Map advance auto-kind labels through DsTexts.vatFive in journal and posting views. Why: advance_fx stays distinct from fxRounding without generating accounting rows.
 - Obecné zamčení polí dokladu jde přes `fieldLockedReasons` do FieldValue se zámkem; jednotlivé důvody (protistrana, účet, Σ) zůstávají. Why: import výpisů zamyká převzatá pole jednou cestou bez kopií ovládání.
 - Výpis skládá nabídku „…“ ze slotu `menuActions` za stávajícími položkami. Why: aplikace přidává akce (import) bez druhé nabídky.
+
+- Category cell, detail and account changes share journal-category-model and useJournalCategories; normalize deprecated aliases at input boundaries. Why: allowed descendants, postability and single locks must never diverge.
