@@ -14226,7 +14226,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankConnectionBanner state=\"tokenInvalid\" onChangeToken={openSettings} />"
+          "code": "<BankConnectionBanner state={{ tone: \"error\", reason: errorText }} onChangeToken={openSettings} />"
         }
       ],
       "antipatterns": [
