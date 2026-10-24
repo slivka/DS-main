@@ -4,6 +4,7 @@
  *   součty, validaci a všechny úpravy řádků (přidání, duplikace, odebrání, přesun, změny hodnot).
  * Nesmí: vykreslovat; nesmí kopírovat props do stavu – řádky jsou vždy řízené volajícím.
  */
+import { taxItemAccountRequired } from "./journal-tax-records";
 import * as React from "react";
 import { type DragEndEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
@@ -100,6 +101,17 @@ export function useJournalEditorState(
     () => ({
       ...dsTexts.journalEditor,
       ...texts,
+      ...(bookkeepingMode === "tax_records"
+        ? {
+            debitAccount: dsTexts.taxRecords.item,
+            creditAccount: dsTexts.taxRecords.item,
+            counterAccount: dsTexts.taxRecords.item,
+            sideDebit: dsTexts.taxRecords.toItem,
+            sideCredit: dsTexts.taxRecords.fromItem,
+            debitRequired: dsTexts.taxRecords.chooseItem,
+            creditRequired: dsTexts.taxRecords.chooseItem,
+          }
+        : {}),
       category: texts?.category ?? texts?.dimension ?? dsTexts.journalEditor.category,
       debitCategory:
         texts?.debitCategory ?? texts?.debitDimension ?? dsTexts.journalEditor.debitCategory,
@@ -108,7 +120,7 @@ export function useJournalEditorState(
       missingCategory:
         texts?.missingCategory ?? texts?.missingDimension ?? dsTexts.journalEditor.missingCategory,
     }),
-    [dsTexts, texts],
+    [dsTexts, texts, bookkeepingMode],
   );
   const accountFormRequired =
     texts?.accountFormRequired ?? dsTexts.columnPicker.accountFormRequired;
@@ -419,13 +431,22 @@ export function useJournalEditorState(
     foreign,
     documentMark,
     isCodeRequired: vat?.isCodeRequired,
-    withoutAccounts: props.withoutAccounts,
+    withoutAccounts: props.withoutAccounts || bookkeepingMode === "tax_records",
     missingVatAccounts: totals.missingVatAccounts,
   };
   const validations = validateJournalLines(lines, validationContext, {
     showAllErrors: props.showAllErrors ?? false,
     touched: touchedRows.current,
-    validate: props.validate,
+    validate: (line) => {
+      const extra = props.validate?.(line);
+      if (bookkeepingMode !== "tax_records") return extra ?? {};
+      return {
+        ...Object.fromEntries(
+          taxItemAccountRequired(line, props).map((key) => [key, dsTexts.taxRecords.chooseItem]),
+        ),
+        ...extra,
+      };
+    },
   });
   const vatWarnings = new Map(
     lines

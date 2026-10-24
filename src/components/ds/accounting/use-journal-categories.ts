@@ -90,7 +90,12 @@ export function useJournalCategories(
   const singleSignature = JSON.stringify(singleUpdates.map((item) => [item.line.id, item.values]));
   const appliedSingle = React.useRef("");
   React.useLayoutEffect(() => {
-    if (props.categoriesEnabled === false || editable.size === 0 || !singleUpdates.length || appliedSingle.current === singleSignature)
+    if (
+      props.categoriesEnabled === false ||
+      editable.size === 0 ||
+      !singleUpdates.length ||
+      appliedSingle.current === singleSignature
+    )
       return;
     appliedSingle.current = singleSignature;
     for (const item of singleUpdates) pins.markInherited(item.line.id, item.changed);

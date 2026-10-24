@@ -60,7 +60,10 @@ const AUTO_LABEL: Record<DocumentPostingAutoKind, keyof VatFiveTexts> = {
 
 /** Grid zaúčtování dokladu jen ke čtení. */
 export const DocumentPostingGrid = React.forwardRef<HTMLDivElement, DocumentPostingGridProps>(
-  function DocumentPostingGrid({ entries, accounts, texts, className, bookkeepingMode = "accrual", ...props }, ref) {
+  function DocumentPostingGrid(
+    { entries, accounts, texts, className, bookkeepingMode = "accrual", ...props },
+    ref,
+  ) {
     const dsTexts = useDsTexts();
     const t = { ...dsTexts.vatFive, ...texts };
     const byCode = React.useMemo(
@@ -90,8 +93,12 @@ export const DocumentPostingGrid = React.forwardRef<HTMLDivElement, DocumentPost
           <TableHeader className="grid-column-header">
             <TableRow>
               <TableHead>{t.postingText}</TableHead>
-              <TableHead>{bookkeepingMode === "tax_records" ? dsTexts.taxRecords.toItem : t.postingDebit}</TableHead>
-              <TableHead>{bookkeepingMode === "tax_records" ? dsTexts.taxRecords.fromItem : t.postingCredit}</TableHead>
+              <TableHead>
+                {bookkeepingMode === "tax_records" ? dsTexts.taxRecords.toItem : t.postingDebit}
+              </TableHead>
+              <TableHead>
+                {bookkeepingMode === "tax_records" ? dsTexts.taxRecords.fromItem : t.postingCredit}
+              </TableHead>
               <TableHead className="text-right">{t.postingAmount}</TableHead>
             </TableRow>
           </TableHeader>

@@ -70,7 +70,10 @@ function JournalHeader() {
     <TableHeader className="grid-column-header">
       <TableRow>
         {layout.visibleColumns.map((column) => {
-          const compact = layout.compactAccountIds.has(column.id) && isAccountColumn(column.id);
+          const compact =
+            editor.props.bookkeepingMode !== "tax_records" &&
+            layout.compactAccountIds.has(column.id) &&
+            isAccountColumn(column.id);
           const dataId =
             compact && isAccountColumn(column.id) ? accountDataColumn(column.id) : null;
           const heading =
