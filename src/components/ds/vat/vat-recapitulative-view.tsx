@@ -34,15 +34,33 @@ export const VatRecapitulativeView = forwardRef<HTMLDivElement, VatRecapitulativ
       { id: "country", label: t.country, value: (r) => r.country },
       { id: "dic", label: t.dic, value: (r) => r.dic },
       { id: "supply", label: t.supply, value: (r) => r.supplyCode, total: "none" },
-      { id: "amount", label: `${t.amount} · ${currency}`, value: (r) => r.amount, numeric: true, decimals: 2 },
+      {
+        id: "amount",
+        label: `${t.amount} · ${currency}`,
+        value: (r) => r.amount,
+        numeric: true,
+        decimals: 2,
+      },
     ];
     const ossColumns: DataGridColumn<OssReturnRow>[] = [
       { id: "country", label: t.country, value: (r) => r.country },
       { id: "supply", label: t.supply, value: (r) => r.supplyLabel },
       { id: "period", label: t.period, value: (r) => r.correctionPeriod },
       { id: "rate", label: t.rate, value: (r) => `${r.rate} %` },
-      { id: "base", label: `${t.base} · ${currency}`, value: (r) => r.base, numeric: true, decimals: 2 },
-      { id: "tax", label: `${t.tax} · ${currency}`, value: (r) => r.tax, numeric: true, decimals: 2 },
+      {
+        id: "base",
+        label: `${t.base} · ${currency}`,
+        value: (r) => r.base,
+        numeric: true,
+        decimals: 2,
+      },
+      {
+        id: "tax",
+        label: `${t.tax} · ${currency}`,
+        value: (r) => r.tax,
+        numeric: true,
+        decimals: 2,
+      },
     ];
     return (
       <div ref={ref} {...props} className={cn("min-w-0", className)}>

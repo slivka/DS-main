@@ -49,11 +49,23 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
         if (!("key" in row)) return null;
         const delta = vatRowDifference(row, compare?.[row.key])[field];
         if (delta === undefined || delta === 0) return <AmountCell value={row[field]} />;
-        return <TooltipProvider><Tooltip><TooltipTrigger asChild>
-          <div tabIndex={0} className="bg-warning/15 outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <AmountCell value={row[field]} />
-          </div>
-        </TooltipTrigger><TooltipContent>{t.difference}: <AmountCell value={delta} /></TooltipContent></Tooltip></TooltipProvider>;
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  tabIndex={0}
+                  className="bg-warning/15 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <AmountCell value={row[field]} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                {t.difference}: <AmountCell value={delta} />
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
       },
     })),
     {
