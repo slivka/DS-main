@@ -1,6 +1,6 @@
 /** Přehledy DPH · vlastní datové kontrakty APP · nesmí provádět daňové výpočty. */
-/** Oddíl přiznání. */
-export type VatReturnSection = "I" | "II" | "III" | "IV" | "V";
+/** Oddíl přiznání podle tiskopisu DPHDP3. */
+export type VatReturnSection = "I" | "II" | "III" | "IV" | "V" | "VI";
 /** Řádek přiznání, částky hotové od APP. */
 export interface VatReturnRow {
   /** Klíč řádku. */ key: string;
@@ -8,6 +8,8 @@ export interface VatReturnRow {
   /** Popis řádku. */ label: string;
   /** Základ. */ base?: number | null;
   /** Daň. */ tax?: number | null;
+  /** Odpočet v plné výši (oddíl III). */ fullDeduction?: number | null;
+  /** Krácený odpočet (oddíl III). */ reducedDeduction?: number | null;
   /** Počet dokladů. */ documentCount?: number;
 }
 /** Částky jedné sazby dodané APP. */
@@ -28,6 +30,8 @@ export interface VatControlDocument {
   /** Kód režimu. */ regime?: string;
   /** Kód předmětu PDP. */ subjectCode?: string;
   /** Změna proti podanému snímku. */ changed?: boolean;
+  /** Nesazbový základ bez sazby (oddíl A1); nikdy se nezobrazuje jako 21 %. */
+  unratedBase?: number | null;
 }
 /** Data oddílu KH. */
 export interface VatControlSectionData {
@@ -60,3 +64,15 @@ export interface VatPeriod {
 export type VatFilingForm = "return" | "control" | "recapitulative" | "oss";
 /** Druh podání. */
 export type VatFilingKind = "regular" | "corrective" | "additional" | "subsequent";
+/** Údaje záhlaví exportu Excel/PDF dodané APP. */
+export interface VatReportExportMeta {
+  /** Období podání. */ period?: string;
+  /** Firma. */ company?: string;
+  /** Druh podání. */ filingKind?: string;
+}
+/** Společný stav přehledu: načítání, chyba a záhlaví exportu. */
+export interface VatReportStateProps {
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu. */ exportMeta?: VatReportExportMeta;
+}

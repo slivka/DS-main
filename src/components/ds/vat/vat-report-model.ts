@@ -1,9 +1,15 @@
 /** Přehledy DPH · vlastní prezentační rozdíly a nabídku · nesmí počítat přiznání. */
 import type { VatFilingForm, VatFilingKind, VatReturnRow } from "./vat-report-types";
 /** Dostupné názvy druhů podání; oprávnění a platnost dodává APP. */
-export function vatFilingKinds(form: VatFilingForm): VatFilingKind[] {
-  if (form === "oss") return ["regular", "corrective"];
-  return ["regular", "corrective", form === "return" ? "additional" : "subsequent"];
+export function vatFilingKinds(
+  form: VatFilingForm,
+  allowed?: readonly VatFilingKind[],
+): VatFilingKind[] {
+  const kinds =
+    form === "oss"
+      ? (["regular", "corrective"] as VatFilingKind[])
+      : ["regular", "corrective", form === "return" ? "additional" : "subsequent"];
+  return allowed ? kinds.filter((kind) => allowed.includes(kind)) : kinds;
 }
 /** Rozdíl pouze existujících srovnatelných částek. */
 export function vatRowDifference(row: VatReturnRow, compare?: { base?: number; tax?: number }) {
