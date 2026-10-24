@@ -267,15 +267,11 @@ export function JournalLinesRecap({
               column.id.startsWith("debit")
                 ? {
                     ...column,
-                    label:
-                      bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
                     value: (row: Row) => withLabel(accountValue(column.id, row), row),
                     render: (row: Row) => renderLabel(accountValue(column.id, row), row),
                   }
                 : {
                     ...column,
-                    label:
-                      bookkeepingMode === "tax_records" ? dsTexts.taxRecords.item : column.label,
                     value: (row: Row) => accountValue(column.id, row) || "—",
                     render: (row: Row) =>
                       renderLabel(accountValue(column.id, row), { ...row, label: undefined }),

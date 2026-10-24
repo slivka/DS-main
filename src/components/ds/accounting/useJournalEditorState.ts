@@ -459,6 +459,10 @@ export function useJournalEditorState(
       ? ["debitCategoryId", "creditCategoryId"]
       : ["categoryId"];
     for (const column of columns) {
+      const state = categoryState(line, column);
+      if (bookkeepingMode === "tax_records" && props.categoriesEnabled !== false && props.categoryRequired && state.enabled && !state.value) {
+        validations.set(line.id, { ...validations.get(line.id), [column]: t.missingCategory });
+      }
       if (categoryState(line, column).invalid) {
         validations.set(line.id, {
           ...validations.get(line.id),

@@ -12,13 +12,14 @@ export function taxItemSide(
 }
 export function taxItemAccountRequired(
   line: JournalLine,
-  props: Pick<JournalLinesEditorProps, "mainSide" | "mode" | "taxMovementKind">,
+  props: Pick<JournalLinesEditorProps, "mainSide" | "mode" | "taxMovementKind"> & { accounts?: JournalLinesEditorProps["accounts"] },
 ): ("debitAccount" | "creditAccount")[] {
+  const missing = (key: "debitAccount" | "creditAccount") => !line[key] || props.accounts?.some(a => a.code === line[key] && a.technical);
   if (props.mode !== "mainAccount" && props.taxMovementKind === "transfer")
     return ["debitAccount", "creditAccount"].filter(
       (key): key is "debitAccount" | "creditAccount" =>
-        key === "debitAccount" ? !line.debitAccount : !line.creditAccount,
+        missing(key),
     );
   const side = taxItemSide(props);
-  return line[side] ? [] : [side];
+  return missing(side) ? [side] : [];
 }

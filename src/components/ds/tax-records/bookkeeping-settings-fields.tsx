@@ -1,6 +1,7 @@
 /** Pole nastavení knihy/firmy; skryté účty se nikdy nemažou. */
 import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Field, FieldGrid } from "../layout/form-field-layout";
+import { RecordReadOnlyProvider } from "../form/record-read-only";
 import { AccountSelect, type AccountOption } from "../accounting/account-select";
 import { useDsTexts } from "../../../ds-texts";
 import type { BookkeepingMode } from "./tax-record-types";
@@ -33,7 +34,7 @@ export const BookkeepingSettingsFields = forwardRef<HTMLDivElement, BookkeepingS
         {bookkeepingMode === "accrual" ? (
           accountFields
         ) : scope === "company" ? (
-          <FieldGrid cols={12}>
+          <RecordReadOnlyProvider value={!!readOnly}><FieldGrid cols={12}>
             <Field span={6} label={t.roundingIncome}>
               <AccountSelect
                 bookkeepingMode="tax_records"
@@ -54,7 +55,7 @@ export const BookkeepingSettingsFields = forwardRef<HTMLDivElement, BookkeepingS
                 ariaLabel={t.roundingExpense}
               />
             </Field>
-          </FieldGrid>
+          </FieldGrid></RecordReadOnlyProvider>
         ) : null}
       </div>
     );
