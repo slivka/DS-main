@@ -387,6 +387,61 @@ export function DocumentFormSecondaryScenarios({
           paginated={false}
         />
       </ShowcaseSection>
+
+      <CreditNoteShowcase />
     </>
+  );
+}
+
+/** Dobropis: záporný celek, vazba Opravuje doklad a záporný platební kalendář. */
+function CreditNoteShowcase() {
+  const [value, setValue] = useState({
+    currency: "CZK",
+    amountTotal: -1210,
+    totalMode: "entered" as const,
+  });
+  const [corrects, setCorrects] = useState<string | null>("fv-1");
+  const [schedule, setSchedule] = useState(() => [
+    { kind: "installment" as const, dueDate: "2026-11-15", amount: -403.33 },
+    { kind: "installment" as const, dueDate: "2026-12-15", amount: -403.33 },
+    { kind: "installment" as const, dueDate: "2027-01-15", amount: -403.34 },
+  ]);
+  return (
+    <ShowcaseSection
+      title="Dobropis vydané faktury"
+      description="Záporný celek: pole Opravuje doklad v hlavičce a platební kalendář se zápornými splátkami; kontrola součtu platí se znaménkem."
+    >
+      <DocumentForm
+        title="Dobropis FV 2026-0042"
+        value={value}
+        onChange={setValue}
+        lines={[]}
+        onLinesChange={() => {}}
+        books={MOCK_BOOKS}
+        accounts={MOCK_ACCOUNTS}
+        partners={MOCK_PARTNERS}
+        documentType="FV"
+        homeCurrency="CZK"
+        homeCurrencySymbol="Kč"
+        status="draft"
+        correctsDocument={{
+          value: corrects,
+          onChange: setCorrects,
+          options: [
+            { value: "fv-1", label: "FV 2026-0038 – Dodavatel s.r.o." },
+            { value: "fv-2", label: "FV 2026-0039 – Dodavatel s.r.o." },
+          ],
+          onOpen: (id) => toast.info(`Otevřen původní doklad ${id}`),
+        }}
+      />
+      <div className="mt-4">
+        <PaymentScheduleEditor
+          items={schedule}
+          onChange={setSchedule}
+          totalToPay={-1210}
+          currencySymbol="Kč"
+        />
+      </div>
+    </ShowcaseSection>
   );
 }
