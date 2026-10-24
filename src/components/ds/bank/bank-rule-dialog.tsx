@@ -166,18 +166,22 @@ export function BankRuleDialog({
           <Field span={3} label={t.amountFrom}>
             <DecimalInput
               value={c.amountFrom ?? null}
-              onChange={(amountFrom) => patchConditions({ amountFrom })}
+              onChange={(text) =>
+                patchConditions({ amountFrom: text.trim() ? Number(text.replace(",", ".")) : null })
+              }
             />
           </Field>
           <Field span={3} label={t.amountTo}>
             <DecimalInput
               value={c.amountTo ?? null}
-              onChange={(amountTo) => patchConditions({ amountTo })}
+              onChange={(text) =>
+                patchConditions({ amountTo: text.trim() ? Number(text.replace(",", ".")) : null })
+              }
             />
           </Field>
           <Field span={12} label={t.booksField}>
             <ChipMultiSelect
-              values={[...(c.bookIds ?? [])]}
+              value={[...(c.bookIds ?? [])]}
               onChange={(bookIds) => patchConditions({ bookIds })}
               options={books.map((b) => ({ value: b.id, label: b.name }))}
             />
