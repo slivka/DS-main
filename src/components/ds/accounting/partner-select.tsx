@@ -58,6 +58,8 @@ export function PartnerSelect({
   className,
   onEditSelected,
   editSelectedLabel,
+  favoriteIds,
+  onToggleFavorite,
 }: {
   partners: PartnerOption[];
   value: string | null | undefined;
