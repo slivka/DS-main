@@ -48,10 +48,11 @@ for (const kind of ["segmented", "toggle", "textarea"] as const) {
 test("JournalCellEditor: ＋ zakázky předá aktuální hledaný text", async () => {
   const created: string[] = [];
   function Cell() {
-    const line = { id: "cell", text: "A", amount: 1 };
+    const line = { id: "cell", debitAccount: "518001", text: "A", amount: 1 };
     const editor = useJournalEditorState(
       {
-        accounts: [],
+        accounts: [{ code: "518001", name: "Služby", category: "ekonomicka_kategorie" }],
+        categoryBySide: false,
         lines: [line],
         onChange: () => {},
         documentCurrency: "CZK",
@@ -81,6 +82,6 @@ test("JournalCellEditor: ＋ zakázky předá aktuální hledaný text", async (
     return node;
   });
   fireEvent.change(search, { target: { value: "Zakázka Z99" } });
-  fireEvent.click(await view.findByRole("button", { name: "Nová zakázka" }));
+  fireEvent.click(await view.findByRole("button", { name: "Nová kategorie" }));
   expect(created).toEqual(["Zakázka Z99"]);
 });

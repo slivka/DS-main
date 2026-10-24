@@ -154,7 +154,7 @@ describe("RecordDialog – busy", () => {
   });
 });
 
-const NEW: DimensionOption = { id: "z99", code: "Z99", name: "Nová zakázka Z99" };
+const NEW: DimensionOption = { id: "z99", code: "Z99", name: "Nová kategorie Z99" };
 
 async function clickCreate(view: ReturnType<typeof render>, text: string) {
   const search = await waitFor(() => {
@@ -164,7 +164,7 @@ async function clickCreate(view: ReturnType<typeof render>, text: string) {
   });
   fireEvent.change(search, { target: { value: text } });
   await act(async () => {
-    fireEvent.click(await view.findByRole("button", { name: "Nová zakázka" }));
+    fireEvent.click(await view.findByRole("button", { name: "Nová kategorie" }));
   });
 }
 
@@ -193,10 +193,11 @@ describe("DimensionSelect – výběr nově založené zakázky", () => {
 });
 
 function Editor({ cell, onLines }: { cell: boolean; onLines: (lines: JournalLine[]) => void }) {
-  const [lines, setLines] = React.useState<JournalLine[]>([{ id: "r1", text: "A", amount: 1 }]);
+  const [lines, setLines] = React.useState<JournalLine[]>([{ id: "r1", debitAccount: "518001", text: "A", amount: 1 }]);
   const editor = useJournalEditorState(
     {
-      accounts: [],
+      accounts: [{ code: "518001", name: "Služby", category: "ekonomicka_kategorie" }],
+      categoryBySide: false,
       lines,
       onChange: (next) => {
         setLines(next);
@@ -231,7 +232,7 @@ describe("Řádek dokladu – nová zakázka se vybere", () => {
       </TooltipProvider>,
     );
     await clickCreate(view, "Z99");
-    await waitFor(() => expect(latest[0]?.dimensionId).toBe("z99"));
+    await waitFor(() => expect(latest[0]?.categoryId).toBe("z99"));
   });
 
   it("v detailu řádku", async () => {
@@ -243,15 +244,15 @@ describe("Řádek dokladu – nová zakázka se vybere", () => {
     );
     const trigger = view
       .getAllByRole("combobox")
-      .find((node) => node.textContent?.includes("Vyberte zakázku")) as HTMLElement;
+      .find((node) => node.textContent?.includes("Vyberte kategorii")) as HTMLElement;
     await act(async () => {
       fireEvent.click(trigger);
     });
     await clickCreate(view, "Z99");
     await waitFor(() => {
       const row = latest[0];
-      expect([row?.dimensionId, row?.debitDimensionId, row?.creditDimensionId]).toContain("z99");
+      expect([row?.categoryId, row?.debitCategoryId, row?.creditCategoryId]).toContain("z99");
     });
-    expect(view.getByText("Z99 – Nová zakázka Z99", { exact: false })).toBeTruthy();
+    expect(view.getByText("Z99 – Nová kategorie Z99", { exact: false })).toBeTruthy();
   });
 });

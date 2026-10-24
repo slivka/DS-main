@@ -4,6 +4,7 @@
  *   a zápis hodnoty do řádku.
  * Nesmí: měnit pořadí řádků ani řešit fokus mimo svou buňku (to dělá useJournalKeyboard).
  */
+import { categoryColumnAlias } from "./journal-category-inputs";
 import { Input } from "../../ui/input";
 import { DecimalInput } from "../form/decimal-input";
 import { AccountSelect } from "./account-select";
@@ -139,6 +140,7 @@ function NumericCellEditor({ line, column }: JournalCellEditorProps) {
 
 /** Editor buňky podle typu sloupce. */
 export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
+  column = categoryColumnAlias(column) as ColumnId;
   const { editor, keyboard } = useJournalEditor();
   if (isAccountColumn(column)) return <AccountCellEditor line={line} column={column} />;
   if (VAT_NUMERIC.has(column) || NUMERIC_COLUMNS.has(column))

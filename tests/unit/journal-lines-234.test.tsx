@@ -70,11 +70,12 @@ describe("JournalLinesEditor 2.49", () => {
           documentCurrency="CZK"
           homeCurrency="CZK"
           sideFields="shared"
+          categoryBySide={false}
           dimensionRequired
         />
       </TooltipProvider>,
     );
-    expect(html).toContain('data-auto-hidden="partnerId,vs,dimensionId"');
+    expect(html).toContain('data-auto-hidden="partnerId,vs,categoryId"');
     expect(html).not.toContain(">MD zakázka<");
     expect(html).not.toContain("Počet chyb:");
   });
