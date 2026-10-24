@@ -61,6 +61,23 @@ export interface DocumentVatRateField {
   sameAsDocument?: boolean;
 }
 
+/**
+ * Vazba dobropisu na původní doklad (FV/FP). Data, kandidáty i ukládání dodává APP;
+ * DS pole jen zobrazí v hlavičce. Bez propů se pole nevykreslí a ostatní typy se nemění.
+ */
+export interface DocumentCorrectsDocumentField {
+  /** Id opravovaného dokladu; null = bez vazby. */
+  value: string | null;
+  /** Kandidáti původních dokladů z dat APP. */
+  options: Array<{ value: string; label: string }>;
+  /** Změna vazby; null zruší vazbu. */
+  onChange: (documentId: string | null) => void;
+  /** Otevření opravovaného dokladu (odkaz u pole). */
+  onOpen?: (documentId: string) => void;
+  /** Důvod zámku pole (FieldValue se zámkem). */
+  lockedReason?: string;
+}
+
 export interface DocumentFormProps {
   bookkeepingMode?: import("../../tax-records/tax-record-types").BookkeepingMode;
   /** Skryje hlavní účet a stranu bez změny dat. V DE automaticky. */
@@ -180,6 +197,8 @@ export interface DocumentFormProps {
   onAccountingDateLinkedChange?: (linked: boolean) => void;
   /** Výstraha duplicity daňového čísla v poli i společném pruhu. */
   taxDocumentNumberWarning?: string;
+  /** Dobropis (FV/FP): pole „Opravuje doklad" v základních údajích; data a zápis vlastní APP. */
+  correctsDocument?: DocumentCorrectsDocumentField;
   /** Chyby jednotlivých polí; společně se zobrazí nad formulářem. */
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   /** Výstrahy jednotlivých polí; společně se zobrazí nad formulářem. */
