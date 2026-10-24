@@ -24,9 +24,31 @@ const columns: DataGridColumn<Row>[] = [
 describe("DataGrid nové kontrakty", () => {
   it("úzká lišta přesune hledání do jediné nabídky a hledání dál změní data", () => {
     const searches: string[] = [];
-    const ui = render(<TooltipProvider><GridToolbarOverflowContext.Provider value={3}>
-      <GridFrame zoom={{ zoom: 1, setZoom: () => {}, density: "normal", setDensity: () => {}, isAuto: false }} texts={DS_TEXTS_CS.grid} context={{}} toolbarClassName="" search={{ value: "", onChange: value => searches.push(value) }} filtersOpen={false} filterChips={[]} columnPicker={{ columns: [], visible: {}, onToggle: () => {} }} dataGroup={null} moreActions={[]} selection={null} />
-    </GridToolbarOverflowContext.Provider></TooltipProvider>);
+    const ui = render(
+      <TooltipProvider>
+        <GridToolbarOverflowContext.Provider value={3}>
+          <GridFrame
+            zoom={{
+              zoom: 1,
+              setZoom: () => {},
+              density: "normal",
+              setDensity: () => {},
+              isAuto: false,
+            }}
+            texts={DS_TEXTS_CS.grid}
+            context={{}}
+            toolbarClassName=""
+            search={{ value: "", onChange: (value) => searches.push(value) }}
+            filtersOpen={false}
+            filterChips={[]}
+            columnPicker={{ columns: [], visible: {}, onToggle: () => {} }}
+            dataGroup={null}
+            moreActions={[]}
+            selection={null}
+          />
+        </GridToolbarOverflowContext.Provider>
+      </TooltipProvider>,
+    );
     fireEvent.click(ui.getByRole("button", { name: "Další akce" }));
     const search = ui.getByRole("button", { name: "Hledat" });
     fireEvent.click(search);
