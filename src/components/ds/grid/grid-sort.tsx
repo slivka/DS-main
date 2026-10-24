@@ -181,25 +181,25 @@ export function SortHead<Id extends string>({
         style={{ textAlign: align === "right" ? "right" : align === "center" ? "center" : "left" }}
       >
         <Tooltip>
-        <TooltipTrigger asChild>
-        <button
-          type="button"
-          onClick={() => sort.toggle(id)}
-          className={`typo-action inline-flex items-center gap-1 hover:text-foreground ${
-            active ? "text-foreground" : ""
-          }`}
-          aria-label={texts.sortBy(label)}
-        >
-          {label}
-          {active &&
-            (sort.dir === "asc" ? (
-              <ArrowUp className="size-3 shrink-0" />
-            ) : (
-              <ArrowDown className="size-3 shrink-0" />
-            ))}
-        </button>
-        </TooltipTrigger>
-        {headerTooltip ? <TooltipContent>{headerTooltip}</TooltipContent> : null}
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={() => sort.toggle(id)}
+              className={`typo-action inline-flex items-center gap-1 hover:text-foreground ${
+                active ? "text-foreground" : ""
+              }`}
+              aria-label={texts.sortBy(label)}
+            >
+              {label}
+              {active &&
+                (sort.dir === "asc" ? (
+                  <ArrowUp className="size-3 shrink-0" />
+                ) : (
+                  <ArrowDown className="size-3 shrink-0" />
+                ))}
+            </button>
+          </TooltipTrigger>
+          {headerTooltip ? <TooltipContent>{headerTooltip}</TooltipContent> : null}
         </Tooltip>
         {children}
       </span>

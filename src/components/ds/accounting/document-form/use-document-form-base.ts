@@ -80,11 +80,15 @@ export function useDocumentFormBase(props: DocumentFormProps) {
   const vatDateLock = (key: DocumentHeaderField) =>
     key === "vatDate" && props.vat?.dateLockReadOnly ? t.vatDateLockedHint : undefined;
   const can = (key: DocumentHeaderField) =>
-    !readOnly && !explicitLock(key) && !vatDateLock(key) &&
+    !readOnly &&
+    !explicitLock(key) &&
+    !vatDateLock(key) &&
     (!editableFields || editableFields.includes(key));
   // Nový kontrakt zamyká přímo; původní alias zachovává pravidlo editableFields.
   const lockReason = (key: DocumentHeaderField) =>
-    explicitLock(key) ?? (!can(key) ? props.fieldLockedReasons?.[key] : undefined) ?? vatDateLock(key);
+    explicitLock(key) ??
+    (!can(key) ? props.fieldLockedReasons?.[key] : undefined) ??
+    vatDateLock(key);
   const {
     receivedDocument,
     issuedDocument,

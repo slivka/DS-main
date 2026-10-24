@@ -68,11 +68,20 @@ export function useDocumentFieldRenderers({
       span={span as 3 | 4 | 5 | 6 | 14 | 20}
       className={cn("col-span-20", mobileHalf && "col-span-10", className)}
     >
-      {lockReason?.(headerFieldKey(id)) && !["issueDate", "accountingDate", "taxDate", "dueDate", "vatDate"].includes(headerFieldKey(id)) ? (
-        <FieldValue id={id} aria-labelledby={`${id}-label`} lockedReason={lockReason(headerFieldKey(id))}>
+      {lockReason?.(headerFieldKey(id)) &&
+      !["issueDate", "accountingDate", "taxDate", "dueDate", "vatDate"].includes(
+        headerFieldKey(id),
+      ) ? (
+        <FieldValue
+          id={id}
+          aria-labelledby={`${id}-label`}
+          lockedReason={lockReason(headerFieldKey(id))}
+        >
           {String(value[headerFieldKey(id)] ?? "")}
         </FieldValue>
-      ) : control}
+      ) : (
+        control
+      )}
     </Field>
   );
   const date = (

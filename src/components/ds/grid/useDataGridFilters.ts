@@ -63,13 +63,15 @@ export function useDataGridFilters<Row>({
   const searched = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
-    return rows.filter((row) =>
-      searchText?.(row).toLowerCase().includes(q) || columns.some((c) => {
-        // Skupinový řádek zastupuje i své skryté položky.
-        const many = c.filterValues?.(row);
-        if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
-        return cellText(c.value?.(row)).toLowerCase().includes(q);
-      }),
+    return rows.filter(
+      (row) =>
+        searchText?.(row).toLowerCase().includes(q) ||
+        columns.some((c) => {
+          // Skupinový řádek zastupuje i své skryté položky.
+          const many = c.filterValues?.(row);
+          if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
+          return cellText(c.value?.(row)).toLowerCase().includes(q);
+        }),
     );
   }, [rows, columns, search, searchText]);
 

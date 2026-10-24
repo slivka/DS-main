@@ -198,9 +198,15 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
                 }
               >
                 {c.headerTooltip ? (
-                  <Tooltip><TooltipTrigger asChild><span tabIndex={0}>{c.label}</span></TooltipTrigger>
-                    <TooltipContent>{c.headerTooltip}</TooltipContent></Tooltip>
-                ) : c.label}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span tabIndex={0}>{c.label}</span>
+                    </TooltipTrigger>
+                    <TooltipContent>{c.headerTooltip}</TooltipContent>
+                  </Tooltip>
+                ) : (
+                  c.label
+                )}
                 {props.columnFilters && c.type !== "record-indicators" ? filter : null}
               </span>
               {resize}

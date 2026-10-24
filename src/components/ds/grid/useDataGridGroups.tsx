@@ -38,11 +38,19 @@ export function useDataGridGroups<Row>(o: DataGridGroupsOptions<Row>) {
   const { texts, shown, groupTotals, paginated } = o;
   const [depth, setDepth] = useState<number | null>(null);
   const defaultGroups = useMemo(
-    () => (o.fixedGroupBy ?? o.defaultGroupBy ? [{ id: o.fixedGroupBy ?? o.defaultGroupBy ?? "", granularity: "month" as const }] : []),
+    () =>
+      (o.fixedGroupBy ?? o.defaultGroupBy)
+        ? [{ id: o.fixedGroupBy ?? o.defaultGroupBy ?? "", granularity: "month" as const }]
+        : [],
     [o.defaultGroupBy, o.fixedGroupBy],
   );
-  const storedGrouping = useGridGrouping(o.storageKey, { disabled: !o.groupable || Boolean(o.fixedGroupBy), defaultGroups });
-  const grouping = o.fixedGroupBy ? { ...storedGrouping, enabled: false, active: true, groups: defaultGroups } : storedGrouping;
+  const storedGrouping = useGridGrouping(o.storageKey, {
+    disabled: !o.groupable || Boolean(o.fixedGroupBy),
+    defaultGroups,
+  });
+  const grouping = o.fixedGroupBy
+    ? { ...storedGrouping, enabled: false, active: true, groups: defaultGroups }
+    : storedGrouping;
   // Vývojové varování je vedlejší efekt mimo React (konzole).
   useEffect(() => {
     if (process.env.NODE_ENV !== "production" && groupTotals === "row" && paginated) {
