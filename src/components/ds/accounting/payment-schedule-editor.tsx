@@ -79,7 +79,8 @@ export function PaymentScheduleEditor({
     const last = items[items.length - 1];
     onChange([
       ...items,
-      { kind: "installment", dueDate: last?.dueDate ?? today(), amount: Math.max(0, unallocated) },
+      // Dobropis: záporný zbytek se předvyplní se znaménkem, nikdy se neořezává na nulu.
+      { kind: "installment", dueDate: last?.dueDate ?? today(), amount: unallocated },
     ]);
     setSelected(items.length);
   };
