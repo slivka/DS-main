@@ -49,7 +49,9 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
         refreshBox.x + refreshBox.width <= toolbarBox.x + toolbarBox.width + 1,
     ).toBe(true);
     if (width < 620) {
+      await expect(toolbar.getByRole("button", { name: /Hledat/ })).toHaveCount(0);
       await toolbar.getByRole("button", { name: "Další akce" }).click();
+      await expect(page.getByRole("button", { name: "Hledat", exact: true })).toBeVisible();
       await expect(page.getByText("Parametry", { exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Stav k datu" }).last()).toBeVisible();
     }
