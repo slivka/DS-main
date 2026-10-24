@@ -1,3 +1,4 @@
+import { TAX_YEAR_SK } from "./sk-tax-year";
 import { TAX_RECORDS_SK } from "./sk-tax-records";
 import { STATEMENTS_SK } from "./sk-statements";
 import { VAT_REPORTS_SK } from "./sk-vat-reports";
@@ -35,6 +36,7 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
   taxRecords: TAX_RECORDS_SK,
+  taxYear: TAX_YEAR_SK,
   bankReconcile: BANK_RECONCILE_SK,
   bankConnection: BANK_CONNECTION_SK,
   bankRules: BANK_RULE_SK,

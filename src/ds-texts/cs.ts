@@ -1,3 +1,4 @@
+import { TAX_YEAR_CS } from "./cs-tax-year";
 import { TAX_RECORDS_CS } from "./cs-tax-records";
 import { STATEMENTS_CS } from "./cs-statements";
 import { VAT_REPORTS_CS } from "./cs-vat-reports";
@@ -33,6 +34,7 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
   taxRecords: TAX_RECORDS_CS,
+  taxYear: TAX_YEAR_CS,
   vatReports: VAT_REPORTS_CS,
   statements: STATEMENTS_CS,
   dimensions: DIMENSION_TEXTS_CS,
