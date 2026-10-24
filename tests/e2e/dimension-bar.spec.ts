@@ -33,6 +33,10 @@ test("Dimenze: klávesnice, převzaté hodnoty, ruční výjimka a Enter v gridu
   await page.keyboard.press("Enter");
   await expect(page.getByRole("option", { name: "Transporter · 2BC 3456" })).toBeVisible();
   await page.keyboard.type("Transporter");
+  await expect(page.getByRole("option", { name: "Transporter · 2BC 3456" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
   await page.keyboard.press("Enter");
   await expect(
     detail.getByRole("combobox", { name: "Vozidlo: Transporter · 2BC 3456" }),
@@ -41,11 +45,15 @@ test("Dimenze: klávesnice, převzaté hodnoty, ruční výjimka a Enter v gridu
   await expectTooltip(
     page,
     header.getByText("+ další", { exact: true }),
-    /Na 1 řádcích jiná hodnota/,
+    "Na 1 řádcích jiná hodnota",
   );
   await header.getByRole("combobox", { name: "Vozidlo: Octavia · 1AB 2345" }).focus();
   await page.keyboard.press("Enter");
   await page.keyboard.type("Octavia");
+  await expect(page.getByRole("option", { name: "Octavia · 1AB 2345" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
   await page.keyboard.press("Enter");
   await expect(
     detail.getByRole("combobox", { name: "Vozidlo: Transporter · 2BC 3456" }),
