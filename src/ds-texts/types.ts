@@ -10,6 +10,7 @@ import type { FileImportTexts } from "./file-import-texts";
 export type { FileImportTexts } from "./file-import-texts";
 export type { AdvanceTexts } from "./advance-texts";
 export type { TemplateTexts } from "./template-texts";
+export type { StatementTexts } from "./statement-texts";
 export type { LinkedRecordTexts } from "./linked-record-texts";
 import type { BankStatementTexts } from "./bank-statement-texts";
 export type { BankStatementTexts } from "./bank-statement-texts";
