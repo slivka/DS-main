@@ -1,7 +1,8 @@
 ## DS 2.139.0 (nevydáno)
 
-- [ ] DE-2 + DE-3: režim položek v dokladech, nastavení bez účtů, kniha, daňové souhrny, kontrola peněz a propojené zápisy; CS/SK, katalog a cílené testy. Zadání dodáno, oddíl 11 pro DS: názvy položek a žádné technické účty. Nevydávat.
-- [ ] Drobná API: ověřit aktuální zdroj proti auditu a doplnit jen chybějící; D6 ponechat plné E2E uživatele.
+- [x] DE-2 + DE-3: režim položek v dokladech, nastavení bez účtů, kniha, daňové souhrny, kontrola peněz a propojené zápisy; CS/SK, katalog a cílené testy. Zadání dodáno, oddíl 11 pro DS: názvy položek a žádné technické účty. Nevydávat.
+- [x] Drobná API: už bylo PageHeader.panelToggle, Série ze vzoru, jediné potvrzení vazeb, openLinkedTab, menu/důvody výpisu a sousední panel; doplněno FormIssue.action, RecordDialog confirm.reason a VatPeriodBadge. D6 ponechán plné E2E uživatele.
+- [x] DE ověření: 29 nových unit regresí, Chromium nový spec 1/1 (1280/480 px), katalog 495 → 503 / 1 383 → 1 442 props, 0 odebrání. Nevydáno, plná E2E ani check:full neběží.
 - [x] DPH B: šest přehledů, varianta OSS, CS/SK a ukázky. 13 nových unit testů, unit DS 1 527/1 527, Chromium nový spec 1/1, check:quick. Katalog proti D1–D7 489 → 495 / 1 339 → 1 383 props, 0 odebrání. Nevydáno; plná E2E a zbytek D6 ponechány uživateli.
 - [x] D1 a D3 už bylo: menuActions, SplitButton a N; doplněny regrese.
 - [x] D2/D4: obecný lockedReason s legacy aliasy; tooltip/směr sloupce, fulltext a pevné skupiny.

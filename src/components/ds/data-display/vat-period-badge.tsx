@@ -18,7 +18,9 @@ export const VatPeriodBadge = forwardRef<HTMLDivElement, VatPeriodBadgeProps>(
         variant="outline"
         className={cn(filed && "border-warning bg-warning-soft text-warning-strong", className)}
       >
-        {filed ? (filedWarning ?? t.vatReports.changed) : `${t.taxRecords.vatPeriod} · ${label}`}
+        {filed
+          ? (filedWarning ?? t.taxRecords.filedPeriod)
+          : `${t.taxRecords.vatPeriod} · ${label}`}
       </Badge>
     );
   },

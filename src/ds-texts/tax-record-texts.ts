@@ -48,5 +48,6 @@ export interface TaxRecordTexts {
   entries: string;
   open: string;
   vatPeriod: string;
+  filedPeriod: string;
   treatments: Record<"taxable" | "non_tax" | "transit", string>;
 }

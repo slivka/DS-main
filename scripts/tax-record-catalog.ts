@@ -115,7 +115,9 @@ export function enrichTaxRecords(components: PanelCatalogComponent[]) {
     if (!c) {
       c = {
         name,
-        file: `src/components/ds/tax-records/${file}.tsx`,
+        file: file.startsWith("../")
+          ? `src/components/ds/${file.slice(3)}.tsx`
+          : `src/components/ds/tax-records/${file}.tsx`,
         import_path: "@/design-system/slivka",
       };
       components.push(c);

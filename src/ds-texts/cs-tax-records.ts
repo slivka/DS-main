@@ -47,6 +47,7 @@ export const TAX_RECORDS_CS: TaxRecordTexts = {
   difference: "Rozdíl",
   entries: "Zápisy v knize",
   open: "Otevřít zápis",
+  filedPeriod: "Období DPH je podané",
   vatPeriod: "Období DPH",
   treatments: { taxable: "Daňový", non_tax: "Nedaňový", transit: "Průběžná položka" },
 };
