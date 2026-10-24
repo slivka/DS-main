@@ -42,8 +42,8 @@ import { AccountCode } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 
 ### AccountSelect
 
-```tsx
-import { AccountSelect } from "@/design-system/{slug}";
+```ts
+import { AccountSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.
@@ -52,12 +52,14 @@ Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stran
 
 | Prop | Type | Default |
 |---|---|---|
+| `bookkeepingMode` | any | `accrual` |
+| `ref` | any | `—` |
 | `accounts` | any | `—` |
 | `value` | string | `—` |
 | `onChange` | function | `—` |
-| `placeholder` | string | `Vyberte účet` |
-| `searchPlaceholder` | string | `Hledat účet nebo číslo…` |
-| `emptyText` | string | `Žádný účet nenalezen` |
+| `placeholder` | string | `—` |
+| `searchPlaceholder` | string | `—` |
+| `emptyText` | string | `—` |
 | `hideInactive` | boolean | `false` |
 | `disableSyntheticWithAnalytics` | boolean | `true` |
 | `typeLabels` | object | `—` |
@@ -72,13 +74,10 @@ Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stran
 | `ariaLabel` | string | `—` |
 | `id` | string | `—` |
 | `className` | string | `ml-auto flex shrink-0 items-center gap-2` |
-| `bookkeepingMode` | accrual  /  tax_records | `—` |
-| `ref` | Ref<HTMLButtonElement> | `—` |
 
 **Examples:**
 
-**Třída nebo skupina:**
-
+_Třída nebo skupina_
 ```tsx
 <AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={["class","group"]} value={prefix} onChange={setPrefix} />
 ```
@@ -120,8 +119,8 @@ import { AddressFieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 
 ### AdvanceAllocationDialog
 
-```tsx
-import { AdvanceAllocationDialog } from "@/design-system/{slug}";
+```ts
+import { AdvanceAllocationDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Řízený výběr ZL/DD a přiřazovaných částek; výchozí minimum dodává APP. DS kontroluje meze a chrání změny.
@@ -131,11 +130,11 @@ import { AdvanceAllocationDialog } from "@/design-system/{slug}";
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
-| `target` | "list"  /  "taxDocument" | `—` |
-| `candidates` | AdvanceAllocationCandidate[] | `—` |
-| `value` | AdvanceAllocation[] | `—` |
-| `onChange` | (value: AdvanceAllocation[]) => void | `—` |
+| `onOpenChange` | function | `—` |
+| `target` | list · taxDocument | `—` |
+| `candidates` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
 | `remaining` | number | `—` |
 | `currency` | string | `—` |
 | `storageKey` | string | `—` |
@@ -144,14 +143,11 @@ import { AdvanceAllocationDialog } from "@/design-system/{slug}";
 | `busy` | boolean | `—` |
 | `error` | string | `—` |
 | `readOnly` | boolean | `—` |
-| `onAllocate` | (
-    value: AdvanceAllocation[],
-  ) => void | `—` |
+| `onAllocate` | function | `—` |
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceAllocationDialog open={open} onOpenChange={setOpen} target="list" candidates={candidates} value={value} onChange={setValue} remaining={remaining} currency={currency.symbol} storageKey="allocation" dirty={dirty} onAllocate={saveAllocation} />
 ```
@@ -162,8 +158,8 @@ import { AdvanceAllocationDialog } from "@/design-system/{slug}";
 
 ### AdvanceCorrectionDialog
 
-```tsx
-import { AdvanceCorrectionDialog } from "@/design-system/{slug}";
+```ts
+import { AdvanceCorrectionDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit/Nevytvářet. Zavření není odmítnutí. currencyCode dodává APP; bez něj částky jako dosud bez měny.
@@ -173,10 +169,10 @@ Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
-| `rows` | AdvanceCorrectionRow[] | `—` |
+| `onOpenChange` | function | `—` |
+| `rows` | any | `—` |
 | `storageKey` | string | `—` |
-| `onDecision` | (create: boolean) => void | `—` |
+| `onDecision` | function | `—` |
 | `busy` | boolean | `—` |
 | `loading` | boolean | `—` |
 | `error` | string | `—` |
@@ -184,14 +180,12 @@ Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceCorrectionDialog open={open} onOpenChange={setOpen} rows={preview} currencyCode={currency.code} storageKey="advance-correction" onDecision={handleDecision} busy={busy} error={error} />
 ```
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceCorrectionDialog open={open} onOpenChange={setOpen} rows={preview} storageKey="advance-correction" onDecision={handleDecision} busy={busy} error={error} />
 ```
@@ -202,8 +196,8 @@ Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit
 
 ### AdvanceDeductionsSection
 
-```tsx
-import { AdvanceDeductionsSection } from "@/design-system/{slug}";
+```ts
+import { AdvanceDeductionsSection } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Odečty faktury pod rekapitulací přes linesEditorProps.afterVatRecap; u ZL APP slot nepředává. Částky, stav a práva z APP.
@@ -212,22 +206,18 @@ Odečty faktury pod rekapitulací přes linesEditorProps.afterVatRecap; u ZL APP
 
 | Prop | Type | Default |
 |---|---|---|
-| `rows` | AdvanceDeductionRow[] | `—` |
+| `rows` | any | `—` |
 | `storageKey` | string | `—` |
-| `addAction` | AdvanceCommand | `—` |
-| `manualAction` | AdvanceCommand | `—` |
-| `onAction` | (
-    action: AdvanceDeductionAction,
-    row: AdvanceDeductionRow,
-  ) => void | `—` |
-| `onOpenTaxDocument` | (row: AdvanceDeductionRow) => void | `—` |
+| `addAction` | any | `—` |
+| `manualAction` | any | `—` |
+| `onAction` | function | `—` |
+| `onOpenTaxDocument` | function | `—` |
 | `loading` | boolean | `—` |
 | `error` | string | `—` |
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceDeductionsSection rows={deductions} storageKey="deductions" addAction={addAction} manualAction={manualAction} onAction={handleAction} onOpenTaxDocument={openDD} />
 ```
@@ -238,8 +228,8 @@ Odečty faktury pod rekapitulací přes linesEditorProps.afterVatRecap; u ZL APP
 
 ### AdvancePaymentBreakdown
 
-```tsx
-import { AdvancePaymentBreakdown } from "@/design-system/{slug}";
+```ts
+import { AdvancePaymentBreakdown } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Dvě roviny platby zálohy skládají SettlementBar a LinkedRecordsPanel. APP dodává částky, lhůtu, stav DD a oprávnění.
@@ -248,25 +238,16 @@ Dvě roviny platby zálohy skládají SettlementBar a LinkedRecordsPanel. APP do
 
 | Prop | Type | Default |
 |---|---|---|
-| `totals` | AdvancePaymentTotals | `—` |
+| `totals` | any | `—` |
 | `currency` | string | `—` |
-| `planes` | {
-    lists: AdvancePaymentPlane;
-    taxDocuments: AdvancePaymentPlane;
-  } | `—` |
-| `actions` | AdvancePaymentActions | `—` |
-| `taxStatus` | AdvanceTaxStatus | `—` |
-| `deadline` | {
-    days: number;
-    label: string;
-    overdue: boolean;
-    warning?: string;
-  } | `—` |
+| `planes` | object | `—` |
+| `actions` | any | `—` |
+| `taxStatus` | any | `—` |
+| `deadline` | object | `—` |
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvancePaymentBreakdown totals={totals} currency={currency.symbol} planes={planes} taxStatus={status} deadline={{ days: 15, label: deadlineLabel, overdue }} actions={actions} />
 ```
@@ -277,8 +258,8 @@ Dvě roviny platby zálohy skládají SettlementBar a LinkedRecordsPanel. APP do
 
 ### AdvanceReasonDialog
 
-```tsx
-import { AdvanceReasonDialog } from "@/design-system/{slug}";
+```ts
+import { AdvanceReasonDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Řízený výběr důvodu DD nebude nebo storna s textem; nabídku právních důvodů poskytuje APP.
@@ -288,20 +269,19 @@ import { AdvanceReasonDialog } from "@/design-system/{slug}";
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
+| `onOpenChange` | function | `—` |
 | `title` | string | `—` |
-| `reasons` | SelectOption[] | `—` |
-| `value` | AdvanceReasonValue | `—` |
-| `onChange` | (value: AdvanceReasonValue) => void | `—` |
-| `onConfirm` | (value: AdvanceReasonValue) => void | `—` |
+| `reasons` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `onConfirm` | function | `—` |
 | `dirty` | boolean | `—` |
 | `busy` | boolean | `—` |
 | `error` | string | `—` |
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceReasonDialog open={open} onOpenChange={setOpen} title={title} reasons={reasons} value={value} onChange={setValue} dirty={dirty} onConfirm={saveDecision} />
 ```
@@ -312,8 +292,8 @@ import { AdvanceReasonDialog } from "@/design-system/{slug}";
 
 ### AdvanceRegisterGrid
 
-```tsx
-import { AdvanceRegisterGrid } from "@/design-system/{slug}";
+```ts
+import { AdvanceRegisterGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočítá lhůty ani historické zůstatky. Bez viditelného nadpisového pruhu; title Evidence záloh zůstává přístupným názvem tabulky a názvem exportu.
@@ -322,21 +302,18 @@ Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočít
 
 | Prop | Type | Default |
 |---|---|---|
-| `rows` | AdvanceRegisterRow[] | `—` |
+| `rows` | any | `—` |
 | `storageKey` | string | `—` |
-| `filters` | AdvanceRegisterFilters | `—` |
-| `onFiltersChange` | (filters: AdvanceRegisterFilters) => void | `—` |
-| `asOf` | NonNullable<
-    DataGridProps<AdvanceRegisterRow>["asOf"]
-  > | `—` |
-| `onOpen` | (row: AdvanceRegisterRow) => void | `—` |
+| `filters` | any | `—` |
+| `onFiltersChange` | function | `—` |
+| `asOf` | any | `—` |
+| `onOpen` | function | `—` |
 | `loading` | boolean | `—` |
 | `error` | string | `—` |
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceRegisterGrid rows={rows} storageKey="advances" filters={filters} onFiltersChange={setFilters} asOf={asOf} onOpen={openPayment} />
 ```
@@ -347,8 +324,8 @@ Preset DataGridu se zůstatky APP, řízenými filtry a řezem k datu; nepočít
 
 ### AdvanceRegisterView
 
-```tsx
-import { AdvanceRegisterView } from "@/design-system/{slug}";
+```ts
+import { AdvanceRegisterView } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Evidence poskytnutých i přijatých záloh se záložkami Zůstatek · Platby záloh · Vyúčtování záloh (PageTabs), jedním společným Stavem k datu a řízenými filtry (stav podle záložky, více účtů). Skupiny účtu (v Zůstatku i partnera) a součtové/kontrolní řádky z obálky DB rows/totals/total_count; DS nic nepočítá ani nepáruje. Součtové řádky nejdou otevřít, při řazení zůstávají u skupiny. vatPayer=false skryje DD, scopeIncomplete skryje kontrolu účtu. AdvanceRegisterGrid zůstává beze změny.
@@ -357,26 +334,25 @@ Evidence poskytnutých i přijatých záloh se záložkami Zůstatek · Platby z
 
 | Prop | Type | Default |
 |---|---|---|
-| `activeTab` | AdvanceRegisterTab | `—` |
-| `onTabChange` | (tab: AdvanceRegisterTab) => void | `—` |
-| `data` | AdvanceRegisterData | `—` |
+| `activeTab` | any | `—` |
+| `onTabChange` | function | `—` |
+| `data` | any | `—` |
 | `storageKey` | string | `—` |
 | `homeCurrency` | string | `—` |
-| `asOf` | AsOfDateConfig | `—` |
-| `filters` | AdvanceRegisterViewFilters | `—` |
-| `onFiltersChange` | (filters: AdvanceRegisterViewFilters) => void | `—` |
-| `accountOptions` | AdvanceRegisterAccountOption[] | `—` |
+| `asOf` | any | `—` |
+| `filters` | any | `—` |
+| `onFiltersChange` | function | `—` |
+| `accountOptions` | any | `—` |
 | `vatPayer` | boolean | `true` |
 | `scopeIncomplete` | string | `—` |
-| `pagination` | AdvanceRegisterPagination | `—` |
-| `onOpen` | (row: AdvanceRegisterViewRow) => void | `—` |
+| `pagination` | any | `—` |
+| `onOpen` | function | `—` |
 | `loading` | boolean | `—` |
 | `error` | string | `—` |
 
 **Examples:**
 
-**Zálohy:**
-
+_Zálohy_
 ```tsx
 <AdvanceRegisterView activeTab={tab} onTabChange={setTab} data={{ rows, totals, total_count }} storageKey="advances-provided" homeCurrency={company.currencySymbol} asOf={asOf} filters={filters} onFiltersChange={setFilters} accountOptions={accounts} vatPayer={company.vatPayer} scopeIncomplete={scopeText} pagination={{ page, pageSize, onPageChange, onPageSizeChange }} onOpen={openDocument} />
 ```
@@ -570,48 +546,20 @@ import { AspectRatio } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 
 ### AttachmentList
 
-```tsx
-import { AttachmentList } from "@/design-system/{slug}";
+```ts
+import { AttachmentList } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Přílohy bez náhledů s ikonovými akcemi, filtrem odebraných a modrou akcí Přidat přílohu. removeKind určuje Smazat/Odebrat; onSetSource a canSetSource přidají nabídku Použít jako zdroj. Starý source a jeho náhrada zůstávají kompatibilní, jsou deprecated od 2.123.0.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `attachments` | readonly RecordAttachment[] | `—` |
-| `source` | RecordAttachment  /  null | `—` |
-| `accept` | readonly string[] | `—` |
-| `maxSize` | number | `—` |
-| `canAdd` | boolean | `—` |
-| `addDisabledReason` | string | `—` |
-| `onFiles` | (files: File[], rejected: RejectedFile[]) => void | `—` |
-| `canRemove` | (attachment: RecordAttachment) => boolean | `—` |
-| `removeDisabledReason` | (attachment: RecordAttachment) => string  /  undefined | `—` |
-| `removeKind` | (attachment: RecordAttachment) => "delete"  /  "remove"  /  null | `—` |
-| `onRemove` | ( attachment: RecordAttachment, kind: "delete"  /  "remove", reason?: string, ) => void  /  Promise<void> | `—` |
-| `allowRemovalReason` | boolean | `—` |
-| `onReplaceSource` | (source: RecordAttachment) => void  /  Promise<void> | `—` |
-| `canReplaceSource` | boolean | `—` |
-| `replaceDisabledReason` | string | `—` |
-| `onSetSource` | (attachment: RecordAttachment) => void  /  Promise<void> | `—` |
-| `canSetSource` | (attachment: RecordAttachment) => boolean | `—` |
-| `setSourceDisabledReason` | (attachment: RecordAttachment) => string  /  undefined | `—` |
-| `onDownload` | (attachment: RecordAttachment) => void | `—` |
-| `onOpen` | (attachment: RecordAttachment) => void | `—` |
-| `texts` | Partial<AttachmentTexts> | `—` |
-
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <AttachmentList attachments={files} source={source} accept={allowedTypes} maxSize={limit} canAdd={rights.add} onFiles={upload} canRemove={canRemove} removeKind={removeKind} onRemove={removeAttachment} allowRemovalReason onReplaceSource={replaceSource} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <AttachmentList attachments={files} accept={allowedTypes} maxSize={limit} canAdd={rights.add} onFiles={upload} canRemove={canRemove} removeKind={removeKind} onRemove={removeAttachment} onSetSource={setSource} canSetSource={canSetSource} />
 ```
@@ -814,8 +762,8 @@ _Rozbor nákladů_
 
 ### BookPrintTemplateFields
 
-```tsx
-import { BookPrintTemplateFields } from "@/design-system/{slug}";
+```ts
+import { BookPrintTemplateFields } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Společná řízená pole předlohy knihy a dokladu: pět voleb (kalendář, zálohy, QR, podpis, vystavil), záhlaví/zápatí/poznámka a kontakty. Texty se tisknou pouze vyplněné.
@@ -830,8 +778,7 @@ Společná řízená pole předlohy knihy a dokladu: pět voleb (kalendář, zá
 
 **Examples:**
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 <BookPrintTemplateFields value={printTemplate} onChange={setPrintTemplate} />
 ```
@@ -875,6 +822,64 @@ _Jediná dostupná kniha_
 
 - Nevykreslujte jedinou dostupnou knihu jako zakázaný select.
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+
+### BookkeepingModeSelect
+
+```ts
+import { BookkeepingModeSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Řízená volba režimu nové firmy s vysvětlením, že pozdější změna znamená novou firmu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `disabled` | boolean | `—` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<BookkeepingModeSelect value={mode} onChange={setMode} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
+### BookkeepingSettingsFields
+
+```ts
+import { BookkeepingSettingsFields } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Nastavení knihy v DE vynechá účetní pole; firma nabídne příjmovou a výdajovou položku zaokrouhlení. Skrytí nemaže data.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `bookkeepingMode` | any | `accrual` |
+| `scope` | book · company | `company` |
+| `accountFields` | any | `—` |
+| `items` | any | `—` |
+| `value` | object | `—` |
+| `onValueChange` | function | `—` |
+| `readOnly` | boolean | `—` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<BookkeepingSettingsFields bookkeepingMode={mode} scope="company" items={items} value={roundingItems} onValueChange={setRoundingItems} accountFields={accountControls} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
 
 ### Breadcrumb
 
@@ -1110,6 +1115,33 @@ import { CarouselNext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { CarouselPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### CashCheckPanel
+
+```ts
+import { CashCheckPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Kontrola peněz po pokladnách/bankách. Počáteční stav, pohyby, zůstatek a červený rozdíl dodává APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | any | `—` |
+| `onAccountOpen` | function | `—` |
+| `storageKey` | string | `cash-check` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<CashCheckPanel rows={cashChecks} onAccountOpen={openCashBook} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
 ### CashReceiptPrintDialog
 
 ```ts
@@ -1143,39 +1175,20 @@ _Pokladní doklad se značkami měn_
 
 ### CategorySelect
 
-```tsx
-import { CategorySelect } from "@/design-system/{slug}";
+```ts
+import { CategorySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Výběr ekonomické kategorie ze stromu. Nepovinný kód: kód – název, bez kódu jen název. postable=false zobrazí uzel, ale zakáže výběr. Psaní a Enter potvrzuje; Tab/Escape nevybírá.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `options` | CategoryOption[] (code?: string  /  null; parentId?: string  /  null; postable?: boolean) | `—` |
-| `value` | optional | `—` |
-| `onChange` | function | `—` |
-| `onCreate` | function | `—` |
-| `onEditSelected` | function | `—` |
-| `allowClear` | optional | `—` |
-| `defaultOpen` | optional | `—` |
-| `initialSearch` | optional | `—` |
-| `id` | optional | `—` |
-| `disabled` | optional | `—` |
-| `className` | optional | `—` |
-| `variant` | optional | `—` |
-
 **Examples:**
 
-**Ekonomická kategorie:**
-
+_Ekonomická kategorie_
 ```tsx
 <CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />
 ```
 
-**Použití společného stavu:**
-
+_Použití společného stavu_
 ```tsx
 <CategorySelect {...props} />
 ```
@@ -1225,8 +1238,8 @@ import { ChartTooltipContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45
 
 ### CheckList
 
-```tsx
-import { CheckList } from "@/design-system/{slug}";
+```ts
+import { CheckList } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Výsledky kontrol APP (severity, title, detail, action). Souhrn chyb/upozornění; pořadí error → warning → info → ok, bez doménové kontroly.
@@ -1235,13 +1248,12 @@ Výsledky kontrol APP (severity, title, detail, action). Souhrn chyb/upozorněn�
 
 | Prop | Type | Default |
 |---|---|---|
-| `items` | readonly CheckListItem[] | `—` |
-| `size` | "sm"  /  "md" | `—` |
+| `items` | any | `—` |
+| `size` | sm · md | `md` |
 
 **Examples:**
 
-**Import souborů:**
-
+_Import souborů_
 ```tsx
 <CheckList items={statement.checks} size="sm" />
 ```
@@ -1433,8 +1445,8 @@ _Filtr hodnot_
 
 ### ColumnFormatEditor
 
-```tsx
-import { ColumnFormatEditor } from "@/design-system/{slug}";
+```ts
+import { ColumnFormatEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Řízený editor formátu v okně Sloupce. Osm soft/strong tónů a Tučně; šipky mezi vzorky, Enter/mezerník vybere, Escape zavře jen rozbalený editor. Nepoužívejte v nabídce záhlaví.
@@ -1443,15 +1455,13 @@ import { ColumnFormatEditor } from "@/design-system/{slug}";
 
 | Prop | Type | Default |
 |---|---|---|
-| `value` | GridColumnStyle | `—` |
-| `onChange` | (style: GridColumnStyle) => void | `—` |
-| `onClose` | () => void | `—` |
-| `className` | string | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `onClose` | function | `—` |
 
 **Examples:**
 
-**Řízený formát:**
-
+_Řízený formát_
 ```tsx
 <ColumnFormatEditor value={style} onChange={setStyle} onClose={closeFormat} />
 ```
@@ -1462,8 +1472,8 @@ import { ColumnFormatEditor } from "@/design-system/{slug}";
 
 ### ColumnPicker
 
-```tsx
-import { ColumnPicker } from "@/design-system/{slug}";
+```ts
+import { ColumnPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
  Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft.
@@ -1492,8 +1502,7 @@ import { ColumnPicker } from "@/design-system/{slug}";
 
 **Examples:**
 
-**Formát sloupců:**
-
+_Formát sloupců_
 ```tsx
 <ColumnPicker columns={cols.columns} visible={cols.columnVisible} onToggle={cols.toggle} onReset={cols.reset} styles={cols.styles} onColumnStyleChange={cols.setColumnStyle} onClearColumnStyles={cols.clearColumnStyles} />
 ```
@@ -2007,32 +2016,20 @@ _Prostor_
 
 ### DataGrid
 
-```tsx
-import { DataGrid } from "@/design-system/{slug}";
+```ts
+import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a individuální Upravit/Odstranit pouze ve sticky sloupci akcí řádku. Sloupec type="record-indicators" přijímá indicators s libovolnými id a count(row); klik volá onIndicatorClick bez výběru řádku, Excel rozvine samostatné číselné počty. onRowOpen má při dvojkliku/Enter přednost před editací i v režimu výběru; canEditRow/editDisabledReason jej neblokují. onEditRow nadále řídí tužku. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. D4: columns[].headerTooltip je přístupná bublina záhlaví; columns[].defaultSortDirection určuje první směr (uložený má přednost). searchText doplňuje fulltext všech sloupců; fixedGroupBy trvale seskupí podle id sloupce se záhlavím a počtem, bez možnosti změny či odstranění a bez ovlivnění uložených skupin.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `onIndicatorClick` | (row: Row, id: string) => void | `—` |
-| `panelToggle` | ReactNode | `—` |
-| `onRowOpen` | (row: Row) => void | `—` |
-| `searchText` | (row: Row) => string | `—` |
-| `fixedGroupBy` | string | `—` |
-
 **Examples:**
 
-**Akce řádků s vysvětlením zákazu:**
-
+_Akce řádků s vysvětlením zákazu_
 ```tsx
 <DataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
 ```
 
-**Párování s editovatelnou částkou:**
-
+_Párování s editovatelnou částkou_
 ```tsx
 <DataGrid storageKey="matching" rows={items} rowKey={(r) => r.id} selectMode
   selectedKeys={keys} onSelectedKeysChange={setKeys}
@@ -2041,20 +2038,17 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
     value: (r) => amounts[r.id], editor: (r) => <GridAmountEditor ariaLabel="Párovat částkou" value={amounts[r.id]} max={r.remaining} currencySymbol={r.currencySymbol} invalid={exceedsMax(amounts[r.id], r.remaining)} invalidMessage="Převyšuje zbývající částku" onChange={(v) => setAmount(r.id, v)} /> }]} />
 ```
 
-**Otevření jen pro čtení:**
-
+_Otevření jen pro čtení_
 ```tsx
 <DataGrid {...gridProps} canEditRow={() => false} onRowClick={selectRow} onRowOpen={openRecord} />
 ```
 
-**Formát sloupců:**
-
+_Formát sloupců_
 ```tsx
 <DataGrid {...props} columns={[{ id: "remaining", label: texts.remaining, numeric: true, value: row => row.remaining, defaultStyle: { bold: true, tone: "blue-soft" } }]} />
 ```
 
-**Pevné skupiny a fulltext:**
-
+_Pevné skupiny a fulltext_
 ```tsx
 <DataGrid {...props} fixedGroupBy="book" searchText={row => row.importReference} columns={[{ id: "book", label: texts.book, value: row => row.book }, { id: "date", label: texts.date, value: row => row.date, defaultSortDirection: "desc", headerTooltip: texts.dateHint }]} />
 ```
@@ -2231,8 +2225,8 @@ import { DialogTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 
 ### DimensionBar
 
-```tsx
-import { DimensionBar } from "@/design-system/{slug}";
+```ts
+import { DimensionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Řízené chipy pouze přidaných typů dimenzí. Typ s valueId=null je k vyplnění. Enter volí typ a otevře hodnoty; Delete/Backspace odebere chip, Escape zavře bez volby. loadOptions dodává APP; stale odpovědi se ignorují. inactive uložená hodnota je tlumená s bublinou a znovu se nenabízí. variant=bar nebo inline, výška control-h.
@@ -2241,22 +2235,20 @@ import { DimensionBar } from "@/design-system/{slug}";
 
 | Prop | Type | Default |
 |---|---|---|
-| `types` | DimensionType[] | `—` |
-| `value` | DimensionValue[] | `—` |
-| `onChange` | (values: DimensionValue[]) => void | `—` |
-| `loadOptions` | LoadDimensionOptions | `—` |
+| `types` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `loadOptions` | any | `—` |
 | `disabled` | boolean | `false` |
 | `readOnly` | boolean | `false` |
-| `overrides` | Record<string, number> | `—` |
-| `onReset` | (typeId: string) => void | `—` |
-| `variant` | bar  /  inline | `bar` |
-| `size` | default  /  sm | `default` |
-| `className` | string | `—` |
+| `overrides` | object | `—` |
+| `onReset` | function | `—` |
+| `variant` | bar · inline | `bar` |
+| `size` | default · sm | `default` |
 
 **Examples:**
 
-**Dimenze B2:**
-
+_Dimenze B2_
 ```tsx
 <DimensionBar types={dimensionTypes} value={dimensions} onChange={setDimensions} loadOptions={loadDimensionOptions} overrides={overrides} />
 ```
@@ -2267,8 +2259,8 @@ import { DimensionBar } from "@/design-system/{slug}";
 
 ### DimensionFilter
 
-```tsx
-import { DimensionFilter } from "@/design-system/{slug}";
+```ts
+import { DimensionFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Adaptér dimenzí na stávající ColumnFilter: hledání a checklist, prázdný Set znamená bez filtru. APP dodává možnosti a provádí filtrování seznamu dokladů.
@@ -2277,16 +2269,14 @@ Adaptér dimenzí na stávající ColumnFilter: hledání a checklist, prázdný
 
 | Prop | Type | Default |
 |---|---|---|
-| `options` | DimensionOptionItem[] | `—` |
-| `selected` | Set<string> | `—` |
-| `onSelectionChange` | (value: Set<string>) => void | `—` |
+| `options` | any | `—` |
+| `selected` | any | `—` |
+| `onSelectionChange` | function | `—` |
 | `label` | string | `—` |
-| `className` | string | `—` |
 
 **Examples:**
 
-**Dimenze B2:**
-
+_Dimenze B2_
 ```tsx
 <DimensionFilter label={type.label} options={options} selected={selectedIds} onSelectionChange={setSelectedIds} />
 ```
@@ -2297,39 +2287,20 @@ Adaptér dimenzí na stávající ColumnFilter: hledání a checklist, prázdný
 
 ### DimensionSelect
 
-```tsx
-import { DimensionSelect } from "@/design-system/{slug}";
+```ts
+import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 @deprecated Od 2.138.0: alias CategorySelect, odstranění ve 3.0.0. Výběr ekonomické kategorie ze stromu. Nepovinný kód: kód – název, bez kódu jen název. postable=false zobrazí uzel, ale zakáže výběr. Psaní a Enter potvrzuje; Tab/Escape nevybírá.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `options` | CategoryOption[] (code?: string  /  null; parentId?: string  /  null; postable?: boolean) | `—` |
-| `value` | optional | `—` |
-| `onChange` | function | `—` |
-| `onCreate` | function | `—` |
-| `onEditSelected` | function | `—` |
-| `allowClear` | optional | `—` |
-| `defaultOpen` | optional | `—` |
-| `initialSearch` | optional | `—` |
-| `id` | optional | `—` |
-| `disabled` | optional | `—` |
-| `className` | optional | `—` |
-| `variant` | optional | `—` |
-
 **Examples:**
 
-**Ekonomická kategorie:**
-
+_Ekonomická kategorie_
 ```tsx
 <CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />
 ```
 
-**Výběr hodnoty:**
-
+_Výběr hodnoty_
 ```tsx
 <DimensionSelect value={value} onChange={setValue} options={options} />
 ```
@@ -2350,8 +2321,8 @@ import { DocumentActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 
 ### DocumentCounterpartyTab
 
-```tsx
-import { DocumentCounterpartyTab } from "@/design-system/{slug}";
+```ts
+import { DocumentCounterpartyTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Údaje odběratele doplňuje řízená delivery adresa; platí pro FV i ZFV. Stávající zamčení/obnovení údajů z partnera beze změny. Údaje odběratele doplňuje řízená delivery adresa; platí pro FV i ZFV. deliveryReadOnly=false odemkne dodání při counterpartyLocked; bez prop přebírá jeho zámek, celkové readOnly má přednost.
@@ -2378,14 +2349,12 @@ import { DocumentCounterpartyTab } from "@/design-system/{slug}";
 
 **Examples:**
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 <DocumentCounterpartyTab value={{ ...customer, delivery }} onChange={setCustomer} deliveryMapAction={{ label: texts.map, onClick: openMap }} />
 ```
 
-**Dodání při zamčeném odběrateli:**
-
+_Dodání při zamčeném odběrateli_
 ```tsx
 <DocumentCounterpartyTab value={customer} onChange={setCustomer} counterpartyLocked deliveryReadOnly={false} />
 ```
@@ -2397,8 +2366,8 @@ import { DocumentCounterpartyTab } from "@/design-system/{slug}";
 
 ### DocumentDeliveryFields
 
-```tsx
-import { DocumentDeliveryFields } from "@/design-system/{slug}";
+```ts
+import { DocumentDeliveryFields } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jiná dodací adresa přes sdílený AddressFieldGrid; vypnutí předává null a odstraní adresu. Mapa za Zemí je akce APP.
@@ -2415,8 +2384,7 @@ Jiná dodací adresa přes sdílený AddressFieldGrid; vypnutí předává null 
 
 **Examples:**
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 <DocumentDeliveryFields value={delivery} onChange={setDelivery} countries={countries} mapAction={{ label: texts.map, onClick: openMap }} />
 ```
@@ -2446,112 +2414,75 @@ _Příjem_
 
 ### DocumentForm
 
-```tsx
-import { DocumentForm } from "@/design-system/{slug}";
+```ts
+import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0. Formulář dokladu se sdílenými sekcemi a pruhy. FV/ZFV mají daňové číslo s vazbou; účetní datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift. Navázané účetní datum a u FP/ZFP/DDPOZ ručně neměněné DUZP se zapisují přes onChange (při změně vystavení a jednou při otevření dokladu), takže zobrazené = uložené. Neplatné datum a varování čísla dodavatele pro VS jsou ⚠ v poli a celý text v pruhu nad formulářem; chybějící kurz DPH se hlásí jednou a ne u dokladu jen pro čtení. onAddBankAccount dostává hledaný text. Úvodní zápis odvozených datumů přes onChange probíhá jen u upravitelného dokladu; readOnly, posted, locked a cancelled zachovávají uložená data bez callbacku. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors. Pruh vzoru přes templateEdit sdílí faktury i ZL nad identitou. panelToggle předává ovladač do RecordActionBar úplně vpravo za nabídku akcí ve všech šířkách, nikdy do záhlaví; společné pro faktury i zálohové listy. fieldLockedReasons: jen needitovatelná pole přes FieldValue lockedReason; obecný důvod předchází součtu Σ, currencyDisabledReason a counterpartyInputLockedReason. IBAN režim: bankIban před bankAccount, bankSwift před bankCode; paymentReference pro referenci. Ruční protistrana: counterpartyName před partnerId. Zamčené datum sdílí šířku DateField; odkaz chyby zaměří zámek. Platí pro faktury i zálohové listy. FV a ZFV mají customerOrderRef v základních údajích. Tisk dostává hotová InvoicePrintData z APP; DS nepočítá součty faktury ani záloh. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. identity.fallbackShort volitelně přepíše krátký stav, výchozí DsTexts CS/SK je Koncept. Platí společně pro faktury i zálohové listy. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. lockedReason (2.139.0) přímo zakáže úpravu libovolného pole hlavičky a má přednost před fieldLockedReasons i vat.dateLockReadOnly; oba staré vstupy zůstávají aliasy do 3.0.0. Platí pro faktury i zálohové listy. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rowSuggestions` | JournalRowSuggestions | `—` |
-| `onSuggestionCleared` | (key: string, rowId?: string) => void | `—` |
-| `fieldSuggestions` | Partial<Record<string, FieldSuggestion>> | `—` |
-| `fieldLockedReasons` | Partial<Record<DocumentHeaderField, string>> (@deprecated: lockedReason; odstranění 3.0.0) | `—` |
-| `lockedReason` | Partial<Record<DocumentHeaderField, string>> | `—` |
-| `actionBarContent` | ReactNode | `—` |
-| `panelToggle` | ReactNode | `—` |
-| `templateEdit` | TemplateEditState | `—` |
-| `categories` | CategoryOption[] | `—` |
-| `dimensionTypes` | DimensionType[] | `—` |
-| `dimensions` | DimensionValue[]  /  CategoryOption[] (@deprecated pouze B1 číselník do 3.0.0) | `—` |
-| `onDimensionsChange` | (values: DimensionValue[]) => void | `—` |
-| `loadDimensionOptions` | LoadDimensionOptions | `—` |
-| `dimensionsBySide` | boolean (internal=true) | `—` |
-| `bookkeepingMode` | accrual  /  tax_records | `—` |
-| `hideMainAccount` | boolean | `—` |
-| `categoriesEnabled` | boolean | `—` |
-| `taxMovementKind` | TaxMovementKind | `—` |
-| `onTaxMovementKindChange` | (kind: TaxMovementKind) => void | `—` |
-
 **Examples:**
 
-**Faktura s editovatelným účtem:**
-
+_Faktura s editovatelným účtem_
 ```tsx
 <DocumentForm {...props} identity={{ variant: "invoice", book: "FV - Vydané faktury", period: "2026", account: { side: "MD", label: "311.001 - Odběratelé", editable: true }, number: "FV2026000420" }} mainAccountOptions={allowedAccounts} />
 ```
 
-**Platba přijatého dokladu bez účtu:**
-
+_Platba přijatého dokladu bez účtu_
 ```tsx
 <DocumentForm {...props} documentType="FP" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />
 ```
 
-**Nepoužitá bankovní platba:**
-
+_Nepoužitá bankovní platba_
 ```tsx
 <DocumentForm {...props} documentType="FV" companyBankAccountDisabledReason={paymentAccountReason} />
 ```
 
-**Stav pole a jednotná výška (2.107.0):**
-
+_Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <DocumentForm {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />
 ```
 
-**Živý pruh (2.108.0):**
-
+_Živý pruh (2.108.0)_
 ```tsx
 <DocumentForm {...props} issues={serverIssues} validationActive={triedSave} saveFailed={failed} onFieldChange={(id) => dropServerIssue(id)} />
 ```
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <DocumentForm {...formProps} templateEdit={{ name, onSave: saveTemplate, onDiscard: discardTemplate }} />
 ```
 
-**Převzatá zahraniční platba:**
-
+_Převzatá zahraniční platba_
 ```tsx
 <DocumentForm {...props} documentType="BA" editableFields={["description"]} fieldLockedReasons={{ bankAccount: accountReason, bankCode: bankReason, paymentReference: referenceReason }} />
 ```
 
-**Ovladač panelu za akcemi:**
-
+_Ovladač panelu za akcemi_
 ```tsx
 <DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />
 ```
 
-**Ovladač panelu v záhlaví:**
-
+_Ovladač panelu v záhlaví_
 ```tsx
 <DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />
 ```
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 const blob = await buildInvoicePdf(printData, { homeCurrency: companyCurrency });
 ```
 
-**Návrhy vytěžení od APP:**
-
+_Návrhy vytěžení od APP_
 ```tsx
 <DocumentForm {...props} fieldSuggestions={{ dueDate: { source: fileName, uncertain: true } }} rowSuggestions={{ [rowId]: { amount: { source: fileName, uncertain: true } } }} onSuggestionCleared={removeSuggestion} />
 ```
 
-**Kategorie interního dokladu:**
-
+_Kategorie interního dokladu_
 ```tsx
 <DocumentForm {...props} categories={categories} />
 ```
 
-**Dimenze hlavičky a řádků:**
-
+_Dimenze hlavičky a řádků_
 ```tsx
 <DocumentForm {...props} dimensionTypes={types} dimensions={dimensions} onDimensionsChange={setDimensions} loadDimensionOptions={loadOptions} dimensionsBySide />
 ```
@@ -2574,8 +2505,8 @@ const blob = await buildInvoicePdf(printData, { homeCurrency: companyCurrency })
 
 ### DocumentNewMenu
 
-```tsx
-import { DocumentNewMenu } from "@/design-system/{slug}";
+```ts
+import { DocumentNewMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Nabídka Nový v DataGrid.toolbarLeft: prázdný doklad, vzory s jedním dokladem/sérií a správa. APP dodává vzory a callbacky. label/icon/onPrimary umožní dvě nezávislá split-button tlačítka pro pokladnu.
@@ -2584,24 +2515,22 @@ Nabídka Nový v DataGrid.toolbarLeft: prázdný doklad, vzory s jedním doklade
 
 | Prop | Type | Default |
 |---|---|---|
-| `templates` | Pick<DocumentTemplate, "id"  /  "name">[] | `—` |
-| `onBlank` | () => void | `—` |
-| `onTemplate` | (id: string, mode: DuplicationMode) => void | `—` |
-| `onManage` | () => void | `—` |
+| `templates` | any | `—` |
+| `onBlank` | function | `—` |
+| `onTemplate` | function | `—` |
+| `onManage` | function | `—` |
 | `label` | string | `—` |
-| `icon` | ReactNode | `—` |
-| `onPrimary` | () => void | `—` |
+| `icon` | any | `—` |
+| `onPrimary` | function | `—` |
 
 **Examples:**
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <DocumentNewMenu templates={templates} onBlank={openBlank} onTemplate={openFromTemplate} onManage={openManager} />
 ```
 
-**Pokladna se dvěma akcemi:**
-
+_Pokladna se dvěma akcemi_
 ```tsx
 <><DocumentNewMenu label="Příjem" icon={incomeIcon} onPrimary={openIncome} templates={incomeTemplates} onBlank={openIncome} onTemplate={incomeFromTemplate} onManage={manageIncomeTemplates} /><DocumentNewMenu label="Výdaj" icon={expenseIcon} onPrimary={openExpense} templates={expenseTemplates} onBlank={openExpense} onTemplate={expenseFromTemplate} onManage={manageExpenseTemplates} /></>
 ```
@@ -2628,8 +2557,8 @@ import { DocumentNewMenuItems } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b4
 
 ### DocumentPostingGrid
 
-```tsx
-import { DocumentPostingGrid } from "@/design-system/{slug}";
+```ts
+import { DocumentPostingGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Obsah záložky Zaúčtování: grid jen ke čtení se všemi stranami deníku dokladu z DB; účty v rozšířené formě, automatické řádky se štítkem (DPH, Bez nároku, Záloha, Zaokrouhlení, Kurzové zaokrouhlení). U zálohových listů se záložka nepřidává. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.
@@ -2638,15 +2567,14 @@ Obsah záložky Zaúčtování: grid jen ke čtení se všemi stranami deníku d
 
 | Prop | Type | Default |
 |---|---|---|
+| `bookkeepingMode` | any | `accrual` |
 | `entries` | any | `—` |
 | `accounts` | any | `—` |
 | `texts` | any | `—` |
-| `bookkeepingMode` | accrual  /  tax_records | `—` |
 
 **Examples:**
 
-**Záložka Zaúčtování:**
-
+_Záložka Zaúčtování_
 ```tsx
 tabs={[{ id: "posting", label: texts.vatFive.postingTab, content: <DocumentPostingGrid entries={entries} accounts={accounts} /> }]}
 ```
@@ -2658,8 +2586,8 @@ tabs={[{ id: "posting", label: texts.vatFive.postingTab, content: <DocumentPosti
 
 ### DocumentPrintTab
 
-```tsx
-import { DocumentPrintTab } from "@/design-system/{slug}";
+```ts
+import { DocumentPrintTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Tiskové údaje FV i ZFV sdílejí BookPrintTemplateFields; Načíst z knihy vyžaduje jediné potvrzení a poté callback APP.
@@ -2672,8 +2600,7 @@ Tiskové údaje FV i ZFV sdílejí BookPrintTemplateFields; Načíst z knihy vy�
 
 **Examples:**
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 <DocumentPrintTab value={print} onChange={setPrint} onReloadFromBook={reloadPrintTemplate} />
 ```
@@ -2726,7 +2653,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schválen` |
+| `approvedLabel` | string | `—` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -2954,8 +2881,8 @@ _Slovenská aplikace_
 
 ### DuplicationDialog
 
-```tsx
-import { DuplicationDialog } from "@/design-system/{slug}";
+```ts
+import { DuplicationDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Řízený dialog jednoho dokladu nebo série s náhledem APP. RecordDialog chrání změny; vytvoření je blokované bez platného náhledu.
@@ -2965,22 +2892,21 @@ import { DuplicationDialog } from "@/design-system/{slug}";
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
-| `value` | DuplicationValue | `—` |
-| `onChange` | (value: DuplicationValue) => void | `—` |
-| `rows` | DuplicationPreviewRow[] | `—` |
+| `onOpenChange` | function | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `rows` | any | `—` |
 | `loading` | boolean | `—` |
 | `error` | string | `—` |
 | `busy` | boolean | `—` |
 | `dirty` | boolean | `—` |
-| `onCreate` | (value: DuplicationValue) => void | `—` |
+| `onCreate` | function | `—` |
 | `storageKey` | string | `—` |
 | `title` | string | `—` |
 
 **Examples:**
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <DuplicationDialog open={open} onOpenChange={setOpen} value={parameters} onChange={setParameters} rows={preview} loading={loading} error={error} dirty={dirty} busy={busy} storageKey="invoice-duplicate" onCreate={createDocuments} />
 ```
@@ -2991,8 +2917,8 @@ import { DuplicationDialog } from "@/design-system/{slug}";
 
 ### DuplicationPreview
 
-```tsx
-import { DuplicationPreview } from "@/design-system/{slug}";
+```ts
+import { DuplicationPreview } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Náhled již zmapovaných řádků v DataGrid. canCreate určuje souhrn; důvod nevytvoření má ikonu a tooltip bez změny výšky.
@@ -3001,14 +2927,13 @@ Náhled již zmapovaných řádků v DataGrid. canCreate určuje souhrn; důvod 
 
 | Prop | Type | Default |
 |---|---|---|
-| `rows` | DuplicationPreviewRow[] | `—` |
+| `rows` | any | `—` |
 | `loading` | boolean | `—` |
 | `storageKey` | string | `—` |
 
 **Examples:**
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <DuplicationPreview rows={previewRows} loading={loading} storageKey="invoice-preview" />
 ```
@@ -3326,8 +3251,8 @@ _Stav pole a jednotná výška (2.107.0)_
 
 ### FieldSuggestionIndicator
 
-```tsx
-import { FieldSuggestionIndicator } from "@/design-system/{slug}";
+```ts
+import { FieldSuggestionIndicator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Ikona nejistého návrhu; FieldSuggestion.action zpřístupní odkazovou akci v bublině. Po najetí se bublina po odjetí zavře s prodlevou pro přejezd myši; klik a Escape zachovávají ovládání.
@@ -3338,13 +3263,12 @@ Ikona nejistého návrhu; FieldSuggestion.action zpřístupní odkazovou akci v 
 |---|---|---|
 | `suggestion` | any | `—` |
 | `defaultMessage` | string | `—` |
-| `side` | enum | `end` |
+| `side` | start · end | `end` |
 | `className` | string | `flex flex-col gap-1` |
 
 **Examples:**
 
-**Kontrola návrhu s akcí:**
-
+_Kontrola návrhu s akcí_
 ```tsx
 <FieldSuggestionIndicator suggestion={{ source: fileName, uncertain: true, message: texts.review, action: { label: texts.create, onClick: createRecord } }} />
 ```
@@ -3430,8 +3354,8 @@ _Stav DPH_
 
 ### FileChipBar
 
-```tsx
-import { FileChipBar } from "@/design-system/{slug}";
+```ts
+import { FileChipBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Řízené čipy FileChip (id, file, severity, message), odebrání podle id a přidání/přetažení další dávky. maxVisible zapne +N, jinak se všechny zalomí.
@@ -3440,20 +3364,19 @@ import { FileChipBar } from "@/design-system/{slug}";
 
 | Prop | Type | Default |
 |---|---|---|
-| `files` | readonly FileChip[] | `—` |
-| `onRemove` | (id: string) => void | `—` |
-| `accept` | FileDropZoneProps["accept"] | `—` |
+| `files` | any | `—` |
+| `onRemove` | function | `—` |
+| `accept` | any | `—` |
 | `maxFiles` | number | `—` |
 | `maxSizeBytes` | number | `—` |
 | `disabled` | boolean | `—` |
-| `onFiles` | FileDropZoneProps["onFiles"] | `—` |
-| `onReject` | FileDropZoneProps["onReject"] | `—` |
+| `onFiles` | any | `—` |
+| `onReject` | any | `—` |
 | `maxVisible` | number | `—` |
 
 **Examples:**
 
-**Import souborů:**
-
+_Import souborů_
 ```tsx
 <FileChipBar files={files} onRemove={removeFile} accept={accept} maxSizeBytes={limit} maxFiles={remainingSlots} onFiles={addFiles} onReject={showRejected} maxVisible={3} />
 ```
@@ -3464,8 +3387,8 @@ import { FileChipBar } from "@/design-system/{slug}";
 
 ### FileDropZone
 
-```tsx
-import { FileDropZone } from "@/design-system/{slug}";
+```ts
+import { FileDropZone } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Přetažení obsluhuje role group; vnitřní tlačítko výběru má jedinou zastávku Tab s popisem limitů a pouze statický obsah. Akce children jsou mimo tlačítko a mají vlastní zastávky. Název tlačítka odpovídá viditelnému chooseLabel; skupina má samostatný nadpis a hint popisuje jen tlačítko. Ve velikosti md následují children pod ikonou a nadpisem.
@@ -3474,20 +3397,19 @@ Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. max
 
 | Prop | Type | Default |
 |---|---|---|
-| `accept` | readonly string[] | `—` |
+| `accept` | any | `—` |
 | `maxFiles` | number | `—` |
 | `maxSizeBytes` | number | `—` |
 | `disabled` | boolean | `—` |
 | `hint` | string | `—` |
-| `onFiles` | (files: File[]) => void | `—` |
-| `onReject` | (rejected: RejectedFile[]) => void | `—` |
-| `size` | "sm"  /  "md" | `—` |
+| `onFiles` | function | `—` |
+| `onReject` | function | `—` |
+| `size` | sm · md | `md` |
 | `chooseLabel` | string | `—` |
 
 **Examples:**
 
-**Import souborů:**
-
+_Import souborů_
 ```tsx
 <FileDropZone accept={[".xml", "application/pdf"]} maxFiles={remainingSlots} maxSizeBytes={limit} onFiles={addFiles} onReject={showRejected} hint={limitsLabel}>{overview}</FileDropZone>
 ```
@@ -3498,8 +3420,8 @@ Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. max
 
 ### FileSeverityIcon
 
-```tsx
-import { FileSeverityIcon } from "@/design-system/{slug}";
+```ts
+import { FileSeverityIcon } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Sdílená přístupná stavová ikona souboru nebo kontroly; message od APP je tooltip i přístupný název.
@@ -3508,13 +3430,12 @@ Sdílená přístupná stavová ikona souboru nebo kontroly; message od APP je t
 
 | Prop | Type | Default |
 |---|---|---|
-| `severity` | FileSeverity | `—` |
+| `severity` | any | `—` |
 | `message` | string | `—` |
 
 **Examples:**
 
-**Import souborů:**
-
+_Import souborů_
 ```tsx
 <FileSeverityIcon severity="warning" message={check.detail} />
 ```
@@ -3583,8 +3504,8 @@ import { FormField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 
 ### FormIssuesBar
 
-```tsx
-import { FormIssuesBar } from "@/design-system/{slug}";
+```ts
+import { FormIssuesBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Živý seznam toho, co zbývá opravit, nad formulářem; RecordActionBar a DocumentForm ho skládají z issues. Každá položka odkazuje na pole. FormIssue.action {label, onClick} je samostatná akce vedle odkazu na pole.
@@ -3607,8 +3528,7 @@ import { FormIssuesBar } from "@/design-system/{slug}";
 
 **Examples:**
 
-**Serverová chyba DUZP:**
-
+_Serverová chyba DUZP_
 ```tsx
 <RecordActionBar issues={[{ fieldId: "document-taxDate", label: texts.taxDate, message: validationMessage, severity: "error", source: "server" }]} saveAction={{ onSave: save }} />
 ```
@@ -4098,21 +4018,11 @@ import { HistoryGridAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 
 ### HistoryPanel
 
-```tsx
-import { HistoryPanel } from "@/design-system/{slug}";
+```ts
+import { HistoryPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Zastaralé od 2.114.0 – použijte RecordHistoryTimeline; odstraní se v příští major verzi.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-
-
-**Examples:**
-
-
 
 **Avoid:**
 
@@ -4196,8 +4106,8 @@ _Právnická osoba_
 
 ### IdentityLine
 
-```tsx
-import { IdentityLine } from "@/design-system/{slug}";
+```ts
+import { IdentityLine } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 IdentityLine never wraps: jedna výška --control-h. Ústup: název účtu → fallbackShort → trojtečka stavu → trojtečka knihy → bookCode → samotný kód účtu → ikona stavu → ořez levé části na hraně. Pravá část nikdy nepřekreslí levou a skutečné číslo se nezkracuje. fullLabel zpřístupňuje celou identitu v bublině i aria-label. Plný fallback zůstává dostupný i u ikony. Písmo ani měřítko se nezmenšují; jediný ResizeObserver a hystereze brání kmitání.
@@ -4218,32 +4128,27 @@ IdentityLine never wraps: jedna výška --control-h. Ústup: název účtu → f
 
 **Examples:**
 
-**Identita výpisu:**
-
+_Identita výpisu_
 ```tsx
 <IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
 ```
 
-**Číslo dokladu s identifikátorem:**
-
+_Číslo dokladu s identifikátorem_
 ```tsx
 <IdentityLine items={[book, period]} number={document.number} numberId="document-number" />
 ```
 
-**Identifikace:**
-
+_Identifikace_
 ```tsx
 <IdentityLine items={[bookName, periodLabel]} number={documentNumber} />
 ```
 
-**Koncept v úzkém formuláři:**
-
+_Koncept v úzkém formuláři_
 ```tsx
 <IdentityLine items={[book, period, account]} fallback={texts.numberPending} fallbackShort={texts.fallbackShort} />
 ```
 
-**Krajní šířka bez překryvu:**
-
+_Krajní šířka bez překryvu_
 ```tsx
 <IdentityLine items={[book, period, account]} bookCode="FP" fullLabel={fullIdentity} fallback={pendingText} fallbackShort={shortPendingText} />
 ```
@@ -4329,8 +4234,8 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 
 ### InvoicePrintDialog
 
-```tsx
-import { InvoicePrintDialog } from "@/design-system/{slug}";
+```ts
+import { InvoicePrintDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Náhled vydané faktury návrhu C přes sdílený PrintPreviewDialog; tisk a stažení s názvem nadpis–číslo. Data jsou hotový výstup APP, bez výpočtů DPH a záloh.
@@ -4348,8 +4253,7 @@ Náhled vydané faktury návrhu C přes sdílený PrintPreviewDialog; tisk a sta
 
 **Examples:**
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 <InvoicePrintDialog open={open} onOpenChange={setOpen} data={printData} opts={{ homeCurrency: companyCurrency }} />
 ```
@@ -4360,95 +4264,62 @@ Náhled vydané faktury návrhu C přes sdílený PrintPreviewDialog; tisk a sta
 
 ### JournalLinesEditor
 
-```tsx
-import { JournalLinesEditor } from "@/design-system/{slug}";
+```ts
+import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka (2.118.0). Enter skáče dál a vyplněná/zakotvená pole přeskakuje, na konci řádku založí řádek s kódem DPH a účty, Shift+Enter zpět; špendlík zakotví sloupec v otevřeném dokladu. Rekapitulace DPH po oddílech a patička Součet · Odečtené zálohy · Zaokrouhlení · K úhradě · Rozdíl. withoutAccounts pro zálohové listy. Slot afterVatRecap umístí odečty pod rekapitulaci; patička používá samostatné advanceDeduction APP. Detail řádku nabízí nárok na odpočet a khLimitExcluded; vat.rowDetails.canEdit/disabledReason dodává APP. withoutAccounts skryje účetní pole bez smazání hodnot; změny jdou přes onChange. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. Návrhy vytěžení vlastní APP; onSuggestionCleared hlásí první ruční změnu. Chyba má přednost, F8 zahrnuje hlavičku i buňky. Záporné částky dobropisů se zachovávají na původních stranách. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rowSuggestions` | JournalRowSuggestions (category; dimension @deprecated 2.138.0 → 3.0.0) | `—` |
-| `onSuggestionCleared` | (key: string, rowId?: string) => void | `—` |
-| `afterVatRecap` | React.ReactNode | `—` |
-| `categories` | CategoryOption[] | `—` |
-| `categoryBySide` | boolean (internal=true, mainAccount=false) | `—` |
-| `allowedCategories` | (accountCode: string, side: "MD" / "D") => string[] / null | `—` |
-| `categoryRequired` | boolean | `—` |
-| `onEditCategory` | (id: string) => void | `—` |
-| `onCreateCategory` | (searchText: string) => void / Promise<CategoryOption / null / undefined> | `—` |
-| `dimensionTypes` | DimensionType[] | `—` |
-| `dimensions` | DimensionValue[]  /  CategoryOption[] (@deprecated pouze B1 číselník do 3.0.0) | `—` |
-| `onDimensionsChange` | (values: DimensionValue[]) => void | `—` |
-| `loadDimensionOptions` | LoadDimensionOptions | `—` |
-| `dimensionsBySide` | boolean (internal=true) | `—` |
-| `bookkeepingMode` | accrual  /  tax_records | `—` |
-| `categoriesEnabled` | boolean | `—` |
-| `taxMovementKind` | TaxMovementKind | `—` |
-| `onTaxMovementKindChange` | (kind: TaxMovementKind) => void | `—` |
-
 **Examples:**
 
-**Rozpis se zkrácenými účty:**
-
+_Rozpis se zkrácenými účty_
 ```tsx
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
-**Řádky bez DPH s přepisem daně dle dokladu:**
-
+_Řádky bez DPH s přepisem daně dle dokladu_
 ```tsx
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency={documentCurrency} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, pdpSubjects }} vatOverrides={vatOverrides} onVatOverridesChange={setVatOverrides} />
 // uložení: řádky bez DPH spolu s _vat_overrides: vatOverrides
 ```
 
-**Stav pole a jednotná výška (2.107.0):**
-
+_Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <JournalLinesEditor {...props} onCreateDimension={query => openDimension({ name: query })} onValidationChange={(count, errors) => setFieldErrors(errors)} />
 ```
 
-**Skupiny DPH a patička (2.109.0):**
-
+_Skupiny DPH a patička (2.109.0)_
 ```tsx
 <JournalLinesEditor {...props} vat={{ enabled: true, codes: vatCodes }} vatOverrides={overrides} onVatOverridesChange={setOverrides} vatExchangeRate={vatRate} roundingLimit={companyRoundingLimit} onRoundingChange={setRounding} vatOverrideSeverity={filing ? "error" : "warning"} />
 // uložení: { lines: toJournalRows(lines, opts), _vat_overrides: overrides.map(o => ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount })) }
 ```
 
-**Zálohový list:**
-
+_Zálohový list_
 ```tsx
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" withoutAccounts vat={{ enabled: true, codes, showKhSection: false, recapNote: texts.vatFive.notTaxDocument }} />
 ```
 
-**Nárok 60 % a vyloučení limitu KH:**
-
+_Nárok 60 % a vyloučení limitu KH_
 ```tsx
 <JournalLinesEditor {...props} lines={[{ id: "line-1", amount: 1000, vatCodeId: codeId, vatDeduction: "partial", vatDeductionShare: 60, khLimitExcluded: true }]} onChange={setLines} vat={{ enabled: true, codes, rowDetails: { canEdit: () => canEdit, disabledReason: lockedReason } }} />
 ```
 
-**Formát sloupců:**
-
+_Formát sloupců_
 ```tsx
 <DataGrid {...props} columns={[{ id: "remaining", label: texts.remaining, numeric: true, value: row => row.remaining, defaultStyle: { bold: true, tone: "blue-soft" } }]} />
 ```
 
-**Návrhy vytěžení od APP:**
-
+_Návrhy vytěžení od APP_
 ```tsx
 <JournalLinesEditor {...props} rowSuggestions={{ [rowId]: { text: { source: fileName, uncertain: true } } }} onSuggestionCleared={removeSuggestion} />
 ```
 
-**Kategorie interního dokladu:**
-
+_Kategorie interního dokladu_
 ```tsx
 <JournalLinesEditor {...documentRows} categories={categories} categoryBySide allowedCategories={allowedCategories} onEditCategory={editCategory} />
 ```
 
-**Dimenze hlavičky a řádků:**
-
+_Dimenze hlavičky a řádků_
 ```tsx
 <JournalLinesEditor {...props} dimensionTypes={types} dimensions={dimensions} onDimensionsChange={setDimensions} loadDimensionOptions={loadOptions} dimensionsBySide />
 ```
@@ -4470,8 +4341,8 @@ Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH 
 
 ### JournalLinesRecap
 
-```tsx
-import { JournalLinesRecap } from "@/design-system/{slug}";
+```ts
+import { JournalLinesRecap } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft. Kategorie: nové props mají přednost před deprecated dimension aliasy. ID má Kategorie MD / Kategorie DAL; ostatní doklady jeden sloupec na ekonomické straně. allowedCategories zahrnuje vykazovatelné potomky; jediná se doplní a zamkne, nepovolená uložená je chyba. Změna účtu zachová povolenou, jinak ji změní s upozorněním. DE vybírá položky jménem a AccountOption.technical nikdy nezobrazí; displayCode je pouze tlumený doplněk. Výchozí accrual zachovává původní API.
@@ -4480,10 +4351,13 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 
 | Prop | Type | Default |
 |---|---|---|
+| `bookkeepingMode` | any | `accrual` |
+| `categoriesEnabled` | boolean | `true` |
+| `taxMovementKind` | any | `—` |
 | `headerTotal` | any | `—` |
 | `lines` | any | `—` |
 | `accounts` | any | `—` |
-| `dimensions` | any (@deprecated 2.138.0: categories; odstranění 3.0.0) | `—` |
+| `dimensions` | any | `—` |
 | `categories` | any | `—` |
 | `documentCurrency` | string | `—` |
 | `documentCurrencySymbol` | string | `—` |
@@ -4498,32 +4372,25 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 | `storageKey` | string | `journal-recap` |
 | `texts` | any | `—` |
 | `vatSummary` | any | `—` |
-| `bookkeepingMode` | accrual  /  tax_records | `—` |
-| `categoriesEnabled` | boolean | `—` |
-| `taxMovementKind` | TaxMovementKind | `—` |
 
 **Examples:**
 
-**Rekapitulace:**
-
+_Rekapitulace_
 ```tsx
 <JournalLinesRecap lines={lines} accounts={accounts} storageKey="invoice-lines" />
 ```
 
-**2.92.0:**
-
+_2.92.0_
 ```tsx
 <JournalLinesRecap {...props} headerTotal={<JournalRecapHomeTotal total={total} rate={rate} symbol={homeSymbol} />} />
 ```
 
-**Formát sloupců:**
-
+_Formát sloupců_
 ```tsx
 <DataGrid {...props} columns={[{ id: "remaining", label: texts.remaining, numeric: true, value: row => row.remaining, defaultStyle: { bold: true, tone: "blue-soft" } }]} />
 ```
 
-**Kategorie interního dokladu:**
-
+_Kategorie interního dokladu_
 ```tsx
 <JournalLinesRecap {...props} categories={categories} />
 ```
@@ -4649,8 +4516,8 @@ _Použití společného stavu_
 
 ### LinkRecordDialog
 
-```tsx
-import { LinkRecordDialog } from "@/design-system/{slug}";
+```ts
+import { LinkRecordDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Dialog nové vazby s návrhy, hledáním aplikace, typem a poznámkou. RecordDialog chrání změny; při chybě se nezavře.
@@ -4660,24 +4527,22 @@ Dialog nové vazby s návrhy, hledáním aplikace, typem a poznámkou. RecordDia
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
-| `candidates` | LinkedRecordItem[] | `—` |
-| `results` | LinkedRecordItem[] | `—` |
-| `relationTypes` | LinkRecordConfig["relationTypes"] | `—` |
-| `onSearch` | LinkRecordConfig["onSearch"] | `—` |
-| `onSave` | (value: LinkRecordValue) => void  /  Promise<void> | `—` |
+| `onOpenChange` | function | `—` |
+| `candidates` | any | `—` |
+| `results` | any | `—` |
+| `relationTypes` | any | `—` |
+| `onSearch` | any | `—` |
+| `onSave` | function | `—` |
 | `title` | string | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <LinkRecordDialog open={open} onOpenChange={setOpen} candidates={suggestions} relationTypes={types} onSearch={searchRecords} onSave={saveLink} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <LinkRecordDialog open={open} onOpenChange={setOpen} candidates={suggestions} relationTypes={types} onSearch={searchRecords} onSave={saveLink} />
 ```
@@ -4688,8 +4553,8 @@ Dialog nové vazby s návrhy, hledáním aplikace, typem a poznámkou. RecordDia
 
 ### LinkedRecordEntry
 
-```tsx
-import { LinkedRecordEntry } from "@/design-system/{slug}";
+```ts
+import { LinkedRecordEntry } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Sdílený klikací řádek nebo uzel vazby; zmapované hodnoty, stav a ikonu dodává aplikace.
@@ -4698,20 +4563,18 @@ Sdílený klikací řádek nebo uzel vazby; zmapované hodnoty, stav a ikonu dod
 
 | Prop | Type | Default |
 |---|---|---|
-| `item` | LinkedRecordItem | `—` |
-| `onOpen` | (item: LinkedRecordItem, modifiers: LinkedRecordModifiers) => void | `—` |
-| `variant` | enum | `row` |
+| `item` | any | `—` |
+| `onOpen` | function | `—` |
+| `variant` | row · node | `row` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <LinkedRecordEntry item={record} variant="node" onOpen={openRecord} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <LinkedRecordEntry item={record} variant="node" onOpen={openRecord} />
 ```
@@ -4722,8 +4585,8 @@ Sdílený klikací řádek nebo uzel vazby; zmapované hodnoty, stav a ikonu dod
 
 ### LinkedRecordsPanel
 
-```tsx
-import { LinkedRecordsPanel } from "@/design-system/{slug}";
+```ts
+import { LinkedRecordsPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a seznam/tok, souhrn vypořádání a akce aplikace. unlinkReason + onUnlink zobrazí jediné potvrzení s důvodem; confirmUnlink=false přenechá potvrzení APP.
@@ -4732,37 +4595,34 @@ Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a se
 
 | Prop | Type | Default |
 |---|---|---|
-| `groups` | LinkedRecordGroup[] | `—` |
-| `settlement` | SettlementRow[] | `—` |
-| `mode` | LinkedRecordsMode | `—` |
-| `onModeChange` | (mode: LinkedRecordsMode) => void | `—` |
-| `collapsedGroups` | string[] | `—` |
-| `onCollapsedGroupsChange` | (ids: string[]) => void | `—` |
-| `onOpen` | (item: LinkedRecordItem, modifiers: LinkedRecordModifiers) => void | `—` |
-| `onRemove` | (item: LinkedRecordItem) => void  /  Promise<void> | `—` |
+| `groups` | any | `—` |
+| `settlement` | any | `—` |
+| `mode` | any | `—` |
+| `onModeChange` | function | `—` |
+| `collapsedGroups` | any | `—` |
+| `onCollapsedGroupsChange` | function | `—` |
+| `onOpen` | function | `—` |
+| `onRemove` | function | `—` |
 | `confirmUnlink` | boolean | `true` |
-| `unlinkReason` | { label?: string | `—` |
-| `onUnlink` | (item: LinkedRecordItem, reason: string) => void  /  Promise<void> | `—` |
-| `onLink` | (value: LinkRecordValue) => void  /  Promise<void> | `—` |
-| `linkDialog` | LinkRecordConfig | `—` |
+| `unlinkReason` | object | `—` |
+| `onUnlink` | function | `—` |
+| `onLink` | function | `—` |
+| `linkDialog` | any | `—` |
 | `emptyText` | string | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />
 ```
 
-**Jediné potvrzení s důvodem:**
-
+_Jediné potvrzení s důvodem_
 ```tsx
 <LinkedRecordsPanel {...panelProps} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} unlinkReason={{ required: true }} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />
 ```
@@ -5017,8 +4877,8 @@ _Výběr firem klávesnicí_
 
 ### MultiSelectionPanel
 
-```tsx
-import { MultiSelectionPanel } from "@/design-system/{slug}";
+```ts
+import { MultiSelectionPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Souhrn více vybraných záznamů se slotem children pro hromadnou akci. Jinou doménu pojmenujte propem label; počet se formátuje s oddělenými tisíci.
@@ -5028,18 +4888,16 @@ Souhrn více vybraných záznamů se slotem children pro hromadnou akci. Jinou d
 | Prop | Type | Default |
 |---|---|---|
 | `count` | number | `—` |
-| `label` | (count: string) => string | `—` |
+| `label` | function | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <MultiSelectionPanel count={selection.count}><Button onClick={addNoteToSelected}>Přidat poznámku</Button></MultiSelectionPanel>
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <MultiSelectionPanel count={selection.count}><Button onClick={addNoteToSelected}>Přidat poznámku</Button></MultiSelectionPanel>
 ```
@@ -5050,8 +4908,8 @@ Souhrn více vybraných záznamů se slotem children pro hromadnou akci. Jinou d
 
 ### MultiValueCell
 
-```tsx
-import { MultiValueCell } from "@/design-system/{slug}";
+```ts
+import { MultiValueCell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Obecná buňka první hodnoty + další, plný seznam v bublině myší i klávesnicí. values i additionalCount dodává APP; variant=all ukáže celý seznam.
@@ -5060,15 +4918,13 @@ Obecná buňka první hodnoty + další, plný seznam v bublině myší i kláve
 
 | Prop | Type | Default |
 |---|---|---|
-| `values` | MultiValueItem[] | `—` |
+| `values` | any | `—` |
 | `additionalCount` | number | `0` |
-| `variant` | compact  /  all | `compact` |
-| `className` | string | `—` |
+| `variant` | compact · all | `compact` |
 
 **Examples:**
 
-**Dimenze B2:**
-
+_Dimenze B2_
 ```tsx
 <MultiValueCell values={dimensionLabels} additionalCount={otherRowsCount} />
 ```
@@ -5231,8 +5087,8 @@ _Pojmenovaný výběr_
 
 ### PageHeader
 
-```tsx
-import { PageHeader } from "@/design-system/{slug}";
+```ts
+import { PageHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Nadpis stránky se stavovým štítkem centrovaným na účaří + polovinu x-výšky písma; bez pevného posunu. Záhlaví panelu řadí historii, maximalizaci, menu a Zavřít panel.
@@ -5252,14 +5108,12 @@ Nadpis stránky se stavovým štítkem centrovaným na účaří + polovinu x-v�
 
 **Examples:**
 
-**Běžné použití:**
-
+_Běžné použití_
 ```tsx
 <PageHeader />
 ```
 
-**Nadpis se stavem:**
-
+_Nadpis se stavem_
 ```tsx
 <PageHeader title="Přijatá faktura" titleBadge={<DocumentStatusBadge status="draft" />} />
 ```
@@ -5361,8 +5215,8 @@ import { PaneChromeContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 
 ### PaneDropOverlay
 
-```tsx
-import { PaneDropOverlay } from "@/design-system/{slug}";
+```ts
+import { PaneDropOverlay } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Obal podokna nebo stránky. Pouze soubory OS (Files), žádné interní DnD; vnořený povolený cíl má přednost. Volitelné limity přes sdílenou validaci.
@@ -5372,17 +5226,16 @@ Obal podokna nebo stránky. Pouze soubory OS (Files), žádné interní DnD; vno
 | Prop | Type | Default |
 |---|---|---|
 | `label` | string | `—` |
-| `onFiles` | (files: File[]) => void | `—` |
+| `onFiles` | function | `—` |
 | `disabled` | boolean | `—` |
-| `accept` | readonly string[] | `—` |
+| `accept` | any | `—` |
 | `maxSizeBytes` | number | `—` |
 | `maxFiles` | number | `—` |
-| `onReject` | (rejected: RejectedFile[]) => void | `—` |
+| `onReject` | function | `—` |
 
 **Examples:**
 
-**Import souborů:**
-
+_Import souborů_
 ```tsx
 <PaneDropOverlay label={texts.dropToImport} onFiles={startImport} disabled={!canImport}><DataGrid {...gridProps} /></PaneDropOverlay>
 ```
@@ -5406,30 +5259,22 @@ import { PaneEmpty } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 
 ### PaneLayout
 
-```tsx
-import { PaneLayout } from "@/design-system/{slug}";
+```ts
+import { PaneLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Režim více oken s vždy viditelnou lištou rovnocenných záložek; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu. renderLinkedPanel je volitelný registr APP pro celé okno druhu panel: dostává recordKey, aktivní sekci a setSection. Bez registru zůstává renderTab, jiné druhy vždy přes renderTab. APP dodá celý obsah, data a práva.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `renderLinkedPanel` | (recordKey: string, section: string, setSection: (section: string) => void) => ReactNode | `—` |
-
 **Examples:**
 
-**Panely se záložkami:**
-
+_Panely se záložkami_
 ```tsx
 <PaneTabsProvider state={state} onChange={setState}>
   <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />
 </PaneTabsProvider>
 ```
 
-**Navázaný panel v sousedním okně:**
-
+_Navázaný panel v sousedním okně_
 ```tsx
 <PaneLayout renderTab={renderRecord} renderLinkedPanel={(key, section, setSection) => <AppRecordPanel recordKey={key} activeTab={section} onTabChange={setSection} />} />
 ```
@@ -5514,8 +5359,8 @@ import { PaneTabsContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 
 ### PaneTabsProvider
 
-```tsx
-import { PaneTabsProvider } from "@/design-system/{slug}";
+```ts
+import { PaneTabsProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout. Přepnutí a odhlášení volejte přes guardUnsaved(callback, "switch"/"logout"); close řeší DS. Navázaná okna (openLinkedTab) sledují zdrojovou záložku, ne pozici panelu; připnutí zamkne záznam, zavření zdroje nechá okno připnuté na posledním záznamu. usePaneTabs nabízí openLinkedPanel({ sourceTabId, recordKey, recordTitle, section, blockedReason? }), focusLinkedPanel(sourceTabId), setLinkedPanelSection(tabId, section), updateLinkedPanelRecord(sourceTabId, recordKey, recordTitle) a closeLinkedPanel(sourceTabId). useLinkedPanel(sourceTabId) vrací { state: "closed" | "elsewhere", open, focus }; open bez sourceTabId. APP hlásí výběr přes linkedSelection/useLinkedSelection nebo updateLinkedPanelRecord; připnutí zamkne obsah, zavření zdroje připne poslední záznam. blockedReason zabrání přesunu, closeLinkedPanel používá ochranu neuložených změn.
@@ -5535,21 +5380,18 @@ Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; 
 
 **Examples:**
 
-**Otevření záznamu:**
-
+_Otevření záznamu_
 ```tsx
 const tabs = usePaneTabs();
 tabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' });
 ```
 
-**Navázané okno panelu záznamu:**
-
+_Navázané okno panelu záznamu_
 ```tsx
 tabs.openLinkedTab(pane.tabId, { id: "history", label: "Historie" })
 ```
 
-**Akce navázaného panelu:**
-
+_Akce navázaného panelu_
 ```tsx
 const panel = useLinkedPanel(pane.tabId);
 panel.open({ recordKey: record.id, recordTitle: record.title, section: "history" });
@@ -5570,8 +5412,8 @@ tabs.closeLinkedPanel(pane.tabId);
 
 ### PanelToggleButton
 
-```tsx
-import { PanelToggleButton } from "@/design-system/{slug}";
+```ts
+import { PanelToggleButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Orámovaný ovladač panelu s výškou --control-h. Ikona i přístupný název popisují akci: Otevřít panel (←), Zavřít panel (→). Stav elsewhere otevírá/zaměří sousední okno, neuzavírá místní panel. Ve formuláři patří za nabídku akcí, v gridu za Obnovit.
@@ -5581,22 +5423,20 @@ Orámovaný ovladač panelu s výškou --control-h. Ikona i přístupný název 
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onToggle` | () => void | `—` |
+| `onToggle` | function | `—` |
 | `indicator` | boolean | `—` |
 | `tooltip` | string | `—` |
-| `state` | enum | `—` |
-| `onFocusElsewhere` | () => void | `—` |
+| `state` | closed · open · elsewhere | `—` |
+| `onFocusElsewhere` | function | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <PanelToggleButton open={open} onToggle={() => setOpen(!open)} indicator={hasActivity} tooltip={panelSummary} state={panelState} onFocusElsewhere={focusPanel} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <PanelToggleButton open={open} onToggle={() => setOpen(!open)} indicator={hasActivity} tooltip={panelSummary} state={panelState} onFocusElsewhere={focusPanel} />
 ```
@@ -5663,29 +5503,20 @@ _Vypnutý příkaz_
 
 ### PaymentScheduleEditor
 
-```tsx
-import { PaymentScheduleEditor } from "@/design-system/{slug}";
+```ts
+import { PaymentScheduleEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Platební kalendář se sdílenou GridToolbar, standardním Přidat a vedlejšími akcemi v nabídce při zúžení. Zoom převezme z okolního GridZoomContext, explicitní zoom má přednost. saveAction vykreslí uložení v liště; disabled/busy blokují opakovaný klik, data a zápis vlastní APP.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `zoom` | number | `GridZoomContext / 1` |
-| `saveAction` | PaymentScheduleSaveAction: { label?, onSave, disabled?, busy?, disabledReason? } | `—` |
-
 **Examples:**
 
-**Kalendář faktury:**
-
+_Kalendář faktury_
 ```tsx
 <PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />
 ```
 
-**Uložení kalendáře v zoomované liště:**
-
+_Uložení kalendáře v zoomované liště_
 ```tsx
 <PaymentScheduleEditor items={items} onChange={setItems} totalToPay={total} zoom={zoom} saveAction={{ label: "Uložit kalendář", onSave: saveSchedule, disabled: !dirty, busy: saving, disabledReason }} />
 ```
@@ -5781,8 +5612,8 @@ _Připnuté stránky_
 
 ### PinnedNoteBar
 
-```tsx
-import { PinnedNoteBar } from "@/design-system/{slug}";
+```ts
+import { PinnedNoteBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jediný řádek hlavičky s textem připnuté poznámky. Zkrácení zachovává celý text v tooltipu dostupném myší i fokusem; klik otevírá poznámky.
@@ -5792,18 +5623,16 @@ Jediný řádek hlavičky s textem připnuté poznámky. Zkrácení zachovává 
 | Prop | Type | Default |
 |---|---|---|
 | `text` | string | `—` |
-| `onOpen` | () => void | `—` |
+| `onOpen` | function | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <PinnedNoteBar text={pinnedNote.body} onOpen={() => { setTab("notes"); setOpen(true); }} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <PinnedNoteBar text={pinnedNote.body} onOpen={() => { setTab("notes"); setOpen(true); }} />
 ```
@@ -5838,8 +5667,8 @@ import { PopoverTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 ### PrintPreviewDialog
 
-```tsx
-import { PrintPreviewDialog } from "@/design-system/{slug}";
+```ts
+import { PrintPreviewDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jediný společný náhled PDF: Tisk/Stáhnout PDF, vlastní filename volitelně, výchozí název sestavy zachován.
@@ -5859,8 +5688,7 @@ Jediný společný náhled PDF: Tisk/Stáhnout PDF, vlastní filename volitelně
 
 **Examples:**
 
-**Tisk faktury návrh C:**
-
+_Tisk faktury návrh C_
 ```tsx
 <PrintPreviewDialog open={open} onOpenChange={setOpen} blob={blob} title={title} companyName={company.name} filename={filename} />
 ```
@@ -6002,8 +5830,8 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 
 ### RecordActionBar
 
-```tsx
-import { RecordActionBar } from "@/design-system/{slug}";
+```ts
+import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit je vždy primární tlačítko; busy zobrazí spinner. Kaskáda podle měřené šířky: text → sekundární ikony → nakonec ikona Uložit. Kompaktní zablokovaná primární akce má tooltip Název: důvod. Důvod položky menu je jen přístupný popis, nikoli součást názvu. Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními. primaryAction.tooltip vysvětluje povolený krok i krátce po dotyku; normální klik jej provede bez připnutí. Každá akce má Tooltip i v plné šířce (název akce, případně primaryAction.tooltip); ⋯ používá Tooltip místo title. Levý obsah si drží rezervu nejvýš 10 rem a zkrátí se s …, akce nikdy nepřekryje. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors. panelToggle je poslední za nabídkou, nikdy se neslučuje do nabídky ani nezmizí při zkrácení akcí.
@@ -6034,26 +5862,22 @@ Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární
 
 **Examples:**
 
-**Karta majetku:**
-
+_Karta majetku_
 ```tsx
 <RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} notices={<NoticeBar tone="info">Informace</NoticeBar>} />
 ```
 
-**Stav pole a jednotná výška (2.107.0):**
-
+_Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <RecordActionBar {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />
 ```
 
-**Uložení změn:**
-
+_Uložení změn_
 ```tsx
 <RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} />
 ```
 
-**Panel za nabídkou:**
-
+_Panel za nabídkou_
 ```tsx
 <RecordActionBar saveAction={save} moreActions={actions} panelToggle={<PanelToggleButton open={open} onToggle={toggle} tooltip={summary} />} />
 ```
@@ -6067,8 +5891,8 @@ Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární
 
 ### RecordDialog
 
-```tsx
-import { RecordDialog } from "@/design-system/{slug}";
+```ts
+import { RecordDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky. Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS. submitDisabled blokuje uložení i klávesou; zavření zůstává dostupné. size xl (80 rem) pro import a rozsáhlé pracovní dialogy; menší velikosti beze změny. lifecycleAction.confirm.reason a deleteAction.confirm.reason vyžadují důvod a předají jej callbacku po jediném potvrzení.
@@ -6089,7 +5913,7 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 | `busy` | boolean | `false` |
 | `children` | any | `—` |
 | `extraActions` | any | `—` |
-| `size` | "sm"  /  "md"  /  "lg"  /  "xl" | `—` |
+| `size` | sm · md · lg · xl | `—` |
 | `contentClassName` | string | `—` |
 | `sidePanel` | any | `—` |
 | `sidePanelLabel` | string | `—` |
@@ -6113,40 +5937,34 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 
 **Examples:**
 
-**Detail prostoru jen pro čtení:**
-
+_Detail prostoru jen pro čtení_
 ```tsx
 <RecordDialog open={open} onOpenChange={setOpen} title={workspace.name} readOnly tabs={[{ value: "members", label: "Členové", content: <MembersGrid /> }]} />
 ```
 
-**Stav a deaktivace:**
-
+_Stav a deaktivace_
 ```tsx
 <RecordDialog status={{ active }} dirty={dirty} lifecycleAction={{ label: active ? "Deaktivovat" : "Aktivovat", confirm: { title: "Deaktivovat partnera?" }, onClick: ({ saveFirst }) => toggle(saveFirst) }} …/>
 ```
 
-**Stav pole a jednotná výška (2.107.0):**
-
+_Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <RecordDialog {...props} fieldErrors={fieldErrors}>{fields}</RecordDialog>
 ```
 
-**Číselník s ochranou změn, chybou a Odstranit (2.111.0):**
-
+_Číselník s ochranou změn, chybou a Odstranit (2.111.0)_
 ```tsx
 <RecordDialog open={open} onOpenChange={setOpen} title="Kniha FP" size="md" dirty={dirty} busy={saving} error={saveError} onSubmit={save} deleteAction={{ onClick: remove, confirm: { title: "Odstranit knihu FP?" } }}>
   <FieldGrid cols={12}>…</FieldGrid>
 </RecordDialog>
 ```
 
-**Partner na zvolené záložce:**
-
+_Partner na zvolené záložce_
 ```tsx
 <RecordDialog open={open} size="md" title="Partner" onOpenChange={setOpen} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} error={saveError} onSubmit={save} />
 ```
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <RecordDialog open={open} size="md" title={title} onOpenChange={setOpen} submitDisabled={!canCreate} onSubmit={create} />
 ```
@@ -6164,8 +5982,8 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 
 ### RecordHistoryTimeline
 
-```tsx
-import { RecordHistoryTimeline } from "@/design-system/{slug}";
+```ts
+import { RecordHistoryTimeline } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Historie záznamu jako časová osa po dnech (Dnes / Včera / datum), nejnovější nahoře; funguje i jako záložka RecordSidePanel v úzké šířce. Aplikace dodává už zmapované události s popisky a hodnotami a řídí režim (basic/detailed) i filtr typů; komponenta nic nenačítá ani doménově neformátuje.
@@ -6174,27 +5992,25 @@ Historie záznamu jako časová osa po dnech (Dnes / Včera / datum), nejnověj�
 
 | Prop | Type | Default |
 |---|---|---|
-| `events` | HistoryEvent[] | `—` |
-| `mode` | HistoryMode | `—` |
-| `onModeChange` | (mode: HistoryMode) => void | `—` |
-| `filter` | HistoryKind[] | `—` |
-| `onFilterChange` | (filter: HistoryKind[]) => void | `—` |
-| `hiddenKinds` | HistoryKind[] | `—` |
-| `onHiddenKindsChange` | (kinds: HistoryKind[]) => void | `—` |
+| `events` | any | `—` |
+| `mode` | any | `—` |
+| `onModeChange` | function | `—` |
+| `filter` | any | `—` |
+| `onFilterChange` | function | `—` |
+| `hiddenKinds` | any | `—` |
+| `onHiddenKindsChange` | function | `—` |
 | `loading` | boolean | `—` |
 | `emptyText` | string | `—` |
-| `now` | Date | `—` |
+| `now` | any | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} filter={filter} onFilterChange={setFilter} loading={isLoading} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} hiddenKinds={hiddenKinds} onHiddenKindsChange={setHiddenKinds} loading={isLoading} />
 ```
@@ -6205,8 +6021,8 @@ Historie záznamu jako časová osa po dnech (Dnes / Včera / datum), nejnověj�
 
 ### RecordNotes
 
-```tsx
-import { RecordNotes } from "@/design-system/{slug}";
+```ts
+import { RecordNotes } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Existující panel poznámek s řazením, úpravou a odstraněním. canEdit/canRemove mají přednost před starým editable; canAdd=false skryje vstup. pinned/editedAt jsou data aplikace, onPin žádá změnu; nejvýše jednu připnutou hlídá aplikace. Výchozí texty přes DsTexts CS/SK, lokální texts mají přednost.
@@ -6215,27 +6031,25 @@ Existující panel poznámek s řazením, úpravou a odstraněním. canEdit/canR
 
 | Prop | Type | Default |
 |---|---|---|
-| `notes` | RecordNote[] | `—` |
-| `onAdd` | (body: string) => void  /  Promise<void> | `—` |
-| `onUpdate` | (id: string, body: string) => void  /  Promise<void> | `—` |
-| `onRemove` | (id: string) => void  /  Promise<void> | `—` |
-| `texts` | Partial<RecordNotesTexts> | `—` |
+| `notes` | any | `—` |
+| `onAdd` | function | `—` |
+| `onUpdate` | function | `—` |
+| `onRemove` | function | `—` |
+| `texts` | any | `—` |
 | `canAdd` | boolean | `true` |
-| `canPin` | boolean  /  ((note: RecordNote) => boolean) | `false` |
-| `canEdit` | boolean  /  ((note: RecordNote) => boolean) | `—` |
-| `canRemove` | boolean  /  ((note: RecordNote) => boolean) | `—` |
-| `onPin` | (id: string, pinned: boolean) => void  /  Promise<void> | `—` |
+| `canPin` | function | `false` |
+| `canEdit` | function | `—` |
+| `canRemove` | function | `—` |
+| `onPin` | function | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <RecordNotes notes={notes} canAdd={rights.add} canEdit={canEdit} canRemove={canRemove} canPin={rights.pin} onPin={pinNote} onAdd={addNote} onUpdate={updateNote} onRemove={removeNote} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <RecordNotes notes={notes} canAdd={rights.add} canEdit={canEdit} canRemove={canRemove} canPin={rights.pin} onPin={pinNote} onAdd={addNote} onUpdate={updateNote} onRemove={removeNote} />
 ```
@@ -6246,8 +6060,8 @@ Existující panel poznámek s řazením, úpravou a odstraněním. canEdit/canR
 
 ### RecordPanelToolbar
 
-```tsx
-import { RecordPanelToolbar } from "@/design-system/{slug}";
+```ts
+import { RecordPanelToolbar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jednořádkové nástroje každé záložky: start pro zobrazení/filtr/řazení, end pro vlastní obsah, action pro modrou hlavní akci zkrácenou při nedostatku místa na ikonu s tooltipem.
@@ -6256,20 +6070,18 @@ Jednořádkové nástroje každé záložky: start pro zobrazení/filtr/řazení
 
 | Prop | Type | Default |
 |---|---|---|
-| `start` | ReactNode | `—` |
-| `end` | ReactNode | `—` |
-| `action` | RecordPanelToolbarAction | `—` |
+| `start` | any | `—` |
+| `end` | any | `—` |
+| `action` | any | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <RecordPanelToolbar start={sortControl} action={{ label: texts.add, icon: Plus, onClick: addAttachment, disabled: !canAdd, disabledReason }} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <RecordPanelToolbar start={sortControl} action={{ label: texts.add, icon: Plus, onClick: addAttachment, disabled: !canAdd, disabledReason }} />
 ```
@@ -6280,8 +6092,8 @@ Jednořádkové nástroje každé záložky: start pro zobrazení/filtr/řazení
 
 ### RecordPanelTriggers
 
-```tsx
-import { RecordPanelTriggers } from "@/design-system/{slug}";
+```ts
+import { RecordPanelTriggers } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Sdílené ikonové spouštěče s počty; aplikace dodává libovolná id, popisky a ikony. Nula ukazuje tlumenou ikonu bez čísla. V DocumentForm použijte actionBarContent, v RecordDialog headerExtra.
@@ -6290,21 +6102,19 @@ Sdílené ikonové spouštěče s počty; aplikace dodává libovolná id, popis
 
 | Prop | Type | Default |
 |---|---|---|
-| `indicators` | readonly RecordIndicator[] | `—` |
-| `onIndicatorClick` | (id: string) => void | `—` |
+| `indicators` | any | `—` |
+| `onIndicatorClick` | function | `—` |
 | `activeTab` | string | `—` |
-| `size` | enum | `default` |
+| `size` | default · compact | `default` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <RecordPanelTriggers indicators={[{ id: "files", label: "Přílohy", icon: Paperclip, count: 2 }]} onIndicatorClick={id => { setTab(id); setOpen(true); }} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <RecordPanelTriggers indicators={[{ id: "files", label: "Přílohy", icon: Paperclip, count: 2 }]} onIndicatorClick={id => { setTab(id); setOpen(true); }} />
 ```
@@ -6328,8 +6138,8 @@ import { RecordReadOnlyProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 
 ### RecordSidePanel
 
-```tsx
-import { RecordSidePanel } from "@/design-system/{slug}";
+```ts
+import { RecordSidePanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Obal hlavního obsahu a pravého panelu záznamu. Na běžné šířce obsah odsune, pod 640 px šířky prostředí používá místní překryv. onSizeChange mění živý stav, APP ukládá v onSizeCommit jednou po puštění táhla/klávese/dvojkliku. Záložky, připnutí a šířku řídí aplikace; nic nenačítá. D7: pod 768 px hostitele místní overlay; meze táhla nikdy nepřekročí 75 % dostupné šířky ani při zoomu.
@@ -6339,32 +6149,30 @@ Obal hlavního obsahu a pravého panelu záznamu. Na běžné šířce obsah ods
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
+| `onOpenChange` | function | `—` |
 | `activeTab` | string | `—` |
-| `onActiveTabChange` | (id: string) => void | `—` |
-| `tabs` | readonly RecordSidePanelTab[] | `—` |
-| `header` | ReactNode | `—` |
+| `onActiveTabChange` | function | `—` |
+| `tabs` | any | `—` |
+| `header` | any | `—` |
 | `size` | number | `icon` |
-| `onSizeChange` | (size: number) => void | `—` |
-| `onSizeCommit` | (size: number) => void | `—` |
+| `onSizeChange` | function | `—` |
+| `onSizeCommit` | function | `—` |
 | `defaultSize` | number | `—` |
 | `blockedReason` | string | `—` |
 | `pinned` | boolean | `false` |
-| `onPinnedChange` | (pinned: boolean) => void | `—` |
-| `width` | enum | `default` |
-| `onWidthChange` | (width: "default"  /  "wide") => void | `—` |
-| `onOpenInAdjacentPane` | () => void | `—` |
+| `onPinnedChange` | function | `—` |
+| `width` | default · wide | `default` |
+| `onWidthChange` | function | `—` |
+| `onOpenInAdjacentPane` | function | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <RecordSidePanel open={open} onOpenChange={setOpen} header={record.number} activeTab={tab} onActiveTabChange={setTab} tabs={tabs} pinned={pinned} onPinnedChange={setPinned} width={width} onWidthChange={setWidth}><DocumentForm {...formProps} /></RecordSidePanel>
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <RecordSidePanel open={open} onOpenChange={setOpen} activeTab={tab} onActiveTabChange={setTab} tabs={tabs} pinned={pinned} onPinnedChange={setPinned} size={size} defaultSize={384} onSizeChange={setSize}><DocumentForm {...formProps} /></RecordSidePanel>
 ```
@@ -6633,8 +6441,8 @@ import { SelectValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 
 ### SelectableGroupList
 
-```tsx
-import { SelectableGroupList } from "@/design-system/{slug}";
+```ts
+import { SelectableGroupList } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; Sémantický seznam s fokusovatelnými checkboxy; aria-disabled a aria-describedby zpřístupní důvod zákazu. Detail je tlačítko s aria-pressed. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.
@@ -6643,18 +6451,17 @@ Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje
 
 | Prop | Type | Default |
 |---|---|---|
-| `groups` | readonly SelectableGroup[] | `—` |
+| `groups` | any | `—` |
 | `activeId` | string | `—` |
-| `onActiveChange` | (id: string) => void | `—` |
-| `checkedIds` | readonly string[] | `—` |
-| `onCheckedChange` | (ids: string[]) => void | `—` |
+| `onActiveChange` | function | `—` |
+| `checkedIds` | any | `—` |
+| `onCheckedChange` | function | `—` |
 | `disabled` | boolean | `—` |
-| `size` | "sm"  /  "md" | `—` |
+| `size` | sm · md | `md` |
 
 **Examples:**
 
-**Import souborů:**
-
+_Import souborů_
 ```tsx
 <SelectableGroupList groups={groups} activeId={activeId} onActiveChange={setActiveId} checkedIds={checkedIds} onCheckedChange={setCheckedIds} />
 ```
@@ -6699,8 +6506,8 @@ _Sekce_
 
 ### SettlementBar
 
-```tsx
-import { SettlementBar } from "@/design-system/{slug}";
+```ts
+import { SettlementBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Souhrn úhrad nebo zúčtování po měnách. Částky, měny, label a progres dodává aplikace; komponenta nic nepočítá.
@@ -6709,18 +6516,16 @@ Souhrn úhrad nebo zúčtování po měnách. Částky, měny, label a progres d
 
 | Prop | Type | Default |
 |---|---|---|
-| `rows` | SettlementRow[] | `—` |
+| `rows` | any | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <SettlementBar rows={settlementRows} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <SettlementBar rows={settlementRows} />
 ```
@@ -7014,6 +6819,7 @@ import { SortHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 |---|---|---|
 | `id` | any | `—` |
 | `label` | string | `—` |
+| `headerTooltip` | string | `—` |
 | `sort` | function | `—` |
 | `align` | left · right · center | `left` |
 | `className` | string | `—` |
@@ -7026,8 +6832,8 @@ import { SortHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 
 ### SourcePreview
 
-```tsx
-import { SourcePreview } from "@/design-system/{slug}";
+```ts
+import { SourcePreview } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Záložka Zdroj panelu záznamu: vyplní zbývající výšku pod nástroji v hostiteli s určenou výškou, PDF.js v iframe vykreslí stránky podle šířky a přepočítá je při tažení; svisle roluje jen náhled. Obrázek contain přes celou plochu, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy. PDF.js a jeho worker se načítají jen v klientském efektu.
@@ -7036,28 +6842,26 @@ Záložka Zdroj panelu záznamu: vyplní zbývající výšku pod nástroji v ho
 
 | Prop | Type | Default |
 |---|---|---|
-| `source` | RecordAttachment  /  null | `—` |
-| `accept` | readonly string[] | `—` |
+| `source` | any | `—` |
+| `accept` | any | `—` |
 | `maxSize` | number | `—` |
 | `canReplace` | boolean | `true` |
 | `replaceDisabledReason` | string | `—` |
-| `onReplace` | () => void | `—` |
-| `onUpload` | (files: File[], rejected: RejectedFile[]) => void | `—` |
-| `onDownload` | (attachment: RecordAttachment) => void | `—` |
-| `onOpen` | (attachment: RecordAttachment) => void | `—` |
-| `inheritedFrom` | SourceInheritedFrom | `—` |
-| `onUrlExpired` | () => void | `—` |
+| `onReplace` | function | `—` |
+| `onUpload` | function | `—` |
+| `onDownload` | function | `—` |
+| `onOpen` | function | `—` |
+| `inheritedFrom` | any | `—` |
+| `onUrlExpired` | function | `—` |
 
 **Examples:**
 
-**Panel záznamu:**
-
+_Panel záznamu_
 ```tsx
 <SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />
 ```
 
-**Panel záznamu 6:**
-
+_Panel záznamu 6_
 ```tsx
 <SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />
 ```
@@ -7068,8 +6872,8 @@ Záložka Zdroj panelu záznamu: vyplní zbývající výšku pod nástroji v ho
 
 ### SplitButton
 
-```tsx
-import { SplitButton } from "@/design-system/{slug}";
+```ts
+import { SplitButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jedno tlačítko se společným obrysem: hlavní plocha provede akci, šipka otevře nabídku APP. Výchozí výška je --control-h; size=sm použijte výslovně pro kompaktní lištu. Každá část má vlastní fokus a najetí.
@@ -7078,25 +6882,24 @@ Jedno tlačítko se společným obrysem: hlavní plocha provede akci, šipka ote
 
 | Prop | Type | Default |
 |---|---|---|
-| `label` | ReactNode | `—` |
+| `label` | any | `—` |
 | `actionName` | string | `—` |
-| `icon` | ReactNode | `—` |
-| `onClick` | (event: MouseEvent<HTMLButtonElement>) => void | `—` |
-| `menu` | ReactNode | `—` |
-| `variant` | "primary"  /  "outline" | `primary` |
-| `size` | "default"  /  "sm" | `default` |
+| `icon` | any | `—` |
+| `onClick` | function | `—` |
+| `menu` | any | `—` |
+| `variant` | primary · outline | `primary` |
+| `size` | default · sm | `default` |
 | `disabled` | boolean | `—` |
-| `disabledReason` | ReactNode | `—` |
-| `tooltip` | ReactNode | `—` |
-| `menuAlign` | "start"  /  "end" | `start` |
-| `mainProps` | PartProps | `—` |
-| `menuProps` | PartProps | `—` |
-| `className` | string | `—` |
+| `disabledReason` | any | `—` |
+| `tooltip` | any | `—` |
+| `menuAlign` | start · end | `start` |
+| `mainProps` | any | `—` |
+| `menuProps` | any | `—` |
+| `className` | string | `size-4` |
 
 **Examples:**
 
-**Hlavní akce a další možnosti:**
-
+_Hlavní akce a další možnosti_
 ```tsx
 <SplitButton label={texts.create} actionName={texts.create} onClick={createRecord} menu={<DropdownMenuItem onSelect={createFromTemplate}>{texts.fromTemplate}</DropdownMenuItem>} />
 ```
@@ -7420,10 +7223,126 @@ _Použití společného stavu_
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
 - Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.
 
+### TaxBookEntriesPanel
+
+```ts
+import { TaxBookEntriesPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Sekce Zápisy v knize pro Propojené; skládá LinkedRecordsPanel a předává proklik původního zápisu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `entries` | any | `—` |
+| `currency` | string | `—` |
+| `onEntryOpen` | function | `—` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<TaxBookEntriesPanel entries={entries} currency={currency} onEntryOpen={openTaxEntry} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
+### TaxBookView
+
+```ts
+import { TaxBookView } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Kniha hotových zápisů APP. Filtry období, položky, daňovosti a ekonomické kategorie; standardní Excel tabulka a součty.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | any | `—` |
+| `homeCurrency` | string | `—` |
+| `filters` | any | `—` |
+| `onFiltersChange` | function | `—` |
+| `periods` | object | `—` |
+| `onDocumentOpen` | function | `—` |
+| `onUnassignedOpen` | function | `—` |
+| `storageKey` | string | `tax-book` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<TaxBookView rows={entries} homeCurrency={currency} filters={filters} onFiltersChange={setFilters} onDocumentOpen={openDocument} onUnassignedOpen={resolvePayment} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
+### TaxCategorySummary
+
+```ts
+import { TaxCategorySummary } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Přehled § 7–10 z hotových příjmů a výdajů APP, včetně výsledku výdajů procentem a stropu; nezařazené úhrady odděleně.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | any | `—` |
+| `currency` | string | `—` |
+| `unassignedAmount` | number | `0` |
+| `onCategoryOpen` | function | `—` |
+| `onUnassignedOpen` | function | `—` |
+| `storageKey` | string | `tax-category-summary` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<TaxCategorySummary rows={summary} currency={currency} unassignedAmount={unassigned} onCategoryOpen={openCategory} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
+### TaxMovementSelect
+
+```ts
+import { TaxMovementSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Řízený druh interního pohybu: nepeněžní příjem, výdaj nebo přeřazení. Technickou protistranu řeší APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `disabled` | boolean | `—` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<TaxMovementSelect value={movementKind} onChange={setMovementKind} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
 ### TemplateEditBanner
 
-```tsx
-import { TemplateEditBanner } from "@/design-system/{slug}";
+```ts
+import { TemplateEditBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Pruh Upravujete vzor se společnými akcemi. V dokladu použijte DocumentForm.templateEdit, funguje pro faktury i ZL.
@@ -7432,12 +7351,11 @@ Pruh Upravujete vzor se společnými akcemi. V dokladu použijte DocumentForm.te
 
 | Prop | Type | Default |
 |---|---|---|
-| `template` | TemplateEditState | `—` |
+| `template` | any | `—` |
 
 **Examples:**
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <TemplateEditBanner template={{ name: template.name, onSave: saveTemplate, onDiscard: discardTemplate, busy }} />
 ```
@@ -7448,8 +7366,8 @@ Pruh Upravujete vzor se společnými akcemi. V dokladu použijte DocumentForm.te
 
 ### TemplateManager
 
-```tsx
-import { TemplateManager } from "@/design-system/{slug}";
+```ts
+import { TemplateManager } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Správa vzorů jako obsah panelu; samostatná oprávnění canRename/canShare/canEdit/canDelete a důvody. Smazání přes ConfirmDialog.
@@ -7458,16 +7376,15 @@ Správa vzorů jako obsah panelu; samostatná oprávnění canRename/canShare/ca
 
 | Prop | Type | Default |
 |---|---|---|
-| `templates` | DocumentTemplate[] | `—` |
+| `templates` | any | `—` |
 | `storageKey` | string | `—` |
-| `onAction` | (template: DocumentTemplate, action: TemplateAction) => void | `—` |
+| `onAction` | function | `—` |
 | `loading` | boolean | `—` |
 | `error` | string | `—` |
 
 **Examples:**
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <TemplateManager templates={templates} storageKey="document-templates" onAction={handleTemplateAction} loading={loading} error={error} />
 ```
@@ -7478,8 +7395,8 @@ Správa vzorů jako obsah panelu; samostatná oprávnění canRename/canShare/ca
 
 ### TemplateManagerDialog
 
-```tsx
-import { TemplateManagerDialog } from "@/design-system/{slug}";
+```ts
+import { TemplateManagerDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Správa vzorů ve sdíleném dialogu md. Nemá společné Uložit; individuální akce předává APP a chybu zobrazí v patičce.
@@ -7488,18 +7405,12 @@ Správa vzorů ve sdíleném dialogu md. Nemá společné Uložit; individuáln�
 
 | Prop | Type | Default |
 |---|---|---|
-| `templates` | DocumentTemplate[] | `—` |
-| `storageKey` | string | `—` |
-| `onAction` | (template: DocumentTemplate, action: TemplateAction) => void | `—` |
-| `loading` | boolean | `—` |
-| `error` | string | `—` |
 | `open` | boolean | `—` |
-| `onOpenChange` | (open: boolean) => void | `—` |
+| `onOpenChange` | function | `—` |
 
 **Examples:**
 
-**Duplikace a vzory:**
-
+_Duplikace a vzory_
 ```tsx
 <TemplateManagerDialog open={open} onOpenChange={setOpen} templates={templates} storageKey="template-manager-dialog" onAction={handleTemplateAction} error={error} />
 ```
@@ -7695,28 +7606,20 @@ import { TooltipTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 ### TreeGrid
 
-```tsx
-import { TreeGrid } from "@/design-system/{slug}";
+```ts
+import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako DataGrid; onRowOpen má při dvojkliku přednost před úpravou. Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-
-
 **Examples:**
 
-**Akce řádků s vysvětlením zákazu:**
-
+_Akce řádků s vysvětlením zákazu_
 ```tsx
 <TreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
 ```
 
-**Formát sloupců:**
-
+_Formát sloupců_
 ```tsx
 <DataGrid {...props} columns={[{ id: "remaining", label: texts.remaining, numeric: true, value: row => row.remaining, defaultStyle: { bold: true, tone: "blue-soft" } }]} />
 ```
@@ -7862,6 +7765,34 @@ _S akcí pracovních prostorů_
 - Nevkládejte pracovní prostory do vnořeného podmenu.
 - Neměňte pevné pořadí položek ani nepřidávejte další bez schválení.
 
+### VatChecksPanel
+
+```ts
+import { VatChecksPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neblokuje.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `onDocumentOpen` | function | `—` |
+| `severity` | any | `—` |
+| `onSeverityChange` | function | `—` |
+
+**Examples:**
+
+_Přehled DPH z dat APP_
+```tsx
+<VatChecksPanel items={checks} severity={severity} onSeverityChange={setSeverity} onDocumentOpen={openDocument} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
 ### VatCodeSelect
 
 ```ts
@@ -7901,6 +7832,187 @@ _Buňka Kód DPH v editoru řádků_
 - Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním.
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
 - Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.
+
+### VatControlStatementView
+
+```ts
+import { VatControlStatementView } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Oddíly A1–B3, prázdné ztlumené; doklady a souhrny výhradně od APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `sections` | any | `—` |
+| `activeSection` | any | `—` |
+| `onSectionChange` | function | `—` |
+| `onDocumentOpen` | function | `—` |
+| `changed` | boolean | `—` |
+| `currency` | string | `—` |
+| `storageKey` | string | `vat-control` |
+
+**Examples:**
+
+_Přehled DPH z dat APP_
+```tsx
+<VatControlStatementView sections={khSections} currency={currency} onDocumentOpen={openDocument} changed={changedSinceFiled} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatFilingBar
+
+```ts
+import { VatFilingBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Řízený stav a druh podání; oprávnění určuje přítomnost callbacku actions. Odemknutí vyžaduje důvod a opsání confirmText.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `form` | any | `—` |
+| `status` | open · filed · changed | `—` |
+| `kind` | any | `—` |
+| `onKindChange` | function | `—` |
+| `filedAt` | string | `—` |
+| `filedBy` | string | `—` |
+| `actions` | any | `—` |
+| `confirmText` | string | `—` |
+| `disabled` | boolean | `—` |
+
+**Examples:**
+
+_Přehled DPH z dat APP_
+```tsx
+<VatFilingBar form="control" status={filing.status} kind={filing.kind} onKindChange={setKind} confirmText={period.label} actions={permittedActions} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatPeriodBadge
+
+```ts
+import { VatPeriodBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Štítek období DPH; podané období nahradí výstrahou APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | string | `—` |
+| `filed` | boolean | `—` |
+| `filedWarning` | string | `—` |
+
+**Examples:**
+
+_Řízená data aplikace_
+```tsx
+<VatPeriodBadge label={period.label} filed={period.filed} filedWarning={filedWarning} />
+```
+
+**Avoid:**
+
+- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
+
+### VatPeriodPicker
+
+```ts
+import { VatPeriodPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Řízený hledatelný výběr období APP; label zachová smíšenou periodicitu DPH a KH.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `periods` | any | `—` |
+| `value` | object | `—` |
+| `onChange` | function | `—` |
+| `disabled` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+| `label` | string | `—` |
+
+**Examples:**
+
+_Přehled DPH z dat APP_
+```tsx
+<VatPeriodPicker periods={periods} value={period} onChange={setPeriod} label={periodSummary} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatRecapitulativeView
+
+```ts
+import { VatRecapitulativeView } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+SH nebo varianta oss s opravami minulých období, součty dodaných částek bez přepočtu měn.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | recapitulative · oss | `recapitulative` |
+| `rows` | any | `—` |
+| `ossRows` | any | `—` |
+| `currency` | string | `—` |
+| `onRowOpen` | function | `—` |
+| `storageKey` | string | `vat-recapitulative` |
+
+**Examples:**
+
+_Přehled DPH z dat APP_
+```tsx
+<VatRecapitulativeView variant="oss" ossRows={ossRows} currency={ossCurrency} onRowOpen={openOssDocuments} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatReturnView
+
+```ts
+import { VatReturnView } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Strom přiznání s hotovými částkami a souhrnem APP, rozdíly compare a onRowOpen.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | any | `—` |
+| `onRowOpen` | function | `—` |
+| `compare` | object | `—` |
+| `summary` | object | `—` |
+| `currency` | string | `—` |
+| `storageKey` | string | `vat-return` |
+
+**Examples:**
+
+_Přehled DPH z dat APP_
+```tsx
+<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
 
 ### VatStatusBadge
 
@@ -8014,22 +8126,15 @@ import { ZoomControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 
 ### ZoomGrid
 
-```tsx
-import { ZoomGrid } from "@/design-system/{slug}";
+```ts
+import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
  Formát sloupce se nastavuje pouze v ColumnPicker: bold, tone z pevné palety. defaultStyle dodává APP, styleable=false blokuje formát; systémové a transient sloupce se neukládají. Styly patří do GridLayout.styles, pohledů a vlastního výchozího. Skupiny nemají barvu, záhlaví jen spodní proužek. Výběr/hover jsou průsvitné vrstvy nad tónem; chyba má přednost. Excel přebírá formát, tisk mění strong na soft.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `columnFormat` | { columns, styles, offset? } | `—` |
-
 **Examples:**
 
-**Formát sloupců:**
-
+_Formát sloupců_
 ```tsx
 <DataGrid {...props} columns={[{ id: "remaining", label: texts.remaining, numeric: true, value: row => row.remaining, defaultStyle: { bold: true, tone: "blue-soft" } }]} />
 ```
@@ -8044,441 +8149,3 @@ import { ZoomGrid } from "@/design-system/{slug}";
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-
-### VatReturnView
-
-```tsx
-import { VatReturnView } from "@/design-system/{slug}";
-```
-
-Strom přiznání s hotovými částkami a souhrnem APP, rozdíly compare a onRowOpen.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rows` | VatReturnRow[] | `—` |
-| `compare` | Record<string, {base?: number; tax?: number}> | `—` |
-| `summary` | {liability?: number; excess?: number} | `—` |
-| `onRowOpen` | (row: VatReturnRow) => void | `—` |
-| `className` | string | `—` |
-| `currency` | string | `—` |
-| `storageKey` | string | `—` |
-
-**Examples:**
-
-**Přehled DPH z dat APP:**
-
-```tsx
-<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />
-```
-
-**Avoid:**
-
-- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
-
-### VatControlStatementView
-
-```tsx
-import { VatControlStatementView } from "@/design-system/{slug}";
-```
-
-Oddíly A1–B3, prázdné ztlumené; doklady a souhrny výhradně od APP.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `sections` | Partial<Record<VatControlSection, VatControlSectionData>> | `—` |
-| `activeSection` | VatControlSection | `—` |
-| `onSectionChange` | (section: VatControlSection) => void | `—` |
-| `onDocumentOpen` | (id: string) => void | `—` |
-| `changed` | boolean | `—` |
-| `className` | string | `—` |
-| `currency` | string | `—` |
-| `storageKey` | string | `—` |
-
-**Examples:**
-
-**Přehled DPH z dat APP:**
-
-```tsx
-<VatControlStatementView sections={khSections} currency={currency} onDocumentOpen={openDocument} changed={changedSinceFiled} />
-```
-
-**Avoid:**
-
-- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
-
-### VatRecapitulativeView
-
-```tsx
-import { VatRecapitulativeView } from "@/design-system/{slug}";
-```
-
-SH nebo varianta oss s opravami minulých období, součty dodaných částek bez přepočtu měn.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `variant` | recapitulative  /  oss | `—` |
-| `rows` | VatRecapitulativeRow[] | `—` |
-| `ossRows` | OssReturnRow[] | `—` |
-| `onRowOpen` | (id: string) => void | `—` |
-| `className` | string | `—` |
-| `currency` | string | `—` |
-| `storageKey` | string | `—` |
-
-**Examples:**
-
-**Přehled DPH z dat APP:**
-
-```tsx
-<VatRecapitulativeView variant="oss" ossRows={ossRows} currency={ossCurrency} onRowOpen={openOssDocuments} />
-```
-
-**Avoid:**
-
-- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
-
-### VatChecksPanel
-
-```tsx
-import { VatChecksPanel } from "@/design-system/{slug}";
-```
-
-Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neblokuje.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `items` | VatCheckItem[] | `—` |
-| `severity` | all  /  error  /  warning  /  info | `—` |
-| `onSeverityChange` | (severity: string) => void | `—` |
-| `onDocumentOpen` | (id: string) => void | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Přehled DPH z dat APP:**
-
-```tsx
-<VatChecksPanel items={checks} severity={severity} onSeverityChange={setSeverity} onDocumentOpen={openDocument} />
-```
-
-**Avoid:**
-
-- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
-
-### VatFilingBar
-
-```tsx
-import { VatFilingBar } from "@/design-system/{slug}";
-```
-
-Řízený stav a druh podání; oprávnění určuje přítomnost callbacku actions. Odemknutí vyžaduje důvod a opsání confirmText.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `form` | return  /  control  /  recapitulative  /  oss | `—` |
-| `status` | open  /  filed  /  changed | `—` |
-| `kind` | VatFilingKind | `—` |
-| `onKindChange` | (kind: VatFilingKind) => void | `—` |
-| `actions` | VatFilingActions | `—` |
-| `filedAt` | string | `—` |
-| `filedBy` | string | `—` |
-| `confirmText` | string | `—` |
-| `disabled` | boolean | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Přehled DPH z dat APP:**
-
-```tsx
-<VatFilingBar form="control" status={filing.status} kind={filing.kind} onKindChange={setKind} confirmText={period.label} actions={permittedActions} />
-```
-
-**Avoid:**
-
-- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
-
-### VatPeriodPicker
-
-```tsx
-import { VatPeriodPicker } from "@/design-system/{slug}";
-```
-
-Řízený hledatelný výběr období APP; label zachová smíšenou periodicitu DPH a KH.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `periods` | VatPeriod[] | `—` |
-| `value` | {from: string; to: string}  /  null | `—` |
-| `onChange` | (period: VatPeriod) => void | `—` |
-| `label` | string | `—` |
-| `disabled` | boolean | `—` |
-| `readOnly` | boolean | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Přehled DPH z dat APP:**
-
-```tsx
-<VatPeriodPicker periods={periods} value={period} onChange={setPeriod} label={periodSummary} />
-```
-
-**Avoid:**
-
-- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
-
-### TaxBookView
-
-```tsx
-import { TaxBookView } from "@/design-system/{slug}";
-```
-
-Kniha hotových zápisů APP. Filtry období, položky, daňovosti a ekonomické kategorie; standardní Excel tabulka a součty.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rows` | TaxBookEntry[] | `—` |
-| `homeCurrency` | string | `—` |
-| `filters` | TaxBookFilters | `—` |
-| `onFiltersChange` | (filters: TaxBookFilters) => void | `—` |
-| `periods` | {id: string; label: string; from: string; to: string}[] | `—` |
-| `onDocumentOpen` | (id: string) => void | `—` |
-| `onUnassignedOpen` | (row: TaxBookEntry) => void | `—` |
-| `storageKey` | string | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<TaxBookView rows={entries} homeCurrency={currency} filters={filters} onFiltersChange={setFilters} onDocumentOpen={openDocument} onUnassignedOpen={resolvePayment} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### TaxCategorySummary
-
-```tsx
-import { TaxCategorySummary } from "@/design-system/{slug}";
-```
-
-Přehled § 7–10 z hotových příjmů a výdajů APP, včetně výsledku výdajů procentem a stropu; nezařazené úhrady odděleně.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rows` | TaxCategoryRow[] | `—` |
-| `currency` | string | `—` |
-| `unassignedAmount` | number | `—` |
-| `onCategoryOpen` | (id: string) => void | `—` |
-| `onUnassignedOpen` | () => void | `—` |
-| `storageKey` | string | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<TaxCategorySummary rows={summary} currency={currency} unassignedAmount={unassigned} onCategoryOpen={openCategory} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### CashCheckPanel
-
-```tsx
-import { CashCheckPanel } from "@/design-system/{slug}";
-```
-
-Kontrola peněz po pokladnách/bankách. Počáteční stav, pohyby, zůstatek a červený rozdíl dodává APP.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rows` | CashCheckRow[] | `—` |
-| `onAccountOpen` | (id: string) => void | `—` |
-| `storageKey` | string | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<CashCheckPanel rows={cashChecks} onAccountOpen={openCashBook} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### TaxBookEntriesPanel
-
-```tsx
-import { TaxBookEntriesPanel } from "@/design-system/{slug}";
-```
-
-Sekce Zápisy v knize pro Propojené; skládá LinkedRecordsPanel a předává proklik původního zápisu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `entries` | TaxBookEntry[] | `—` |
-| `currency` | string | `—` |
-| `onEntryOpen` | (entry: TaxBookEntry) => void | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<TaxBookEntriesPanel entries={entries} currency={currency} onEntryOpen={openTaxEntry} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### BookkeepingModeSelect
-
-```tsx
-import { BookkeepingModeSelect } from "@/design-system/{slug}";
-```
-
-Řízená volba režimu nové firmy s vysvětlením, že pozdější změna znamená novou firmu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `value` | BookkeepingMode | `—` |
-| `onChange` | (value: BookkeepingMode) => void | `—` |
-| `disabled` | boolean | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<BookkeepingModeSelect value={mode} onChange={setMode} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### BookkeepingSettingsFields
-
-```tsx
-import { BookkeepingSettingsFields } from "@/design-system/{slug}";
-```
-
-Nastavení knihy v DE vynechá účetní pole; firma nabídne příjmovou a výdajovou položku zaokrouhlení. Skrytí nemaže data.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `bookkeepingMode` | BookkeepingMode | `—` |
-| `scope` | book  /  company | `—` |
-| `accountFields` | ReactNode | `—` |
-| `items` | AccountOption[] | `—` |
-| `value` | {income?: string  /  null; expense?: string  /  null} | `—` |
-| `onValueChange` | (value: {income?: string  /  null; expense?: string  /  null}) => void | `—` |
-| `readOnly` | boolean | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<BookkeepingSettingsFields bookkeepingMode={mode} scope="company" items={items} value={roundingItems} onValueChange={setRoundingItems} accountFields={accountControls} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### TaxMovementSelect
-
-```tsx
-import { TaxMovementSelect } from "@/design-system/{slug}";
-```
-
-Řízený druh interního pohybu: nepeněžní příjem, výdaj nebo přeřazení. Technickou protistranu řeší APP.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `value` | TaxMovementKind | `—` |
-| `onChange` | (value: TaxMovementKind) => void | `—` |
-| `disabled` | boolean | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<TaxMovementSelect value={movementKind} onChange={setMovementKind} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
-
-### VatPeriodBadge
-
-```tsx
-import { VatPeriodBadge } from "@/design-system/{slug}";
-```
-
-Štítek období DPH; podané období nahradí výstrahou APP.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `label` | string | `—` |
-| `filed` | boolean | `—` |
-| `filedWarning` | string | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-**Řízená data aplikace:**
-
-```tsx
-<VatPeriodBadge label={period.label} filed={period.filed} filedWarning={filedWarning} />
-```
-
-**Avoid:**
-
-- DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.
