@@ -86,7 +86,7 @@ export const DimensionBar = React.forwardRef<HTMLDivElement, DimensionBarProps>(
         data-slot="dimension-bar"
         {...props}
         className={cn(
-          "flex min-w-0 flex-wrap items-center gap-2",
+          "flex min-w-0 flex-wrap items-center gap-2 [&>.inline-search-field]:w-auto",
           variant === "bar" && "zoom-filters border-y border-dashed bg-card p-2 shadow-panel",
           size === "sm" && "[--control-h:var(--f-h)]",
           className,

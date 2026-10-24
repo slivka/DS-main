@@ -2,6 +2,15 @@
 
 ## 2.138.0 (nevydáno)
 
+### B2 – lišta dimenzí
+
+- Nové obecné `DimensionBar`, `MultiValueCell` a `DimensionFilter` (adaptér stávajícího ColumnFilter). Řízené chipy v pořadí typů, hledání z APP, prázdný typ `valueId=null`, načítání/chyba a ochrana před opožděnou odpovědí. Ukončené hodnoty APP označí `inactive`; uložené zůstanou tlumené s bublinou, znovu se nenabízí.
+- `DocumentForm` a `JournalLinesEditor`: `dimensionTypes`, `dimensions`, `onDimensionsChange`, `loadDimensionOptions`, `dimensionsBySide` (výchozí true pro ID/internal). Platí pro faktury **i zálohové listy**, bez kopie formuláře. Hlavička nad gridem, detail MD/DAL nebo společný, ruční výjimka má ikonu a akci vrácení; volitelné čtecí sloupce v nastavení.
+- `JournalLine.dimensions: {MD, D}`; čisté `applyHeaderDimensions` / `inheritDimensions` / `resetDimension` odvozují obě strany a mění jen převzaté hodnoty. Otevření formuláře ani změna hlavičky nezapisuje odvozené řádky callbackem jen kvůli renderu; editor je předá při další řádkové změně. APP může čistý model použít při skládání payloadu. `toJournalRow` posílá jen ruční neprázdné hodnoty s `value_id` nebo `vehicle_id` podle `kind` od APP.
+- Kompatibilita B1: `dimensions: CategoryOption[]` zůstává deprecated alias `categories` do 3.0.0; nový `dimensions: DimensionValue[]` je rozlišen strukturou (`typeId`). Nové `categories` mají vždy přednost; dimenze se nikdy nestanou ekonomickými kategoriemi.
+- Tab prochází chipy a akce, Enter vybírá typ a hned otevře hodnoty, Escape zavře, Delete/Backspace odebere chip. Vlastní klávesy lišty nezasahují do Enteru gridu. Ukázka vozidla na faktuře a ID se dvěma stranami; CS/SK v DsTexts.
+- Ověření B2: **26 nových regresí**, unit DS **1 501/1 501** (154 souborů), jeden Chromium spec **1/1** (lišta, Tab/Escape, propsání, ruční výjimka, vrácení a Enter v gridu); vizuální kontrola 1280/480 px. Průběžně `check:quick --harness`; samostatný lint nových souborů bez chyb (stávající orchestrátor editoru má varování max-lines), automatická kontrola Lovable OK. B2 katalog **486 → 489 komponent / 1 306 → 1 336 props**; proti vydané základně checkeru **486 → 489 / 1 230 → 1 336**, **0 odebrání**. Plná E2E ani check:full neběžely; nevydáno.
+
 ### B1 – ekonomické kategorie, přechod API
 
 - Kanonický stromový `CategorySelect` / `CategoryOption` sdílí dosavadní hledání a Enter. Kód může být `null`; zobrazí se „kód – název“, bez kódu pouze název. `postable=false` uzel lze zobrazit, nikoli vybrat. Staré názvy jsou deprecated od 2.138.0 do 3.0.0; nový název má přednost včetně `null`, `false` a prázdného seznamu.
