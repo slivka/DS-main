@@ -4,7 +4,9 @@
  * Nesmí: vyhodnocovat pravidla ani ukládat.
  */
 import type { ComponentPropsWithoutRef } from "react";
+import { Copy, Power } from "lucide-react";
 import { DataGrid } from "../grid/DataGrid";
+import { GridAction } from "../grid/grid-action";
 import type { DataGridColumn } from "../grid/data-grid-types";
 import { Badge } from "../../ui/badge";
 import { StatusBadge } from "../data-display/status-badge";
@@ -107,20 +109,34 @@ export function BankRuleList({
         rowActions={
           readOnly
             ? undefined
-            : (r) => [
-                ...(onDuplicate
-                  ? [{ id: "duplicate", label: t.duplicate, onClick: () => onDuplicate(r.id) }]
-                  : []),
-                ...(onActiveChange
-                  ? [
-                      {
-                        id: "toggle",
-                        label: r.active ? t.deactivate : t.activate,
-                        onClick: () => onActiveChange(r.id, !r.active),
-                      },
-                    ]
-                  : []),
-              ]
+            : (r) => (
+                <>
+                  {onDuplicate ? (
+                    <GridAction
+                      title={t.duplicate}
+                      aria-label={t.duplicate}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onDuplicate(r.id);
+                      }}
+                    >
+                      <Copy className="size-3.5" />
+                    </GridAction>
+                  ) : null}
+                  {onActiveChange ? (
+                    <GridAction
+                      title={r.active ? t.deactivate : t.activate}
+                      aria-label={r.active ? t.deactivate : t.activate}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onActiveChange(r.id, !r.active);
+                      }}
+                    >
+                      <Power className="size-3.5" />
+                    </GridAction>
+                  ) : null}
+                </>
+              )
         }
         contextRight={
           onReorder ? (
