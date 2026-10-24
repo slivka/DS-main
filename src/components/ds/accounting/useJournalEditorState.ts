@@ -55,6 +55,7 @@ import { vatCodeCellLabel } from "./vat-code-labels";
 import { journalCategoryInputs } from "./journal-category-inputs";
 import {
   categoryCellState,
+  categoryLabel,
   reconcileCategories,
   type CategoryColumn,
 } from "./journal-category-model";
@@ -266,6 +267,19 @@ export function useJournalEditorState(
     );
     onChange(lines.map((line) => (line.id === id ? { ...next, ...reconciled.values } : line)));
   };
+  const singleUpdates = lines
+    .map((line) => ({ line, ...reconcileCategories(line, categoryContext, false) }))
+    .filter((item) => item.changed.length > 0);
+  const singleSignature = JSON.stringify(singleUpdates.map((item) => [item.line.id, item.values]));
+  const appliedSingle = React.useRef("");
+  React.useLayoutEffect(() => {
+    if (editable.size === 0 || !singleUpdates.length || appliedSingle.current === singleSignature)
+      return;
+    appliedSingle.current = singleSignature;
+    for (const item of singleUpdates) pins.markInherited(item.line.id, item.changed);
+    const byId = new Map(singleUpdates.map((item) => [item.line.id, item.values]));
+    onChange(lines.map((line) => ({ ...line, ...byId.get(line.id) })));
+  }, [singleSignature, editable.size]); // eslint-disable-line react-hooks/exhaustive-deps -- synchronizace nové nabídky účtu do řízených dat, jen při konkrétní změně
   const makeLine = () =>
     createJournalLine({
       id: newJournalLineId(),
@@ -479,26 +493,28 @@ export function useJournalEditorState(
     [vatGroups.allocatedLines],
   );
   const displayValue = (line: JournalLine, column: ColumnId) =>
-    journalDisplayValue(
-      VAT_COLUMNS.has(dataColumnOf(column)) ? (allocatedById.get(line.id) ?? line) : line,
-      column,
-      {
-        accountByCode,
-        dimensions: props.categories ?? [],
-        categories: props.categories ?? [],
-        partners: props.partners ?? [],
-        units: props.units ?? [],
-        vatCodeMap,
-        calcMode,
-        foreign,
-        rate,
-        rateAmount,
-        counterColumn,
-        compactAccountIds,
-        vatCodeLabel: (code) =>
-          vatCodeCellLabel(code, dsTexts.vatFive, Boolean(vat?.bidirectional)),
-      },
-    );
+    CATEGORY_COLUMNS.has(column)
+      ? categoryLabel(props.categories ?? [], categoryState(line, column as CategoryColumn).value)
+      : journalDisplayValue(
+          VAT_COLUMNS.has(dataColumnOf(column)) ? (allocatedById.get(line.id) ?? line) : line,
+          column,
+          {
+            accountByCode,
+            dimensions: props.categories ?? [],
+            categories: props.categories ?? [],
+            partners: props.partners ?? [],
+            units: props.units ?? [],
+            vatCodeMap,
+            calcMode,
+            foreign,
+            rate,
+            rateAmount,
+            counterColumn,
+            compactAccountIds,
+            vatCodeLabel: (code) =>
+              vatCodeCellLabel(code, dsTexts.vatFive, Boolean(vat?.bidirectional)),
+          },
+        );
   /** Enter v Popisu prázdného posledního řádku: řádek zahodí (bez nabídky Zpět). */
   const discardBlankLine = (line: JournalLine) => {
     const regular = lines.filter(isRegularLine);

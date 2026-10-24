@@ -283,6 +283,14 @@ const sideValue = <T extends string>(
   return null;
 };
 
+/** Stranová kategorie s výslovným null má přednost před sdílenou hodnotou. */
+const categorySideValue = (
+  own: string | null | undefined,
+  shared: string | null | undefined,
+  side: "debit" | "credit",
+  sharedSide: JournalSharedSide,
+) => (own !== undefined ? emptyToNull(own) : sideValue(undefined, shared, side, sharedSide));
+
 /** Převede řádek editoru na databázový řádek (1:1). */
 export function toJournalRow(line: JournalLine, options: JournalRowOptions = {}): JournalRow {
   line = normalizeCategoryLine(line);
@@ -335,28 +343,28 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     ),
     ...(options.categoryFormat === "dimension"
       ? {
-          debit_dimension_id: sideValue(
-            emptyToNull(line.debitCategoryId),
+          debit_dimension_id: categorySideValue(
+            line.debitCategoryId,
             emptyToNull(line.categoryId),
             "debit",
             sharedSide,
           ),
-          credit_dimension_id: sideValue(
-            emptyToNull(line.creditCategoryId),
+          credit_dimension_id: categorySideValue(
+            line.creditCategoryId,
             emptyToNull(line.categoryId),
             "credit",
             sharedSide,
           ),
         }
       : {
-          debit_category_id: sideValue(
-            emptyToNull(line.debitCategoryId),
+          debit_category_id: categorySideValue(
+            line.debitCategoryId,
             emptyToNull(line.categoryId),
             "debit",
             sharedSide,
           ),
-          credit_category_id: sideValue(
-            emptyToNull(line.creditCategoryId),
+          credit_category_id: categorySideValue(
+            line.creditCategoryId,
             emptyToNull(line.categoryId),
             "credit",
             sharedSide,

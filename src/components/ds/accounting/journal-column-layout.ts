@@ -163,10 +163,14 @@ export function resolveJournalColumnLayout({
     if (visibleColumnIds.includes(shortId) && !hidden.has(shortId)) hidden.add(nameId);
     else compact.add(nameId);
   }
-  hideGroup(sideColumns.flatMap((id) => {
-    const legacy = id.replace("Category", "Dimension").replace("category", "dimension") as ColumnId;
-    return visibleColumnIds.includes(id) ? [id] : [legacy];
-  }));
+  hideGroup(
+    sideColumns.flatMap((id) => {
+      const legacy = id
+        .replace("Category", "Dimension")
+        .replace("category", "dimension") as ColumnId;
+      return visibleColumnIds.includes(id) ? [id] : [legacy];
+    }),
+  );
   // Ručně rozšířené sloupce se při nedostatku místa vrátí na výchozí šířku.
   if (required() > availableWidthRem) useCustomWidths = false;
   // Poslední krok: zúžit Text (obsah se zkrátí se třemi tečkami a celý je v tooltipu).

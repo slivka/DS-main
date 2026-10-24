@@ -23,6 +23,25 @@ export function journalCategoryInputs(props: JournalLinesEditorProps): JournalLi
     );
   return {
     ...props,
+    onChange: (lines) =>
+      props.onChange(
+        lines.map((line) => {
+          const original = props.lines.find((item) => item.id === line.id);
+          if (
+            props.dimensions === undefined &&
+            !original?.dimensionId &&
+            !original?.debitDimensionId &&
+            !original?.creditDimensionId
+          )
+            return line;
+          return {
+            ...line,
+            dimensionId: line.categoryId,
+            debitDimensionId: line.debitCategoryId,
+            creditDimensionId: line.creditCategoryId,
+          };
+        }),
+      ),
     lines: props.lines.map(normalizeCategoryLine),
     categories: props.categories ?? props.dimensions ?? [],
     onEditCategory: props.onEditCategory ?? props.onEditDimension,

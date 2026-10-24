@@ -40,7 +40,10 @@ export interface CategoryOption {
 }
 
 /** Veřejné vlastnosti výběru kategorie. */
-export interface CategorySelectProps {
+export interface CategorySelectProps extends Omit<
+  React.ComponentPropsWithoutRef<"button">,
+  "onChange" | "onKeyDown" | "value"
+> {
   options: CategoryOption[];
   inactiveLabel?: string;
   value: string | null | undefined;
@@ -111,6 +114,7 @@ export const CategorySelect = React.forwardRef<HTMLButtonElement, CategorySelect
       inactiveLabel,
       onEditSelected,
       editSelectedLabel,
+      ...buttonProps
     }: CategorySelectProps,
     ref: React.ForwardedRef<HTMLButtonElement>,
   ) {
@@ -260,6 +264,7 @@ export const CategorySelect = React.forwardRef<HTMLButtonElement, CategorySelect
         <Popover onSearchChange={setQuery} open={open} onOpenChange={changeOpen}>
           <PopoverTrigger asChild>
             <Button
+              {...buttonProps}
               ref={ref}
               id={id}
               type="button"

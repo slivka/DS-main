@@ -193,11 +193,13 @@ describe("DimensionSelect – výběr nově založené zakázky", () => {
 });
 
 function Editor({ cell, onLines }: { cell: boolean; onLines: (lines: JournalLine[]) => void }) {
-  const [lines, setLines] = React.useState<JournalLine[]>([{ id: "r1", debitAccount: "518001", text: "A", amount: 1 }]);
+  const [lines, setLines] = React.useState<JournalLine[]>([
+    { id: "r1", debitAccount: "518001", text: "A", amount: 1 },
+  ]);
   const editor = useJournalEditorState(
     {
       accounts: [{ code: "518001", name: "Služby", category: "ekonomicka_kategorie" }],
-      categoryBySide: false,
+      categoryBySide: true,
       lines,
       onChange: (next) => {
         setLines(next);

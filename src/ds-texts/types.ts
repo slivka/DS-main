@@ -454,6 +454,8 @@ export interface DsTexts {
   /** Texty editoru řádků dokladu (`JournalLinesEditor`). */
   journalEditor: JournalEditorTexts;
   journalRecap: {
+    jobs: string;
+    dimension: string;
     debitShort: string;
     creditShort: string;
     debitAccount: string;

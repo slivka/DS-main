@@ -72,7 +72,16 @@ export function categoryCellState(line: JournalLine, column: CategoryColumn, ctx
   const enabled = isCategoryAccount(ctx.accountByCode.get(accountCode));
   const allowed = ctx.allowedCategories?.(accountCode, side) ?? null;
   const options = enabled ? selectableCategories(ctx.categories, allowed) : [];
-  const value = normalizeCategoryLine(line)[column];
+  const normalized = normalizeCategoryLine(line);
+  const ownColumn = side === "MD" ? "debitCategoryId" : "creditCategoryId";
+  const value =
+    column === "categoryId"
+      ? normalized.categoryId !== undefined
+        ? normalized.categoryId
+        : normalized[ownColumn]
+      : normalized[column] !== undefined
+        ? normalized[column]
+        : normalized.categoryId;
   const single = enabled && allowed !== null && options.length === 1 ? options[0] : undefined;
   return {
     side,
@@ -97,7 +106,7 @@ export function reconcileCategories(
   for (const column of columns) {
     const state = categoryCellState(line, column, ctx);
     const next =
-      state.single?.id ??
+      (state.single && (!state.value || accountChanged) ? state.single.id : undefined) ??
       (accountChanged && (!state.enabled || state.invalid) ? null : state.value);
     if (next !== state.value) {
       values[column] = next;
