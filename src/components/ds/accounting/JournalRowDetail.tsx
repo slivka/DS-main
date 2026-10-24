@@ -53,9 +53,25 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
   const set = (values: Partial<JournalLine>) => editor.patch(line.id, values);
   if (id === "categoryId" || id === "debitCategoryId" || id === "creditCategoryId") {
     const state = editor.categoryState(line, id);
-    if (state.single && !state.invalid) return <FieldValue className="text-muted-foreground" lockedReason={editor.dsTexts.economicCategory.singleAllowed}>{categoryLabel(props.categories ?? [], state.single.id)}</FieldValue>;
-    return <CategorySelect options={state.options} value={line[id]} disabled={disabled}
-      onChange={(value) => set({ [id]: value })} onEditSelected={props.onEditCategory} onCreate={props.onCreateCategory} />;
+    if (state.single && !state.invalid)
+      return (
+        <FieldValue
+          className="text-muted-foreground"
+          lockedReason={editor.dsTexts.economicCategory.singleAllowed}
+        >
+          {categoryLabel(props.categories ?? [], state.single.id)}
+        </FieldValue>
+      );
+    return (
+      <CategorySelect
+        options={state.options}
+        value={line[id]}
+        disabled={disabled}
+        onChange={(value) => set({ [id]: value })}
+        onEditSelected={props.onEditCategory}
+        onCreate={props.onCreateCategory}
+      />
+    );
   }
   if (id === "partnerId" || id === "debitPartnerId" || id === "creditPartnerId")
     return (
@@ -130,8 +146,12 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
           "quantity",
           "unitId",
           "unitPrice",
-          ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS).filter((id) => !CATEGORY_COLUMNS.has(id)),
-          ...(editor.props.categoryBySide ? ["debitCategoryId", "creditCategoryId"] as const : ["categoryId"] as const),
+          ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS).filter(
+            (id) => !CATEGORY_COLUMNS.has(id),
+          ),
+          ...(editor.props.categoryBySide
+            ? (["debitCategoryId", "creditCategoryId"] as const)
+            : (["categoryId"] as const)),
         ];
   const fields = candidates.filter((id) => !shown.has(id));
   const errors: Partial<Record<string, string>> = editor.validations.get(line.id) ?? {};

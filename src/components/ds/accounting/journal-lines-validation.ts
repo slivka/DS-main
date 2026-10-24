@@ -64,18 +64,25 @@ export function journalSideIssues(line: JournalLine, ctx: JournalValidationConte
     const code = side === "debit" ? line.debitAccount : line.creditAccount;
     const account = code ? ctx.accountByCode.get(code) : undefined;
     if (!account) return;
-    const rules = ctx.sideFieldRules(account, { categoryRequired: ctx.categoryRequired ?? ctx.dimensionRequired, dimensionRequired: ctx.categoryRequired ?? ctx.dimensionRequired });
+    const rules = ctx.sideFieldRules(account, {
+      categoryRequired: ctx.categoryRequired ?? ctx.dimensionRequired,
+      dimensionRequired: ctx.categoryRequired ?? ctx.dimensionRequired,
+    });
     const sideLabel = side === "debit" ? t.sideDebit : t.sideCredit;
     const shared = sideFields === "shared";
     const vsColumn = shared ? "vs" : side === "debit" ? "debitVs" : "creditVs";
-    const dimensionColumn = (ctx.categoryBySide ?? !shared) === false
-      ? "categoryId"
-      : side === "debit"
-        ? "debitCategoryId"
-        : "creditCategoryId";
+    const dimensionColumn =
+      (ctx.categoryBySide ?? !shared) === false
+        ? "categoryId"
+        : side === "debit"
+          ? "debitCategoryId"
+          : "creditCategoryId";
     if (rules.vsRequired && !line[vsColumn])
       issues[vsColumn] = t.missingVs.replace("{side}", sideLabel);
-    if ((rules.categoryRequired ?? rules.dimensionRequired) && !normalizeCategoryLine(line)[dimensionColumn])
+    if (
+      (rules.categoryRequired ?? rules.dimensionRequired) &&
+      !normalizeCategoryLine(line)[dimensionColumn]
+    )
       issues[dimensionColumn] = t.missingCategory.replace("{side}", sideLabel);
   });
   return issues;

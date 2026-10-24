@@ -53,7 +53,11 @@ import { useJournalVatGroups } from "./useJournalVatGroups";
 import { inheritedLineValues, useJournalPins } from "./useJournalPins";
 import { vatCodeCellLabel } from "./vat-code-labels";
 import { journalCategoryInputs } from "./journal-category-inputs";
-import { categoryCellState, reconcileCategories, type CategoryColumn } from "./journal-category-model";
+import {
+  categoryCellState,
+  reconcileCategories,
+  type CategoryColumn,
+} from "./journal-category-model";
 import { CATEGORY_COLUMNS } from "./journal-lines-model";
 import { useJournalSuggestionClear } from "./journal-suggestions";
 
@@ -227,23 +231,40 @@ export function useJournalEditorState(
     props.onSuggestionCleared,
   );
   const categoryContext = {
-    categories: props.categories ?? [], accountByCode,
-    categoryBySide: props.categoryBySide, allowedCategories: props.allowedCategories,
+    categories: props.categories ?? [],
+    accountByCode,
+    categoryBySide: props.categoryBySide,
+    allowedCategories: props.allowedCategories,
   };
-  const categoryState = (line: JournalLine, column: CategoryColumn) => categoryCellState(line, column, categoryContext);
+  const categoryState = (line: JournalLine, column: CategoryColumn) =>
+    categoryCellState(line, column, categoryContext);
   const categoryWarnings = React.useRef(new Map<string, Partial<Record<CategoryColumn, string>>>());
   const patch = (id: string, values: Partial<JournalLine>) => {
     touchedRows.current.add(id);
     const current = lines.find((line) => line.id === id);
     if (current) clearSuggestions(current, values);
     if (current) pins.releaseInherited(current, values);
-    const accountChanged = !!current && ["debitAccount", "creditAccount"].some((key) => key in values && values[key as keyof JournalLine] !== current[key as keyof JournalLine]);
+    const accountChanged =
+      !!current &&
+      ["debitAccount", "creditAccount"].some(
+        (key) =>
+          key in values && values[key as keyof JournalLine] !== current[key as keyof JournalLine],
+      );
     const next = current ? { ...current, ...values, isBlank: false } : undefined;
     if (!next) return;
     const reconciled = reconcileCategories(next, categoryContext, accountChanged);
-    if (accountChanged && reconciled.changed.length) categoryWarnings.current.set(id, Object.fromEntries(reconciled.changed.map((column) => [column, dsTexts.economicCategory.accountChanged])));
-    pins.markInherited(id, reconciled.changed.filter((column) => !!reconciled.values[column]));
-    onChange(lines.map((line) => line.id === id ? { ...next, ...reconciled.values } : line));
+    if (accountChanged && reconciled.changed.length)
+      categoryWarnings.current.set(
+        id,
+        Object.fromEntries(
+          reconciled.changed.map((column) => [column, dsTexts.economicCategory.accountChanged]),
+        ),
+      );
+    pins.markInherited(
+      id,
+      reconciled.changed.filter((column) => !!reconciled.values[column]),
+    );
+    onChange(lines.map((line) => (line.id === id ? { ...next, ...reconciled.values } : line)));
   };
   const makeLine = () =>
     createJournalLine({
@@ -402,13 +423,21 @@ export function useJournalEditorState(
       .map((line) => [line.id, journalVatIssues(line, validationContext).warnings]),
   );
   for (const line of lines.filter(isRegularLine)) {
-    const columns: CategoryColumn[] = props.categoryBySide ? ["debitCategoryId", "creditCategoryId"] : ["categoryId"];
+    const columns: CategoryColumn[] = props.categoryBySide
+      ? ["debitCategoryId", "creditCategoryId"]
+      : ["categoryId"];
     for (const column of columns) {
       if (categoryState(line, column).invalid) {
-        validations.set(line.id, { ...validations.get(line.id), [column]: dsTexts.economicCategory.invalid });
+        validations.set(line.id, {
+          ...validations.get(line.id),
+          [column]: dsTexts.economicCategory.invalid,
+        });
       }
     }
-    vatWarnings.set(line.id, { ...vatWarnings.get(line.id), ...categoryWarnings.current.get(line.id) });
+    vatWarnings.set(line.id, {
+      ...vatWarnings.get(line.id),
+      ...categoryWarnings.current.get(line.id),
+    });
   }
   // Externí stavy buněk z pruhu položek (aplikace / server) se sloučí s vlastní validací.
   for (const issue of props.cellIssues ?? []) {

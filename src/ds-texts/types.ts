@@ -76,9 +76,16 @@ export interface DsTexts {
   stepper: { decrease: string; increase: string };
   /** Názvy vytváření z hledatelných výběrů. */
   economicCategory: {
-    choose: string; search: string; empty: string; notPostable: string;
-    disabledAccount: string; singleAllowed: string; invalid: string; accountChanged: string;
-    title: string; companyEconomics: string;
+    choose: string;
+    search: string;
+    empty: string;
+    notPostable: string;
+    disabledAccount: string;
+    singleAllowed: string;
+    invalid: string;
+    accountChanged: string;
+    title: string;
+    companyEconomics: string;
   };
   selectCreate: {
     item: string;

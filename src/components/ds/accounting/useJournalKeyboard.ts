@@ -8,7 +8,7 @@ import type * as React from "react";
 
 import type { JournalLine } from "./journal-lines";
 import {
-  DIMENSION_COLUMNS,
+  CATEGORY_COLUMNS,
   NUMERIC_COLUMNS,
   PARTNER_COLUMNS,
   VAT_COLUMNS,
@@ -85,7 +85,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
     } else if (
       !VAT_COLUMNS.has(dataColumn) &&
       !isAccountColumn(column) &&
-      !DIMENSION_COLUMNS.has(dataColumn) &&
+      !CATEGORY_COLUMNS.has(dataColumn) &&
       !PARTNER_COLUMNS.has(dataColumn) &&
       column !== "unitId" &&
       !NUMERIC_COLUMNS.has(column)

@@ -35,4 +35,3 @@ export function categoryPath(options: CategoryOption[], id: string | null | unde
   if (!id) return "";
   return flattenCategories(options).find((o) => o.id === id)?.path ?? "";
 }
-

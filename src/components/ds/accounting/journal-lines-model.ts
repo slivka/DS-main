@@ -256,8 +256,12 @@ export const createJournalLine = ({
   categoryId: defaults?.categoryId !== undefined ? defaults.categoryId : defaults?.dimensionId,
   vs: defaults?.vs,
   partnerId: defaults?.partnerId,
-  debitCategoryId: defaults?.debitCategoryId !== undefined ? defaults.debitCategoryId : defaults?.debitDimensionId,
-  creditCategoryId: defaults?.creditCategoryId !== undefined ? defaults.creditCategoryId : defaults?.creditDimensionId,
+  debitCategoryId:
+    defaults?.debitCategoryId !== undefined ? defaults.debitCategoryId : defaults?.debitDimensionId,
+  creditCategoryId:
+    defaults?.creditCategoryId !== undefined
+      ? defaults.creditCategoryId
+      : defaults?.creditDimensionId,
   isBlank: true,
 });
 /** Kód DPH nového řádku: předchozí řádek má přednost před výchozím kódem knihy. */

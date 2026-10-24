@@ -94,7 +94,9 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
         name: editor.counterNameLabel,
       })
     : editor.labels[validationColumn];
-  const category = CATEGORY_COLUMNS.has(column) ? editor.categoryState(line, column as CategoryColumn) : undefined;
+  const category = CATEGORY_COLUMNS.has(column)
+    ? editor.categoryState(line, column as CategoryColumn)
+    : undefined;
   const canEdit = editor.canEditCell(line, column);
   const isEditing = editing?.rowId === line.id && editing.column === column;
   const calculated =
@@ -124,7 +126,10 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
     ? (suggestion.message ?? editor.dsTexts.extraction.suggestionUncertain(suggestion.source))
     : undefined;
   const rowEditing = editing?.rowId === line.id;
-  const hint = category && !category.enabled ? editor.dsTexts.economicCategory.disabledAccount : accountTitle ?? (calculated ? t.quantityPriceHint : undefined);
+  const hint =
+    category && !category.enabled
+      ? editor.dsTexts.economicCategory.disabledAccount
+      : (accountTitle ?? (calculated ? t.quantityPriceHint : undefined));
   // Bublina chyby vzniká líně až při hover/focus; původní informace jde do téže bubliny.
   const status = useCellStatusTooltip({
     error: errorMessage,
@@ -152,7 +157,7 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       role="gridcell"
       data-cell-key={`${line.id}:${column}`}
       aria-label={`${columnLabel} ${rowIndex + 1}`}
-      aria-disabled={category && !category.enabled || undefined}
+      aria-disabled={(category && !category.enabled) || undefined}
       data-invalid={errorMessage ? true : undefined}
       data-warning={warningMessage ? true : undefined}
       data-suggestion={suggestion ? (suggestion.uncertain ? "uncertain" : "suggested") : undefined}
@@ -197,8 +202,16 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
         )}
       >
         {category?.single && !category.invalid ? (
-          <FieldValue variant="plain" className="h-auto text-muted-foreground" lockedReason={editor.dsTexts.economicCategory.singleAllowed}>{categoryLabel(editor.props.categories ?? [], category.single.id)}</FieldValue>
-        ) : category && !category.enabled ? "" : isEditing ? (
+          <FieldValue
+            variant="plain"
+            className="h-auto text-muted-foreground"
+            lockedReason={editor.dsTexts.economicCategory.singleAllowed}
+          >
+            {categoryLabel(editor.props.categories ?? [], category.single.id)}
+          </FieldValue>
+        ) : category && !category.enabled ? (
+          ""
+        ) : isEditing ? (
           <JournalCellEditor line={line} column={column} />
         ) : (
           editor.displayValue(line, column)
