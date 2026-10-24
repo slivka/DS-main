@@ -123,7 +123,7 @@ export function enrichTaxRecords(components: PanelCatalogComponent[]) {
       components.push(c);
     }
     c.usage = usage;
-    c.props = [...props, ["className", "string"]].map(([name, type]) => ({ name, type }));
+    c.props = [...props, ["className", "string"]].map(([name, type]) => catalogProp(name, type));
     c.examples = [{ label: "Řízená data aplikace", code: examples[name] ?? "" }];
     c.antipatterns = [
       "DS nesmí vytvářet zápisy, dopočítávat daně, ukládat režim ani zobrazovat technické účty.",
@@ -179,4 +179,11 @@ export function enrichTaxRecords(components: PanelCatalogComponent[]) {
     result.push(c);
   }
   return result;
+}
+
+/** Výčet literálů zapisuje jako enum s hodnotami, aby katalog nesl volby. */
+function catalogProp(name: string, type: string) {
+  return /^[a-z_]+( \| [a-z_]+)+$/.test(type)
+    ? { name, type: "enum", values: type.split(" | ") }
+    : { name, type };
 }

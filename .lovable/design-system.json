@@ -13105,7 +13105,11 @@
       "props": [
         {
           "name": "variant",
-          "type": "recapitulative | oss"
+          "type": "enum",
+          "values": [
+            "recapitulative",
+            "oss"
+          ]
         },
         {
           "name": "rows",
@@ -13154,7 +13158,13 @@
         },
         {
           "name": "severity",
-          "type": "all | error | warning | info"
+          "type": "enum",
+          "values": [
+            "all",
+            "error",
+            "warning",
+            "info"
+          ]
         },
         {
           "name": "onSeverityChange",
@@ -13187,11 +13197,22 @@
       "props": [
         {
           "name": "form",
-          "type": "return | control | recapitulative | oss"
+          "type": "enum",
+          "values": [
+            "return",
+            "control",
+            "recapitulative",
+            "oss"
+          ]
         },
         {
           "name": "status",
-          "type": "open | filed | changed"
+          "type": "enum",
+          "values": [
+            "open",
+            "filed",
+            "changed"
+          ]
         },
         {
           "name": "kind",
@@ -13490,7 +13511,11 @@
         },
         {
           "name": "scope",
-          "type": "book | company"
+          "type": "enum",
+          "values": [
+            "book",
+            "company"
+          ]
         },
         {
           "name": "accountFields",

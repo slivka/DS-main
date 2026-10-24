@@ -918,7 +918,7 @@ Nastavení knihy v DE vynechá účetní pole; firma nabídne příjmovou a výd
 | Prop | Type | Default |
 |---|---|---|
 | `bookkeepingMode` | BookkeepingMode | `—` |
-| `scope` | book  /  company | `—` |
+| `scope` | enum | `—` |
 | `accountFields` | ReactNode | `—` |
 | `items` | AccountOption[] | `—` |
 | `value` | {income?: string  /  null; expense?: string  /  null} | `—` |
@@ -8091,7 +8091,7 @@ Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neb
 | Prop | Type | Default |
 |---|---|---|
 | `items` | VatCheckItem[] | `—` |
-| `severity` | all  /  error  /  warning  /  info | `—` |
+| `severity` | enum | `—` |
 | `onSeverityChange` | (severity: string) => void | `—` |
 | `onDocumentOpen` | (id: string) => void | `—` |
 | `className` | string | `—` |
@@ -8193,8 +8193,8 @@ import { VatFilingBar } from "@/design-system/{slug}";
 
 | Prop | Type | Default |
 |---|---|---|
-| `form` | return  /  control  /  recapitulative  /  oss | `—` |
-| `status` | open  /  filed  /  changed | `—` |
+| `form` | enum | `—` |
+| `status` | enum | `—` |
 | `kind` | VatFilingKind | `—` |
 | `onKindChange` | (kind: VatFilingKind) => void | `—` |
 | `actions` | VatFilingActions | `—` |
@@ -8289,7 +8289,7 @@ SH nebo varianta oss s opravami minulých období, součty dodaných částek be
 
 | Prop | Type | Default |
 |---|---|---|
-| `variant` | recapitulative  /  oss | `—` |
+| `variant` | enum | `—` |
 | `rows` | VatRecapitulativeRow[] | `—` |
 | `ossRows` | OssReturnRow[] | `—` |
 | `onRowOpen` | (id: string) => void | `—` |
