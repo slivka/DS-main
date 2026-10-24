@@ -160,7 +160,7 @@ test("uzavření roku: blokující kontrola brání, informační ne", () => {
   );
   expect(screen.getByText("Rok byl uzavřen.")).toBeTruthy();
 });
-test("výstup pro přiznání ukáže řádky a proklik", () => {
+test("výstup pro přiznání ukáže řádky tiskopisu a částky", () => {
   const open = mock();
   wrap(
     <TaxReturnOutput
