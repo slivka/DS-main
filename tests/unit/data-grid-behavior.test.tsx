@@ -6,7 +6,7 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
 
-const { act, cleanup, fireEvent, render, waitFor, within } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render, waitFor, within, screen } = await import("@testing-library/react");
 const { DataGrid, TreeGrid, DEFAULT_PINNED_COLUMNS, DEFAULT_COMPACT_COLUMNS, isPinnedColumn } =
   await import("../../src/components/ds");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");

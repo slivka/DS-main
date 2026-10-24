@@ -63,6 +63,11 @@ describe("PanelResize", () => {
     expect(panelSizeBounds(1200, 16)).toEqual({ min: 320, max: 900 });
     expect(panelSizeBounds(1200, 32)).toEqual({ min: 640, max: 900 });
   });
+  it("minimum v úzkém hostiteli nikdy nepřekročí 75 procent dostupné šířky", () => {
+    expect(panelSizeBounds(600, 32)).toEqual({ min: 450, max: 450 });
+    expect(panelSizeBounds(760, 32)).toEqual({ min: 570, max: 570 });
+    expect(panelSizeBounds(0, 32)).toEqual({ min: 0, max: 0 });
+  });
   it("klávesy mění po 16 px, Home/End mez a dvojklik výchozí velikost", () => {
     const ui = render(<ResizeDemo />);
     const bar = ui.getByRole("separator");
