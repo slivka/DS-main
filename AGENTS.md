@@ -25,7 +25,7 @@
 - Sbalitelné panely mají šipku vpravo a řízený stav přes props, nikdy `localStorage`.
 - AppShell: aplikace má tmavé menu, panely šedé; view řídí titul, nav, scope a `context` pojmenuje objekt; provozovatel = `badge` + warning accent.
 - LayoutMenu, nabídka záložky a UserMenu mají pevné pořadí; další položku přidej jen na výslovný požadavek. Nadpis panelu nemá ikonu.
-- Grids use GridFrame, useRowActions and useGlobalShortcuts (one listener). Why: shared behavior.
+- Grids use GridFrame, useRowActions and useGlobalShortcuts; fixedGroupBy ignores saved changes. Why: shared behavior.
 - Neaktivní volby filtruj přes sdílené `InactiveTag` / `selectableItems`.
 - Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
 - Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; Uložit a akce vždy v `RecordActionBar`, nikdy pod poli.
@@ -41,7 +41,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
 - Keep grid/editor texts in domain modules, re-exported through the existing text entry. Why: stable imports and bounded files.
-- Panels share layout/resize/tools; file surfaces share useFileDrop/validateFiles and innermost enabled drop ownership. Why: consistent limits, keyboard and no duplicate drops. Internal drag is cleared on window capture drop/dragend; selection lists use semantic lists with focusable checkboxes, not mixed listbox children.
+- Panels share layout/resize/tools; RecordSidePanel overlays below 768px and clamps bounds to its host. File surfaces share useFileDrop/validateFiles and innermost enabled drop ownership. Why: no overflow or duplicate drops. Internal drag clears on window capture drop/dragend; selection lists use focusable checkboxes in semantic lists.
 - FileDropZone owns drag events on a group; its selection button contains only static content and children remain siblings. Why: chip actions stay independently accessible without nested controls.
 - Keep pane providers, pane layout, grid model/toolbar/body and document value/props/text contracts in focused internal modules; preserve their public entry re-exports. Why: maintenance stays bounded without changing consumer imports or behavior.
 

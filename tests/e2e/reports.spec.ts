@@ -20,7 +20,7 @@ test.describe("Výkazy 2.8.0", () => {
     // stejný název má i tlačítko řádku, proto hledáme jen v liště.
     const expand = grid
       .locator('[data-slot="grid-toolbar"]')
-      .getByRole("button", { name: "Rozbalit", exact: true });
+      .getByRole("button", { name: "Rozbalit vše", exact: true });
     // Rozsáhlá stránka (2.109.0) hydratuje později než SSR; ověříme skutečnou reakci.
     await expect(async () => {
       await expand.click();

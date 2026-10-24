@@ -109,6 +109,14 @@ describe("DocumentForm fieldLockedReasons", () => {
       ).toBe(REASON);
     });
   }
+  for (const documentType of ["FV", "ZFV"]) {
+    it(`${documentType}: obecný zámek firemního účtu a způsobu platby zachová zobrazené hodnoty`, () => {
+      const view = render(<BaForm documentType={documentType} editableFields={["companyBankAccountId", "paymentMethodId"]} value={{ ...baValue, companyBankAccountId: "company", paymentMethodId: "transfer" }} companyBankAccountOptions={[{ id: "company", label: "Hlavní", account: "123/0800", currency: "CZK" }]} paymentMethodOptions={[{ value: "transfer", label: "Převodem" }]} lockedReason={{ companyBankAccountId: REASON, paymentMethodId: REASON }} />);
+      expect(view.getByRole("group", { name: "Zaplatit na bankovní účet" }).textContent).toContain("123/0800");
+      expect(view.getByRole("group", { name: "Způsob platby" }).textContent).toBe("Převodem");
+      expect(view.getAllByRole("button", { name: REASON })).toHaveLength(2);
+    });
+  }
   it("pole s důvodem vykreslí jen pro čtení se zámkem a hodnotou", () => {
     const view = render(<BaForm fieldLockedReasons={lockedReasons} />);
     const expected: Array<[string, string]> = [

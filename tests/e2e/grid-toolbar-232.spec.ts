@@ -160,3 +160,19 @@ test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
     .evaluateAll((items) => items.map((item) => item.getBoundingClientRect().toJSON()));
   for (const b of boxes) expect(b.right).toBeLessThanOrEqual(box!.x + box!.width + 1);
 });
+for (const width of [360, 480]) {
+  test(`stromový grid při ${width} px má rozbalení a sbalení v nabídce`, async ({ page }) => {
+    await page.goto("/components/accounting-fields", { waitUntil: "networkidle" });
+    const grid = page.locator('[data-slot="tree-grid"]').first();
+    await grid.evaluate((node, size) => node.style.width = `${size}px`, width);
+    const toolbar = grid.locator('[data-slot="grid-toolbar"]');
+    await expect(toolbar).toHaveAttribute("data-overflow-level", "3", { timeout: 45000 });
+    await toolbar.getByRole("button", { name: "Další akce" }).click();
+    await page.getByRole("button", { name: "Rozbalit vše", exact: true }).click();
+    await page.getByRole("menuitem", { name: "Vše", exact: true }).click();
+    await expect(grid.locator('[data-row-id="a221001"]')).toBeVisible();
+    await page.getByRole("button", { name: "Sbalit vše", exact: true }).click();
+    await expect(grid.locator('[data-row-id="a221001"]')).toHaveCount(0);
+    expect(await toolbar.evaluate(node => node.scrollWidth - node.clientWidth)).toBe(0);
+  });
+}

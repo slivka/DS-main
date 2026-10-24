@@ -53,6 +53,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Center title-adjacent badges and icons on the baseline plus half the x-height using font metrics. Why: lowercase titles must align at every zoom.
 - Searchable selections share inline-search; queries never commit on Tab or blur, and while open the input is the only combobox (trigger aria-hidden). Why: one keyboard/IME contract and one accessible control.
 - Grid toolbar rows derive every control height from --f-h and expose it as --control-h. Why: all grid bars scale uniformly.
+- GridFrame moves search into its single overflow menu at level 3; tree expand/collapse uses translated all-level labels. Why: narrow grids keep every action reachable without overflow.
 - IdentityLine never wraps and keeps one control-h. Account name → fallbackShort → status ellipsis → book ellipsis → book code → account code → status icon → clipped left edge. Never shrink fonts or scale; real numbers never truncate. Clip bounding boxes to visible ancestors in tests; full identity and status retain tooltips and accessible names. Why: forms must not jump or overlap even at extreme widths.
 - Set rem/em values of registered custom properties (@property, e.g. --control-h) on body or deeper, never on :root. Why: Firefox and WebKit resolve them against the initial font there, so heights would ignore app zoom.
 - Measure form action widths centrally: text-only → secondary icons → Save icon; retain accessible names and tooltips. Why: every form inherits the same overflow cascade.
