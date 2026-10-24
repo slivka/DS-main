@@ -97,13 +97,19 @@ export function DocumentIdentityLine({
       {identity.period}
     </span>,
   ];
-  const pencil = lockedReason && account ? (
-    <DisabledReasonTooltip content={lockedReason} blocked>
-      <Button variant="ghost" size="icon" className="size-4 shrink-0 p-0 text-muted-foreground" aria-label={lockedReason}>
-        <Lock className="size-4" aria-hidden="true" />
-      </Button>
-    </DisabledReasonTooltip>
-  ) : !editingAccount && canEditAccount && account ? (
+  const pencil =
+    lockedReason && account ? (
+      <DisabledReasonTooltip content={lockedReason} blocked>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-4 shrink-0 p-0 text-muted-foreground"
+          aria-label={lockedReason}
+        >
+          <Lock className="size-4" aria-hidden="true" />
+        </Button>
+      </DisabledReasonTooltip>
+    ) : !editingAccount && canEditAccount && account ? (
       account.disabledReason ? (
         <DisabledReasonTooltip content={account.disabledReason} blocked>
           <span

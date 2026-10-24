@@ -79,7 +79,9 @@ export function useDocumentFieldRenderers({
           aria-labelledby={`${id}-label`}
           lockedReason={lockReason(headerFieldKey(id))}
         >
-          {typeof value[headerFieldKey(id)] === "number" ? fmtAmount(Number(value[headerFieldKey(id)]), headerFieldKey(id) === "rate" ? 4 : 2) : String(value[headerFieldKey(id)] ?? "")}
+          {typeof value[headerFieldKey(id)] === "number"
+            ? fmtAmount(Number(value[headerFieldKey(id)]), headerFieldKey(id) === "rate" ? 4 : 2)
+            : String(value[headerFieldKey(id)] ?? "")}
         </FieldValue>
       ) : (
         control
