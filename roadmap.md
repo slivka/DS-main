@@ -1,4 +1,6 @@
-## DS 2.138.0 (nevydáno)
+## DS 2.139.0 (nevydáno)
+
+## DS 2.138.0
 
 - [x] B2: DimensionBar / MultiValueCell, CS/SK a řízené hledání.
 - [x] B2: model převzatých dimenzí a ručních výjimek, DB převod, kompatibilita B1.

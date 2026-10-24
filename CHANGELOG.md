@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.138.0 (nevydáno)
+## 2.139.0 (nevydáno)
+
+## 2.138.0
 
 ### B2 – lišta dimenzí
 
