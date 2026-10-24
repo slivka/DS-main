@@ -11433,6 +11433,10 @@
         {
           "label": "Kategorie interního dokladu",
           "code": "<JournalLinesEditor {...documentRows} categories={categories} categoryBySide allowedCategories={allowedCategories} onEditCategory={editCategory} />"
+        },
+        {
+          "label": "Dimenze hlavičky a řádků",
+          "code": "<JournalLinesEditor {...props} dimensionTypes={types} dimensions={dimensions} onDimensionsChange={setDimensions} loadDimensionOptions={loadOptions} dimensionsBySide />"
         }
       ],
       "antipatterns": [
@@ -11446,7 +11450,8 @@
         "Při skrytí účetních polí nebo změně kódu nemažte vatDeduction, vatDeductionShare ani khLimitExcluded; limit KH a oprávnění zajišťuje APP.",
         "Nenabízejte formát v nabídce záhlaví ani volnou barvu; nepřebarvujte odznaky a odkazy.",
         "Návrhy nemažte při pouhém otevření pole; záporné částky nepřevádějte na absolutní hodnotu.",
-        "Nepoužívejte nové DimensionBar pro ekonomickou kategorii; neodstraňujte deprecated aliasy před 3.0.0."
+        "Nepoužívejte nové DimensionBar pro ekonomickou kategorii; neodstraňujte deprecated aliasy před 3.0.0.",
+        "Hlavička přepisuje jen inherited hodnoty; ruční MD/DAL nikdy nepřepisujte. toJournalRow zapisuje jen inherited=false a kind z APP určuje value_id/vehicle_id."
       ],
       "props": [
         {
@@ -11484,6 +11489,26 @@
         {
           "name": "onCreateCategory",
           "type": "(searchText: string) => void / Promise<CategoryOption / null / undefined>"
+        },
+        {
+          "name": "dimensionTypes",
+          "type": "DimensionType[]"
+        },
+        {
+          "name": "dimensions",
+          "type": "DimensionValue[] | CategoryOption[] (@deprecated pouze B1 číselník do 3.0.0)"
+        },
+        {
+          "name": "onDimensionsChange",
+          "type": "(values: DimensionValue[]) => void"
+        },
+        {
+          "name": "loadDimensionOptions",
+          "type": "LoadDimensionOptions"
+        },
+        {
+          "name": "dimensionsBySide",
+          "type": "boolean (internal=true)"
         }
       ]
     },
@@ -11649,6 +11674,10 @@
         {
           "label": "Kategorie interního dokladu",
           "code": "<DocumentForm {...props} categories={categories} />"
+        },
+        {
+          "label": "Dimenze hlavičky a řádků",
+          "code": "<DocumentForm {...props} dimensionTypes={types} dimensions={dimensions} onDimensionsChange={setDimensions} loadDimensionOptions={loadOptions} dimensionsBySide />"
         }
       ],
       "antipatterns": [
@@ -11663,7 +11692,8 @@
         "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku.",
         "Nepočítejte tiskové daně ani odečty v DS; nepřidávejte druhý PDF systém ani generované firemní logo.",
         "Návrhy nemažte při pouhém otevření pole; záporné částky nepřevádějte na absolutní hodnotu.",
-        "Nepoužívejte nové DimensionBar pro ekonomickou kategorii; neodstraňujte deprecated aliasy před 3.0.0."
+        "Nepoužívejte nové DimensionBar pro ekonomickou kategorii; neodstraňujte deprecated aliasy před 3.0.0.",
+        "Hlavička přepisuje jen inherited hodnoty; ruční MD/DAL nikdy nepřepisujte. toJournalRow zapisuje jen inherited=false a kind z APP určuje value_id/vehicle_id."
       ],
       "props": [
         {
@@ -11697,6 +11727,26 @@
         {
           "name": "categories",
           "type": "CategoryOption[]"
+        },
+        {
+          "name": "dimensionTypes",
+          "type": "DimensionType[]"
+        },
+        {
+          "name": "dimensions",
+          "type": "DimensionValue[] | CategoryOption[] (@deprecated pouze B1 číselník do 3.0.0)"
+        },
+        {
+          "name": "onDimensionsChange",
+          "type": "(values: DimensionValue[]) => void"
+        },
+        {
+          "name": "loadDimensionOptions",
+          "type": "LoadDimensionOptions"
+        },
+        {
+          "name": "dimensionsBySide",
+          "type": "boolean (internal=true)"
         }
       ]
     },
@@ -12992,6 +13042,137 @@
       ],
       "antipatterns": [
         "Nevytvářejte vlastní paletu nebo ukládání mimo GridLayout.styles."
+      ]
+    },
+    {
+      "name": "DimensionBar",
+      "file": "src/components/ds/form/dimension-bar.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Řízené chipy pouze přidaných typů dimenzí. Typ s valueId=null je k vyplnění. Enter volí typ a otevře hodnoty; Delete/Backspace odebere chip, Escape zavře bez volby. loadOptions dodává APP; stale odpovědi se ignorují. inactive uložená hodnota je tlumená s bublinou a znovu se nenabízí. variant=bar nebo inline, výška control-h.",
+      "props": [
+        {
+          "name": "types",
+          "type": "DimensionType[]"
+        },
+        {
+          "name": "value",
+          "type": "DimensionValue[]"
+        },
+        {
+          "name": "onChange",
+          "type": "(values: DimensionValue[]) => void"
+        },
+        {
+          "name": "loadOptions",
+          "type": "LoadDimensionOptions"
+        },
+        {
+          "name": "overrides",
+          "type": "Record<string, number>"
+        },
+        {
+          "name": "onReset",
+          "type": "(typeId: string) => void"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "variant",
+          "type": "bar | inline"
+        },
+        {
+          "name": "size",
+          "type": "default | sm"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Dimenze B2",
+          "code": "<DimensionBar types={dimensionTypes} value={dimensions} onChange={setDimensions} loadOptions={loadDimensionOptions} overrides={overrides} />"
+        }
+      ],
+      "antipatterns": [
+        "Nezaměňujte dimenze s ekonomickými kategoriemi; nenabízejte ukončené hodnoty a nepersistujte data v komponentě."
+      ]
+    },
+    {
+      "name": "MultiValueCell",
+      "file": "src/components/ds/data-display/multi-value-cell.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Obecná buňka první hodnoty + další, plný seznam v bublině myší i klávesnicí. values i additionalCount dodává APP; variant=all ukáže celý seznam.",
+      "props": [
+        {
+          "name": "values",
+          "type": "MultiValueItem[]"
+        },
+        {
+          "name": "additionalCount",
+          "type": "number"
+        },
+        {
+          "name": "variant",
+          "type": "compact | all"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Dimenze B2",
+          "code": "<MultiValueCell values={dimensionLabels} additionalCount={otherRowsCount} />"
+        }
+      ],
+      "antipatterns": [
+        "Nezaměňujte dimenze s ekonomickými kategoriemi; nenabízejte ukončené hodnoty a nepersistujte data v komponentě."
+      ]
+    },
+    {
+      "name": "DimensionFilter",
+      "file": "src/components/ds/form/dimension-filter.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Adaptér dimenzí na stávající ColumnFilter: hledání a checklist, prázdný Set znamená bez filtru. APP dodává možnosti a provádí filtrování seznamu dokladů.",
+      "props": [
+        {
+          "name": "options",
+          "type": "DimensionOptionItem[]"
+        },
+        {
+          "name": "selected",
+          "type": "Set<string>"
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(value: Set<string>) => void"
+        },
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Dimenze B2",
+          "code": "<DimensionFilter label={type.label} options={options} selected={selectedIds} onSelectionChange={setSelectedIds} />"
+        }
+      ],
+      "antipatterns": [
+        "Nezaměňujte dimenze s ekonomickými kategoriemi; nenabízejte ukončené hodnoty a nepersistujte data v komponentě."
       ]
     }
   ],

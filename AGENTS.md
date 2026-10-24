@@ -87,3 +87,5 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Keep print/export and journal-editor translations in dedicated per-language modules, re-exported through DsTexts. Why: bounded translation catalogs preserve public imports.
 - DocumentCounterpartyTab resolves delivery locking independently, defaulting to counterpartyLocked with global readOnly taking precedence. Why: APP can edit descriptive delivery data without unlocking the counterparty.
 - DocumentForm resolves header suggestions through an opt-in Field context; journal columns map to shared suggestion keys and report first manual changes. Why: all document variants share presentation without owning application proposals.
+
+- DimensionBar owns controlled chip/search interaction; journal-dimensions-model owns header inheritance and manual-only serialization, while B1 category aliases are separated by structural guards. Why: new dimensions cannot silently become economic categories or overwrite manual exceptions.
