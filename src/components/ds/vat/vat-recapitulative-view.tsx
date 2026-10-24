@@ -4,9 +4,11 @@ import { DataGrid } from "../grid/DataGrid";
 import type { DataGridColumn } from "../grid/data-grid-types";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import type { OssReturnRow, VatRecapitulativeRow } from "./vat-report-types";
+import type { OssReturnRow, VatRecapitulativeRow, VatReportStateProps } from "./vat-report-types";
+import { VatReportState, vatExportTitle } from "./vat-report-state";
 /** Parametry společného přehledu SH/OSS. */
-export interface VatRecapitulativeViewProps extends ComponentPropsWithoutRef<"div"> {
+export interface VatRecapitulativeViewProps
+  extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
   /** Varianta sestavy. */ variant?: "recapitulative" | "oss";
   /** Hotová data SH. */ rows?: VatRecapitulativeRow[];
   /** Hotová data OSS včetně oprav. */ ossRows?: OssReturnRow[];
@@ -24,6 +26,9 @@ export const VatRecapitulativeView = forwardRef<HTMLDivElement, VatRecapitulativ
       currency,
       onRowOpen,
       storageKey = "vat-recapitulative",
+      loading,
+      error,
+      exportMeta,
       className,
       ...props
     },
@@ -64,25 +69,27 @@ export const VatRecapitulativeView = forwardRef<HTMLDivElement, VatRecapitulativ
     ];
     return (
       <div ref={ref} {...props} className={cn("min-w-0", className)}>
-        {variant === "oss" ? (
-          <DataGrid
-            title={t.ossTitle}
-            rows={ossRows}
-            columns={ossColumns}
-            storageKey={`${storageKey}:oss`}
-            rowKey={(r) => r.id}
-            onRowOpen={(r) => onRowOpen?.(r.id)}
-          />
-        ) : (
-          <DataGrid
-            title={t.recapitulativeTitle}
-            rows={rows}
-            columns={columns}
-            storageKey={storageKey}
-            rowKey={(r) => r.id}
-            onRowOpen={(r) => onRowOpen?.(r.id)}
-          />
-        )}
+        <VatReportState loading={loading} error={error}>
+          {variant === "oss" ? (
+            <DataGrid
+              title={vatExportTitle(t.ossTitle, exportMeta)}
+              rows={ossRows}
+              columns={ossColumns}
+              storageKey={`${storageKey}:oss`}
+              rowKey={(r) => r.id}
+              onRowOpen={(r) => onRowOpen?.(r.id)}
+            />
+          ) : (
+            <DataGrid
+              title={vatExportTitle(t.recapitulativeTitle, exportMeta)}
+              rows={rows}
+              columns={columns}
+              storageKey={storageKey}
+              rowKey={(r) => r.id}
+              onRowOpen={(r) => onRowOpen?.(r.id)}
+            />
+          )}
+        </VatReportState>
       </div>
     );
   },
