@@ -4,13 +4,13 @@ for (const width of [600, 760]) {
     await page.goto("/components/record-panel");
     await expect(page.getByTestId("record-panel-showcase")).toHaveAttribute("data-ready", "true");
     const example = page.getByTestId("document-panel-example");
-    await example.evaluate((node, value) => node.style.width = `${value}px`, width);
+    await example.evaluate((node, value) => (node.style.width = `${value}px`), width);
     await example.getByRole("button", { name: "Přílohy: 2", exact: true }).click();
     const layout = example.locator('[data-slot="record-panel-layout"]');
     const panel = layout.locator('[data-slot="record-side-panel"]');
     await expect(layout).toHaveAttribute("data-overlay", "true");
     await expect(panel).toHaveAttribute("aria-modal", "true");
-    expect(await layout.evaluate(node => node.scrollWidth - node.clientWidth)).toBe(0);
+    expect(await layout.evaluate((node) => node.scrollWidth - node.clientWidth)).toBe(0);
     const [hostBox, panelBox] = await Promise.all([layout.boundingBox(), panel.boundingBox()]);
     if (!hostBox || !panelBox) throw new Error("Panel nemá rozměry");
     expect(panelBox.x).toBeGreaterThanOrEqual(hostBox.x);
@@ -19,7 +19,7 @@ for (const width of [600, 760]) {
     await panel.screenshot({ path: `/tmp/browser/d139/panel-${width}.png` });
     await panel.getByRole("button", { name: "Zavřít panel", exact: true }).click();
     await expect(panel).toHaveCount(0);
-    expect(await layout.evaluate(node => node.scrollWidth - node.clientWidth)).toBe(0);
+    expect(await layout.evaluate((node) => node.scrollWidth - node.clientWidth)).toBe(0);
   });
 }
 test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom", async ({ page }) => {
