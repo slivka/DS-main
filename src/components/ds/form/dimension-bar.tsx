@@ -107,7 +107,7 @@ export const DimensionBar = React.forwardRef<HTMLDivElement, DimensionBarProps>(
               key={type.id}
               data-slot="dimension-chip"
               data-type-id={type.id}
-              className="inline-flex min-w-0 max-w-full items-center rounded-md border bg-muted/40 text-sm"
+              className="inline-flex min-w-0 max-w-full items-center rounded-md border bg-muted/40 text-sm [&_.inline-search-field]:w-auto [&_.inline-search-field]:flex-1"
             >
               <DimensionValuePicker
                 type={type}
