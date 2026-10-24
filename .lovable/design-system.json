@@ -3715,11 +3715,19 @@
         {
           "name": "variant",
           "type": "\"primary\" | \"outline\"",
+          "values": [
+            "primary",
+            "outline"
+          ],
           "default": "primary"
         },
         {
           "name": "size",
           "type": "\"default\" | \"sm\"",
+          "values": [
+            "default",
+            "sm"
+          ],
           "default": "default"
         },
         {
@@ -3737,6 +3745,10 @@
         {
           "name": "menuAlign",
           "type": "\"start\" | \"end\"",
+          "values": [
+            "start",
+            "end"
+          ],
           "default": "start"
         },
         {
@@ -7693,11 +7705,17 @@
         {
           "label": "Ekonomická kategorie",
           "code": "<CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />"
+        },
+        {
+          "label": "Použití společného stavu",
+          "code": "<CategorySelect {...props} />"
         }
       ],
       "antipatterns": [
         "Neoznačujte ekonomickou kategorii Zakázka ani dimenze; nevykazovatelný uzel nelze vybrat.",
-        "Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias."
+        "Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ],
       "props": [
         {
@@ -10861,11 +10879,18 @@
         {
           "label": "Ekonomická kategorie",
           "code": "<CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />"
+        },
+        {
+          "label": "Výběr hodnoty",
+          "code": "<DimensionSelect value={value} onChange={setValue} options={options} />"
         }
       ],
       "antipatterns": [
         "Neoznačujte ekonomickou kategorii Zakázka ani dimenze; nevykazovatelný uzel nelze vybrat.",
-        "Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias."
+        "Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias.",
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ],
       "props": [
         {

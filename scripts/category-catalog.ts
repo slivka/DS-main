@@ -43,16 +43,26 @@ export function enrichCategoryCatalog(components: PanelCatalogComponent[]) {
         ? "@deprecated Od 2.138.0: alias CategorySelect, odstranění ve 3.0.0. "
         : "") +
       "Výběr ekonomické kategorie ze stromu. Nepovinný kód: kód – název, bez kódu jen název. postable=false zobrazí uzel, ale zakáže výběr. Psaní a Enter potvrzuje; Tab/Escape nevybírá.";
+    const previousExamples = component.examples ?? [];
+    const previousAntipatterns = component.antipatterns ?? [];
     component.examples = [
       {
         label: "Ekonomická kategorie",
         code: "<CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />",
       },
     ];
+    component.examples.push(
+      ...previousExamples.filter(
+        (item) => !component.examples?.some((next) => next.label === item.label),
+      ),
+    );
     component.antipatterns = [
       "Neoznačujte ekonomickou kategorii Zakázka ani dimenze; nevykazovatelný uzel nelze vybrat.",
       "Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias.",
     ];
+    component.antipatterns.push(
+      ...previousAntipatterns.filter((item) => !component.antipatterns?.includes(item)),
+    );
     if (name === "CategorySelect")
       component.file = "src/components/ds/accounting/category-select.tsx";
     touched.push(component);

@@ -1171,10 +1171,18 @@ Výběr ekonomické kategorie ze stromu. Nepovinný kód: kód – název, bez k
 <CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />
 ```
 
+**Použití společného stavu:**
+
+```tsx
+<CategorySelect {...props} />
+```
+
 **Avoid:**
 
 - Neoznačujte ekonomickou kategorii Zakázka ani dimenze; nevykazovatelný uzel nelze vybrat.
 - Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias.
+- Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+- Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.
 
 ### ChartContainer
 
@@ -2242,10 +2250,19 @@ import { DimensionSelect } from "@/design-system/{slug}";
 <CategorySelect options={categories} value={categoryId} onChange={setCategoryId} onEditSelected={editCategory} />
 ```
 
+**Výběr hodnoty:**
+
+```tsx
+<DimensionSelect value={value} onChange={setValue} options={options} />
+```
+
 **Avoid:**
 
 - Neoznačujte ekonomickou kategorii Zakázka ani dimenze; nevykazovatelný uzel nelze vybrat.
 - Nový kód používá CategorySelect, DimensionSelect je jen přechodový alias.
+- Nevkládejte ikonová tlačítka do tlačítka spouštěče.
+- Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+- Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.
 
 ### DocumentActionBar
 
