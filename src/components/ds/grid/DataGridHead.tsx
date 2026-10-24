@@ -198,12 +198,14 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
                 }
               >
                 {c.headerTooltip ? (
-                  <TooltipProvider><Tooltip>
-                    <TooltipTrigger asChild>
-                      <span tabIndex={0}>{c.label}</span>
-                    </TooltipTrigger>
-                    <TooltipContent>{c.headerTooltip}</TooltipContent>
-                  </Tooltip></TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span tabIndex={0}>{c.label}</span>
+                      </TooltipTrigger>
+                      <TooltipContent>{c.headerTooltip}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 ) : (
                   c.label
                 )}
