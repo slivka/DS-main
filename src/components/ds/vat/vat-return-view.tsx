@@ -107,34 +107,34 @@ export const VatReturnView = forwardRef<HTMLDivElement, VatReturnViewProps>(func
       <VatReportState loading={loading} error={error}>
         <TreeGrid
           title={vatExportTitle(t.returnTitle, exportMeta)}
-        rows={tree}
-        columns={columns}
-        storageKey={storageKey}
-        onRowClick={(row) => {
-          if ("key" in row) onRowOpen?.(row);
-        }}
-        onRowOpen={(row) => {
-          if ("key" in row) onRowOpen?.(row);
-        }}
-      />
-      <dl className="flex flex-wrap justify-end gap-6 border-t py-3 text-sm">
-        <div>
-          <dt>
-            {t.liability} · {currency}
-          </dt>
-          <dd className="font-semibold">
-            <AmountCell value={summary.liability} />
-          </dd>
-        </div>
-        <div>
-          <dt>
-            {t.excess} · {currency}
-          </dt>
-          <dd className="font-semibold">
-            <AmountCell value={summary.excess} />
-          </dd>
-        </div>
-      </dl>
+          rows={tree}
+          columns={columns}
+          storageKey={storageKey}
+          onRowClick={(row) => {
+            if ("key" in row) onRowOpen?.(row);
+          }}
+          onRowOpen={(row) => {
+            if ("key" in row) onRowOpen?.(row);
+          }}
+        />
+        <dl className="flex flex-wrap justify-end gap-6 border-t py-3 text-sm">
+          <div>
+            <dt>
+              {t.liability} · {currency}
+            </dt>
+            <dd className="font-semibold">
+              <AmountCell value={summary.liability} />
+            </dd>
+          </div>
+          <div>
+            <dt>
+              {t.excess} · {currency}
+            </dt>
+            <dd className="font-semibold">
+              <AmountCell value={summary.excess} />
+            </dd>
+          </div>
+        </dl>
       </VatReportState>
     </div>
   );

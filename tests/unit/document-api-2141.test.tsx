@@ -75,7 +75,9 @@ describe("DocumentSettingsDialog – datum účetního případu podle vystaven�
     );
     const label = view.getByText("Datum účetního případu podle data vystavení");
     const checkbox = label.parentElement?.querySelector("[role=checkbox], button, input");
-    expect(checkbox?.getAttribute("aria-disabled") ?? checkbox?.getAttribute("disabled")).not.toBeNull();
+    expect(
+      checkbox?.getAttribute("aria-disabled") ?? checkbox?.getAttribute("disabled"),
+    ).not.toBeNull();
     expect(label.closest("span[title]")?.getAttribute("title")).toBe("Knihy s pevným datem");
   });
 });
@@ -149,8 +151,10 @@ describe("Oblíbení partneři", () => {
     const view = render(
       <DocForm documentType="FV" partners={PARTNERS} favoriteIds={["c"]} onToggleFavorite={noop} />,
     );
-    fireEvent.click(view.getByRole("combobox", { name: /Odběratel|partner/i }) ??
-      view.container.querySelector("#document-partner")!);
+    fireEvent.click(
+      view.getByRole("combobox", { name: /Odběratel|partner/i }) ??
+        view.container.querySelector("#document-partner")!,
+    );
     const options = view.getAllByRole("option");
     expect(options[0].textContent).toContain("Ceta s.r.o.");
   });
@@ -196,7 +200,10 @@ describe("Bankovní pohyb – protiúčet", () => {
 describe("Menu a štítky záhlaví", () => {
   it("textový odznak menu se zmenší na ikonu s bublinou a název zůstane celý", () => {
     const view = render(
-      <NavItemContent item={{ to: "/zalohy", label: "Zálohové listy", badge: "Připravujeme" }} active={false} />,
+      <NavItemContent
+        item={{ to: "/zalohy", label: "Zálohové listy", badge: "Připravujeme" }}
+        active={false}
+      />,
     );
     const badge = view.getByRole("img", { name: "Připravujeme" });
     expect(badge.getAttribute("title")).toBe("Připravujeme");
