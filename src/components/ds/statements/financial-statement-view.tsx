@@ -10,6 +10,7 @@ import type { PrintContext } from "../print/report-pdf";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { isStatementRowEditable, statementUnitLabel } from "./statement-model";
 import { StatementChecksBar } from "./statement-checks-bar";
 import type {
   StatementCheck,
@@ -19,16 +20,6 @@ import type {
   StatementValueColumn,
   StatementValuePatch,
 } from "./statement-types";
-
-/** Popisek jednotek s měnou z dat APP. */
-export function statementUnitLabel(template: string, currency: string): string {
-  return template.replace("{currency}", currency);
-}
-
-/** Řádek je upravitelný jen v režimu úprav a jen když není součtový. */
-export function isStatementRowEditable(row: StatementRow, editable: boolean | undefined) {
-  return Boolean(editable) && row.kind !== "sum";
-}
 
 /** Parametry výkazu. */
 export interface FinancialStatementViewProps extends Omit<

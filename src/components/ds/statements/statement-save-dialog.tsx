@@ -4,7 +4,7 @@ import { RecordDialog, Field, FieldGrid } from "../layout/RecordDialog";
 import { OptionSelect, type SelectOption } from "../form/option-select";
 import { Input } from "../../ui/input";
 import { useDsTexts } from "../../../ds-texts";
-import { statementUnitLabel } from "./financial-statement-view";
+import { statementUnitLabel } from "./statement-model";
 import type { StatementKind, StatementSaveValue, StatementUnit } from "./statement-types";
 
 /** Parametry dialogu uložení výkazu. */

@@ -1,5 +1,6 @@
 /** Výkazy · vstup modulu · nesmí obsahovat logiku. */
 export * from "./statement-types";
+export * from "./statement-model";
 export * from "./statement-checks-bar";
 export * from "./financial-statement-view";
 export * from "./saved-statement-list";

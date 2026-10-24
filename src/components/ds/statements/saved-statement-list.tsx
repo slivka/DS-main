@@ -4,7 +4,7 @@ import type { DataGridColumn } from "../grid/data-grid-types";
 import { GridRowMenu } from "../grid/grid-active-status";
 import { useDsTexts } from "../../../ds-texts";
 import { formatDate } from "../../../lib/format";
-import { statementUnitLabel } from "./financial-statement-view";
+import { statementUnitLabel } from "./statement-model";
 import type { SavedStatement } from "./statement-types";
 
 /** Parametry seznamu uložených výkazů. */
