@@ -3,12 +3,7 @@ import { VAT_REPORTS_CS } from "./cs-vat-reports";
 import { DIMENSION_TEXTS_CS } from "./dimension-texts";
 import { PRINT_TEXTS_CS } from "./cs-print";
 import { INVOICE_PRINT_CS } from "./invoice-print-texts";
-import {
-  BANK_CONNECTION_CS,
-  BANK_PAYMENT_CS,
-  BANK_RECONCILE_CS,
-  BANK_RULE_CS,
-} from "./cs-bank";
+import { BANK_CONNECTION_CS, BANK_PAYMENT_CS, BANK_RECONCILE_CS, BANK_RULE_CS } from "./cs-bank";
 /**
  * České texty design systému (výchozí jazyk knihovny).
  * Vlastní: hodnoty DS_TEXTS_CS.
