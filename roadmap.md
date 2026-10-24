@@ -1,5 +1,9 @@
 ## DS 2.138.0 (nevydáno)
 
+- [ ] B1: nové category API a deprecated aliasy, oba DB tvary a nové výstupy.
+- [ ] B1: categoryBySide, povolené potomky, jediná zamčená kategorie a změna účtu.
+- [ ] B1: CS/SK, ukázka ID, unit a jeden Chromium spec, katalog bez odebrání, migrace v CHANGELOGu.
+
 ## DS 2.137.0
 
 - [x] Doplněk 6: stav identity nikdy nepřetéká řádek (max-width + ořez, oprava přetékajícího čísla výpisu při max zoomu); testy zúženy na živý řádek identity a nový název ovladače panelu. Unit DS 1 451/1 451, pět požadovaných Chromium speců 21/21. Plná E2E neběžela, nevydáno.

@@ -69,6 +69,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - RecordDialog uses activeTab when supplied, local selection otherwise; onTabChange reports user requests only. Why: error navigation without callback loops.
 
 - Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.
+- Normalize economic-category aliases at journal/document boundaries; share account restrictions and reconciliation in one pure category model. Why: cell, detail, pins, validation and DB conversions must apply the same precedence and eligibility rules.
 
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
 - Linked-tabs owns follow/pin/orphan rules; panel context uses reducers/provider guards; PaneLayout has an optional renderer with renderTab fallback. Why: APP content, shared state.
