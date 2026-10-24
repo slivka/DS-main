@@ -58,7 +58,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
       { id: "dic", label: t.dic, value: (r) => r.dic },
       { id: "number", label: t.number, value: (r) => r.number },
       { id: "date", label: t.date, value: (r) => r.date, render: (r) => formatDate(r.date) },
-      ...[21, 12].flatMap((rate) =>
+      ...RATES.flatMap((rate) =>
         (["base", "tax"] as const).map((field) => ({
           id: `${field}${rate}`,
           label: `${t[field]} ${rate} % · ${currency}`,
