@@ -98,7 +98,7 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
             ["storageKey", "string"],
           ]
         : []),
-    ].map(([name, type]) => ({ name, type }));
+    ].map(([name, type]) => catalogProp(name, type));
     const examples: Record<string, string> = {
       VatReturnView:
         "<VatReturnView rows={returnRows} compare={filedRows} summary={returnSummary} currency={currency} onRowOpen={openReturnDocuments} />",
@@ -119,4 +119,11 @@ export function enrichVatReports(components: PanelCatalogComponent[]) {
     ];
     return component;
   });
+}
+
+/** Výčet literálů zapisuje jako enum s hodnotami, aby katalog nesl volby. */
+function catalogProp(name: string, type: string) {
+  return /^[a-z_]+( \| [a-z_]+)+$/.test(type)
+    ? { name, type: "enum", values: type.split(" | ") }
+    : { name, type };
 }

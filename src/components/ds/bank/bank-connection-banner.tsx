@@ -39,12 +39,11 @@ export function BankConnectionBanner({
   ...rest
 }: BankConnectionBannerProps) {
   const t = useDsTexts().bankConnection;
-  const tone = state.tone === "connected" ? "success" : state.tone === "tokenExpires" ? "warning" : "danger";
+  const tone =
+    state.tone === "connected" ? "success" : state.tone === "tokenExpires" ? "warning" : "danger";
   const text =
     state.tone === "connected"
-      ? t.bannerConnected
-          .replace("{date}", state.date)
-          .replace("{count}", String(state.newCount))
+      ? t.bannerConnected.replace("{date}", state.date).replace("{count}", String(state.newCount))
       : state.tone === "tokenExpires"
         ? t.bannerTokenExpires.replace("{days}", String(state.days))
         : `${t.bannerError}: ${state.reason}`;

@@ -84,10 +84,7 @@ export function PaymentOrderBatchView({
   const [selected, setSelected] = useState<string[]>([]);
   const [formatId, setFormatId] = useState(formats[0]?.id ?? "");
 
-  const selectedRows = useMemo(
-    () => rows.filter((r) => selected.includes(r.id)),
-    [rows, selected],
-  );
+  const selectedRows = useMemo(() => rows.filter((r) => selected.includes(r.id)), [rows, selected]);
   const totalsByCurrency = useMemo(() => {
     const map = new Map<string, { sum: number; symbol: string }>();
     for (const row of selectedRows) {
@@ -113,9 +110,7 @@ export function PaymentOrderBatchView({
       render: (r) => (
         <span className={cn(r.overdue && "font-semibold text-destructive")}>
           {formatDate(r.dueDate)}
-          {r.overdue ? (
-            <span className="ml-1 text-xs">({t.overdue})</span>
-          ) : null}
+          {r.overdue ? <span className="ml-1 text-xs">({t.overdue})</span> : null}
         </span>
       ),
     },
@@ -125,8 +120,7 @@ export function PaymentOrderBatchView({
     {
       id: "partnerAccount",
       label: t.partnerAccount,
-      value: (r) =>
-        partnerAccounts(r).find((a) => a.id === r.partnerAccountId)?.label ?? null,
+      value: (r) => partnerAccounts(r).find((a) => a.id === r.partnerAccountId)?.label ?? null,
       render: (r) =>
         readOnly ? (
           (partnerAccounts(r).find((a) => a.id === r.partnerAccountId)?.label ?? "")
@@ -198,85 +192,89 @@ export function PaymentOrderBatchView({
 
   return (
     <TooltipProvider>
-    <div {...rest} data-slot="payment-order-batch-view" className={cn("min-w-0 space-y-3", className)}>
-      <div className="flex flex-wrap items-center gap-2">
-        {dueFilter}
-        {bookFilter}
-        <span className="ml-auto flex flex-wrap items-center gap-2">
-          <OptionSelect
-            ariaLabel={t.fileFormat}
-            value={formatId}
-            onChange={setFormatId}
-            options={formats.map((f) => ({ value: f.id, label: f.label }))}
-            allowEmpty={false}
-            className="w-44"
-          />
-          <DisabledReasonTooltip
-            blocked={!selected.length || blockedSelected}
-            content={
-              blockedSelected ? t.accountManualForbidden : !selected.length ? t.empty : undefined
-            }
-          >
-            <Button
-              type="button"
-              size="sm"
-              disabled={!selected.length || blockedSelected || busy || readOnly}
-              onClick={() => onCreateFile(selected, formatId)}
-            >
-              {t.createFile}
-            </Button>
-          </DisabledReasonTooltip>
-          {onSendFio ? (
+      <div
+        {...rest}
+        data-slot="payment-order-batch-view"
+        className={cn("min-w-0 space-y-3", className)}
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          {dueFilter}
+          {bookFilter}
+          <span className="ml-auto flex flex-wrap items-center gap-2">
+            <OptionSelect
+              ariaLabel={t.fileFormat}
+              value={formatId}
+              onChange={setFormatId}
+              options={formats.map((f) => ({ value: f.id, label: f.label }))}
+              allowEmpty={false}
+              className="w-44"
+            />
             <DisabledReasonTooltip
-              blocked={!canSendFio}
-              content={!canSendFio ? (sendDisabledReason ?? t.sendDisabled) : undefined}
+              blocked={!selected.length || blockedSelected}
+              content={
+                blockedSelected ? t.accountManualForbidden : !selected.length ? t.empty : undefined
+              }
             >
               <Button
                 type="button"
                 size="sm"
-                variant="outline"
-                disabled={!canSendFio || !selected.length || blockedSelected || busy || readOnly}
-                onClick={() => onSendFio(selected)}
+                disabled={!selected.length || blockedSelected || busy || readOnly}
+                onClick={() => onCreateFile(selected, formatId)}
               >
-                {t.sendFio}
+                {t.createFile}
               </Button>
             </DisabledReasonTooltip>
-          ) : null}
-          {onSave ? (
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              disabled={!selected.length || busy || readOnly}
-              onClick={() => onSave(selected)}
-            >
-              {t.saveBatch}
-            </Button>
-          ) : null}
-        </span>
-      </div>
-      <DataGrid
-        storageKey={storageKey}
-        title={t.title}
-        rows={rows}
-        columns={columns}
-        rowKey={(r) => r.id}
-        selectable
-        selectedKeys={selected}
-        onSelectedKeysChange={setSelected}
-        emptyTitle={t.empty}
-        selectionSummary={() => (
-          <span className="flex items-center gap-2 text-sm">
-            {t.selectedTotal}:{" "}
-            {totalsByCurrency.map((entry, i) => (
-              <strong key={i} className="font-mono tabular-nums">
-                {formatAmount(entry.sum)} {entry.symbol}
-              </strong>
-            ))}
+            {onSendFio ? (
+              <DisabledReasonTooltip
+                blocked={!canSendFio}
+                content={!canSendFio ? (sendDisabledReason ?? t.sendDisabled) : undefined}
+              >
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={!canSendFio || !selected.length || blockedSelected || busy || readOnly}
+                  onClick={() => onSendFio(selected)}
+                >
+                  {t.sendFio}
+                </Button>
+              </DisabledReasonTooltip>
+            ) : null}
+            {onSave ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!selected.length || busy || readOnly}
+                onClick={() => onSave(selected)}
+              >
+                {t.saveBatch}
+              </Button>
+            ) : null}
           </span>
-        )}
-      />
-    </div>
+        </div>
+        <DataGrid
+          storageKey={storageKey}
+          title={t.title}
+          rows={rows}
+          columns={columns}
+          rowKey={(r) => r.id}
+          selectable
+          selectedKeys={selected}
+          onSelectedKeysChange={setSelected}
+          emptyTitle={t.empty}
+          selectionSummary={() => (
+            <span className="flex items-center gap-2 text-sm">
+              {t.selectedTotal}:{" "}
+              {totalsByCurrency.map((entry, i) => (
+                <strong key={i} className="font-mono tabular-nums">
+                  {formatAmount(entry.sum)} {entry.symbol}
+                </strong>
+              ))}
+            </span>
+          )}
+        />
+      </div>
     </TooltipProvider>
   );
 }
