@@ -1,5 +1,6 @@
 ## DS 2.139.0 (nevydáno)
 
+- [ ] Doplněk DE: categoriesEnabled=false i v účetnictví skryje kategorie v řádcích/nastavení a vypne validaci DS bez změny hodnot; unit regrese a check:quick. Nevydávat.
 - [x] DE-2 + DE-3: režim položek v dokladech, nastavení bez účtů, kniha, daňové souhrny, kontrola peněz a propojené zápisy; CS/SK, katalog a cílené testy. Zadání dodáno, oddíl 11 pro DS: názvy položek a žádné technické účty. Nevydávat.
 - [x] Drobná API: už bylo PageHeader.panelToggle, Série ze vzoru, jediné potvrzení vazeb, openLinkedTab, menu/důvody výpisu a sousední panel; doplněno FormIssue.action, RecordDialog confirm.reason a VatPeriodBadge. D6 ponechán plné E2E uživatele.
 - [x] DE ověření: 29 nových unit regresí, unit DS 1 556/1 556 ve 157 souborech, check:quick --harness OK, Chromium nový spec 1/1 (1280/480 px), katalog 495 → 503 / 1 383 → 1 442 props, 0 odebrání. Nevydáno, plná E2E ani check:full neběží.
