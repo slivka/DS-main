@@ -19,6 +19,7 @@ const types: DimensionType[] = [
 const vehicles = [
   { id: "car-a", label: "Octavia · 1AB 2345", kind: "vehicle" as const },
   { id: "car-b", label: "Transporter · 2BC 3456", kind: "vehicle" as const },
+  { id: "car-c", label: "Superb · 4DE 5678", kind: "vehicle" as const },
   { id: "car-ended", label: "Fabia · 3CD 4567", kind: "vehicle" as const, inactive: true },
 ];
 const loadOptions: LoadDimensionOptions = async (type, query) => {

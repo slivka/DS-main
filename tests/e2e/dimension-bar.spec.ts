@@ -12,6 +12,15 @@ test("Dimenze: klávesnice, převzaté hodnoty, ruční výjimka a Enter v gridu
     return node && Object.keys(node).some((key) => key.startsWith("__react"));
   });
   const add = header.getByRole("combobox", { name: "+ Dimenze" });
+  await header.getByRole("combobox", { name: "Vozidlo: Octavia · 1AB 2345" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("option", { name: "Octavia · 1AB 2345" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(header.getByRole("combobox", { name: "Vozidlo: Octavia · 1AB 2345" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(header.getByRole("button", { name: "Odebrat dimenzi Vozidlo" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(add).toBeFocused();
   await add.focus();
   await page.keyboard.press("Enter");
   await page.keyboard.type("Stred");
@@ -49,8 +58,8 @@ test("Dimenze: klávesnice, převzaté hodnoty, ruční výjimka a Enter v gridu
   );
   await header.getByRole("combobox", { name: "Vozidlo: Octavia · 1AB 2345" }).focus();
   await page.keyboard.press("Enter");
-  await page.keyboard.type("Octavia");
-  await expect(page.getByRole("option", { name: "Octavia · 1AB 2345" })).toHaveAttribute(
+  await page.keyboard.type("Superb");
+  await expect(page.getByRole("option", { name: "Superb · 4DE 5678" })).toHaveAttribute(
     "aria-selected",
     "true",
   );
@@ -59,7 +68,9 @@ test("Dimenze: klávesnice, převzaté hodnoty, ruční výjimka a Enter v gridu
     detail.getByRole("combobox", { name: "Vozidlo: Transporter · 2BC 3456" }),
   ).toBeVisible();
   await detail.getByRole("button", { name: "Vrátit na hodnotu z hlavičky" }).click();
-  await expect(inherited).toHaveAttribute("data-inherited", "true");
+  await expect(
+    detail.getByRole("combobox", { name: "Vozidlo: Superb · 4DE 5678" }),
+  ).toHaveAttribute("data-inherited", "true");
   await expect(header.getByText("+ další", { exact: true })).toHaveCount(0);
   const text = demo.locator('[data-cell-key="dimensions-invoice:text"]');
   await text.focus();
