@@ -4,7 +4,7 @@ import { TableHead } from "../../ui/table";
 import { getGridLayout, updateGridLayout } from "../../../lib/grid-prefs";
 import { useGridLayoutChange } from "./use-grid-layout-change";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "../../ui/tooltip";
 
 export type SortDir = "asc" | "desc";
 
@@ -180,7 +180,7 @@ export function SortHead<Id extends string>({
         }
         style={{ textAlign: align === "right" ? "right" : align === "center" ? "center" : "left" }}
       >
-        <Tooltip>
+        <TooltipProvider><Tooltip>
           <TooltipTrigger asChild>
             <button
               type="button"
@@ -200,7 +200,7 @@ export function SortHead<Id extends string>({
             </button>
           </TooltipTrigger>
           {headerTooltip ? <TooltipContent>{headerTooltip}</TooltipContent> : null}
-        </Tooltip>
+        </Tooltip></TooltipProvider>
         {children}
       </span>
     </TableHead>

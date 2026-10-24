@@ -71,8 +71,14 @@ function Grid(props: Partial<GridProps>) {
 /** Otevře hledání v liště a napíše dotaz. */
 const typeSearch = (root: HTMLElement, value: string) => {
   const button = root.querySelector<HTMLElement>("button[data-toolbar-search]");
+  if (!button) {
+    const menu = within(root).getByRole("button", { name: "Další akce" });
+    fireEvent.click(menu);
+    fireEvent.click(screen.getByRole("button", { name: "Hledat" }));
+  }
   if (button) fireEvent.click(button);
-  const input = root.querySelector<HTMLInputElement>("[data-toolbar-search] input")!;
+  const input = document.querySelector<HTMLInputElement>("[data-toolbar-search] input");
+  if (!input) throw new Error("Hledání se neotevřelo");
   fireEvent.change(input, { target: { value } });
 };
 

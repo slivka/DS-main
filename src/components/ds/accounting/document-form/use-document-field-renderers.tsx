@@ -1,5 +1,5 @@
 /** Pomocné vykreslení polí formuláře dokladu. */
-import type { ReactNode } from "react";
+import { isValidElement, type ReactNode } from "react";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { useDsTexts } from "../../../../ds-texts";
 import { shiftDocumentDate } from "../../../../lib/date-quick-options";
@@ -69,6 +69,7 @@ export function useDocumentFieldRenderers({
       className={cn("col-span-20", mobileHalf && "col-span-10", className)}
     >
       {lockReason?.(headerFieldKey(id)) &&
+      !(isValidElement(control) && control.type === FieldValue) &&
       !["issueDate", "accountingDate", "taxDate", "dueDate", "vatDate"].includes(
         headerFieldKey(id),
       ) ? (

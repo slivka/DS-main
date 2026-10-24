@@ -144,11 +144,13 @@ test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
   });
   const toolbar = grid.locator('[data-slot="grid-toolbar"]');
   await expect(toolbar).toHaveAttribute("data-overflow-level", "3");
-  await toolbar
+  await toolbar.getByRole("button", { name: "Další akce" }).click();
+  await page
     .getByRole("button", { name: /Hledat/ })
     .first()
     .click();
   await page.keyboard.type("faktura");
+  await page.keyboard.press("Escape");
   await page.waitForTimeout(400);
   const box = await toolbar.boundingBox();
   const boxes = await toolbar
