@@ -130,6 +130,7 @@ export type JournalLinesEditorTexts = JournalEditorTexts;
 export interface JournalLinesEditorProps {
   /** Účetnictví je výchozí; DE mění jen prezentaci položek. */
   bookkeepingMode?: import("../tax-records/tax-record-types").BookkeepingMode;
+  /** Výchozí true; false skryje kategorie i jejich nastavení a validaci bez změny dat. */
   categoriesEnabled?: boolean;
   /** U ID přeřazení zobrazí dvě položky, ostatní pohyby jednu. */
   taxMovementKind?: import("../tax-records/tax-record-types").TaxMovementKind;

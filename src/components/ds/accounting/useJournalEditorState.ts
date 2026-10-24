@@ -426,6 +426,7 @@ export function useJournalEditorState(
     dimensionRequired: props.categoryRequired ?? false,
     categoryRequired: props.categoryRequired ?? false,
     categoryBySide: props.categoryBySide,
+    categoriesEnabled: props.categoriesEnabled,
     vatActive: vatOn && !vatReadOnly,
     vatCodeMap,
     calcMode,

@@ -4,6 +4,8 @@
 
 ### DE-2 + DE-3 a drobná API
 
+- Doplněk: `JournalLinesEditor.categoriesEnabled` / `DocumentForm.categoriesEnabled` (výchozí `true`) podporuje vypnutí ekonomických kategorií i v účetnictví: `false` skryje společný i MD/DAL sloupec, nastavení a detail, vypne validaci DS i automatické změny kategorií; uložené hodnoty a tvar řádků zůstávají zachované.
+- Ověření doplňku: 9 nových regresí v `journal-categories-disabled.test.tsx`, spolu s `journal-categories.test.tsx` a `tax-records.test.tsx` **62/62**; všechny unit **1 565/1 565**. `check:quick --harness` a explicitní lint/formát změněných souborů OK (jen stávající varování velikosti orchestrátoru); katalog **503 komponent / 1 442 props**, 0 odebrání. E2E ani check:full neběžely; nevydáno.
 - Nové `TaxBookView` (hotové `rows`, `homeCurrency`, řízené `filters`/`onFiltersChange`, `periods`, `onDocumentOpen`/`onUnassignedOpen`), `TaxCategorySummary` (`rows`, `currency`, `unassignedAmount`, prokliky), `CashCheckPanel` (`rows`, `onAccountOpen`) a `TaxBookEntriesPanel` (`entries`, `currency`, `onEntryOpen`) pro sekci Zápisy v knize v Propojených.
 - Nové `BookkeepingModeSelect`, `BookkeepingSettingsFields` a `TaxMovementSelect`: řízená volba režimu nové firmy, skryté účty knihy a příjmová/výdajová položka zaokrouhlení firmy. Nové texty CS/SK v `DsTexts.taxRecords`.
 - `JournalLinesEditor` a `DocumentForm` přijímají `bookkeepingMode="accrual" | "tax_records"` (výchozí accrual), `categoriesEnabled`, `taxMovementKind` a `onTaxMovementKindChange`; `DocumentForm.hideMainAccount` skrývá hlavní účet/stranu bez změny dat, v DE automaticky. Platí pro faktury i zálohové listy. Přeřazení interního dokladu má Z položky / Na položku, ostatní jeden sloupec Položka.

@@ -41,7 +41,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
-- Keep grid/editor texts in domain modules, re-exported through the existing text entry. Why: stable imports and bounded files.
+- Keep grid/editor texts in domain modules via their entry. Why: stable imports, bounded files.
 - Panels share layout/resize/tools; RecordSidePanel overlays below 768px and clamps bounds to its host. File surfaces share useFileDrop/validateFiles and innermost enabled drop ownership. Why: no overflow or duplicate drops. Internal drag clears on window capture drop/dragend; selection lists use focusable checkboxes in semantic lists.
 - FileDropZone owns drag events on a group; its selection button contains only static content and children remain siblings. Why: chip actions stay independently accessible without nested controls.
 - Keep pane providers, pane layout, grid model/toolbar/body and document value/props/text contracts in focused internal modules; preserve their public entry re-exports. Why: maintenance stays bounded without changing consumer imports or behavior.

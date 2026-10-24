@@ -183,7 +183,9 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     return [
       ...head,
       ...amountColumns,
-      ...(input.sideFields === "shared" ? [{ id: "categoryId" as const, label: t.category }] : []),
+      ...(input.categoriesEnabled !== false && input.sideFields === "shared"
+        ? [{ id: "categoryId" as const, label: t.category }]
+        : []),
       actions,
     ];
   if (input.mode === "mainAccount")
@@ -192,7 +194,9 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
       ...amountColumns,
       { id: "counterAccount", label: input.counterShortLabel },
       { id: "counterAccountName", label: input.counterNameLabel, defaultVisible: false },
-      { id: "categoryId", label: t.category },
+      ...(input.categoriesEnabled === false
+        ? []
+        : [{ id: "categoryId" as const, label: t.category }]),
       { id: "vs", label: t.vs, defaultVisible: false, align: "left" },
       { id: "partnerId", label: t.partner, defaultVisible: false },
       actions,
@@ -218,12 +222,14 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
             align: id === "debitVs" || id === "creditVs" ? ("left" as const) : undefined,
           }),
         )),
-    ...((input.categoryBySide ?? true)
-      ? [
-          { id: "debitCategoryId" as const, label: t.debitCategory },
-          { id: "creditCategoryId" as const, label: t.creditCategory },
-        ]
-      : [{ id: "categoryId" as const, label: t.category }]),
+    ...(input.categoriesEnabled === false
+      ? []
+      : (input.categoryBySide ?? true)
+        ? [
+            { id: "debitCategoryId" as const, label: t.debitCategory },
+            { id: "creditCategoryId" as const, label: t.creditCategory },
+          ]
+        : [{ id: "categoryId" as const, label: t.category }]),
     actions,
   ];
 }

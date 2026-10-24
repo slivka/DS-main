@@ -52,6 +52,8 @@ export function selectableCategories(options: CategoryOption[], allowed: string[
 }
 /** Kontext stejný pro buňku, detail, validaci i změnu účtu. */
 export interface CategoryContext {
+  /** Vypnutí zachová hodnoty a zakáže validaci i automatické změny kategorií. */
+  categoriesEnabled?: boolean;
   categories: CategoryOption[];
   accountByCode: Map<string, AccountOption>;
   categoryBySide?: boolean;
@@ -69,8 +71,9 @@ export function categorySide(line: JournalLine, column: CategoryColumn, ctx: Cat
 export function categoryCellState(line: JournalLine, column: CategoryColumn, ctx: CategoryContext) {
   const side = categorySide(line, column, ctx);
   const accountCode = (side === "MD" ? line.debitAccount : line.creditAccount) ?? "";
-  const enabled = isCategoryAccount(ctx.accountByCode.get(accountCode));
-  const allowed = ctx.allowedCategories?.(accountCode, side) ?? null;
+  const enabled =
+    ctx.categoriesEnabled !== false && isCategoryAccount(ctx.accountByCode.get(accountCode));
+  const allowed = enabled ? (ctx.allowedCategories?.(accountCode, side) ?? null) : null;
   const options = enabled ? selectableCategories(ctx.categories, allowed) : [];
   const normalized = normalizeCategoryLine(line);
   const ownColumn = side === "MD" ? "debitCategoryId" : "creditCategoryId";
@@ -101,6 +104,7 @@ export function reconcileCategories(
 ) {
   const values: Partial<JournalLine> = {};
   const changed: CategoryColumn[] = [];
+  if (ctx.categoriesEnabled === false) return { values, changed };
   const columns: CategoryColumn[] = ctx.categoryBySide
     ? ["debitCategoryId", "creditCategoryId"]
     : ["categoryId"];
