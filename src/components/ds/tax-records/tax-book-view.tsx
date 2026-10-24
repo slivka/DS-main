@@ -33,7 +33,10 @@ export const TaxBookView = forwardRef<HTMLDivElement, TaxBookViewProps>(function
   },
   ref,
 ) {
-  const t = useDsTexts().taxRecords;
+  const texts = useDsTexts();
+  const t = texts.taxRecords;
+  const showKind = rows.some((r) => r.kind);
+  const showBase = rows.some((r) => r.base != null);
   const [local, setLocal] = useState<TaxBookFilters>({});
   const current = filters ?? local;
   const change = (next: TaxBookFilters) => {
@@ -98,7 +101,11 @@ export const TaxBookView = forwardRef<HTMLDivElement, TaxBookViewProps>(function
           exportName="tax-book"
           storageKey={storageKey}
           rows={filterTaxBook(rows, current)}
-          columns={taxBookColumns(t, homeCurrency, onDocumentOpen, onUnassignedOpen)}
+          columns={taxBookColumns(t, homeCurrency, onDocumentOpen, onUnassignedOpen, {
+            y: texts.taxYear,
+            showKind,
+            showBase,
+          })}
           rowKey={(r) => r.id}
           onRowOpen={(r) =>
             r.unassigned && onUnassignedOpen

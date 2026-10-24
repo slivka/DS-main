@@ -1,5 +1,6 @@
 ## DS 2.141.0 (nevydáno)
 
+- [x] DE-4–DE-6: typ zápisu a Základ/DPH/Celkem v knize, `TaxAssetCard`, `TaxInternalMovementFields`, `TransportAllowanceGrid`, `TaxYearCloseWizard`, `TaxReturnOutput`, `TaxYearCarryForward`; CS/SK, ukázky, 8 unit testů. Nevydáno.
 - [x] Výkazy: `FinancialStatementView`, `StatementChecksBar`, `SavedStatementList`, `StatementSaveDialog`, `StatementTemplateEditor`; CS/SK, ukázky, 11 unit testů. Nevydáno.
 - [ ] E2E spec výkazů a SUBTOTAL v exportu (pokud APP bude chtít vzorce místo hodnot DB).
 

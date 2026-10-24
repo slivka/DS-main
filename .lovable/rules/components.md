@@ -9001,3 +9001,200 @@ Správa šablony výkazu: strom řádků, typ součet / mapovaný, mapování ú
 
 - Nevalidujte šablonu v DS; chyby předává APP v issues.
 - Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB.
+
+### TaxAssetCard
+
+```tsx
+import { TaxAssetCard } from "@/design-system/{slug}";
+```
+
+Karta majetku v daňové evidenci jen s daňovou řadou: odpisy, zůstatková cena, drobný majetek; bez účtů a účetních odpisů.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `asset` | TaxAsset | `—` |
+| `currency` | string | `—` |
+| `onYearOpen` | (row: TaxAssetYear) => void | `—` |
+| `storageKey` | string | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Daňová evidence z dat APP:**
+
+```tsx
+<TaxAssetCard asset={asset} currency={currency} onYearOpen={openDepreciation} />
+```
+
+**Avoid:**
+
+- Neukazujte účetní řadu ani účty v DE.
+- Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku.
+
+### TaxInternalMovementFields
+
+```tsx
+import { TaxInternalMovementFields } from "@/design-system/{slug}";
+```
+
+Pole interního dokladu DE: nepeněžní příjem / výdaj nebo přeřazení z položky na položku, částka a důvod.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | TaxInternalMovementValue | `—` |
+| `onChange` | (value: TaxInternalMovementValue) => void | `—` |
+| `items` | TaxItemOption[] | `—` |
+| `currency` | string | `—` |
+| `errors` | Partial<Record<string, string>> | `—` |
+| `disabled` | boolean | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Daňová evidence z dat APP:**
+
+```tsx
+<TaxInternalMovementFields value={draft} onChange={setDraft} items={items} currency={currency} />
+```
+
+**Avoid:**
+
+- Neposílejte technické položky jako volbu uživatele.
+- Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku.
+
+### TransportAllowanceGrid
+
+```tsx
+import { TransportAllowanceGrid } from "@/design-system/{slug}";
+```
+
+Paušál na dopravu: měsíce × vozidla, počet dní nebo měsíců, částky z APP a akce Vytvořit interní doklady; zákaz přes disabledReason.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `months` | { id: string; label: string }[] | `—` |
+| `vehicles` | { id: string; label: string }[] | `—` |
+| `cells` | TransportAllowanceCell[] | `—` |
+| `unit` | enum | `—` |
+| `currency` | string | `—` |
+| `onCountChange` | (monthId: string, vehicleId: string, count: number  /  null) => void | `—` |
+| `onCreateDocuments` | () => void | `—` |
+| `onDocumentOpen` | (id: string) => void | `—` |
+| `disabledReason` | string | `—` |
+| `busy` | boolean | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Daňová evidence z dat APP:**
+
+```tsx
+<TransportAllowanceGrid months={months} vehicles={vehicles} cells={cells} currency={currency} onCreateDocuments={create} disabledReason={reason} />
+```
+
+**Avoid:**
+
+- Nepočítejte sazbu paušálu v DS.
+- Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku.
+
+### TaxYearCloseWizard
+
+```tsx
+import { TaxYearCloseWizard } from "@/design-system/{slug}";
+```
+
+Uzavření roku v DE bez účetních kroků: kontroly z APP (blokující / informační), potvrzení a výsledek.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `year` | number | `—` |
+| `checks` | TaxYearCheck[] | `—` |
+| `onCloseYear` | () => void | `—` |
+| `busy` | boolean | `—` |
+| `result` | { status: 'success'  /  'error'; message?: string }  /  null | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Daňová evidence z dat APP:**
+
+```tsx
+<TaxYearCloseWizard year={2026} checks={checks} onCloseYear={closeYear} result={result} />
+```
+
+**Avoid:**
+
+- Nezařazené úhrady předávejte jako blocking; pohledávky k 31. 12. jako info.
+- Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku.
+
+### TaxReturnOutput
+
+```tsx
+import { TaxReturnOutput } from "@/design-system/{slug}";
+```
+
+Výstup pro přiznání: řádky tiskopisu, popis a částka z APP s proklikem a exportem do Excelu a PDF.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | TaxReturnLine[] | `—` |
+| `currency` | string | `—` |
+| `year` | number | `—` |
+| `onLineOpen` | (row: TaxReturnLine) => void | `—` |
+| `storageKey` | string | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Daňová evidence z dat APP:**
+
+```tsx
+<TaxReturnOutput year={2026} rows={lines} currency={currency} onLineOpen={openItems} />
+```
+
+**Avoid:**
+
+- Nesčítejte řádky přiznání v DS.
+- Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku.
+
+### TaxYearCarryForward
+
+```tsx
+import { TaxYearCarryForward } from "@/design-system/{slug}";
+```
+
+Stav a akce převodu daňové evidence do dalšího roku.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `fromYear` | number | `—` |
+| `status` | enum | `—` |
+| `onCarryForward` | () => void | `—` |
+| `disabledReason` | string | `—` |
+| `busy` | boolean | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Daňová evidence z dat APP:**
+
+```tsx
+<TaxYearCarryForward fromYear={2026} status="ready" onCarryForward={carry} />
+```
+
+**Avoid:**
+
+- Neodvozujte stav převodu v DS.
+- Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku.

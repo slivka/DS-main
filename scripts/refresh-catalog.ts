@@ -1,6 +1,7 @@
 import { enrichTaxRecords } from "./tax-record-catalog";
 import { enrichVatReports } from "./vat-report-catalog";
 import { enrichStatementCatalog } from "./statement-catalog";
+import { enrichTaxYearCatalog } from "./tax-year-catalog";
 /** Obnovení autorských údajů katalogu · vlastní odvozené výchozí texty a referenci · nevydává. */
 import { readFileSync, writeFileSync } from "node:fs";
 import { DS_TEXTS_CS } from "../src/ds-texts/cs";
@@ -202,6 +203,7 @@ export function refreshCatalog() {
   const gridContractComponents = enrichGridContracts(catalog.components);
   const taxComponents = enrichTaxRecords(catalog.components);
   const statementComponents = enrichStatementCatalog(catalog.components);
+  const taxYearComponents = enrichTaxYearCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -269,6 +271,7 @@ export function refreshCatalog() {
       ...vatComponents,
       ...taxComponents,
       ...statementComponents,
+      ...taxYearComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";

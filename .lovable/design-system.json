@@ -14911,6 +14911,288 @@
         "Nevalidujte šablonu v DS; chyby předává APP v issues.",
         "Nepočítejte součty, přepočty ani dorovnání v DS; hodnoty obou jednotek dodává APP/DB."
       ]
+    },
+    {
+      "name": "TaxAssetCard",
+      "file": "src/components/ds/tax-records/tax-asset-card.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Karta majetku v daňové evidenci jen s daňovou řadou: odpisy, zůstatková cena, drobný majetek; bez účtů a účetních odpisů.",
+      "props": [
+        {
+          "name": "asset",
+          "type": "TaxAsset"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "onYearOpen",
+          "type": "(row: TaxAssetYear) => void"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Daňová evidence z dat APP",
+          "code": "<TaxAssetCard asset={asset} currency={currency} onYearOpen={openDepreciation} />"
+        }
+      ],
+      "antipatterns": [
+        "Neukazujte účetní řadu ani účty v DE.",
+        "Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku."
+      ]
+    },
+    {
+      "name": "TaxInternalMovementFields",
+      "file": "src/components/ds/tax-records/tax-internal-movement-fields.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Pole interního dokladu DE: nepeněžní příjem / výdaj nebo přeřazení z položky na položku, částka a důvod.",
+      "props": [
+        {
+          "name": "value",
+          "type": "TaxInternalMovementValue"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: TaxInternalMovementValue) => void"
+        },
+        {
+          "name": "items",
+          "type": "TaxItemOption[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "errors",
+          "type": "Partial<Record<string, string>>"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Daňová evidence z dat APP",
+          "code": "<TaxInternalMovementFields value={draft} onChange={setDraft} items={items} currency={currency} />"
+        }
+      ],
+      "antipatterns": [
+        "Neposílejte technické položky jako volbu uživatele.",
+        "Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku."
+      ]
+    },
+    {
+      "name": "TransportAllowanceGrid",
+      "file": "src/components/ds/tax-records/transport-allowance-grid.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Paušál na dopravu: měsíce × vozidla, počet dní nebo měsíců, částky z APP a akce Vytvořit interní doklady; zákaz přes disabledReason.",
+      "props": [
+        {
+          "name": "months",
+          "type": "{ id: string; label: string }[]"
+        },
+        {
+          "name": "vehicles",
+          "type": "{ id: string; label: string }[]"
+        },
+        {
+          "name": "cells",
+          "type": "TransportAllowanceCell[]"
+        },
+        {
+          "name": "unit",
+          "type": "enum",
+          "values": [
+            "days",
+            "months"
+          ]
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "onCountChange",
+          "type": "(monthId: string, vehicleId: string, count: number | null) => void"
+        },
+        {
+          "name": "onCreateDocuments",
+          "type": "() => void"
+        },
+        {
+          "name": "onDocumentOpen",
+          "type": "(id: string) => void"
+        },
+        {
+          "name": "disabledReason",
+          "type": "string"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Daňová evidence z dat APP",
+          "code": "<TransportAllowanceGrid months={months} vehicles={vehicles} cells={cells} currency={currency} onCreateDocuments={create} disabledReason={reason} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte sazbu paušálu v DS.",
+        "Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku."
+      ]
+    },
+    {
+      "name": "TaxYearCloseWizard",
+      "file": "src/components/ds/tax-records/tax-year-close-wizard.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Uzavření roku v DE bez účetních kroků: kontroly z APP (blokující / informační), potvrzení a výsledek.",
+      "props": [
+        {
+          "name": "year",
+          "type": "number"
+        },
+        {
+          "name": "checks",
+          "type": "TaxYearCheck[]"
+        },
+        {
+          "name": "onCloseYear",
+          "type": "() => void"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
+          "name": "result",
+          "type": "{ status: 'success' | 'error'; message?: string } | null"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Daňová evidence z dat APP",
+          "code": "<TaxYearCloseWizard year={2026} checks={checks} onCloseYear={closeYear} result={result} />"
+        }
+      ],
+      "antipatterns": [
+        "Nezařazené úhrady předávejte jako blocking; pohledávky k 31. 12. jako info.",
+        "Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku."
+      ]
+    },
+    {
+      "name": "TaxReturnOutput",
+      "file": "src/components/ds/tax-records/tax-return-output.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Výstup pro přiznání: řádky tiskopisu, popis a částka z APP s proklikem a exportem do Excelu a PDF.",
+      "props": [
+        {
+          "name": "rows",
+          "type": "TaxReturnLine[]"
+        },
+        {
+          "name": "currency",
+          "type": "string"
+        },
+        {
+          "name": "year",
+          "type": "number"
+        },
+        {
+          "name": "onLineOpen",
+          "type": "(row: TaxReturnLine) => void"
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Daňová evidence z dat APP",
+          "code": "<TaxReturnOutput year={2026} rows={lines} currency={currency} onLineOpen={openItems} />"
+        }
+      ],
+      "antipatterns": [
+        "Nesčítejte řádky přiznání v DS.",
+        "Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku."
+      ]
+    },
+    {
+      "name": "TaxYearCarryForward",
+      "file": "src/components/ds/tax-records/tax-year-carry-forward.tsx",
+      "import_path": "@/design-system/slivka",
+      "usage": "Stav a akce převodu daňové evidence do dalšího roku.",
+      "props": [
+        {
+          "name": "fromYear",
+          "type": "number"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "values": [
+            "not_started",
+            "ready",
+            "done",
+            "blocked"
+          ]
+        },
+        {
+          "name": "onCarryForward",
+          "type": "() => void"
+        },
+        {
+          "name": "disabledReason",
+          "type": "string"
+        },
+        {
+          "name": "busy",
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "label": "Daňová evidence z dat APP",
+          "code": "<TaxYearCarryForward fromYear={2026} status=\"ready\" onCarryForward={carry} />"
+        }
+      ],
+      "antipatterns": [
+        "Neodvozujte stav převodu v DS.",
+        "Nepočítejte v DS daň, odpisy ani částky; nezobrazujte technický účet, jen položku."
+      ]
     }
   ],
   "assets": [

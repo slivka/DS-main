@@ -53,6 +53,8 @@ export type { InvoicePrintTexts, InvoicePrintTextKey } from "./invoice-print-tex
 export interface DsTexts {
   /** Daňová evidence bez výpočtů a persistence. */
   taxRecords: import("./tax-record-texts").TaxRecordTexts;
+  /** DE: zálohy, majetek, paušál na dopravu a konec roku. */
+  taxYear: import("./tax-year-texts").TaxYearTexts;
   /** Přiznání, hlášení a podání DPH. */
   vatReports: import("./vat-report-texts").VatReportTexts;
   /** Výkazy – rozvaha, výsledovka, uložené výkazy a šablony. */

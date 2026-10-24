@@ -2,6 +2,15 @@
 
 ## 2.141.0 (nevydáno)
 
+### Daňová evidence DE-4 až DE-6
+
+- `TaxBookEntry.kind` (`payment`, `advance`, `advance_tax_document`, `advance_deduction`, `non_cash`, `offset`) a `TaxBookEntry.base`: `TaxBookView` ukáže sloupec Typ zápisu se štítkem a rozpočet Základ / DPH / Celkem, jen když je APP dodá; jinak beze změny.
+- Nové `TaxAssetCard` (jen daňová řada: odpisy, zůstatková cena, drobný majetek; bez účtů a účetních odpisů).
+- Nové `TaxInternalMovementFields` (nepeněžní příjem / výdaj nebo přeřazení z položky na položku, částka, důvod; technické položky se nenabízí).
+- Nové `TransportAllowanceGrid` (měsíce × vozidla, počet dní/měsíců, částky z APP, Vytvořit interní doklady, `disabledReason`).
+- Nové `TaxYearCloseWizard` + `taxYearCloseBlocked` (kontroly z APP: blokující / informační / splněno, potvrzení, výsledek), `TaxReturnOutput` (řádky tiskopisu, proklik, export Excel/PDF přes DataGrid), `TaxYearCarryForward` (stav a akce převodu).
+- Texty CS/SK v `DsTexts.taxYear`; ukázky na stránce Daňová evidence (neplátce i plátce DPH). 8 nových unit testů; katalog proti vydané 2.140.0 513 → 524 komponent / 1 416 → 1 632 props, 0 odebrání.
+
 ### Výkazy – rozvaha, výsledovka, uložené výkazy a šablony
 
 - Nové `FinancialStatementView`: stromový výkaz (označení, název, sloupce období / brutto–korekce–netto z `columns`), sbalení a „Rozbalit vše“ přes TreeGrid, tučné součtové řádky, dorovnaný řádek (`rounded`, `roundedNote`) s ikonou a bublinou, přepínač jednotek celé / tisíce (`unit`, `defaultUnit`, `onUnitChange`; hodnoty obou jednotek dodává APP, měna z `currency`), proklik `onRowOpen`, kontrolní pruh `checks`, export Excel/PDF (`exportName`, `printContext`), režim úprav `editable` + `onValuesChange(patch)` jen pro nesoučtové řádky.
