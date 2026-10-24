@@ -61,9 +61,16 @@ export function useJournalCategories(
         (key) =>
           key in values && values[key as keyof JournalLine] !== current[key as keyof JournalLine],
       );
+    const warnings = categoryWarnings.current.get(id);
+    if (warnings) for (const key of Object.keys(values)) delete warnings[key as CategoryColumn];
     const next = current ? { ...current, ...values, isBlank: false } : undefined;
     if (!next) return;
-    const reconciled = reconcileCategories(next, categoryContext, accountChanged);
+    const changedSides = new Set<"MD" | "D">();
+    if (current && "debitAccount" in values && values.debitAccount !== current.debitAccount)
+      changedSides.add("MD");
+    if (current && "creditAccount" in values && values.creditAccount !== current.creditAccount)
+      changedSides.add("D");
+    const reconciled = reconcileCategories(next, categoryContext, accountChanged, changedSides);
     if (accountChanged && reconciled.changed.length)
       categoryWarnings.current.set(
         id,

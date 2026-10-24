@@ -87,7 +87,20 @@ export function useJournalEditorState(
   } = props;
   const paneActive = useIsActivePane();
   const dsTexts = useDsTexts();
-  const t = React.useMemo(() => ({ ...dsTexts.journalEditor, ...texts }), [dsTexts, texts]);
+  const t = React.useMemo(
+    () => ({
+      ...dsTexts.journalEditor,
+      ...texts,
+      category: texts?.category ?? texts?.dimension ?? dsTexts.journalEditor.category,
+      debitCategory:
+        texts?.debitCategory ?? texts?.debitDimension ?? dsTexts.journalEditor.debitCategory,
+      creditCategory:
+        texts?.creditCategory ?? texts?.creditDimension ?? dsTexts.journalEditor.creditCategory,
+      missingCategory:
+        texts?.missingCategory ?? texts?.missingDimension ?? dsTexts.journalEditor.missingCategory,
+    }),
+    [dsTexts, texts],
+  );
   const accountFormRequired =
     texts?.accountFormRequired ?? dsTexts.columnPicker.accountFormRequired;
   const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);

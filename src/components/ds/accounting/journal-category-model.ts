@@ -97,6 +97,7 @@ export function reconcileCategories(
   line: JournalLine,
   ctx: CategoryContext,
   accountChanged: boolean,
+  changedSides?: ReadonlySet<"MD" | "D">,
 ) {
   const values: Partial<JournalLine> = {};
   const changed: CategoryColumn[] = [];
@@ -105,6 +106,8 @@ export function reconcileCategories(
     : ["categoryId"];
   for (const column of columns) {
     const state = categoryCellState(line, column, ctx);
+    if (accountChanged && ctx.categoryBySide && changedSides && !changedSides.has(state.side))
+      continue;
     const next =
       (state.single && (!state.value || accountChanged) ? state.single.id : undefined) ??
       (accountChanged && (!state.enabled || state.invalid) ? null : state.value);

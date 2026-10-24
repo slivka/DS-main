@@ -281,6 +281,37 @@ describe("Kategorie – editor", () => {
     expect(change.mock.calls.at(-1)?.[0]?.[0]?.debitCategoryId).toBe("b");
     expect(result.current.vatWarnings.get("r")?.debitCategoryId).toBeTruthy();
   });
+  it("vytvořená kategorie neobejde povolení účtu", async () => {
+    const { result } = renderHook(() =>
+      useJournalEditorState(
+        {
+          ...base,
+          categories,
+          allowedCategories: () => ["root"],
+          onCreateCategory: async () => ({ id: "outside", name: "Mimo větev", postable: true }),
+        },
+        null,
+      ),
+    );
+    expect(await result.current.createCategory(line, "debitCategoryId")?.("Nová")).toBeNull();
+  });
+  it("změna MD nikdy nezmění kategorii nezměněné strany DAL", () => {
+    const change = mock();
+    const { result } = renderHook(() =>
+      useJournalEditorState(
+        {
+          ...base,
+          onChange: change,
+          categories,
+          allowedCategories: () => ["b"],
+          lines: [{ ...line, debitCategoryId: "b", creditCategoryId: "other" }],
+        },
+        null,
+      ),
+    );
+    act(() => result.current.patch("r", { debitAccount: "602001" }));
+    expect(change.mock.calls.at(-1)?.[0]?.[0]?.creditCategoryId).toBe("other");
+  });
   it("nevykazovatelný uzel ve výběru není možné potvrdit", async () => {
     const change = mock();
     const view = render(
