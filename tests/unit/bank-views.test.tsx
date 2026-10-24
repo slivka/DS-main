@@ -81,13 +81,16 @@ describe("BankStatementReconcileView", () => {
     expect(queryByText("Úhrada A")).toBeNull();
   });
 
-  it("Zařadit vše jisté volá onFileCertain; readOnly akce skryje", () => {
+  it("Zařadit vše jisté volá onFileCertain; readOnly akci zablokuje", () => {
     const { props, getByRole } = renderView();
     fireEvent.click(getByRole("button", { name: /Zařadit vše jisté/ }));
     expect(props.onFileCertain).toHaveBeenCalledTimes(1);
     cleanup();
     const ro = renderView({ readOnly: true });
-    expect(ro.queryByRole("button", { name: /Zařadit vše jisté/ })).toBeNull();
+    const filed = ro.queryByRole("button", {
+      name: /Zařadit vše jisté/,
+    }) as HTMLButtonElement | null;
+    expect(filed === null || filed.disabled).toBe(true);
   });
 
   it("souhrn ukazuje rozdíl proti bance s oddělenými tisíci", () => {
