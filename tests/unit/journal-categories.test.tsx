@@ -24,6 +24,7 @@ import {
 import { journalCategoryInputs } from "../../src/components/ds/accounting/journal-category-inputs";
 import { JournalLinesEditor } from "../../src/components/ds/accounting/journal-lines-editor";
 import { useJournalEditorState } from "../../src/components/ds/accounting/useJournalEditorState";
+import { updateGridLayout } from "../../src/lib/grid-prefs";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 
 const categories: CategoryOption[] = [
@@ -49,6 +50,7 @@ const base = {
   lines: [line],
   onChange: () => {},
   accounts,
+  storageKey: "category-unit",
   documentCurrency: "EUR",
   homeCurrency: "EUR",
 };
@@ -198,6 +200,10 @@ describe("Kategorie – povolení", () => {
 });
 describe("Kategorie – editor", () => {
   it("ID má dva sloupce, ostatní doklad jeden", () => {
+    updateGridLayout("category-unit:v4", {
+      visible: { debitCategoryId: true, creditCategoryId: true, categoryId: true },
+      visibilityOverrides: ["debitCategoryId", "creditCategoryId", "categoryId"],
+    });
     const view = render(
       <TooltipProvider>
         <JournalLinesEditor {...base} categories={categories} />
@@ -214,6 +220,10 @@ describe("Kategorie – editor", () => {
     expect(view.container.querySelector('[data-cell-key="r:debitCategoryId"]')).toBeNull();
   });
   it("jediná se skutečně doplní do řízených řádků a má zámek", async () => {
+    updateGridLayout("category-unit:v4", {
+      visible: { debitCategoryId: true, creditCategoryId: true },
+      visibilityOverrides: ["debitCategoryId", "creditCategoryId"],
+    });
     let latest: JournalLine[] = [];
     function Demo() {
       const [lines, setLines] = useState([line]);
