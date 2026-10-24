@@ -16,6 +16,7 @@ test("Dimenze: klávesnice, převzaté hodnoty, ruční výjimka a Enter v gridu
   await page.keyboard.press("Enter");
   await expect(page.getByRole("option", { name: "Octavia · 1AB 2345" })).toBeVisible();
   await page.keyboard.press("Escape");
+  await expect(header.locator("[cmdk-input]")).toHaveCount(0);
   await expect(header.getByRole("combobox", { name: "Vozidlo: Octavia · 1AB 2345" })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(header.getByRole("button", { name: "Odebrat dimenzi Vozidlo" })).toBeFocused();
