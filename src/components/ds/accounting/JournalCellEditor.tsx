@@ -160,7 +160,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
     return (
       <CategorySelect
         {...selectProps}
-        options={props.categories ?? []}
+        options={editor.categoryState(line, column).options}
         value={line[column]}
         onChange={(value) => choose({ [column]: value })}
         onEditSelected={props.onEditCategory}

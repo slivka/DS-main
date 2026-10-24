@@ -52,6 +52,9 @@ import { fillInitialVatCode } from "./journal-vat";
 import { useJournalVatGroups } from "./useJournalVatGroups";
 import { inheritedLineValues, useJournalPins } from "./useJournalPins";
 import { vatCodeCellLabel } from "./vat-code-labels";
+import { journalCategoryInputs } from "./journal-category-inputs";
+import { categoryCellState, reconcileCategories, type CategoryColumn } from "./journal-category-model";
+import { CATEGORY_COLUMNS } from "./journal-lines-model";
 import { useJournalSuggestionClear } from "./journal-suggestions";
 
 /** Celý stav a akce editoru; sdílí jej všechny části přes `JournalEditorContext`. */
@@ -59,6 +62,7 @@ export function useJournalEditorState(
   props: JournalLinesEditorProps,
   forwardedRef: React.ForwardedRef<HTMLDivElement>,
 ) {
+  props = journalCategoryInputs(props);
   const {
     lines,
     onChange,
@@ -141,6 +145,7 @@ export function useJournalEditorState(
         foreign,
         homeAmountLabel,
         sideFields,
+        categoryBySide: props.categoryBySide,
         withoutAccounts: props.withoutAccounts,
         hasValue: (column: JournalLineColumn) =>
           lines.some(
@@ -162,6 +167,7 @@ export function useJournalEditorState(
       counterNameLabel,
       vatOn,
       props.withoutAccounts,
+      props.categoryBySide,
     ],
   );
   const layout = useJournalLayout({
@@ -220,12 +226,24 @@ export function useJournalEditorState(
     props.rowSuggestions,
     props.onSuggestionCleared,
   );
+  const categoryContext = {
+    categories: props.categories ?? [], accountByCode,
+    categoryBySide: props.categoryBySide, allowedCategories: props.allowedCategories,
+  };
+  const categoryState = (line: JournalLine, column: CategoryColumn) => categoryCellState(line, column, categoryContext);
+  const categoryWarnings = React.useRef(new Map<string, Partial<Record<CategoryColumn, string>>>());
   const patch = (id: string, values: Partial<JournalLine>) => {
     touchedRows.current.add(id);
     const current = lines.find((line) => line.id === id);
     if (current) clearSuggestions(current, values);
     if (current) pins.releaseInherited(current, values);
-    onChange(lines.map((line) => (line.id === id ? { ...line, ...values, isBlank: false } : line)));
+    const accountChanged = !!current && ["debitAccount", "creditAccount"].some((key) => key in values && values[key as keyof JournalLine] !== current[key as keyof JournalLine]);
+    const next = current ? { ...current, ...values, isBlank: false } : undefined;
+    if (!next) return;
+    const reconciled = reconcileCategories(next, categoryContext, accountChanged);
+    if (accountChanged && reconciled.changed.length) categoryWarnings.current.set(id, Object.fromEntries(reconciled.changed.map((column) => [column, dsTexts.economicCategory.accountChanged])));
+    pins.markInherited(id, reconciled.changed.filter((column) => !!reconciled.values[column]));
+    onChange(lines.map((line) => line.id === id ? { ...next, ...reconciled.values } : line));
   };
   const makeLine = () =>
     createJournalLine({
@@ -263,9 +281,11 @@ export function useJournalEditorState(
     setSearch("");
     const previous = [...lines].reverse().find(isRegularLine);
     const { values, pinnedFields } = inheritedLineValues(previous, pins.pinned, inherit);
-    const next = { ...makeLine(), ...values };
+    const candidate = { ...makeLine(), ...values };
+    const reconciled = reconcileCategories(candidate, categoryContext, true);
+    const next = { ...candidate, ...reconciled.values };
     onChange(appendJournalLine(lines, next));
-    pins.markInherited(next.id, pinnedFields);
+    pins.markInherited(next.id, [...pinnedFields, ...reconciled.changed]);
     if (focus)
       requestAnimationFrame(() => {
         const column = visibleColumns.map((item) => item.id).find(canEditColumn);
@@ -327,6 +347,10 @@ export function useJournalEditorState(
   const changeCalcMode = (next: VatCalcMode) => void next;
   const canEditCell = (line: JournalLine, column: ColumnId) => {
     const dataColumn = dataColumnOf(column);
+    if (CATEGORY_COLUMNS.has(dataColumn)) {
+      const state = categoryState(line, dataColumn as CategoryColumn);
+      if (!state.enabled || (state.single && !state.invalid)) return false;
+    }
     if (line.isFxRounding) return false;
     if (line.isRounding)
       return column === "amount" && Boolean(rounding?.onChange) && rounding?.readOnly !== true;
@@ -355,7 +379,9 @@ export function useJournalEditorState(
     sideFields,
     sharedSide: props.sharedSide ?? "both",
     sideFieldRules: props.sideFieldRules ?? defaultSideFieldRules,
-    dimensionRequired: props.dimensionRequired ?? false,
+    dimensionRequired: props.categoryRequired ?? false,
+    categoryRequired: props.categoryRequired ?? false,
+    categoryBySide: props.categoryBySide,
     vatActive: vatOn && !vatReadOnly,
     vatCodeMap,
     calcMode,
@@ -375,6 +401,15 @@ export function useJournalEditorState(
       .filter(isRegularLine)
       .map((line) => [line.id, journalVatIssues(line, validationContext).warnings]),
   );
+  for (const line of lines.filter(isRegularLine)) {
+    const columns: CategoryColumn[] = props.categoryBySide ? ["debitCategoryId", "creditCategoryId"] : ["categoryId"];
+    for (const column of columns) {
+      if (categoryState(line, column).invalid) {
+        validations.set(line.id, { ...validations.get(line.id), [column]: dsTexts.economicCategory.invalid });
+      }
+    }
+    vatWarnings.set(line.id, { ...vatWarnings.get(line.id), ...categoryWarnings.current.get(line.id) });
+  }
   // Externí stavy buněk z pruhu položek (aplikace / server) se sloučí s vlastní validací.
   for (const issue of props.cellIssues ?? []) {
     const column = issue.columnId as JournalLineColumn;
@@ -420,7 +455,8 @@ export function useJournalEditorState(
       column,
       {
         accountByCode,
-        dimensions: props.dimensions ?? [],
+        dimensions: props.categories ?? [],
+        categories: props.categories ?? [],
         partners: props.partners ?? [],
         units: props.units ?? [],
         vatCodeMap,
@@ -508,6 +544,7 @@ export function useJournalEditorState(
     mode,
     sideFields,
     patch,
+    categoryState,
     addLine,
     discardBlankLine,
     pins,

@@ -1,3 +1,4 @@
+import { normalizeCategoryLine } from "./journal-category-model";
 import * as React from "react";
 import { JournalRecapHeader } from "./journal-recap-header";
 import { Tabs, TabsContent } from "../../ui/tabs";
@@ -176,7 +177,7 @@ export function JournalLinesRecap({
   }, [lines, t.fxRounding, t.rounding]);
   const jobs = React.useMemo(() => {
     const grouped = new Map<string, { id: string; side: "MD" | "DAL"; amount: number }>();
-    for (const line of lines.filter((item) => !item.isRounding && !item.isFxRounding)) {
+    for (const line of lines.filter((item) => !item.isRounding && !item.isFxRounding).map(normalizeCategoryLine)) {
       const entries: [string | null | undefined, "MD" | "DAL"][] = [
         [line.debitCategoryId ?? line.categoryId, "MD"],
         [line.creditCategoryId ?? line.categoryId, "DAL"],

@@ -175,9 +175,12 @@ export function buildVatPreviewLines(
         vatParentLineId: line.id,
         vatLineKind: kind,
         excludeFromTotal: !touchesMain,
-        categoryId: kind === "non_deductible" ? line.categoryId : undefined,
-        debitCategoryId: kind === "non_deductible" ? line.debitCategoryId : undefined,
-        creditCategoryId: kind === "non_deductible" ? line.creditCategoryId : undefined,
+        categoryId: kind === "non_deductible" ? (line.categoryId !== undefined ? line.categoryId : line.dimensionId) : undefined,
+        dimensionId: kind === "non_deductible" ? (line.categoryId !== undefined ? line.categoryId : line.dimensionId) : undefined,
+        debitCategoryId: kind === "non_deductible" ? (line.debitCategoryId !== undefined ? line.debitCategoryId : line.debitDimensionId) : undefined,
+        debitDimensionId: kind === "non_deductible" ? (line.debitCategoryId !== undefined ? line.debitCategoryId : line.debitDimensionId) : undefined,
+        creditCategoryId: kind === "non_deductible" ? (line.creditCategoryId !== undefined ? line.creditCategoryId : line.creditDimensionId) : undefined,
+        creditDimensionId: kind === "non_deductible" ? (line.creditCategoryId !== undefined ? line.creditCategoryId : line.creditDimensionId) : undefined,
       });
     };
     if (code.selfAssessment) {

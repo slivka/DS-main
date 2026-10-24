@@ -12,6 +12,8 @@ import { DetailField } from "./journal-detail-field";
 import { VatDetail } from "./journal-vat-detail";
 import { Input } from "../../ui/input";
 import { DecimalInput } from "../form/decimal-input";
+import { FieldValue } from "../form/field-value";
+import { categoryLabel } from "./journal-category-model";
 import { CategorySelect } from "./category-select";
 import { JournalGrossHelper } from "./journal-gross-helper";
 import { useJournalEditor } from "./journal-editor-context";
@@ -49,17 +51,12 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
   const { props } = editor;
   const disabled = !editor.canEditCell(line, id);
   const set = (values: Partial<JournalLine>) => editor.patch(line.id, values);
-  if (id === "categoryId" || id === "debitCategoryId" || id === "creditCategoryId")
-    return (
-      <CategorySelect
-        options={props.categories ?? []}
-        value={line[id]}
-        disabled={disabled}
-        onChange={(value) => set({ [id]: value })}
-        onEditSelected={props.onEditCategory}
-        onCreate={props.onCreateCategory}
-      />
-    );
+  if (id === "categoryId" || id === "debitCategoryId" || id === "creditCategoryId") {
+    const state = editor.categoryState(line, id);
+    if (state.single && !state.invalid) return <FieldValue className="text-muted-foreground" lockedReason={editor.dsTexts.economicCategory.singleAllowed}>{categoryLabel(props.categories ?? [], state.single.id)}</FieldValue>;
+    return <CategorySelect options={state.options} value={line[id]} disabled={disabled}
+      onChange={(value) => set({ [id]: value })} onEditSelected={props.onEditCategory} onCreate={props.onCreateCategory} />;
+  }
   if (id === "partnerId" || id === "debitPartnerId" || id === "creditPartnerId")
     return (
       <PartnerSelect
@@ -133,7 +130,8 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
           "quantity",
           "unitId",
           "unitPrice",
-          ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS),
+          ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS).filter((id) => !CATEGORY_COLUMNS.has(id)),
+          ...(editor.props.categoryBySide ? ["debitCategoryId", "creditCategoryId"] as const : ["categoryId"] as const),
         ];
   const fields = candidates.filter((id) => !shown.has(id));
   const errors: Partial<Record<string, string>> = editor.validations.get(line.id) ?? {};
