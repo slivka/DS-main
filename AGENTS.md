@@ -91,4 +91,3 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - DimensionBar owns controlled chip/search interaction; journal-dimensions-model owns header inheritance and manual-only serialization, while B1 category aliases are separated by structural guards. Why: new dimensions cannot silently become economic categories or overwrite manual exceptions.
 
-- Tax-record views compose shared DataGrid and LinkedRecordsPanel; journal-tax-records owns presentation-side mapping while APP owns technical counterpart completion and every tax calculation. Why: both bookkeeping modes keep one journal contract without exposing hidden accounts.
