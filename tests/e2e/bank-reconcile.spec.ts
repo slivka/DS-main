@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Banka – rozpis výpisu a dávka plateb", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/components/accounting-bank");
+    await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
+    // Hydratace stránky je spolehlivý signál; dřívější klik bez Reactu nic nezměnil.
+    await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true");
     await expect(page.getByTestId("bank-reconcile-showcase")).toBeVisible({ timeout: 45_000 });
   });
 
@@ -12,7 +14,9 @@ test.describe("Banka – rozpis výpisu a dávka plateb", () => {
     await expect(view.getByRole("button", { name: /Jisté \(2\)/ })).toBeVisible();
 
     // Filtr stavu Nerozpoznané zúží grid.
-    await view.getByRole("button", { name: /Nerozpoznané \(2\)/ }).click();
+    const unknown = view.getByRole("button", { name: /Nerozpoznané \(2\)/ });
+    await unknown.click();
+    await expect(unknown).toHaveAttribute("aria-pressed", "true");
     await expect(view.getByText("Poplatek za vedení účtu")).toBeVisible();
     await expect(view.getByText("Úhrada faktury")).toBeHidden();
     await view.getByRole("button", { name: /Vše \(6\)/ }).click();
@@ -30,6 +34,7 @@ test.describe("Banka – rozpis výpisu a dávka plateb", () => {
     // Výběr řádku checkboxem zpřístupní Zařadit vybrané.
     const fileSelected = view.getByRole("button", { name: "Zařadit vybrané" });
     await expect(fileSelected).toBeDisabled();
+    await view.getByRole("button", { name: "Vybrat více" }).click();
     await view.getByRole("row", { name: /Poplatek za vedení účtu/ }).getByRole("checkbox").click();
     await expect(fileSelected).toBeEnabled();
   });
@@ -37,6 +42,7 @@ test.describe("Banka – rozpis výpisu a dávka plateb", () => {
   test("dávka plateb: výběr, kontroly blokují soubor, dialog odeslání", async ({ page }) => {
     const batch = page.locator('[data-slot="payment-order-batch-view"]');
     await expect(batch.getByText("Alza a.s.")).toBeVisible();
+    await batch.getByRole("button", { name: "Vybrat více" }).click();
 
     // Řádek s chybou (chybí účet partnera) blokuje vytvoření souboru.
     await batch.getByRole("row", { name: /Karet s\.r\.o\./ }).getByRole("checkbox").click();
