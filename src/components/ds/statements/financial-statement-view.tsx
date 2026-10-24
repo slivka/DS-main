@@ -106,7 +106,10 @@ export const FinancialStatementView = forwardRef<HTMLDivElement, FinancialStatem
         value: (row) => row.label,
         render: (row) => (
           <span
-            className={cn("flex min-w-0 items-center gap-1", row.kind === "sum" && "font-semibold")}
+            className={cn("flex min-w-0 items-center gap-1",
+              row.kind === "sum" && "font-semibold",
+              row.rounded && "rounded-sm bg-warning/10",
+            )}
           >
             <span className="truncate">{row.label}</span>
             {row.rounded ? (
