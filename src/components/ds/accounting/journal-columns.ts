@@ -44,6 +44,9 @@ export function journalColumnLabels(
     unitId: t.unit,
     unitPrice: t.unitPrice,
     categoryId: t.category,
+    dimensionId: t.category,
+    debitDimensionId: t.debitCategory,
+    creditDimensionId: t.creditCategory,
     vs: t.vs,
     partnerId: t.partner,
     debitCategoryId: t.debitCategory,
@@ -88,6 +91,7 @@ export interface JournalColumnDefsInput {
   homeAmountLabel: string;
   /** Režim polí stran. */
   sideFields: "shared" | "split";
+  categoryBySide?: boolean;
   /** Bez zaúčtování MD / DAL v řádcích (zálohový list, 2.118.0). */
   withoutAccounts?: boolean;
   /** Sloupec má v některém řádku hodnotu (rozhoduje o výchozí viditelnosti polí stran). */
@@ -157,17 +161,20 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     { id: "creditAccount", label: t.sideCredit },
     { id: "creditAccountName", label: t.creditAccount, defaultVisible: false },
     ...(input.sideFields === "shared"
-      ? SHARED_COLUMNS.map((id) => ({
+      ? SHARED_COLUMNS.filter((id) => id !== "categoryId").map((id) => ({
           id,
           label: input.labels[id],
           align: id === "vs" ? ("left" as const) : undefined,
         }))
-      : SPLIT_COLUMNS.map((id) => ({
+      : SPLIT_COLUMNS.filter((id) => id !== "debitCategoryId" && id !== "creditCategoryId").map((id) => ({
           id,
           label: input.labels[id],
           defaultVisible: input.hasValue(id),
           align: id === "debitVs" || id === "creditVs" ? ("left" as const) : undefined,
         }))),
+    ...((input.categoryBySide ?? true)
+      ? [{ id: "debitCategoryId" as const, label: t.debitCategory }, { id: "creditCategoryId" as const, label: t.creditCategory }]
+      : [{ id: "categoryId" as const, label: t.category }]),
     actions,
   ];
 }

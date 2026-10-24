@@ -7,6 +7,8 @@ import type { JournalDeductions } from "./journal-deductions-types";
 import type { JournalRowSuggestions } from "./journal-suggestions";
 import type * as React from "react";
 import type { AccountOption } from "./account-select";
+import type { CategoryOption } from "./category-select";
+import type { AllowedCategories } from "./journal-category-model";
 import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
 import type { UnitOption } from "./unit-select";
@@ -140,6 +142,13 @@ export interface JournalLinesEditorProps {
   /** Účtový rozvrh. */
   accounts: AccountOption[];
   /** Zakázky. */
+  /** Ekonomické kategorie; mají přednost před dimensions. */
+  categories?: CategoryOption[];
+  /** Kategorie zvlášť MD / DAL; výchozí true pro internal, false pro mainAccount. */
+  categoryBySide?: boolean;
+  /** Povolené uzly účtu včetně potomků; null = všechny. */
+  allowedCategories?: AllowedCategories;
+  /** @deprecated Od 2.138.0 categories; odstranění ve 3.0.0. */
   dimensions?: DimensionOption[];
   /** Partneři. */
   partners?: PartnerOption[];
@@ -150,12 +159,18 @@ export interface JournalLinesEditorProps {
   /** Otevře úpravu vybrané měrné jednotky z buňky nebo detailu řádku. */
   onEditUnit?: (unitId: string) => void;
   /** Otevře úpravu vybrané zakázky z buňky nebo detailu řádku. */
+  /** Ekonomické kategorie. */
+  onEditCategory?: (categoryId: string) => void;
+  /** @deprecated Od 2.138.0 onEditCategory; odstranění ve 3.0.0. */
   onEditDimension?: (dimensionId: string) => void;
   /**
    * Přidá zakázku z hledání (＋ v buňce i v detailu řádku); dostane hledaný text.
    * Vrátí-li Promise zakázku, DS ji vybere v řádku, ze kterého se zakládalo;
    * `null` / `undefined` / zamítnutí nic nemění.
    */
+  /** Ekonomické kategorie. */
+  onCreateCategory?: (searchText: string) => void | Promise<CategoryOption | null | undefined>;
+  /** @deprecated Od 2.138.0 onCreateCategory; odstranění ve 3.0.0. */
   onCreateDimension?: (searchText: string) => void | Promise<DimensionOption | null | undefined>;
   /** Kód měny dokladu. */
   documentCurrency: string;
@@ -182,6 +197,9 @@ export interface JournalLinesEditorProps {
   /** Pravidla stran podle účtu. */
   sideFieldRules?: SideFieldRulesFn;
   /** Zakázka povinná pro celou knihu. */
+  /** Ekonomické kategorie. */
+  categoryRequired?: boolean;
+  /** @deprecated Od 2.138.0 categoryRequired; odstranění ve 3.0.0. */
   dimensionRequired?: boolean;
   /** Smí být řádek nedaňový. */
   isNonTaxAllowed?: (line: JournalLine) => boolean;

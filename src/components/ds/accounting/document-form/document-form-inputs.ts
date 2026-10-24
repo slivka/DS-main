@@ -72,7 +72,7 @@ export function documentFormInputs(props: DocumentFormProps) {
     accounts,
     mainAccountOptions,
     partners,
-    dimensions,
+    dimensions: props.categories ?? dimensions,
     currencies,
     constantSymbolOptions,
     paymentMethodOptions,

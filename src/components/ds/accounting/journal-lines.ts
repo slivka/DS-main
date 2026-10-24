@@ -1,13 +1,18 @@
+/** Řádky zápisu · vlastní veřejný kontrakt a převody DB · bez persistence. */
+import { normalizeCategoryLine } from "./journal-category-model";
 export type JournalLineColumn =
   | "debitAccount"
   | "creditAccount"
   | "counterAccount"
   | "amount"
   | "text"
+  | "categoryId"
   | "dimensionId"
   | "vs"
   | "partnerId"
+  | "debitCategoryId"
   | "debitDimensionId"
+  | "creditCategoryId"
   | "creditDimensionId"
   | "debitVs"
   | "creditVs"
@@ -78,11 +83,20 @@ export type JournalLine = {
   amount?: number;
   text?: string;
   /** Společné hodnoty (režim sideFields="shared"). */
+  /** Ekonomická kategorie. */
+  categoryId?: string | null;
+  /** @deprecated Od 2.138.0 categoryId; odstranění ve 3.0.0. */
   dimensionId?: string | null;
   vs?: string;
   partnerId?: string | null;
   /** Hodnoty jednotlivých stran (režim sideFields="split"). */
+  /** Ekonomická kategorie. */
+  debitCategoryId?: string | null;
+  /** @deprecated Od 2.138.0 debitCategoryId; odstranění ve 3.0.0. */
   debitDimensionId?: string | null;
+  /** Ekonomická kategorie. */
+  creditCategoryId?: string | null;
+  /** @deprecated Od 2.138.0 creditCategoryId; odstranění ve 3.0.0. */
   creditDimensionId?: string | null;
   debitVs?: string;
   creditVs?: string;
@@ -140,8 +154,12 @@ export type JournalRow = {
   credit_variable_symbol: string | null;
   debit_partner_id: string | null;
   credit_partner_id: string | null;
-  debit_dimension_id: string | null;
-  credit_dimension_id: string | null;
+  debit_category_id?: string | null;
+  credit_category_id?: string | null;
+  /** @deprecated Od 2.138.0 debit_category_id; odstranění ve 3.0.0. */
+  debit_dimension_id?: string | null;
+  /** @deprecated Od 2.138.0 credit_category_id; odstranění ve 3.0.0. */
+  credit_dimension_id?: string | null;
   non_tax: boolean;
   is_rounding: boolean;
   currency_code: string | null;
@@ -172,6 +190,8 @@ export type JournalRow = {
 };
 
 export type JournalRowOptions = {
+  /** Staré názvy DB jen na výslovnou volbu; výchozí category. */
+  categoryFormat?: "category" | "dimension";
   /** Na kterou stranu se zapisují společné údaje (výchozí "both"). */
   sharedSide?: JournalSharedSide;
   /** Strana hlavního účtu knihy – protiúčtem je pak druhá strana. */
@@ -187,6 +207,7 @@ export type AccountCategory =
   | "poskytnute_zalohy"
   | "prijate_zalohy"
   | "saldokonto"
+  | "ekonomicka_kategorie"
   | "bilance"
   | (string & {});
 
@@ -215,23 +236,29 @@ const SALDO_CATEGORIES = new Set<string>([
 
 export type SideFieldRules = {
   vsRequired: boolean;
+  categoryRequired?: boolean;
+  /** @deprecated Od 2.138.0 categoryRequired; odstranění ve 3.0.0. */
   dimensionRequired: boolean;
   partnerOffered: boolean;
 };
 export type SideFieldRulesFn = (
   account: AccountLike | undefined,
-  options?: { dimensionRequired?: boolean },
+  options?: { categoryRequired?: boolean; dimensionRequired?: boolean },
 ) => SideFieldRules;
 
 /** Která stranová pole jsou pro daný účet povinná nebo nabízená. */
 export function sideFieldRules(
   account: AccountLike | undefined,
-  options: { dimensionRequired?: boolean } = {},
+  options: { categoryRequired?: boolean; dimensionRequired?: boolean } = {},
 ): SideFieldRules {
   const category = account?.category ?? undefined;
+  const required =
+    Boolean(options.categoryRequired ?? options.dimensionRequired) &&
+    (category === "bilance" || category === "ekonomicka_kategorie");
   return {
+    categoryRequired: required,
     vsRequired: !!category && VS_REQUIRED_CATEGORIES.has(category),
-    dimensionRequired: Boolean(options.dimensionRequired) && category === "bilance",
+    dimensionRequired: required,
     partnerOffered: !!category && SALDO_CATEGORIES.has(category),
   };
 }
@@ -258,6 +285,7 @@ const sideValue = <T extends string>(
 
 /** Převede řádek editoru na databázový řádek (1:1). */
 export function toJournalRow(line: JournalLine, options: JournalRowOptions = {}): JournalRow {
+  line = normalizeCategoryLine(line);
   const sharedSide = options.sharedSide ?? "both";
   const debit = emptyToNull(line.debitAccount);
   const credit = emptyToNull(line.creditAccount);
@@ -305,18 +333,35 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
       "credit",
       sharedSide,
     ),
-    debit_dimension_id: sideValue(
-      emptyToNull(line.debitDimensionId),
-      emptyToNull(line.dimensionId),
-      "debit",
-      sharedSide,
-    ),
-    credit_dimension_id: sideValue(
-      emptyToNull(line.creditDimensionId),
-      emptyToNull(line.dimensionId),
-      "credit",
-      sharedSide,
-    ),
+    ...(options.categoryFormat === "dimension"
+      ? {
+          debit_dimension_id: sideValue(
+            emptyToNull(line.debitCategoryId),
+            emptyToNull(line.categoryId),
+            "debit",
+            sharedSide,
+          ),
+          credit_dimension_id: sideValue(
+            emptyToNull(line.creditCategoryId),
+            emptyToNull(line.categoryId),
+            "credit",
+            sharedSide,
+          ),
+        }
+      : {
+          debit_category_id: sideValue(
+            emptyToNull(line.debitCategoryId),
+            emptyToNull(line.categoryId),
+            "debit",
+            sharedSide,
+          ),
+          credit_category_id: sideValue(
+            emptyToNull(line.creditCategoryId),
+            emptyToNull(line.categoryId),
+            "credit",
+            sharedSide,
+          ),
+        }),
     non_tax: Boolean(line.nonTax),
     is_rounding: Boolean(line.isRounding),
     currency_code: emptyToNull(line.currency),
@@ -350,11 +395,22 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
     creditVs: row.credit_variable_symbol ?? undefined,
     debitPartnerId: row.debit_partner_id,
     creditPartnerId: row.credit_partner_id,
-    debitDimensionId: row.debit_dimension_id,
-    creditDimensionId: row.credit_dimension_id,
+    debitCategoryId:
+      row.debit_category_id !== undefined ? row.debit_category_id : row.debit_dimension_id,
+    debitDimensionId:
+      row.debit_category_id !== undefined ? row.debit_category_id : row.debit_dimension_id,
+    creditCategoryId:
+      row.credit_category_id !== undefined ? row.credit_category_id : row.credit_dimension_id,
+    creditDimensionId:
+      row.credit_category_id !== undefined ? row.credit_category_id : row.credit_dimension_id,
     vs: row.debit_variable_symbol ?? row.credit_variable_symbol ?? undefined,
     partnerId: row.debit_partner_id ?? row.credit_partner_id,
-    dimensionId: row.debit_dimension_id ?? row.credit_dimension_id,
+    categoryId:
+      (row.debit_category_id !== undefined ? row.debit_category_id : row.debit_dimension_id) ??
+      (row.credit_category_id !== undefined ? row.credit_category_id : row.credit_dimension_id),
+    dimensionId:
+      (row.debit_category_id !== undefined ? row.debit_category_id : row.debit_dimension_id) ??
+      (row.credit_category_id !== undefined ? row.credit_category_id : row.credit_dimension_id),
     nonTax: row.non_tax,
     isRounding: row.is_rounding,
     currency: row.currency_code ?? undefined,

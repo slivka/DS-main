@@ -32,8 +32,13 @@ export function selectableCategories(options: CategoryOption[], allowed: string[
   const byId = new Map(options.map((item) => [item.id, item]));
   const permitted = allowed === null ? null : new Set(allowed);
   return options.filter((item) => {
-    if (item.postable === false || item.selectable === false || item.active === false ||
-      item.is_active === false) return false;
+    if (
+      item.postable === false ||
+      item.selectable === false ||
+      item.active === false ||
+      item.is_active === false
+    )
+      return false;
     if (permitted === null) return true;
     let current: CategoryOption | undefined = item;
     const visited = new Set<string>();
@@ -56,7 +61,9 @@ export interface CategoryContext {
 export function categorySide(line: JournalLine, column: CategoryColumn, ctx: CategoryContext) {
   if (column === "debitCategoryId") return "MD" as const;
   if (column === "creditCategoryId") return "D" as const;
-  return isCategoryAccount(ctx.accountByCode.get(line.debitAccount ?? "")) ? "MD" as const : "D" as const;
+  return isCategoryAccount(ctx.accountByCode.get(line.debitAccount ?? ""))
+    ? ("MD" as const)
+    : ("D" as const);
 }
 /** Stav a nabídka kategorie konkrétní strany. */
 export function categoryCellState(line: JournalLine, column: CategoryColumn, ctx: CategoryContext) {
@@ -67,18 +74,35 @@ export function categoryCellState(line: JournalLine, column: CategoryColumn, ctx
   const options = enabled ? selectableCategories(ctx.categories, allowed) : [];
   const value = normalizeCategoryLine(line)[column];
   const single = enabled && allowed !== null && options.length === 1 ? options[0] : undefined;
-  return { side, enabled, options, single, value, invalid: !!value && enabled && !options.some((item) => item.id === value) };
+  return {
+    side,
+    enabled,
+    options,
+    single,
+    value,
+    invalid: !!value && enabled && !options.some((item) => item.id === value),
+  };
 }
 /** Úprava po změně účtu a doplnění jediné povolené; zachová jinak uložená data. */
-export function reconcileCategories(line: JournalLine, ctx: CategoryContext, accountChanged: boolean) {
+export function reconcileCategories(
+  line: JournalLine,
+  ctx: CategoryContext,
+  accountChanged: boolean,
+) {
   const values: Partial<JournalLine> = {};
   const changed: CategoryColumn[] = [];
   const columns: CategoryColumn[] = ctx.categoryBySide
-    ? ["debitCategoryId", "creditCategoryId"] : ["categoryId"];
+    ? ["debitCategoryId", "creditCategoryId"]
+    : ["categoryId"];
   for (const column of columns) {
     const state = categoryCellState(line, column, ctx);
-    const next = state.single?.id ?? (accountChanged && (!state.enabled || state.invalid) ? null : state.value);
-    if (next !== state.value) { values[column] = next; changed.push(column); }
+    const next =
+      state.single?.id ??
+      (accountChanged && (!state.enabled || state.invalid) ? null : state.value);
+    if (next !== state.value) {
+      values[column] = next;
+      changed.push(column);
+    }
   }
   return { values, changed };
 }

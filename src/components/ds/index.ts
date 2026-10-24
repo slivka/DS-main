@@ -195,6 +195,7 @@ export * from "./accounting/advances/advance-register-view";
 export * from "./accounting/advances/advance-correction-dialog";
 export * from "./accounting/journal-recap-footer";
 export * from "./accounting/dimension-select";
+export type { AllowedCategories } from "./accounting/journal-category-model";
 export * from "./accounting/unit-select";
 export * from "./accounting/book-select";
 export * from "./accounting/vs-field";
