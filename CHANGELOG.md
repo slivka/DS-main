@@ -1,6 +1,6 @@
 # Changelog – Slivka Design System
 
-## 2.142.0 (nevydáno)
+## 2.141.0 (nevydáno)
 
 ### Výkazy – rozvaha, výsledovka, uložené výkazy a šablony
 
@@ -11,9 +11,7 @@
 - Nové `StatementTemplateEditor` (strom řádků, typ součet / mapovaný, nadřazený řádek, mapování účtů a skupin z `mappingOptions`, přidat / odebrat, pořadí přetažením i tlačítky, validace `issues`) a čisté funkce `moveTemplateRow`, `removeTemplateRow`, `templateRowDepth`.
 - DS nic nepočítá: součty, přepočet po úpravě i dorovnání HV po zaokrouhlení dodává APP/DB. Excel export proto nese hodnoty od APP bez vzorců SUBTOTAL (vzorec by přepočítal součty a rozbil dorovnání).
 - Texty CS/SK v `DsTexts.statements`; ukázky na stránce Výkazy.
-- Ověření: 11 nových unit testů (`statements-2142.test.tsx`) 11/11; katalog proti vydané 2.140.0 **513 → 518 komponent / 1 416 → 1 591 props**, 0 odebrání. `check:catalog` hlásí jen očekávané pořadí sekcí (2.141.0 čeká na vydání). Nevydáno.
-
-## 2.141.0 (nevydáno)
+- Ověření: 11 nových unit testů (`statements-2142.test.tsx`) 11/11; katalog proti vydané 2.140.0 **513 → 518 komponent / 1 416 → 1 591 props**, 0 odebrání. Nevydáno.
 
 ### Dobropisy – záporné částky a vazba na původní doklad
 

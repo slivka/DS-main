@@ -1,9 +1,7 @@
-## DS 2.142.0 (nevydáno)
+## DS 2.141.0 (nevydáno)
 
 - [x] Výkazy: `FinancialStatementView`, `StatementChecksBar`, `SavedStatementList`, `StatementSaveDialog`, `StatementTemplateEditor`; CS/SK, ukázky, 11 unit testů. Nevydáno.
 - [ ] E2E spec výkazů a SUBTOTAL v exportu (pokud APP bude chtít vzorce místo hodnot DB).
-
-## DS 2.141.0 (nevydáno)
 
 - [x] Dobropisy: záporný platební kalendář (splátky, zbytek, kontrola součtu se znaménkem), generátor se záporným celkem i pozastávkou, `DocumentForm.correctsDocument` (výběr původního dokladu, otevření, zrušení, zámek). 10 nových unit testů 10/10. Nevydáno.
 - [x] Drobná API a vzhled pro APP: přepínač vazby účetního data v nastavení dokladu, daňové číslo u DDPZ, oblíbení partneři ve výběru protistrany, založení partnera z hlavičky ID, rozestupy a „kód – název banky" u protiúčtu pohybu, odznak menu jako ikona s bublinou, zkracování štítků záhlaví trojtečkou s bublinou. 13 nových unit testů 13/13. Nevydáno.
