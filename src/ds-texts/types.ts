@@ -157,6 +157,14 @@ export interface DsTexts {
   };
   /** Formulář bankovního výpisu. */
   bankStatement: BankStatementTexts;
+  /** Rozpis výpisu s rozpoznáním. */
+  bankReconcile: import("./bank-texts").BankReconcileTexts;
+  /** Napojení knihy na banku. */
+  bankConnection: import("./bank-texts").BankConnectionTexts;
+  /** Pravidla účtování banky. */
+  bankRules: import("./bank-texts").BankRuleTexts;
+  /** Platební dávky. */
+  bankPayments: import("./bank-texts").BankPaymentTexts;
   /** Přepínače uvnitř polí. */
   fieldToggle: {
     /** Obecný důvod zamčení bez konkrétního vysvětlení. */

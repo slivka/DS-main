@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BankStatementShowcase } from "@/components/showcase/BankStatementShowcase";
+import { BankReconcileShowcase } from "@/components/showcase/BankReconcileShowcase";
 import { BankVatShowcase } from "@/components/showcase/BankVatShowcase";
 import { FormDesignTwoShowcase } from "@/components/showcase/FormDesignTwoShowcase";
 import { DocumentDatesShowcase } from "@/components/showcase/DocumentDatesShowcase";
@@ -38,6 +39,7 @@ function AccountingBankPage() {
       ]}
     >
       <AccountingFormsNav />
+      <BankReconcileShowcase />
       <BankStatementShowcase />
       <BankVatShowcase />
       <FormDesignTwoShowcase />
