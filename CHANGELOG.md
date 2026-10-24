@@ -2,6 +2,16 @@
 
 ## 2.140.0 (nevydáno)
 
+### Banka I3–I7 – rozpis výpisu, napojení Fio, pravidla a platby
+
+- I3 nové `BankStatementReconcileView` (DataGrid pohybů s filtry stavu, editací účtu/položky podle `bookkeepingMode`, partnera, kategorie a dimenzí přes `MultiValueCell`, pruhem importu `importInfo`, souhrnem `summary` se šesti hodnotami a rozdílem proti bance, akcemi Zařadit vše jisté / vybrané, Přijmout návrhy vybraných, Znovu rozpoznat; Ctrl/Cmd+Enter přijme návrh aktivního řádku) a `BankReconcileSuggestionRow` (kandidáti úhrady, Přijmout / Odmítnout). Rozpoznání a zařazení dělá APP.
+- I4 nové `BankConnectionSettings` (Fio: token jen zadáním do pole typu heslo, po uložení se zobrazí jen kdy a kdo ho uložil; test spojení, čas a pracovní dny stahování, Stahovat od s mezí `minFetchFrom`, ochranná lhůta `nextAvailableAt`, pozastavení a odpojení), `BankConnectionBanner` (napojeno / končí token / chyba s akcemi) a `BankOngoingBadge`. Token se v UI nikdy nezobrazí ani nevrací.
+- I5 nové `BankRuleList` (seřazená pravidla nad DataGrid, duplikace, vypnutí) a `BankRuleDialog` (podmínky a výsledek, `AccountSelect` s `bookkeepingMode`, sloty kategorie a dimenzí, náhled počtu použití `previewCount`).
+- I7 nové `PaymentOrderBatchView` (závazky k úhradě, účet partnera jen z číselníku `partnerAccounts`, součty podle měn, chybové kontroly blokují soubor, formáty souboru, Odeslat do Fio s důvodem zákazu), `PaymentOrderSendDialog` (opsání textu přes `ConfirmByTypingDialog`, souhrn a limity), `PaymentOrderBatchList` (zrušení s povinným důvodem) a `PaymentSentBadge`.
+- Sdílené typy v `bank-types` a texty CS/SK v `DsTexts.bankReconcile`, `bankConnection`, `bankRules`, `bankPayments`. Ukázka na stránce Bankovní výpis a pohyb.
+- Katalog: obohacení DPH a DE nově zapisuje výčty literálů jako enum s hodnotami (dříve se při obnově ztrácely volby `variant`, `status`, `scope`).
+- Ověření: 23 nových unit testů (`bank-components`, `bank-views`), unit DS **1 588/1 588**; nový Chromium `bank-reconcile.spec.ts` **2/2**; `check:quick`. Katalog proti vydané 2.139.0 **503 → 514 komponent / 1 329 → 1 548 props**, 0 odebrání (proti stavu před kolem 503 / 1 442). Nevydáno; plná E2E ponechána uživateli.
+
 ## 2.139.0
 
 ### DE-2 + DE-3 a drobná API

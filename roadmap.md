@@ -1,5 +1,9 @@
 ## DS 2.140.0 (nevydáno)
 
+- [x] Banka I3–I7: rozpis výpisu s návrhy, napojení Fio bez zobrazení tokenu, pravidla banky a dávky plateb; 11 nových komponent, CS/SK, ukázka. Unit DS 1 588/1 588, Chromium bank-reconcile 2/2, check:quick, katalog 503 → 514 / 1 329 → 1 548 props bez odebrání. Nevydáno.
+- [ ] Návrh pod pohybem se zobrazuje pod gridem (DataGrid nemá rozbalovací podřádky); přesun přímo pod řádek až se sdíleným rozbalením gridu.
+- [ ] `BankRuleList.onReorder`: přetažení pořadí čeká na sdílené přesouvání řádků v DataGrid.
+
 ## DS 2.139.0
 
 - [x] Doplněk DE: categoriesEnabled=false i v účetnictví skryje kategorie v řádcích/nastavení a vypne validaci DS bez změny hodnot; 9 nových regresí, cíleně 62/62, unit DS 1 565/1 565, check:quick --harness + explicitní lint/formát změn OK; katalog 503 / 1 442 props bez odebrání. E2E ani check:full neběžely, nevydáno.
