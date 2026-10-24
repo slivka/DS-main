@@ -8,6 +8,7 @@ import { isAccountColumn, CATEGORY_COLUMNS } from "./journal-lines-model";
 export type JournalSuggestionKey =
   | "account"
   | "category"
+  /** @deprecated Od 2.138.0 category; odstranění ve 3.0.0. */
   | "dimension"
   | "vatCode"
   | "amount"

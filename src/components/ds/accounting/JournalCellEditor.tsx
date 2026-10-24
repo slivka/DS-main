@@ -163,10 +163,10 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
       <CategorySelect
         {...selectProps}
         options={editor.categoryState(line, column).options}
-        value={line[column]}
+        value={editor.categoryState(line, column).value}
         onChange={(value) => choose({ [column]: value })}
         onEditSelected={props.onEditCategory}
-        onCreate={props.onCreateCategory}
+        onCreate={editor.createCategory(line, column)}
       />
     );
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")
@@ -174,7 +174,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
       <PartnerSelect
         {...selectProps}
         partners={props.partners ?? []}
-        value={line[column]}
+        value={editor.categoryState(line, column).value}
         onChange={(value) => choose({ [column]: value })}
       />
     );

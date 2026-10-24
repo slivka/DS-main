@@ -49,6 +49,16 @@ export function journalCategoryInputs(props: JournalLinesEditorProps): JournalLi
     categoryRequired: props.categoryRequired ?? props.dimensionRequired,
     categoryBySide: props.categoryBySide ?? (props.mode ?? "internal") === "internal",
     rowSuggestions: suggestions,
+    onSuggestionCleared: (key, rowId) =>
+      props.onSuggestionCleared?.(
+        key === "category" &&
+          rowId &&
+          !props.rowSuggestions?.[rowId]?.category &&
+          props.rowSuggestions?.[rowId]?.dimension
+          ? "dimension"
+          : key,
+        rowId,
+      ),
     editableFields: props.editableFields?.map(
       (column) => categoryColumnAlias(column) as typeof column,
     ),

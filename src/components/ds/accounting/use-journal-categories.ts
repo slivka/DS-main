@@ -7,6 +7,7 @@ import type { JournalPins } from "./useJournalPins";
 import {
   categoryCellState,
   reconcileCategories,
+  selectableCategories,
   type CategoryColumn,
 } from "./journal-category-model";
 import type { DsTexts } from "../../../ds-texts";
@@ -30,6 +31,25 @@ export function useJournalCategories(
   const categoryState = (line: JournalLine, column: CategoryColumn) =>
     categoryCellState(line, column, categoryContext);
   const categoryWarnings = React.useRef(new Map<string, Partial<Record<CategoryColumn, string>>>());
+  const createCategory = (line: JournalLine, column: CategoryColumn) => {
+    const callback = props.onCreateCategory;
+    if (!callback) return undefined;
+    return (query: string) => {
+      const result = callback(query);
+      if (!result || typeof result.then !== "function") return result;
+      return result.then((created) => {
+        if (!created) return created;
+        const state = categoryState(line, column);
+        const accountCode = (state.side === "MD" ? line.debitAccount : line.creditAccount) ?? "";
+        const allowed = props.allowedCategories?.(accountCode, state.side) ?? null;
+        return selectableCategories([...categoryContext.categories, created], allowed).some(
+          (item) => item.id === created.id,
+        )
+          ? created
+          : null;
+      });
+    };
+  };
   const patch = (id: string, values: Partial<JournalLine>) => {
     touchedRows.current.add(id);
     const current = lines.find((line) => line.id === id);
@@ -70,5 +90,5 @@ export function useJournalCategories(
     const byId = new Map(singleUpdates.map((item) => [item.line.id, item.values]));
     onChange(lines.map((line) => ({ ...line, ...byId.get(line.id) })));
   }, [singleSignature, editable.size]); // eslint-disable-line react-hooks/exhaustive-deps -- synchronizace nové nabídky účtu do řízených dat, jen při konkrétní změně
-  return { patch, categoryState, categoryContext, categoryWarnings };
+  return { patch, categoryState, categoryContext, categoryWarnings, createCategory };
 }

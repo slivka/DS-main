@@ -62,11 +62,11 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
     return (
       <CategorySelect
         options={state.options}
-        value={line[id]}
+        value={state.value}
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
         onEditSelected={props.onEditCategory}
-        onCreate={props.onCreateCategory}
+        onCreate={editor.createCategory(line, id)}
       />
     );
   }
@@ -74,7 +74,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
     return (
       <PartnerSelect
         partners={props.partners ?? []}
-        value={line[id]}
+        value={state.value}
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
       />
@@ -93,7 +93,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
   if (id === "quantity" || id === "unitPrice") {
     const input = (
       <DecimalInput
-        value={line[id]}
+        value={state.value}
         disabled={disabled}
         className={id === "unitPrice" ? "pr-[calc(var(--control-h)*0.8)]" : undefined}
         onChange={(value) =>

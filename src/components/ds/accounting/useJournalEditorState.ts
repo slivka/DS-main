@@ -227,15 +227,16 @@ export function useJournalEditorState(
     props.rowSuggestions,
     props.onSuggestionCleared,
   );
-  const { patch, categoryState, categoryContext, categoryWarnings } = useJournalCategories(
-    props,
-    accountByCode,
-    editable,
-    pins,
-    touchedRows,
-    clearSuggestions,
-    dsTexts,
-  );
+  const { patch, categoryState, categoryContext, categoryWarnings, createCategory } =
+    useJournalCategories(
+      props,
+      accountByCode,
+      editable,
+      pins,
+      touchedRows,
+      clearSuggestions,
+      dsTexts,
+    );
   const makeLine = () =>
     createJournalLine({
       id: newJournalLineId(),
@@ -546,6 +547,7 @@ export function useJournalEditorState(
     sideFields,
     patch,
     categoryState,
+    createCategory,
     addLine,
     discardBlankLine,
     pins,
