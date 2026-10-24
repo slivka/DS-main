@@ -12,7 +12,7 @@ test("DPH: řádek, oddíl KH, doklad a řízené podání", async ({ page }) =>
   await demo.getByText("FV2026001", { exact: true }).dblclick();
   await expect(demo.getByTestId("vat-event")).toHaveText("Doklad fv1");
   await demo.getByRole("tab", { name: "A5", exact: true }).click();
-  await expect(demo.getByRole("tabpanel")).toContainText("7 000,00");
+  await expect(demo.getByRole("tabpanel")).toContainText(/7\s000,00/);
   await demo.getByRole("button", { name: "Vytvořit podání", exact: true }).click();
   await expect(demo.getByTestId("vat-event")).toHaveText("Podání vytvořeno");
   await demo.getByRole("button", { name: "Označit jako podané", exact: true }).click();

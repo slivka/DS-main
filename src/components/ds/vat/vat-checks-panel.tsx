@@ -53,25 +53,27 @@ export const VatChecksPanel = forwardRef<HTMLDivElement, VatChecksPanelProps>(
             }}
           />
         </header>
-        <TooltipProvider><CheckList
-          items={items
-            .filter((item) => current === "all" || item.severity === current)
-            .map((item) => ({
-              id: item.id,
-              severity: item.severity,
-              title: item.text,
-              detail: item.detail,
-              action:
-                item.documentId && onDocumentOpen
-                  ? {
-                      label: t.openDocument,
-                      onClick: () => {
-                        if (item.documentId) onDocumentOpen(item.documentId);
-                      },
-                    }
-                  : undefined,
-            }))}
-        /></TooltipProvider>
+        <TooltipProvider>
+          <CheckList
+            items={items
+              .filter((item) => current === "all" || item.severity === current)
+              .map((item) => ({
+                id: item.id,
+                severity: item.severity,
+                title: item.text,
+                detail: item.detail,
+                action:
+                  item.documentId && onDocumentOpen
+                    ? {
+                        label: t.openDocument,
+                        onClick: () => {
+                          if (item.documentId) onDocumentOpen(item.documentId);
+                        },
+                      }
+                    : undefined,
+              }))}
+          />
+        </TooltipProvider>
       </div>
     );
   },

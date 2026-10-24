@@ -52,6 +52,7 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
           id: `${field}${rate}`,
           label: `${t[field]} ${rate} % · ${currency}`,
           numeric: true,
+          decimals: 2,
           value: (r: VatControlDocument) =>
             r.rates.find((item) => item.rate === rate)?.[field] ?? null,
         })),
@@ -73,8 +74,20 @@ export const VatControlStatementView = forwardRef<HTMLDivElement, VatControlStat
     ];
     const summaryColumns: DataGridColumn<VatRateAmounts>[] = [
       { id: "rate", label: t.rate, value: (r) => `${r.rate} %` },
-      { id: "base", label: `${t.base} · ${currency}`, numeric: true, value: (r) => r.base },
-      { id: "tax", label: `${t.tax} · ${currency}`, numeric: true, value: (r) => r.tax },
+      {
+        id: "base",
+        label: `${t.base} · ${currency}`,
+        numeric: true,
+        decimals: 2,
+        value: (r) => r.base,
+      },
+      {
+        id: "tax",
+        label: `${t.tax} · ${currency}`,
+        numeric: true,
+        decimals: 2,
+        value: (r) => r.tax,
+      },
     ];
     return (
       <div ref={ref} {...props} className={cn("min-w-0 space-y-2", className)}>

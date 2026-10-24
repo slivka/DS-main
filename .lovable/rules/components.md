@@ -8026,3 +8026,197 @@ import { ZoomGrid } from "@/design-system/{slug}";
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+### VatReturnView
+
+```tsx
+import { VatReturnView } from "@/design-system/{slug}";
+```
+
+Strom přiznání s hotovými částkami a souhrnem APP, rozdíly compare a onRowOpen.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | VatReturnRow[] | `—` |
+| `compare` | Record<string, {base?: number; tax?: number}> | `—` |
+| `summary` | {liability?: number; excess?: number} | `—` |
+| `onRowOpen` | (row: VatReturnRow) => void | `—` |
+| `className` | string | `—` |
+| `currency` | string | `—` |
+| `storageKey` | string | `—` |
+
+**Examples:**
+
+**Přehled DPH z dat APP:**
+
+```tsx
+<VatReturnView {...appProps} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatControlStatementView
+
+```tsx
+import { VatControlStatementView } from "@/design-system/{slug}";
+```
+
+Oddíly A1–B3, prázdné ztlumené; doklady a souhrny výhradně od APP.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `sections` | Partial<Record<VatControlSection, VatControlSectionData>> | `—` |
+| `activeSection` | VatControlSection | `—` |
+| `onSectionChange` | (section: VatControlSection) => void | `—` |
+| `onDocumentOpen` | (id: string) => void | `—` |
+| `changed` | boolean | `—` |
+| `className` | string | `—` |
+| `currency` | string | `—` |
+| `storageKey` | string | `—` |
+
+**Examples:**
+
+**Přehled DPH z dat APP:**
+
+```tsx
+<VatControlStatementView {...appProps} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatRecapitulativeView
+
+```tsx
+import { VatRecapitulativeView } from "@/design-system/{slug}";
+```
+
+SH nebo varianta oss s opravami minulých období, součty dodaných částek bez přepočtu měn.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | recapitulative  /  oss | `—` |
+| `rows` | VatRecapitulativeRow[] | `—` |
+| `ossRows` | OssReturnRow[] | `—` |
+| `onRowOpen` | (id: string) => void | `—` |
+| `className` | string | `—` |
+| `currency` | string | `—` |
+| `storageKey` | string | `—` |
+
+**Examples:**
+
+**Přehled DPH z dat APP:**
+
+```tsx
+<VatRecapitulativeView {...appProps} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatChecksPanel
+
+```tsx
+import { VatChecksPanel } from "@/design-system/{slug}";
+```
+
+Nálezy APP, celkový počet, filtr závažnosti a proklik dokladu; podání neblokuje.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | VatCheckItem[] | `—` |
+| `severity` | all  /  error  /  warning  /  info | `—` |
+| `onSeverityChange` | (severity: string) => void | `—` |
+| `onDocumentOpen` | (id: string) => void | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Přehled DPH z dat APP:**
+
+```tsx
+<VatChecksPanel {...appProps} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatFilingBar
+
+```tsx
+import { VatFilingBar } from "@/design-system/{slug}";
+```
+
+Řízený stav a druh podání; oprávnění určuje přítomnost callbacku actions. Odemknutí vyžaduje důvod a opsání confirmText.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `form` | return  /  control  /  recapitulative  /  oss | `—` |
+| `status` | open  /  filed  /  changed | `—` |
+| `kind` | VatFilingKind | `—` |
+| `onKindChange` | (kind: VatFilingKind) => void | `—` |
+| `actions` | VatFilingActions | `—` |
+| `filedAt` | string | `—` |
+| `filedBy` | string | `—` |
+| `confirmText` | string | `—` |
+| `disabled` | boolean | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Přehled DPH z dat APP:**
+
+```tsx
+<VatFilingBar {...appProps} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.
+
+### VatPeriodPicker
+
+```tsx
+import { VatPeriodPicker } from "@/design-system/{slug}";
+```
+
+Řízený hledatelný výběr období APP; label zachová smíšenou periodicitu DPH a KH.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `periods` | VatPeriod[] | `—` |
+| `value` | {from: string; to: string}  /  null | `—` |
+| `onChange` | (period: VatPeriod) => void | `—` |
+| `label` | string | `—` |
+| `disabled` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+**Přehled DPH z dat APP:**
+
+```tsx
+<VatPeriodPicker {...appProps} />
+```
+
+**Avoid:**
+
+- Nevytvářejte daňové výpočty, snímky, oprávnění ani zápisy v DS; všechna data a operace dodává APP.

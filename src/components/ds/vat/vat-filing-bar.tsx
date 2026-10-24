@@ -94,7 +94,12 @@ export const VatFilingBar = forwardRef<HTMLDivElement, VatFilingBarProps>(functi
           </Button>
         ) : null}
         {actions.onDownloadXml ? (
-          <Button type="button" variant="outline" disabled={disabled} onClick={actions.onDownloadXml}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled}
+            onClick={actions.onDownloadXml}
+          >
             {t.download}
           </Button>
         ) : null}
@@ -104,7 +109,12 @@ export const VatFilingBar = forwardRef<HTMLDivElement, VatFilingBarProps>(functi
           </Button>
         ) : null}
         {actions.onCreateCorrection ? (
-          <Button type="button" variant="outline" disabled={disabled} onClick={actions.onCreateCorrection}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled}
+            onClick={actions.onCreateCorrection}
+          >
             {form === "return" ? t.additional : t.subsequent}
           </Button>
         ) : null}
