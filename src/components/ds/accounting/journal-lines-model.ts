@@ -13,15 +13,15 @@ import type { JournalLine, JournalLineColumn } from "./journal-lines";
 import type { JournalEditorTexts } from "../../../ds-texts";
 
 /** Sdílené sloupce stran (režim `sideFields="shared"`). */
-export const SHARED_COLUMNS: JournalLineColumn[] = ["dimensionId", "vs", "partnerId"];
+export const SHARED_COLUMNS: JournalLineColumn[] = ["categoryId", "vs", "partnerId"];
 /** Sloupce stran MD / DAL zvlášť (režim `sideFields="split"`). */
 export const SPLIT_COLUMNS: JournalLineColumn[] = [
   "debitVs",
   "creditVs",
   "debitPartnerId",
   "creditPartnerId",
-  "debitDimensionId",
-  "creditDimensionId",
+  "debitCategoryId",
+  "creditCategoryId",
 ];
 /** Výchozí editovatelné sloupce, když volající nepředá `editableFields`. */
 export const ALL_EDITABLE: JournalLineColumn[] = [
@@ -87,10 +87,10 @@ export const dataColumnOf = (column: ColumnId): JournalLineColumn =>
     : // Systémové sloupce (row, homeAmount, actions) v datech nejsou; vyhledání v mapách vrátí undefined.
       (column as JournalLineColumn);
 /** Sloupce zakázky. */
-export const DIMENSION_COLUMNS = new Set<string>([
-  "dimensionId",
-  "debitDimensionId",
-  "creditDimensionId",
+export const CATEGORY_COLUMNS = new Set<string>([
+  "categoryId",
+  "debitCategoryId",
+  "creditCategoryId",
 ]);
 /** Sloupce partnera. */
 export const PARTNER_COLUMNS = new Set<string>(["partnerId", "debitPartnerId", "creditPartnerId"]);
@@ -253,11 +253,11 @@ export const createJournalLine = ({
   amount: undefined,
   nonTax: defaults?.nonTax ?? false,
   text: defaults?.text,
-  dimensionId: defaults?.dimensionId,
+  categoryId: defaults?.categoryId,
   vs: defaults?.vs,
   partnerId: defaults?.partnerId,
-  debitDimensionId: defaults?.debitDimensionId,
-  creditDimensionId: defaults?.creditDimensionId,
+  debitCategoryId: defaults?.debitCategoryId,
+  creditCategoryId: defaults?.creditCategoryId,
   isBlank: true,
 });
 /** Kód DPH nového řádku: předchozí řádek má přednost před výchozím kódem knihy. */
@@ -275,7 +275,7 @@ export const filterJournalLines = (lines: JournalLine[], search: string) => {
       line.counterAccount,
       line.vs,
       line.partnerId,
-      line.dimensionId,
+      line.categoryId,
       line.amount,
       line.foreignAmount,
       line.quantity,

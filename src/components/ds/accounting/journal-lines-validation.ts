@@ -66,10 +66,10 @@ export function journalSideIssues(line: JournalLine, ctx: JournalValidationConte
     const shared = sideFields === "shared";
     const vsColumn = shared ? "vs" : side === "debit" ? "debitVs" : "creditVs";
     const dimensionColumn = shared
-      ? "dimensionId"
+      ? "categoryId"
       : side === "debit"
-        ? "debitDimensionId"
-        : "creditDimensionId";
+        ? "debitCategoryId"
+        : "creditCategoryId";
     if (rules.vsRequired && !line[vsColumn])
       issues[vsColumn] = t.missingVs.replace("{side}", sideLabel);
     if (rules.dimensionRequired && !line[dimensionColumn])

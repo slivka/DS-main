@@ -7,7 +7,7 @@
 import { Input } from "../../ui/input";
 import { DecimalInput } from "../form/decimal-input";
 import { AccountSelect } from "./account-select";
-import { DimensionSelect } from "./dimension-select";
+import { CategorySelect } from "./category-select";
 import { useJournalEditor } from "./journal-editor-context";
 import { isResultAccountType, type JournalLine } from "./journal-lines";
 import {
@@ -156,15 +156,15 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
     editor.patch(line.id, values);
     editor.finish();
   };
-  if (column === "dimensionId" || column === "debitDimensionId" || column === "creditDimensionId")
+  if (column === "categoryId" || column === "debitCategoryId" || column === "creditCategoryId")
     return (
-      <DimensionSelect
+      <CategorySelect
         {...selectProps}
-        options={props.dimensions ?? []}
+        options={props.categories ?? []}
         value={line[column]}
         onChange={(value) => choose({ [column]: value })}
-        onEditSelected={props.onEditDimension}
-        onCreate={props.onCreateDimension}
+        onEditSelected={props.onEditCategory}
+        onCreate={props.onCreateCategory}
       />
     );
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")

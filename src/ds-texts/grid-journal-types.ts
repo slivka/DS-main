@@ -109,6 +109,11 @@ export interface JournalEditorTexts {
   quantity: string;
   unit: string;
   unitPrice: string;
+  category: string;
+  debitCategory: string;
+  creditCategory: string;
+  missingCategory: string;
+  /** @deprecated Od 2.138.0 category; odstranění ve 3.0.0. */
   dimension: string;
   vs: string;
   partner: string;

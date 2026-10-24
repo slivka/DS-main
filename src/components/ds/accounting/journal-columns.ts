@@ -4,7 +4,8 @@
  * Nesmí: držet stav ani měnit řádky; vše je čistý výpočet ze vstupu.
  */
 import type { AccountOption } from "./account-select";
-import type { DimensionOption } from "./dimension-select";
+import { categoryLabel } from "./journal-category-model";
+import type { CategoryOption } from "./category-select";
 import type { PartnerOption } from "./partner-select";
 import type { UnitOption } from "./unit-select";
 import type { GridColumn } from "../grid/grid-columns";
@@ -42,11 +43,11 @@ export function journalColumnLabels(
     quantity: t.quantity,
     unitId: t.unit,
     unitPrice: t.unitPrice,
-    dimensionId: t.dimension,
+    categoryId: t.category,
     vs: t.vs,
     partnerId: t.partner,
-    debitDimensionId: t.debitDimension,
-    creditDimensionId: t.creditDimension,
+    debitCategoryId: t.debitCategory,
+    creditCategoryId: t.creditCategory,
     debitVs: t.debitVs,
     creditVs: t.creditVs,
     debitPartnerId: t.debitPartner,
@@ -133,7 +134,7 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
       ...head,
       ...amountColumns,
       ...(input.sideFields === "shared"
-        ? [{ id: "dimensionId" as const, label: t.dimension }]
+        ? [{ id: "categoryId" as const, label: t.category }]
         : []),
       actions,
     ];
@@ -143,7 +144,7 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
       ...amountColumns,
       { id: "counterAccount", label: input.counterShortLabel },
       { id: "counterAccountName", label: input.counterNameLabel, defaultVisible: false },
-      { id: "dimensionId", label: t.dimension },
+      { id: "categoryId", label: t.category },
       { id: "vs", label: t.vs, defaultVisible: false, align: "left" },
       { id: "partnerId", label: t.partner, defaultVisible: false },
       actions,
@@ -208,7 +209,8 @@ export interface JournalDisplayContext {
   /** Účty podle čísla. */
   accountByCode: Map<string, AccountOption>;
   /** Zakázky. */
-  dimensions: DimensionOption[];
+  dimensions: CategoryOption[];
+  categories?: CategoryOption[];
   /** Partneři. */
   partners: PartnerOption[];
   /** Měrné jednotky. */
@@ -268,8 +270,8 @@ export function journalDisplayValue(
     const extended = isAccountNameColumn(column) && !ctx.compactAccountIds.has(column);
     return code ? formatJournalAccountDisplay(code, account?.name, extended) : "";
   }
-  if (column === "dimensionId" || column === "debitDimensionId" || column === "creditDimensionId")
-    return ctx.dimensions.find((item) => item.id === line[column])?.name ?? "";
+  if (column === "categoryId" || column === "debitCategoryId" || column === "creditCategoryId")
+    return categoryLabel(ctx.categories ?? ctx.dimensions, line[column]);
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")
     return ctx.partners.find((item) => item.id === line[column])?.name ?? "";
   if (column === "unitId") return ctx.units.find((item) => item.id === line.unitId)?.code ?? "";

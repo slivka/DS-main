@@ -12,12 +12,12 @@ import { DetailField } from "./journal-detail-field";
 import { VatDetail } from "./journal-vat-detail";
 import { Input } from "../../ui/input";
 import { DecimalInput } from "../form/decimal-input";
-import { DimensionSelect } from "./dimension-select";
+import { CategorySelect } from "./category-select";
 import { JournalGrossHelper } from "./journal-gross-helper";
 import { useJournalEditor } from "./journal-editor-context";
 import type { JournalLine, JournalLineColumn } from "./journal-lines";
 import {
-  DIMENSION_COLUMNS,
+  CATEGORY_COLUMNS,
   PARTNER_COLUMNS,
   SHARED_COLUMNS,
   SPLIT_COLUMNS,
@@ -39,7 +39,7 @@ const widthClass = (id: JournalLineColumn) =>
         ? "flex-none w-[6rem]"
         : id === "unitPrice"
           ? "flex-none w-[8rem]"
-          : PARTNER_COLUMNS.has(id) || DIMENSION_COLUMNS.has(id)
+          : PARTNER_COLUMNS.has(id) || CATEGORY_COLUMNS.has(id)
             ? "min-w-[12rem] flex-1 basis-[14rem]"
             : "flex-none w-auto";
 
@@ -49,15 +49,15 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
   const { props } = editor;
   const disabled = !editor.canEditCell(line, id);
   const set = (values: Partial<JournalLine>) => editor.patch(line.id, values);
-  if (id === "dimensionId" || id === "debitDimensionId" || id === "creditDimensionId")
+  if (id === "categoryId" || id === "debitCategoryId" || id === "creditCategoryId")
     return (
-      <DimensionSelect
-        options={props.dimensions ?? []}
+      <CategorySelect
+        options={props.categories ?? []}
         value={line[id]}
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
-        onEditSelected={props.onEditDimension}
-        onCreate={props.onCreateDimension}
+        onEditSelected={props.onEditCategory}
+        onCreate={props.onCreateCategory}
       />
     );
   if (id === "partnerId" || id === "debitPartnerId" || id === "creditPartnerId")
@@ -128,7 +128,7 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
   const shown = new Set(editor.layout.visibleColumns.map((column) => column.id));
   const candidates: JournalLineColumn[] =
     editor.mode === "mainAccount"
-      ? ["quantity", "unitId", "unitPrice", "vs", "partnerId", "dimensionId"]
+      ? ["quantity", "unitId", "unitPrice", "vs", "partnerId", "categoryId"]
       : [
           "quantity",
           "unitId",

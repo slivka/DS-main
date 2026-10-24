@@ -75,9 +75,16 @@ export interface DsTexts {
   /** Přístupné názvy číselného krokovače. */
   stepper: { decrease: string; increase: string };
   /** Názvy vytváření z hledatelných výběrů. */
+  economicCategory: {
+    choose: string; search: string; empty: string; notPostable: string;
+    disabledAccount: string; singleAllowed: string; invalid: string; accountChanged: string;
+    title: string; companyEconomics: string;
+  };
   selectCreate: {
     item: string;
     partner: string;
+    category: string;
+    /** @deprecated Od 2.138.0 category; odstranění ve 3.0.0. */
     dimension: string;
     unit: string;
     /** Štítek (TagPicker). */
