@@ -5,6 +5,7 @@
  */
 
 export * from "./form/dimension-bar";
+export * from "./form/dimension-filter";
 export * from "./data-display/multi-value-cell";
 export * from "./accounting/journal-dimensions-model";
 

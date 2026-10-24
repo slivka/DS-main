@@ -315,6 +315,7 @@ export function journalDisplayValue(
     return line.unitPrice == null
       ? ""
       : numberText(line.unitPrice, { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  if (["dimensions", "debitDimensions", "creditDimensions"].includes(column)) return "";
   if (column === "row" || column === "actions") return "";
-  return String(line[column] ?? "");
+  return String(line[column as JournalLineColumn] ?? "");
 }

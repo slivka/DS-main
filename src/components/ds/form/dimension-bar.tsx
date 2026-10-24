@@ -23,7 +23,10 @@ export type {
 } from "./dimension-types";
 
 /** Props obecné lišty; data a persistence patří aplikaci. */
-export interface DimensionBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface DimensionBarProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "onReset"
+> {
   /** Typy v pořadí aplikace. */
   types: DimensionType[];
   /** Přidané typy; null valueId = k vyplnění. */

@@ -194,14 +194,7 @@ export interface DocumentFormProps {
   linesEditorProps?: Partial<
     Omit<
       JournalLinesEditorProps,
-      | "lines"
-      | "onChange"
-      | "accounts"
-      | "partners"
-      | "dimensions"
-      | "mode"
-      | "mainSide"
-      | "mainAccount"
+      "lines" | "onChange" | "accounts" | "partners" | "mode" | "mainSide" | "mainAccount"
     >
   >;
   roundingLimit?: number;
