@@ -160,9 +160,8 @@ export function PaymentOrderBatchView({
           formatDate(r.paymentDate)
         ) : (
           <DateField
-            aria-label={t.paymentDate}
             value={r.paymentDate}
-            min={today}
+            minDate={new Date(`${today}T00:00:00`)}
             onChange={(paymentDate) => onPatch(r.id, { paymentDate })}
           />
         ),

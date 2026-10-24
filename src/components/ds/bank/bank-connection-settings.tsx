@@ -163,13 +163,15 @@ export function BankConnectionSettings({
                 disabled={readOnly}
               />
             </div>
-            <DateField
-              label={t.fetchFrom}
-              value={value.fetchFrom}
-              onChange={(fetchFrom) => onChange({ ...value, fetchFrom })}
-              disabled={readOnly}
-              error={fetchFromTooOld ? t.fetchFromTooOld : undefined}
-            />
+            <div className="grid max-w-xs gap-1">
+              <span className="text-sm text-muted-foreground">{t.fetchFrom}</span>
+              <DateField
+                value={value.fetchFrom}
+                onChange={(fetchFrom) => onChange({ ...value, fetchFrom })}
+                disabled={readOnly}
+                error={fetchFromTooOld ? t.fetchFromTooOld : undefined}
+              />
+            </div>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">{t.statements}</span>
               <FieldValue>{t.statementsNote}</FieldValue>
