@@ -115,11 +115,13 @@ export function taxBookColumns(
     { id: "treatment", label: t.treatment, value: (r) => t.treatments[r.treatment] },
     { id: "taxCategory", label: t.taxCategory, value: (r) => r.taxCategory },
     { id: "category", label: t.category, value: (r) => r.category },
-    ...(extra?.showBase ? [money("base", `${extra.y.base} · ${currency}`)] : []),
+    ...(extra?.showBase
+      ? [money("base", `${extra.y.base} · ${currency}`), money("vat", `${t.vat} · ${currency}`)]
+      : []),
     money("amount", `${extra?.showBase ? extra.y.total : t.amount} · ${currency}`),
     { id: "currency", label: t.currency, value: (r) => r.currency },
     { ...money("movementAmount", t.movementAmount), total: "none" },
-    money("vat", `${t.vat} · ${currency}`),
+    ...(extra?.showBase ? [] : [money("vat", `${t.vat} · ${currency}`)]),
     { id: "nonCash", label: t.nonCash, value: (r) => (r.nonCash ? t.nonCash : "") },
     ...(onUnassignedOpen
       ? [
