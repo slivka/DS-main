@@ -2,6 +2,7 @@
 import { expect, mock, test } from "bun:test";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import {
+  DocumentForm,
   AccountSelect,
   JournalLinesEditor,
   TaxBookView,
@@ -420,4 +421,42 @@ test("DE povolené kategorie zůstávají navázané na položku", () => {
     </TooltipProvider>,
   );
   expect(change.mock.calls.some((c) => c[0][0]?.categoryId === "cat")).toBe(true);
+});
+
+test("DE hlavička skryje hlavní účet ve faktuře i zálohovém listu bez změny dat", () => {
+  const change = mock();
+  const value = {
+    currency: "EUR",
+    rate: 1,
+    mainAccountId: "211001",
+    bookId: "b",
+    issueDate: "2026-10-01",
+    amountTotal: 1000,
+  };
+  const common = {
+    title: "Doklad",
+    identity: {
+      variant: "invoice" as const,
+      book: "FV – Faktury",
+      period: "2026",
+      account: { side: "MD" as const, label: "211.001 – Tajná pokladna" },
+    },
+    value,
+    onChange: change,
+    lines,
+    onLinesChange: () => {},
+    books: [{ id: "b", code: "FV", name: "Faktury" }],
+    accounts,
+    homeCurrency: "EUR",
+    mainSide: "MD" as const,
+    status: "posted" as const,
+    readOnly: true,
+    bookkeepingMode: "tax_records" as const,
+  };
+  const view = render(<DocumentForm {...common} documentType="FV" />);
+  expect(screen.queryByText(/211\.001/)).toBeNull();
+  expect(change).not.toHaveBeenCalled();
+  view.rerender(<DocumentForm {...common} documentType="ZFV" />);
+  expect(screen.queryByText(/Tajná pokladna/)).toBeNull();
+  expect(change).not.toHaveBeenCalled();
 });

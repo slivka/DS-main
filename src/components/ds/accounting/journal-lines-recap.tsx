@@ -427,7 +427,16 @@ export function JournalLinesRecap({
       ...(vatSummary ? [{ id: "vat", label: t.vat }] : []),
       ...recapTabs,
     ],
-    [recapTabs, t.accounting, t.jobs, t.vat, vatSummary, bookkeepingMode, dsTexts.taxRecords.item],
+    [
+      recapTabs,
+      t.accounting,
+      t.jobs,
+      t.vat,
+      vatSummary,
+      bookkeepingMode,
+      categoriesEnabled,
+      dsTexts.taxRecords.item,
+    ],
   );
   React.useEffect(() => {
     if (!tabs.some((item) => item.id === activeTab)) {

@@ -17,9 +17,9 @@ export function taxItemAccountRequired(
   },
 ): ("debitAccount" | "creditAccount")[] {
   const missing = (key: "debitAccount" | "creditAccount") =>
-    !line[key] || props.accounts?.some((a) => a.code === line[key] && a.technical);
+    !line[key] || Boolean(props.accounts?.some((a) => a.code === line[key] && a.technical));
   if (props.mode !== "mainAccount" && props.taxMovementKind === "transfer")
-    return ["debitAccount", "creditAccount"].filter(
+    return (["debitAccount", "creditAccount"] as const).filter(
       (key): key is "debitAccount" | "creditAccount" => missing(key),
     );
   const side = taxItemSide(props);
