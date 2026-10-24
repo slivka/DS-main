@@ -1,4 +1,5 @@
 /** Ukázky řádků zápisu (preview-only). */
+import { JournalCategoriesShowcase } from "./journal-categories-showcase";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -197,6 +198,7 @@ export function JournalExamplesShowcase() {
 
   return (
     <>
+      <JournalCategoriesShowcase />
       <ShowcaseSection
         title="Řádky zápisu v Kč"
         description="Psaní začne úpravu, F2 nebo dvojklik zachová hodnotu. Enter a Tab uloží a pokračují, Esc vrátí původní hodnotu. Ctrl+D duplikuje a Ctrl+Delete odebere řádek."
