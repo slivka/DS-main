@@ -42,7 +42,9 @@ export const TaxYearCloseWizard = forwardRef<HTMLDivElement, TaxYearCloseWizardP
               detail: c.detail,
               severity: c.severity === "blocking" ? "error" : c.severity,
               action:
-                c.onAction && c.actionLabel ? { label: c.actionLabel, onClick: c.onAction } : undefined,
+                c.onAction && c.actionLabel
+                  ? { label: c.actionLabel, onClick: c.onAction }
+                  : undefined,
             }))}
           />
         </section>
@@ -64,7 +66,10 @@ export const TaxYearCloseWizard = forwardRef<HTMLDivElement, TaxYearCloseWizardP
               />
               {t.confirmLabel}
             </label>
-            <DisabledReasonTooltip blocked={blocked} content={blocked ? t.blockedReason : undefined}>
+            <DisabledReasonTooltip
+              blocked={blocked}
+              content={blocked ? t.blockedReason : undefined}
+            >
               <Button
                 aria-disabled={disabled || undefined}
                 onClick={() => {

@@ -40,7 +40,12 @@ function bookRows(payer: boolean): TaxBookEntry[] {
     invoice,
     amount: total,
     movementAmount: total,
-    ...(payer ? { base: Math.round((total / 1.21) * 100) / 100, vat: Math.round((total - total / 1.21) * 100) / 100 } : {}),
+    ...(payer
+      ? {
+          base: Math.round((total / 1.21) * 100) / 100,
+          vat: Math.round((total - total / 1.21) * 100) / 100,
+        }
+      : {}),
   });
   return [
     row("a1", "advance", 12100, "ZL2026001"),
@@ -105,7 +110,12 @@ export function TaxYearShowcase() {
         currency="CZK"
         asset={{ name: "Notebook", acquisitionPrice: 42000, lowValue: true, series: [] }}
       />
-      <TaxInternalMovementFields value={movement} onChange={setMovement} items={items} currency="CZK" />
+      <TaxInternalMovementFields
+        value={movement}
+        onChange={setMovement}
+        items={items}
+        currency="CZK"
+      />
       <TransportAllowanceGrid
         currency="CZK"
         months={[
@@ -118,7 +128,10 @@ export function TaxYearShowcase() {
         ]}
         cells={cells}
         onCountChange={(m, v, count) =>
-          setCells((all) => [...all.filter((c) => c.monthId !== m || c.vehicleId !== v), { monthId: m, vehicleId: v, count, amount: count ? 5000 : null }])
+          setCells((all) => [
+            ...all.filter((c) => c.monthId !== m || c.vehicleId !== v),
+            { monthId: m, vehicleId: v, count, amount: count ? 5000 : null },
+          ])
         }
         onCreateDocuments={() => setEvent("Interní doklady paušálu")}
         onDocumentOpen={setEvent}
@@ -133,7 +146,13 @@ export function TaxYearShowcase() {
       <TaxYearCloseWizard
         year={2026}
         checks={[
-          { id: "u", title: "Nezařazené úhrady: 1", severity: "blocking", actionLabel: "Otevřít", onAction: () => setEvent("Nezařazené") },
+          {
+            id: "u",
+            title: "Nezařazené úhrady: 1",
+            severity: "blocking",
+            actionLabel: "Otevřít",
+            onAction: () => setEvent("Nezařazené"),
+          },
           { id: "r", title: "Neuhrazené pohledávky k 31. 12.: 2", severity: "info" },
           { id: "c", title: "Kontrola peněz bez rozdílů", severity: "ok" },
         ]}
@@ -148,7 +167,11 @@ export function TaxYearShowcase() {
         ]}
         onLineOpen={(r) => setEvent(`Řádek ${r.line}`)}
       />
-      <TaxYearCarryForward fromYear={2026} status="ready" onCarryForward={() => setEvent("Převod")} />
+      <TaxYearCarryForward
+        fromYear={2026}
+        status="ready"
+        onCarryForward={() => setEvent("Převod")}
+      />
     </div>
   );
 }

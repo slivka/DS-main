@@ -8,8 +8,10 @@ import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { TaxMovementSelect } from "./tax-movement-select";
 import type { TaxInternalMovementValue, TaxItemOption } from "./tax-record-types";
-export interface TaxInternalMovementFieldsProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
+export interface TaxInternalMovementFieldsProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange"
+> {
   value: TaxInternalMovementValue;
   onChange: (value: TaxInternalMovementValue) => void;
   items: TaxItemOption[];

@@ -40,8 +40,7 @@ export const TransportAllowanceGrid = forwardRef<HTMLDivElement, TransportAllowa
   ) {
     const t = useDsTexts().taxYear;
     const blocked = Boolean(disabledReason);
-    const cell = (m: string, v: string) =>
-      cells.find((c) => c.monthId === m && c.vehicleId === v);
+    const cell = (m: string, v: string) => cells.find((c) => c.monthId === m && c.vehicleId === v);
     const unitLabel = unit === "days" ? t.unitDays : t.unitMonths;
     return (
       <div ref={ref} {...props} className={cn("min-w-0 space-y-3", className)}>
