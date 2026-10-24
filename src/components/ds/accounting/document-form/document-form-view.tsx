@@ -192,6 +192,7 @@ export function DocumentFormView({ props, model }: DocumentFormViewProps) {
                     counterpartyInput,
                     onCounterpartyInputChange,
                     taxNumberField,
+                    correctsDocument: props.correctsDocument,
                     internal,
                     cashDocument: code === "PO",
                     counterpartyInputLockedReason,

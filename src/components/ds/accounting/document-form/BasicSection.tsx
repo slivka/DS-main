@@ -4,7 +4,9 @@
  * Nesmí: spravovat identitu dokladu nebo ostatní sekce.
  */
 import type { ReactNode } from "react";
+import { ExternalLink } from "lucide-react";
 import { useDsTexts } from "../../../../ds-texts";
+import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { counterpartyCreateSeed, type CounterpartySeed } from "../counterparty-field";
 import { CounterpartyInputField } from "../counterparty-input-field";
@@ -313,6 +315,57 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
         </div>
       </>
     </>
+  );
+}
+
+/** Výběr opravovaného dokladu: hledatelný výběr, odkaz na otevření a zrušení vazby. */
+function CorrectsDocumentControl({
+  field,
+  readOnly,
+  openLabel,
+}: {
+  field: import("./document-form-props").DocumentCorrectsDocumentField;
+  readOnly?: boolean;
+  openLabel: string;
+}) {
+  const selected = field.options.find((o) => o.value === field.value);
+  if (field.lockedReason) {
+    return (
+      <FieldValue
+        id="document-correctsDocument"
+        aria-labelledby="document-correctsDocument-label"
+        lockedReason={field.lockedReason}
+      >
+        {selected?.label ?? ""}
+      </FieldValue>
+    );
+  }
+  return (
+    <div className="flex items-center gap-1">
+      <div className="min-w-0 flex-1">
+        <OptionSelect
+          id="document-correctsDocument"
+          value={field.value ?? ""}
+          onChange={(v) => field.onChange(v || null)}
+          options={field.options}
+          searchable
+          disabled={readOnly}
+        />
+      </div>
+      {field.value && field.onOpen ? (
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          aria-label={openLabel}
+          title={openLabel}
+          className="size-7 shrink-0 [&_svg]:size-4"
+          onClick={() => field.onOpen?.(field.value as string)}
+        >
+          <ExternalLink />
+        </Button>
+      ) : null}
+    </div>
   );
 }
 
