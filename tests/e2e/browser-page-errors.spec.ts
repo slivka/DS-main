@@ -8,7 +8,9 @@ for (const path of ["/components/accounting-forms", "/components/grid", "/compon
     await page.goto(path);
     if (path === "/components/accounting-forms") {
       // WebKit pod zátěží připojí rozsáhlou ukázku později než za výchozích 10 sekund.
-      await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+      await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
+        timeout: 45000,
+      });
     } else if (path === "/components/grid") {
       await expect(page.locator('[data-slot="grid-toolbar"]').first()).toHaveAttribute(
         "data-overflow-level",
