@@ -3,12 +3,7 @@ import { VAT_REPORTS_SK } from "./sk-vat-reports";
 import { DIMENSION_TEXTS_SK } from "./dimension-texts";
 import { PRINT_TEXTS_SK } from "./sk-print";
 import { INVOICE_PRINT_SK } from "./invoice-print-texts";
-import {
-  BANK_CONNECTION_SK,
-  BANK_PAYMENT_SK,
-  BANK_RECONCILE_SK,
-  BANK_RULE_SK,
-} from "./sk-bank";
+import { BANK_CONNECTION_SK, BANK_PAYMENT_SK, BANK_RECONCILE_SK, BANK_RULE_SK } from "./sk-bank";
 /**
  * Slovenské texty design systému.
  * Vlastní: hodnoty DS_TEXTS_SK (chybějící klíče doplní čeština).
