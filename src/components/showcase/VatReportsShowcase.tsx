@@ -210,6 +210,28 @@ export function VatReportsShowcase() {
         ]}
         onDocumentOpen={(id) => setSelected(`Doklad ${id}`)}
       />
+      <section>
+        <h2 className="mb-3 text-lg font-semibold">Souhrnné hlášení – jen řádné a následné</h2>
+        <VatFilingBar
+          form="recapitulative"
+          status="open"
+          kind="regular"
+          onKindChange={() => {}}
+          confirmText="Říjen 2026"
+          allowedKinds={["regular", "subsequent"]}
+        />
+      </section>
+      <section>
+        <h2 className="mb-3 text-lg font-semibold">Stavy přehledu – načítání a chyba</h2>
+        <div className="grid gap-4 @min-[40rem]:grid-cols-2">
+          <VatChecksPanel items={[]} loading />
+          <VatRecapitulativeView
+            currency="CZK"
+            error="Nepodařilo se načíst souhrnné hlášení"
+            exportMeta={{ period: "10/2026", company: "Alfa s.r.o.", filingKind: "Řádné" }}
+          />
+        </div>
+      </section>
     </div>
   );
 }
