@@ -26,10 +26,12 @@ describe("FinancialStatementView", () => {
     const view = render(
       <m.FinancialStatementView kind="balance" currency="Kč" rows={rows} columns={[{ id: "c", label: "Běžné" }]} />,
     );
-    expect(view.container.textContent).toContain("1 234 567,50");
+    const text = () => (view.container.textContent ?? "").replace(/\s/g, " ");
+    expect(text()).toContain("1 234 567,50");
     fireEvent.click(view.getByRole("radio", { name: "tis. Kč" }));
     expect(view.container.querySelector('[data-unit="thousands"]')).not.toBeNull();
-    expect(view.container.textContent).toContain("1 235");
+    expect(text()).toContain("1 235");
+    expect(text()).not.toContain("1 234 567,50");
   });
   it("dorovnaný řádek má ikonu s popisem", () => {
     const view = render(
