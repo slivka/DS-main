@@ -19,7 +19,11 @@ export function VatReportSkeleton() {
 
 /** Pruh chyby přehledu se zprávou od APP. */
 export function VatReportError({ message }: { message: string }) {
-  return <NoticeBar variant="error" role="alert" message={message} />;
+  return (
+    <NoticeBar tone="danger" role="alert">
+      {message}
+    </NoticeBar>
+  );
 }
 
 /** Titul exportu se záhlavím (období, firma, druh podání) od APP. */
