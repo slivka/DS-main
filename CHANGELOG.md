@@ -1,6 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.140.0 (nevydáno)
+## 2.141.0 (nevydáno)
+
+## 2.140.0
 
 ### Banka I3–I7 – rozpis výpisu, napojení Fio, pravidla a platby
 
