@@ -193,11 +193,7 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
             reason={props.disabledReason}
           />
         ) : (
-          {props.paymentMethodLockedReason ? (
-            <FieldValue id="document-paymentMethodId" aria-labelledby="document-paymentMethodId-label" lockedReason={props.paymentMethodLockedReason}>
-              {props.paymentMethodOptions.find(option => option.value === props.paymentMethodId)?.label ?? props.paymentMethodId ?? ""}
-            </FieldValue>
-          ) : <OptionSelect
+          <OptionSelect
             id="document-companyBankAccountId"
             value={props.value}
             onChange={props.onChange}
@@ -206,7 +202,7 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
               label: [option.label, option.account, option.currency].join(" · "),
             }))}
             disabled={props.disabled}
-          />}
+          />
         )}
       </Field>
       {/* Pořadí jako u přijatých: Bankovní účet | Způsob platby. */}
@@ -216,14 +212,18 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
           htmlFor="document-paymentMethodId"
           span={6}
         >
-          <OptionSelect
+          {props.paymentMethodLockedReason ? (
+            <FieldValue id="document-paymentMethodId" aria-labelledby="document-paymentMethodId-label" lockedReason={props.paymentMethodLockedReason}>
+              {props.paymentMethodOptions.find(option => option.value === props.paymentMethodId)?.label ?? props.paymentMethodId ?? ""}
+            </FieldValue>
+          ) : <OptionSelect
             id="document-paymentMethodId"
             value={props.paymentMethodId}
             onChange={(id) => props.onPaymentMethodChange?.(id)}
             options={props.paymentMethodOptions}
             searchable
             disabled={props.paymentMethodDisabled}
-          />
+          />}
         </Field>
       ) : null}
     </>
