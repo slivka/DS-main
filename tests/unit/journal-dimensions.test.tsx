@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render as testingRender, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useState } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DimensionBar,
   JournalLinesEditor,
@@ -21,6 +22,8 @@ import {
 import { journalCategoryInputs } from "@/components/ds/accounting/journal-category-inputs";
 import { fromJournalRow, toJournalRow } from "@/components/ds/accounting/journal-lines";
 import { headerDimensionValues } from "@/components/ds/accounting/journal-dimension-inputs";
+const render: typeof testingRender = (ui, options) =>
+  testingRender(ui, { wrapper: TooltipProvider, ...options });
 const header: DimensionValue[] = [
   { typeId: "vehicle", valueId: "a", label: "Auto A", kind: "vehicle" },
 ];
@@ -276,17 +279,19 @@ describe("lišta dimenzí", () => {
   test("editor při renderu jen odvodí hlavičku bez zápisu, jiné změny ji předají", async () => {
     let changes: JournalLine[] = [];
     render(
-      <JournalLinesEditor
-        {...editorProps}
-        mode="mainAccount"
-        lines={[{ id: "r", text: "A", amount: 1 }]}
-        dimensionTypes={types}
-        dimensions={header}
-        loadDimensionOptions={async () => []}
-        onChange={(lines) => {
-          changes = lines;
-        }}
-      />,
+      <TooltipProvider>
+        <JournalLinesEditor
+          {...editorProps}
+          mode="mainAccount"
+          lines={[{ id: "r", text: "A", amount: 1 }]}
+          dimensionTypes={types}
+          dimensions={header}
+          loadDimensionOptions={async () => []}
+          onChange={(lines) => {
+            changes = lines;
+          }}
+        />
+      </TooltipProvider>,
     );
     expect(changes).toEqual([]);
     fireEvent.click(screen.getByRole("button", { name: /Duplikovat řádek/ }));
@@ -294,7 +299,11 @@ describe("lišta dimenzí", () => {
     expect(changes[1]?.dimensions?.D[0]?.valueId).toBe("a");
   });
   test("MultiValueCell uchová více hotových hodnot", () => {
-    render(<MultiValueCell values={[{ label: "Auto A" }, { label: "Auto B" }]} />);
+    render(
+      <TooltipProvider>
+        <MultiValueCell values={[{ label: "Auto A" }, { label: "Auto B" }]} />
+      </TooltipProvider>,
+    );
     expect(screen.getByText("Auto A")).toBeTruthy();
   });
   test("filtr vynechá ukončené nabídky a změní set přes společný checklist", async () => {

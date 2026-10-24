@@ -1,5 +1,6 @@
 /** Výběr dimenze · vlastní hledání přes inline-search · nesmí znát doménu ani dědit hodnoty. */
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import {
@@ -55,60 +56,76 @@ export function DimensionValuePicker({
     setOpen(false);
   };
   return (
-    <InlineSearchPopover open={open} onOpenChange={setOpen} onSearchChange={setQuery}>
-      <InlineSearchTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          role="combobox"
-          aria-expanded={open}
-          aria-label={`${type.label}: ${value.label || t.choose}`}
-          disabled={disabled}
-          title={value.inactive ? t.ended : undefined}
-          data-inherited={value.inherited || undefined}
-          className={cn(
-            "h-[var(--control-h)] min-w-0 justify-start rounded-none px-2 font-normal",
-            (value.inherited || value.inactive) && "text-muted-foreground",
-            value.inherited === false && "font-semibold text-primary",
-          )}
-          onKeyDown={(event) => {
-            if (!disabled && !open && ["Delete", "Backspace"].includes(event.key)) {
-              event.preventDefault();
-              event.stopPropagation();
-              onRemove();
-            }
-          }}
-        >
-          <span className="truncate">
-            {type.label}: {value.label || t.choose}
-          </span>
-        </Button>
-      </InlineSearchTrigger>
-      <InlineSearchContent align="start" className="ds-select-popover p-0">
-        <Command shouldFilter={false}>
-          <InlineSearchInput value={query} onValueChange={setQuery} />
-          <CommandList aria-busy={result.loading}>
-            <CommandEmpty>
-              {result.loading ? t.loading : result.failed ? t.loadFailed : t.empty}
-            </CommandEmpty>
-            <CommandGroup>
-              {result.options
-                .filter((option) => !option.inactive)
-                .map((option) => (
-                  <CommandItem
-                    key={option.id}
-                    value={option.id}
-                    disabled={option.disabled}
-                    title={option.disabledReason}
-                    onSelect={() => choose(option)}
-                  >
-                    <span className="truncate">{formatCodeName(option.code, option.label)}</span>
-                  </CommandItem>
-                ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </InlineSearchContent>
-    </InlineSearchPopover>
+    <Tooltip>
+      <InlineSearchPopover
+        open={open && !disabled}
+        onOpenChange={(next) => {
+          if (!disabled) setOpen(next);
+        }}
+        onSearchChange={setQuery}
+      >
+        <InlineSearchTrigger asChild>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              role="combobox"
+              aria-expanded={open}
+              aria-label={`${type.label}: ${value.label || t.choose}`}
+              aria-disabled={disabled || undefined}
+              onClick={(event) => {
+                if (disabled) event.preventDefault();
+              }}
+              title={value.inactive ? t.ended : undefined}
+              data-inherited={value.inherited || undefined}
+              className={cn(
+                "h-[var(--control-h)] min-w-0 justify-start rounded-none px-2 font-normal",
+                (value.inherited || value.inactive) && "text-muted-foreground",
+                value.inherited === false && "font-semibold text-primary",
+              )}
+              onKeyDown={(event) => {
+                if (!disabled && !open && ["Delete", "Backspace"].includes(event.key)) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onRemove();
+                }
+              }}
+            >
+              <span className="truncate">
+                {type.label}: {value.label || t.choose}
+              </span>
+            </Button>
+          </TooltipTrigger>
+        </InlineSearchTrigger>
+        <InlineSearchContent align="start" className="ds-select-popover p-0">
+          <Command shouldFilter={false}>
+            <InlineSearchInput value={query} onValueChange={setQuery} />
+            <CommandList aria-busy={result.loading}>
+              <CommandEmpty>
+                {result.loading ? t.loading : result.failed ? t.loadFailed : t.empty}
+              </CommandEmpty>
+              <CommandGroup>
+                {result.options
+                  .filter((option) => !option.inactive)
+                  .map((option) => (
+                    <CommandItem
+                      key={option.id}
+                      value={option.id}
+                      disabled={option.disabled}
+                      title={option.disabledReason}
+                      onSelect={() => choose(option)}
+                    >
+                      <span className="truncate">{formatCodeName(option.code, option.label)}</span>
+                    </CommandItem>
+                  ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </InlineSearchContent>
+      </InlineSearchPopover>
+      <TooltipContent>
+        {value.inactive ? t.ended : `${type.label}: ${value.label || t.choose}`}
+      </TooltipContent>
+    </Tooltip>
   );
 }
