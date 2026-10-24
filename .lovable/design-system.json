@@ -14075,7 +14075,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankStatementReconcileView rows={rows} summary={summary} currencySymbol={currency} accounts={accounts} partners={partners} onRowChange={update} onAcceptSuggestion={accept} onRejectSuggestion={reject} onFileSelected={file} />"
+          "code": "<BankStatementReconcileView rows={rows} summary={summary} accounts={accounts} partners={partners} onPatch={updateRow} onAcceptSuggestion={accept} onRejectSuggestion={reject} onFileSelected={fileRows} />"
         }
       ],
       "antipatterns": [
@@ -14120,7 +14120,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankReconcileSuggestionRow row={row} currencySymbol={currency} onAccept={accept} onReject={reject} />"
+          "code": "<BankReconcileSuggestionRow row={row} currencySymbol={row.currency} onAccept={accept} onReject={reject} />"
         }
       ],
       "antipatterns": [
@@ -14188,7 +14188,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankConnectionSettings value={connection} onChange={setConnection} onTokenSave={saveToken} onTokenRemove={removeToken} />"
+          "code": "<BankConnectionSettings value={connection} onChange={setConnection} onTokenSave={saveToken} onTest={testConnection} onFetchNow={fetchNow} />"
         }
       ],
       "antipatterns": [
@@ -14226,7 +14226,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankConnectionBanner state=\"tokenInvalid\" onSettings={openSettings} />"
+          "code": "<BankConnectionBanner state=\"tokenInvalid\" onChangeToken={openSettings} />"
         }
       ],
       "antipatterns": [
@@ -14306,7 +14306,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankRuleList rules={rules} onOpen={edit} onDuplicate={duplicate} onToggle={toggle} />"
+          "code": "<BankRuleList rules={rules} onAdd={addRule} onEdit={editRule} onDuplicate={duplicateRule} onActiveChange={toggleRule} />"
         }
       ],
       "antipatterns": [
@@ -14387,7 +14387,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<BankRuleDialog open={open} value={rule} onChange={setRule} onSave={save} onCancel={close} accounts={accounts} books={books} />"
+          "code": "<BankRuleDialog open={open} onOpenChange={setOpen} value={rule} onChange={setRule} onSubmit={saveRule} accounts={accounts} books={books} />"
         }
       ],
       "antipatterns": [
@@ -14475,7 +14475,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<PaymentOrderBatchView rows={rows} partnerAccounts={accounts} formats={formats} onCreateFile={create} onSend={send} />"
+          "code": "<PaymentOrderBatchView rows={rows} partnerAccounts={accounts} formats={formats} onPatch={updateRow} onCreateFile={createFile} canSendFio onSendFio={openSend} />"
         }
       ],
       "antipatterns": [
@@ -14538,7 +14538,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<PaymentOrderSendDialog open={open} onOpenChange={setOpen} bankName=\"Fio\" amounts={amounts} onConfirm={send} />"
+          "code": "<PaymentOrderSendDialog open={open} onOpenChange={setOpen} count={count} amounts={amounts} confirmText=\"ODESLAT\" onConfirm={send} />"
         }
       ],
       "antipatterns": [
@@ -14585,7 +14585,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<PaymentOrderBatchList batches={batches} onOpen={open} onDownload={download} onCancel={cancel} />"
+          "code": "<PaymentOrderBatchList batches={batches} onOpen={openBatch} onDownload={download} onCancel={cancelBatch} />"
         }
       ],
       "antipatterns": [
