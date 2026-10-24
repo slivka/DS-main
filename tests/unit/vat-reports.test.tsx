@@ -231,7 +231,7 @@ test("VatChecksPanel změna filtru hlásí závažnost a rodič řídí seznam",
     { id: "i", severity: "info" as const, text: "Informativní nález" },
   ];
   const view = render(<VatChecksPanel items={items} severity="all" onSeverityChange={change} />);
-  fireEvent.pointerDown(screen.getByRole("combobox"), { button: 0, ctrlKey: false });
+  fireEvent.keyDown(screen.getByRole("combobox"), { key: "C" });
   await waitFor(() => expect(screen.getByRole("option", { name: "Chyba" })).toBeDefined());
   fireEvent.click(screen.getByRole("option", { name: "Chyba" }));
   expect(change).toHaveBeenCalledWith("error");

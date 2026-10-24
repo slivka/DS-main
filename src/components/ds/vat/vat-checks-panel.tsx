@@ -41,6 +41,7 @@ export const VatChecksPanel = forwardRef<HTMLDivElement, VatChecksPanelProps>(
             className="w-auto"
             value={current}
             allowEmpty={false}
+            searchable
             options={[
               { value: "all", label: t.all },
               ...Object.entries(t.severity).map(([value, label]) => ({ value, label })),
