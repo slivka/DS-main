@@ -5,7 +5,7 @@ import { TooltipProvider } from "../../ui/tooltip";
 import { OptionSelect } from "../form/option-select";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import type { VatReportStateProps } from "./vat-report-types";
+import type { VatReportExportMeta } from "./vat-report-types";
 import { VatReportState } from "./vat-report-state";
 /** Nález dodaný APP. */
 export interface VatCheckItem {
@@ -16,8 +16,11 @@ export interface VatCheckItem {
   /** ID souvisejícího dokladu. */ documentId?: string;
 }
 /** Parametry kontrol. */
-export interface VatChecksPanelProps extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
+export interface VatChecksPanelProps extends ComponentPropsWithoutRef<"div"> {
   /** Nálezy. */ items: VatCheckItem[];
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu (období, firma, druh podání). */ exportMeta?: VatReportExportMeta;
   /** Otevření dokladu. */ onDocumentOpen?: (id: string) => void;
   /** Řízený filtr; bez něj místní. */ severity?: VatCheckItem["severity"] | "all";
   /** Změna filtru. */ onSeverityChange?: (severity: VatCheckItem["severity"] | "all") => void;

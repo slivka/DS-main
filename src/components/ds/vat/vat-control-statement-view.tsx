@@ -13,16 +13,18 @@ import type {
   VatControlSection,
   VatControlSectionData,
   VatRateAmounts,
-  VatReportStateProps,
+  VatReportExportMeta,
 } from "./vat-report-types";
 import { VatReportState, vatExportTitle } from "./vat-report-state";
 const SECTIONS: VatControlSection[] = ["A1", "A2", "A4", "A5", "B1", "B2", "B3"];
 /** Sazby sloupců dokladů včetně třetí sazby 10 %. */
 const RATES = [21, 12, 10];
 /** Parametry kontrolního hlášení. */
-export interface VatControlStatementViewProps
-  extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
+export interface VatControlStatementViewProps extends ComponentPropsWithoutRef<"div"> {
   /** Oddíly rozdělené APP. */ sections: Partial<Record<VatControlSection, VatControlSectionData>>;
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu (období, firma, druh podání). */ exportMeta?: VatReportExportMeta;
   /** Aktivní oddíl; bez něj místní výběr. */ activeSection?: VatControlSection;
   /** Změna oddílu. */ onSectionChange?: (section: VatControlSection) => void;
   /** Otevření dokladu. */ onDocumentOpen?: (id: string) => void;

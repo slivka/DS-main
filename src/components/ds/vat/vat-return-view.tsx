@@ -6,12 +6,15 @@ import { AmountCell } from "../accounting/amount";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import type { VatReturnRow, VatReportStateProps } from "./vat-report-types";
+import type { VatReturnRow, VatReportExportMeta } from "./vat-report-types";
 import { vatRowDifference } from "./vat-report-model";
 import { VatReportState, vatExportTitle } from "./vat-report-state";
 /** Parametry přehledu přiznání. */
-export interface VatReturnViewProps extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
+export interface VatReturnViewProps extends ComponentPropsWithoutRef<"div"> {
   /** Řádky APP. */ rows: VatReturnRow[];
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu (období, firma, druh podání). */ exportMeta?: VatReportExportMeta;
   /** Otevření podkladů řádku. */ onRowOpen?: (row: VatReturnRow) => void;
   /** Podaný snímek. */ compare?: Record<string, { base?: number; tax?: number }>;
   /** Hotová povinnost a odpočet od APP. */ summary: {

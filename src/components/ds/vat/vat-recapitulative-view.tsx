@@ -4,12 +4,14 @@ import { DataGrid } from "../grid/DataGrid";
 import type { DataGridColumn } from "../grid/data-grid-types";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import type { OssReturnRow, VatRecapitulativeRow, VatReportStateProps } from "./vat-report-types";
+import type { OssReturnRow, VatRecapitulativeRow, VatReportExportMeta } from "./vat-report-types";
 import { VatReportState, vatExportTitle } from "./vat-report-state";
 /** Parametry společného přehledu SH/OSS. */
-export interface VatRecapitulativeViewProps
-  extends ComponentPropsWithoutRef<"div">, VatReportStateProps {
+export interface VatRecapitulativeViewProps extends ComponentPropsWithoutRef<"div"> {
   /** Varianta sestavy. */ variant?: "recapitulative" | "oss";
+  /** Načítání – místo obsahu kostra. */ loading?: boolean;
+  /** Zpráva chyby – pruh nad obsahem. */ error?: string | null;
+  /** Záhlaví exportu (období, firma, druh podání). */ exportMeta?: VatReportExportMeta;
   /** Hotová data SH. */ rows?: VatRecapitulativeRow[];
   /** Hotová data OSS včetně oprav. */ ossRows?: OssReturnRow[];
   /** Měna z APP. */ currency: string;
