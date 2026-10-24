@@ -13,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { DateField } from "../form/date-field";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
-import { GridAddLabelContext, GridToolbarOverflowContext } from "./grid-toolbar-context";
+import { GridAddLabelContext, GridToolbarOverflowContext, GridSearchInMenuContext } from "./grid-toolbar-context";
 export { GridToolbarOverflowContext };
 export { GridAddActions, type GridAddAction, type GridAddActionsProps } from "./grid-add-actions";
 
@@ -85,6 +85,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   const ownRef = React.useRef<HTMLDivElement | null>(null);
   const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2 | 3>(0);
   const [addLabelMode, setAddLabelMode] = React.useState<"full" | "short">("full");
+  const [searchInMenu, setSearchInMenu] = React.useState(false);
   const setRefs = React.useCallback(
     (node: HTMLDivElement | null) => {
       ownRef.current = node;
@@ -209,6 +210,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       const padding =
         (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
       const measured = (cachedWidths ??= naturalWidths());
+      setSearchInMenu(node.clientWidth <= 480);
       if (current < 3 || !fullLeft) fullLeft = measured.leftFull;
       const leftFull = current === 3 ? Math.max(fullLeft, measured.leftFull) : measured.leftFull;
       const findFull = measured.findFull;
@@ -305,6 +307,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   }, [zoom, density]);
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
+      <GridSearchInMenuContext.Provider value={searchInMenu || overflowLevel >= 3}>
       <GridAddLabelContext.Provider value={addLabelMode}>
         <div
           ref={setRefs}
@@ -337,6 +340,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
           ) : null}
         </div>
       </GridAddLabelContext.Provider>
+      </GridSearchInMenuContext.Provider>
     </GridToolbarOverflowContext.Provider>
   );
 });

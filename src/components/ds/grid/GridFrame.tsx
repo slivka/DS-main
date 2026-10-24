@@ -5,7 +5,8 @@
  * panel filtrů, štítky filtrů a pruh výběru – jednou pro DataGrid i TreeGrid.
  * Nesmí: držet stav gridu ani znát data – vše dostává hotové od gridu přes props.
  */
-import { useId, type ComponentProps, type ReactNode } from "react";
+import { useContext, useId, type ComponentProps, type ReactNode } from "react";
+import { GridSearchInMenuContext } from "./grid-toolbar-context";
 
 import { cn } from "../../../lib/utils";
 import { ColumnPicker } from "./column-picker";
@@ -30,6 +31,11 @@ import { ViewModeToggle, type GridViewMode } from "./view-mode-toggle";
 
 /** Props výběru sloupců v liště (úplná podoba; nabídka ⋯ použije základní část). */
 export type GridFrameColumnPicker = ComponentProps<typeof ColumnPicker<string>>;
+/** Jediný živý vstup hledání na liště nebo uvnitř nabídky. */
+function GridFrameSearch({ children, inMenu = false }: { children: ReactNode; inMenu?: boolean }) {
+  const compact = useContext(GridSearchInMenuContext);
+  return compact === inMenu ? children : null;
+}
 
 /** Zoom a hustota gridu pro ovládání v liště. */
 export type GridFrameZoom = {
@@ -192,7 +198,7 @@ export function GridFrame({
                 data-toolbar-group="find"
                 className="flex shrink-0 items-center gap-2"
               >
-                <GridToolbarCollapsible>
+                <GridFrameSearch>
                   <GridSearch
                     value={search.value}
                     onChange={search.onChange}
@@ -200,7 +206,7 @@ export function GridFrame({
                     zoom={zoom}
                     texts={texts}
                   />
-                </GridToolbarCollapsible>
+                </GridFrameSearch>
                 {filters ? (
                   <GridFilterToggle
                     open={filters.open}
@@ -245,12 +251,6 @@ export function GridFrame({
                   texts={texts}
                   compact={
                     <>
-                      <GridSearch
-                        value={search.value}
-                        onChange={search.onChange}
-                        zoom={zoom}
-                        texts={texts}
-                      />
                       {viewToggle}
                       {expand?.compact}
                       {asOf ? <AsOfDateToggle {...asOf} /> : null}
@@ -259,6 +259,7 @@ export function GridFrame({
                   }
                   tools={
                     <>
+                      <GridFrameSearch inMenu><GridSearch value={search.value} onChange={search.onChange} zoom={zoom} texts={texts} /></GridFrameSearch>
                       {groupControl}
                       {basicPicker}
                       {zoomControl}
